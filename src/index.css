@@ -1,0 +1,52 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+@layer base {
+  body {
+    @apply bg-gunmetal text-gray-200 font-sans cursor-crosshair selection:bg-camogreen selection:text-white;
+  }
+}
+
+@layer utilities {
+  .cursor-crosshair {
+    cursor: crosshair;
+  }
+
+  .glass-panel {
+    @apply bg-black/40 backdrop-blur-md border border-gray-700/50 shadow-xl;
+  }
+
+  .tactical-border {
+    @apply border-2 border-olive hover:border-camogreen transition-colors duration-300;
+  }
+}
+
+/* Typewriter animation */
+.typewriter-text {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typing 3s steps(40, end), blink-caret .75s step-end infinite;
+}
+
+@keyframes typing {
+  from {
+    max-width: 0
+  }
+
+  to {
+    max-width: 100%
+  }
+}
+
+@keyframes blink-caret {
+
+  from,
+  to {
+    border-color: transparent
+  }
+
+  50% {
+    border-color: #4b5320;
+  }
+}
