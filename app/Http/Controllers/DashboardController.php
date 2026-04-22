@@ -39,10 +39,11 @@ class DashboardController extends Controller
         $cases = $this->formatTickets(Ticket::query());
         $users = User::all()->map(function($u) {
             return [
+                'db_id' => $u->id,
                 'id' => 'USR-'.str_pad($u->id, 3, '0', STR_PAD_LEFT),
                 'name' => $u->name,
                 'role' => $u->role,
-                'status' => 'Aktif',
+                'status' => $u->status,
                 'lastLogin' => 'Baru saja' // placeholder fallback
             ];
         });

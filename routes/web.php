@@ -17,6 +17,7 @@ Route::get('/admin', [DashboardController::class, 'admin']);
 Route::get('/pelapor', [DashboardController::class, 'pelapor']);
 Route::get('/staf', [DashboardController::class, 'staf']);
 Route::get('/teknisi', [DashboardController::class, 'teknisi']);
+Route::resource('users', \App\Http\Controllers\UserController::class);
 
 // Tickets Actions
 Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
