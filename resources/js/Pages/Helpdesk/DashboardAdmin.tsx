@@ -32,72 +32,14 @@ interface CaseData {
   };
 }
 
-const MOCK_CASES: CaseData[] = [
-  {
-    caseId: 'CASE-26-04-001',
-    status: 'SELESAI',
-    kerusakan: {
-      tanggal: '21 April 2026, 08:30',
-      pelapor: 'Pos Pantau Alpha',
-      lokasi: 'Menara Utara',
-      barangRusak: 'Kamera Thermal Sektor Utara',
-      deskripsi: 'Kamera memberikan tampilan blank memancarkan artefak hitam setelah cuaca buruk. Diperlukan penanganan cepat karena area blind spot.',
-    },
-    perbaikan: {
-      teknisi: 'Sertu Bambang',
-      tanggalPenanganan: '21 April 2026, 10:15',
-      tindakan: 'Melakukan kalibrasi ulang sensor thermal dan penggantian kabel optik yang terputus akibat gangguan cuaca.',
-      sukuCadang: 'Kabel Optik Mil-Spec, Lensa Sensor Cadangan',
-      statusPerbaikan: 'TUNTAS'
-    }
-  },
-  {
-    caseId: 'CASE-26-04-002',
-    status: 'PENDING',
-    kerusakan: {
-      tanggal: '21 April 2026, 09:15',
-      pelapor: 'Gudang Logistik',
-      lokasi: 'Bunker Bawah Tanah',
-      barangRusak: 'Sensor Pintu Baja Taktis',
-      deskripsi: 'Pintu baja otomatis macet total. Pemindai RF-ID berkedip merah terus-menerus dan menolak semua akses card level 3.',
-    },
-    perbaikan: {
-      teknisi: null,
-      tanggalPenanganan: null,
-      tindakan: null,
-      sukuCadang: null,
-      statusPerbaikan: 'MENUNGGU'
-    }
-  },
-  {
-    caseId: 'CASE-26-04-003',
-    status: 'DIPROSES',
-    kerusakan: {
-      tanggal: '21 April 2026, 11:20',
-      pelapor: 'Area Latihan B',
-      lokasi: 'Gudang Persenjataan',
-      barangRusak: 'Sistem Ventilasi Udara',
-      deskripsi: 'Kipas exhaust berdengung keras dan tidak menyedot udara dengan maksimal. Membuat suhu ruangan menjadi tidak stabil.',
-    },
-    perbaikan: {
-      teknisi: 'Pratu Wira',
-      tanggalPenanganan: '21 April 2026, 13:00',
-      tindakan: 'Sedang dilakukan pengecekan motor kipas dan dinamo. Membutuhkan izin kelistrikan sebelum mematikan panel utama.',
-      sukuCadang: '-',
-      statusPerbaikan: 'DIANALISA'
-    }
-  }
-];
-
-const DashboardAdmin: React.FC = () => {
+const DashboardAdmin = ({ dbCases = [], dbUsers = [], dbLogs = [] }: any) => {
   const [activeMenu, setActiveMenu] = useState<MenuTab>('REPORTS');
   const [activeSubReport, setActiveSubReport] = useState<SubMenuReport>('KERUSAKAN');
   const [isReportsExpanded, setIsReportsExpanded] = useState<boolean>(true);
   
   // Data dari Global Store
   const currentUser = useStore(state => state.currentUser);
-  const MOCK_USERS = useStore(state => state.users);
-  const MOCK_LOGS = useStore(state => state.logs);
+  // MOCK_USERS dan MOCK_LOGS digantikan oleh data DB
   const logoutAction = useStore(state => state.logout);
   
   // Handlers
@@ -155,7 +97,7 @@ const DashboardAdmin: React.FC = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-800">
-            {MOCK_USERS.map((u) => (
+            {dbUsers.map((u: any) => (
               <tr key={u.id} className="hover:bg-gray-200 dark:bg-gray-800/80 transition-colors group">
                 <td className="p-4 font-mono text-gray-700 dark:text-gray-300 border-l-2 border-transparent group-hover:border-olive">{u.id}</td>
                 <td className="p-4 text-gunmetal dark:text-white font-bold">{u.name}</td>
@@ -212,7 +154,7 @@ const DashboardAdmin: React.FC = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-300 dark:divide-gray-800 text-gray-700 dark:text-gray-300 bg-sand dark:bg-gunmetal">
-            {MOCK_LOGS.map((log) => (
+            {dbLogs.map((log: any) => (
               <tr key={log.id} className="hover:bg-gray-200 dark:hover:bg-gray-800/50 group">
                 <td className="p-3 text-gray-600 dark:text-gray-500 border-l-2 border-transparent group-hover:border-yellow-400">{log.time}</td>
                 <td className="p-3">
@@ -278,7 +220,7 @@ const DashboardAdmin: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-300 dark:divide-gray-800">
-              {MOCK_CASES.map((c) => (
+              {dbCases.map((c: CaseData) => (
                 <tr key={c.caseId} className="hover:bg-gray-200 dark:hover:bg-gray-800/60 transition-colors group text-gunmetal dark:text-gray-200">
                   <td className="p-4 font-mono text-olive font-bold border-l-2 border-transparent group-hover:border-olive">
                     {c.caseId}
