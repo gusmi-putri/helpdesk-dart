@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('system_logs', function (Blueprint $table) {
+        Schema::create('units', function (Blueprint $table) {
             $table->id();
-            $table->string('level');
-            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
-            $table->string('activity_payload');
+            $table->string('nomor_seri', 50);
+            $table->string('nama_dart', 100);
+            $table->string('asal_satuan', 100);
+            $table->enum('status_unit', ['Siap Ops', 'Rusak', 'Perbaikan', 'Nonaktif']);
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('system_logs');
+        Schema::dropIfExists('units');
     }
 };

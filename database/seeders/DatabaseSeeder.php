@@ -15,98 +15,62 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Create Users (Roles: Admin, Staf, Teknisi, Pelapor)
-        $admin = User::factory()->create([
-            'name' => 'Komandan Pusat',
-            'email' => 'admin@dart.com',
-            'role' => 'Admin',
-            'password' => Hash::make('password')
+        // 1. Seed Roles
+        $adminRole = \App\Models\Role::create(['nama_role' => 'Admin']);
+        $stafRole = \App\Models\Role::create(['nama_role' => 'Staf']);
+        $teknisiRole = \App\Models\Role::create(['nama_role' => 'Teknisi']);
+        $pelaporRole = \App\Models\Role::create(['nama_role' => 'Pelapor']);
+
+        // 2. Seed Users
+        $admin = \App\Models\User::create([
+            'username' => 'admin',
+            'password' => \Illuminate\Support\Facades\Hash::make('password'),
+            'nama_lengkap' => 'Komandan Pusat',
+            'role_id' => $adminRole->id,
         ]);
 
-        $staf = User::factory()->create([
-            'name' => 'Staf Operasional',
-            'email' => 'staf@dart.com',
-            'role' => 'Staf',
-            'password' => Hash::make('password')
+        $staf = \App\Models\User::create([
+            'username' => 'staf1',
+            'password' => \Illuminate\Support\Facades\Hash::make('password'),
+            'nama_lengkap' => 'Staf Komando 01',
+            'role_id' => $stafRole->id,
         ]);
 
-        $teknisi = User::factory()->create([
-            'name' => 'Sertu Bambang',
-            'email' => 'teknisi@dart.com',
-            'role' => 'Teknisi',
-            'password' => Hash::make('password')
+        $teknisi = \App\Models\User::create([
+            'username' => 'teknisi1',
+            'password' => \Illuminate\Support\Facades\Hash::make('password'),
+            'nama_lengkap' => 'Teknisi Alfa',
+            'role_id' => $teknisiRole->id,
+            'spesialisasi' => 'Mekanik & Elektronik',
         ]);
 
-        $teknisi2 = User::factory()->create([
-            'name' => 'Pratu Wira',
-            'email' => 'teknisi2@dart.com',
-            'role' => 'Teknisi',
-            'password' => Hash::make('password')
+        $pelapor = \App\Models\User::create([
+            'username' => 'pelapor1',
+            'password' => \Illuminate\Support\Facades\Hash::make('password'),
+            'nama_lengkap' => 'Pos Pantau Alpha',
+            'role_id' => $pelaporRole->id,
+            'asal_satuan' => 'Sektor Utara',
         ]);
 
-        $pelapor1 = User::factory()->create([
-            'name' => 'Pos Pantau Alpha',
-            'email' => 'alpha@dart.com',
-            'role' => 'Pelapor',
-            'password' => Hash::make('password')
+        // 3. Seed Units
+        $unit = \App\Models\Unit::create([
+            'nomor_seri' => 'DRT-001',
+            'nama_dart' => 'Kamera Thermal V3',
+            'asal_satuan' => 'Sektor Utara',
+            'status_unit' => 'Siap Ops',
         ]);
 
-        $pelapor2 = User::factory()->create([
-            'name' => 'Gudang Logistik',
-            'email' => 'gudang@dart.com',
-            'role' => 'Pelapor',
-            'password' => Hash::make('password')
+        // 4. Seed a Report
+        \App\Models\Report::create([
+            'unit_id' => $unit->id,
+            'user_id' => $pelapor->id,
+            'staff_id' => $staf->id,
+            'teknisi_id' => $teknisi->id,
+            'tanggal_lapor' => now(),
+            'deskripsi_kerusakan' => 'Lensa pecah akibat benturan objek asing.',
+            'status_laporan' => 'Proses',
+            'metode_perbaikan' => 'Offline',
+            'tgl_ditunjuk' => now(),
         ]);
-
-        $pelapor3 = User::factory()->create([
-            'name' => 'Area Latihan B',
-            'email' => 'areab@dart.com',
-            'role' => 'Pelapor',
-            'password' => Hash::make('password')
-        ]);
-
-        // 2. Create Tickets directly mimicking the mock data
-        Ticket::create([
-            'case_id' => 'CASE-26-04-001',
-            'user_id' => $pelapor1->id,
-            'status' => 'SELESAI',
-            'barang_rusak' => 'Kamera Thermal Sektor Utara',
-            'lokasi' => 'Menara Utara',
-            'deskripsi' => 'Kamera memberikan tampilan blank memancarkan artefak hitam setelah cuaca buruk. Diperlukan penanganan cepat karena area blind spot.',
-            'created_at' => Carbon::parse('2026-04-21 08:30:00'),
-            
-            'technician_id' => $teknisi->id,
-            'tanggal_penanganan' => Carbon::parse('2026-04-21 10:15:00'),
-            'tindakan' => 'Melakukan kalibrasi ulang sensor thermal dan penggantian kabel optik yang terputus akibat gangguan cuaca.',
-            'suku_cadang' => 'Kabel Optik Mil-Spec, Lensa Sensor Cadangan',
-            'status_perbaikan' => 'TUNTAS'
-        ]);
-
-        Ticket::create([
-            'case_id' => 'CASE-26-04-002',
-            'user_id' => $pelapor2->id,
-            'status' => 'PENDING',
-            'barang_rusak' => 'Sensor Pintu Baja Taktis',
-            'lokasi' => 'Bunker Bawah Tanah',
-            'deskripsi' => 'Pintu baja otomatis macet total. Pemindai RF-ID berkedip merah terus-menerus dan menolak semua akses card level 3.',
-            'created_at' => Carbon::parse('2026-04-21 09:15:00'),
-        ]);
-
-        Ticket::create([
-            'case_id' => 'CASE-26-04-003',
-            'user_id' => $pelapor3->id,
-            'status' => 'DIPROSES',
-            'barang_rusak' => 'Sistem Ventilasi Udara',
-            'lokasi' => 'Gudang Persenjataan',
-            'deskripsi' => 'Kipas exhaust berdengung keras dan tidak menyedot udara dengan maksimal. Membuat suhu ruangan menjadi tidak stabil.',
-            'created_at' => Carbon::parse('2026-04-21 11:20:00'),
-            
-            'technician_id' => $teknisi2->id,
-            'tanggal_penanganan' => Carbon::parse('2026-04-21 13:00:00'),
-            'tindakan' => 'Sedang dilakukan pengecekan motor kipas dan dinamo. Membutuhkan izin kelistrikan sebelum mematikan panel utama.',
-            'suku_cadang' => '-',
-            'status_perbaikan' => 'DIANALISA'
-        ]);
-        
     }
 }

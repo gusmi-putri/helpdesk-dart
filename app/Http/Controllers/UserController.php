@@ -31,21 +31,26 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'role' => 'required|in:Admin,Staf,Teknisi,Pelapor',
+            'username' => 'required|string|max:50|unique:users',
             'password' => 'required|string|min:8',
+            'nama_lengkap' => 'required|string|max:100',
+            'role_id' => 'required|exists:roles,id',
+            'asal_satuan' => 'nullable|string|max:100',
+            'no_wa' => 'nullable|string|max:20',
+            'spesialisasi' => 'nullable|string|max:100',
         ]);
 
         User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'role' => $request->role,
-            'status' => 'Aktif',
+            'username' => $request->username,
             'password' => bcrypt($request->password),
+            'nama_lengkap' => $request->nama_lengkap,
+            'role_id' => $request->role_id,
+            'asal_satuan' => $request->asal_satuan,
+            'no_wa' => $request->no_wa,
+            'spesialisasi' => $request->spesialisasi,
         ]);
 
-        return redirect()->back()->with('message', 'User created successfully.');
+        return redirect()->back()->with('message', 'Personel baru berhasil didaftarkan ke sistem.');
     }
 
     /**
@@ -56,14 +61,16 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         $request->validate([
-            'name' => 'required|string|max:255',
-            'role' => 'required|in:Admin,Staf,Teknisi,Pelapor',
-            'status' => 'required|in:Aktif,Nonaktif',
+            'nama_lengkap' => 'required|string|max:100',
+            'role_id' => 'required|exists:roles,id',
+            'asal_satuan' => 'nullable|string|max:100',
+            'no_wa' => 'nullable|string|max:20',
+            'spesialisasi' => 'nullable|string|max:100',
         ]);
 
-        $user->update($request->only('name', 'role', 'status'));
+        $user->update($request->only('nama_lengkap', 'role_id', 'asal_satuan', 'no_wa', 'spesialisasi'));
 
-        return redirect()->back()->with('message', 'User updated successfully.');
+        return redirect()->back()->with('message', 'Data personel telah diperbarui.');
     }
 
     /**

@@ -32,7 +32,8 @@ interface CaseData {
   };
 }
 
-const DashboardAdmin = ({ dbCases = [], dbUsers = [], dbLogs = [] }: any) => {
+const DashboardAdmin = (props: any) => {
+  const { dbCases = [], dbUsers = [], dbLogs = [], dbRoles = [] } = props;
   const [activeMenu, setActiveMenu] = useState<MenuTab>('REPORTS');
   const [activeSubReport, setActiveSubReport] = useState<SubMenuReport>('KERUSAKAN');
   const [isReportsExpanded, setIsReportsExpanded] = useState<boolean>(true);
@@ -41,27 +42,67 @@ const DashboardAdmin = ({ dbCases = [], dbUsers = [], dbLogs = [] }: any) => {
   const currentUser = useStore(state => state.currentUser);
   const logoutAction = useStore(state => state.logout);
 
-  // State for Edit Modal
+  // State for Add/Edit Modal
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isAddMode, setIsAddMode] = useState(false);
   const [editingUser, setEditingUser] = useState<any>(null);
-  const [editFormData, setEditFormData] = useState({ name: '', role: '', status: '' });
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+    nama_lengkap: '',
+    role_id: '',
+    asal_satuan: '',
+    no_wa: '',
+    spesialisasi: ''
+  });
 
   // Handlers
   const handlePrintCasePDF = (caseData: CaseData) => {
     alert(`[SYSTEM COMMAND: GENERATE PDF]\nMempersiapkan Ekspor PDF untuk Kasus: ${caseData.caseId}\n\nMenggabungkan Dokumen:\n- Halaman 1: Formulir Lapor Kerusakan (Sumber: ${caseData.kerusakan.pelapor})\n- Halaman 2: Formulir Tindakan Perbaikan (Teknisi: ${caseData.perbaikan.teknisi || 'Belum Berjalan'})`);
     console.log("PDF Triggered for Case:", caseData);
   };
-  const handleEditUser = (user: any) => {
-    setEditingUser(user);
-    setEditFormData({ name: user.name, role: user.role, status: user.status });
+
+  const handleAddUser = () => {
+    setIsAddMode(true);
+    setEditingUser(null);
+    setFormData({
+      username: '',
+      password: '',
+      nama_lengkap: '',
+      role_id: '',
+      asal_satuan: '',
+      no_wa: '',
+      spesialisasi: ''
+    });
     setIsEditModalOpen(true);
   };
 
-  const handleUpdateUser = (e: React.FormEvent) => {
-    e.preventDefault();
-    router.put(`/users/${editingUser.db_id}`, editFormData, {
-      onSuccess: () => setIsEditModalOpen(false),
+  const handleEditUser = (user: any) => {
+    setIsAddMode(false);
+    setEditingUser(user);
+    setFormData({
+      username: user.username || '',
+      password: '',
+      nama_lengkap: user.name,
+      role_id: user.role_id || '',
+      asal_satuan: user.asal_satuan || '',
+      no_wa: user.no_wa || '',
+      spesialisasi: user.spesialisasi || ''
     });
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveUser = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isAddMode) {
+      router.post('/users', formData, {
+        onSuccess: () => setIsEditModalOpen(false),
+      });
+    } else {
+      router.put(`/users/${editingUser.db_id}`, formData, {
+        onSuccess: () => setIsEditModalOpen(false),
+      });
+    }
   };
 
   const handleDeleteUser = (user: any) => {
@@ -96,9 +137,17 @@ const DashboardAdmin = ({ dbCases = [], dbUsers = [], dbLogs = [] }: any) => {
         <h3 className="text-gunmetal dark:text-white font-tactical font-bold text-lg tracking-widest flex items-center gap-3">
           <Users className="text-olive w-6 h-6" /> REPOSITORI PERSONEL
         </h3>
-        <div className="relative">
-          <Search className="w-4 h-4 absolute left-3 top-2.5 text-gray-600 dark:text-gray-500" />
-          <input type="text" placeholder="Cari ID / Nama..." className="bg-sand dark:bg-gunmetal border border-gray-600 pl-9 pr-4 py-2 text-sm font-mono text-gunmetal dark:text-white focus:outline-none focus:border-olive transition-colors w-64 shadow-inner" />
+        <div className="flex items-center gap-4">
+          <button
+            onClick={handleAddUser}
+            className="bg-olive hover:bg-camogreen text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-olive shadow-[0_0_15px_rgba(75,83,32,0.3)]"
+          >
+            <Shield className="w-4 h-4" /> TAMBAH PERSONEL
+          </button>
+          <div className="relative">
+            <Search className="w-4 h-4 absolute left-3 top-2.5 text-gray-600 dark:text-gray-500" />
+            <input type="text" placeholder="Cari ID / Nama..." className="bg-sand dark:bg-gunmetal border border-gray-600 pl-9 pr-4 py-2 text-sm font-mono text-gunmetal dark:text-white focus:outline-none focus:border-olive transition-colors w-64 shadow-inner" />
+          </div>
         </div>
       </div>
       <div className="overflow-x-auto">
@@ -452,45 +501,88 @@ const DashboardAdmin = ({ dbCases = [], dbUsers = [], dbLogs = [] }: any) => {
               <h3 className="font-tactical font-bold text-olive tracking-widest uppercase">PENGATURAN PERSONEL</h3>
               <button onClick={() => setIsEditModalOpen(false)} className="text-gray-500 hover:text-targetred">✕</button>
             </div>
-            <form onSubmit={handleUpdateUser} className="p-6 space-y-4">
-              <div>
-                <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Nama Lengkap</label>
-                <input
-                  type="text"
-                  value={editFormData.name}
-                  onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
-                  className="w-full bg-white dark:bg-black border border-gray-400 dark:border-gray-700 p-2 text-sm font-mono focus:border-olive outline-none"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Hak Akses</label>
-                  <select
-                    value={editFormData.role}
-                    onChange={(e) => setEditFormData({ ...editFormData, role: e.target.value })}
+            <form onSubmit={handleSaveUser} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto custom-scrollbar">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {isAddMode && (
+                  <>
+                    <div>
+                      <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Username</label>
+                      <input
+                        type="text"
+                        value={formData.username}
+                        onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                        className="w-full bg-white dark:bg-black border border-gray-400 dark:border-gray-700 p-2 text-sm font-mono focus:border-olive outline-none"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Password</label>
+                      <input
+                        type="password"
+                        value={formData.password}
+                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                        className="w-full bg-white dark:bg-black border border-gray-400 dark:border-gray-700 p-2 text-sm font-mono focus:border-olive outline-none"
+                        required={isAddMode}
+                      />
+                    </div>
+                  </>
+                )}
+                <div className={isAddMode ? 'col-span-2' : 'col-span-2'}>
+                  <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Nama Lengkap</label>
+                  <input
+                    type="text"
+                    value={formData.nama_lengkap}
+                    onChange={(e) => setFormData({ ...formData, nama_lengkap: e.target.value })}
                     className="w-full bg-white dark:bg-black border border-gray-400 dark:border-gray-700 p-2 text-sm font-mono focus:border-olive outline-none"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Hak Akses (Role)</label>
+                  <select
+                    value={formData.role_id}
+                    onChange={(e) => setFormData({ ...formData, role_id: e.target.value })}
+                    className="w-full bg-white dark:bg-black border border-gray-400 dark:border-gray-700 p-2 text-sm font-mono focus:border-olive outline-none"
+                    required
                   >
-                    <option value="Admin">Admin</option>
-                    <option value="Staf">Staf</option>
-                    <option value="Teknisi">Teknisi</option>
-                    <option value="Pelapor">Pelapor</option>
+                    <option value="">PILIH ROLE</option>
+                    {dbRoles?.map((role: any) => (
+                      <option key={role.id} value={role.id}>{role.name.toUpperCase()}</option>
+                    ))}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Status Ops</label>
-                  <select
-                    value={editFormData.status}
-                    onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value })}
+                  <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">No. WhatsApp</label>
+                  <input
+                    type="text"
+                    value={formData.no_wa}
+                    onChange={(e) => setFormData({ ...formData, no_wa: e.target.value })}
                     className="w-full bg-white dark:bg-black border border-gray-400 dark:border-gray-700 p-2 text-sm font-mono focus:border-olive outline-none"
-                  >
-                    <option value="Aktif">Aktif</option>
-                    <option value="Nonaktif">Nonaktif</option>
-                  </select>
+                    placeholder="08..."
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Asal Satuan</label>
+                  <input
+                    type="text"
+                    value={formData.asal_satuan}
+                    onChange={(e) => setFormData({ ...formData, asal_satuan: e.target.value })}
+                    className="w-full bg-white dark:bg-black border border-gray-400 dark:border-gray-700 p-2 text-sm font-mono focus:border-olive outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Spesialisasi</label>
+                  <input
+                    type="text"
+                    value={formData.spesialisasi}
+                    onChange={(e) => setFormData({ ...formData, spesialisasi: e.target.value })}
+                    className="w-full bg-white dark:bg-black border border-gray-400 dark:border-gray-700 p-2 text-sm font-mono focus:border-olive outline-none"
+                  />
                 </div>
               </div>
               <div className="pt-4 flex gap-2">
                 <button type="submit" className="flex-1 bg-olive text-white py-2 font-tactical font-bold tracking-widest hover:bg-camogreen transition-colors">
-                  SIMPAN PERUBAHAN
+                  {isAddMode ? 'DAFTARKAN PERSONEL' : 'SIMPAN PERUBAHAN'}
                 </button>
                 <button type="button" onClick={() => setIsEditModalOpen(false)} className="flex-1 bg-transparent border border-gray-500 text-gray-500 py-2 font-tactical font-bold tracking-widest hover:bg-gray-500/10 transition-colors">
                   BATAL

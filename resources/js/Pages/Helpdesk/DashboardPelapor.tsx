@@ -3,20 +3,15 @@ import { Send, History, AlertCircle, Clock, CheckCircle2, ChevronRight, Activity
 import { useStore, type ReportStatus } from '@/store/useStore';
 import { router } from '@inertiajs/react';
 
-const DashboardPelapor: React.FC = () => {
+const DashboardPelapor = ({ dbCases = [], dbUnits = [] }: any) => {
   const [activeMenu, setActiveMenu] = useState<'FORM' | 'HISTORY'>('FORM');
 
   // Ambil state dan aksi dari global store
   const currentUser = useStore(state => state.currentUser);
-  const reports = useStore(state => state.reports);
-  const addReport = useStore(state => state.addReport);
   const logoutAction = useStore(state => state.logout);
 
-  const history = reports.filter(r => r.pelapor === currentUser?.name || currentUser?.role === 'Pelapor');
-
   // State Input Form
-  const [barangRusak, setBarangRusak] = useState('');
-  const [lokasi, setLokasi] = useState('');
+  const [unitId, setUnitId] = useState('');
   const [deskripsi, setDeskripsi] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -27,20 +22,19 @@ const DashboardPelapor: React.FC = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      addReport(
-        currentUser?.name || 'Pelapor Anonim',
-        lokasi,
-        barangRusak,
-        deskripsi
-      );
-      setBarangRusak('');
-      setLokasi('');
-      setDeskripsi('');
-      setIsSubmitting(false);
-      alert(`[SYSTEM] Laporan "${barangRusak}" telah ditransmisikan ke Command Center.`);
-      setActiveMenu('HISTORY'); // Pindah ke riwayat setelah lapor
-    }, 800);
+    router.post('/reports', {
+      unit_id: unitId,
+      deskripsi: deskripsi
+    }, {
+      onSuccess: () => {
+        setUnitId('');
+        setDeskripsi('');
+        setIsSubmitting(false);
+        alert(`[SYSTEM] Laporan Unit #${unitId} telah ditransmisikan ke Command Center.`);
+        setActiveMenu('HISTORY');
+      },
+      onError: () => setIsSubmitting(false)
+    });
   };
 
   const handleLogout = () => {
@@ -69,26 +63,24 @@ const DashboardPelapor: React.FC = () => {
       </div>
 
       <form onSubmit={handleSubmitNewReport} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6">
           <div>
             <label className="block text-gray-600 dark:text-gray-400 text-xs font-mono font-bold mb-2 tracking-widest uppercase">
-              Kategori / Nama Barang
+              Pilih Unit / Perangkat DART
             </label>
-            <input
-              type="text" required value={barangRusak} onChange={(e) => setBarangRusak(e.target.value)}
+            <select
+              required
+              value={unitId}
+              onChange={(e) => setUnitId(e.target.value)}
               className="w-full bg-sand dark:bg-gunmetal border border-gray-400 dark:border-gray-700 text-gunmetal dark:text-white p-3 focus:outline-none focus:border-olive transition-all font-sans text-sm"
-              placeholder="Contoh: Kamera Thermal CCTV"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-600 dark:text-gray-400 text-xs font-mono font-bold mb-2 tracking-widest uppercase">
-              Titik Koordinat / Lokasi
-            </label>
-            <input
-              type="text" required value={lokasi} onChange={(e) => setLokasi(e.target.value)}
-              className="w-full bg-sand dark:bg-gunmetal border border-gray-400 dark:border-gray-700 text-gunmetal dark:text-white p-3 focus:outline-none focus:border-olive transition-all font-sans text-sm"
-              placeholder="Contoh: Menara Jaga Sektor Utara"
-            />
+            >
+              <option value="">-- PILIH PERANGKAT LAPANGAN --</option>
+              {dbUnits.map((u: any) => (
+                <option key={u.id} value={u.id}>
+                  {u.nomor_seri} - {u.nama_dart} [{u.asal_satuan}]
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
@@ -131,9 +123,9 @@ const DashboardPelapor: React.FC = () => {
 
       <div className="space-y-4 max-h-[700px] overflow-y-auto pr-2 custom-scrollbar">
         {history.length === 0 ? (
-           <div className="p-8 text-center text-gray-600 font-mono bg-white/40 dark:bg-black/40 border border-gray-300 dark:border-gray-800">
-             ANDA BELUM PERNAH MENGAJUKAN LAPORAN APAPUN.
-           </div>
+          <div className="p-8 text-center text-gray-600 font-mono bg-white/40 dark:bg-black/40 border border-gray-300 dark:border-gray-800">
+            ANDA BELUM PERNAH MENGAJUKAN LAPORAN APAPUN.
+          </div>
         ) : (
           history.map((item, index) => (
             <div key={index} className="relative group">
@@ -169,7 +161,7 @@ const DashboardPelapor: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-sand dark:bg-gunmetal flex font-sans selection:bg-olive selection:text-gunmetal relative text-gunmetal dark:text-gray-200">
-      
+
       {/* MAN SIDEBAR - TACTICAL */}
       <aside className="w-72 bg-white dark:bg-black border-r border-gray-300 dark:border-gray-800 relative z-20 flex-shrink-0 flex flex-col shadow-2xl">
         {/* Brand */}
@@ -185,53 +177,53 @@ const DashboardPelapor: React.FC = () => {
 
         <nav className="flex-1 py-6 space-y-1">
           <p className="px-6 text-[10px] font-mono font-bold tracking-widest text-gray-600 dark:text-gray-500 mb-4">MODUL PELAPORAN //:</p>
-          
-          <button 
+
+          <button
             onClick={() => setActiveMenu('FORM')}
             className={`w-full flex items-center gap-3 px-6 py-3.5 font-tactical text-sm tracking-wider transition-all border-l-2
               ${activeMenu === 'FORM' ? 'bg-gray-200 dark:bg-gray-800/80 text-gunmetal dark:text-white border-olive' : 'border-transparent text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'}
             `}
           >
             <FilePlus className="w-5 h-5" /> BUAT LAPORAN BARU
-         </button>
+          </button>
 
-         <button 
+          <button
             onClick={() => setActiveMenu('HISTORY')}
             className={`w-full flex items-center gap-3 px-6 py-3.5 font-tactical text-sm tracking-wider transition-all border-l-2
               ${activeMenu === 'HISTORY' ? 'bg-gray-200 dark:bg-gray-800/80 text-gunmetal dark:text-white border-olive' : 'border-transparent text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'}
             `}
           >
             <History className="w-5 h-5" /> RIWAYAT STATUS
-         </button>
+          </button>
         </nav>
 
         <div className="p-4 border-t border-gray-300 dark:border-gray-800 bg-gray-100 dark:bg-[#111]">
-           <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-500 hover:text-targetred hover:bg-red-900/20 font-tactical text-sm tracking-wider transition-all rounded-sm border border-transparent hover:border-targetred/30">
-              <LogOut className="w-5 h-5" /> TERMINASI SESI
-           </button>
+          <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-500 hover:text-targetred hover:bg-red-900/20 font-tactical text-sm tracking-wider transition-all rounded-sm border border-transparent hover:border-targetred/30">
+            <LogOut className="w-5 h-5" /> TERMINASI SESI
+          </button>
         </div>
       </aside>
 
       {/* MAIN CONTENT AREA */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-paper.png')] opacity-[0.05] pointer-events-none"></div>
-        
+
         {/* Topbar */}
         <header className="h-16 border-b border-gray-300 dark:border-gray-800 bg-white/80 dark:bg-black/50 backdrop-blur-md flex items-center justify-between px-8 flex-shrink-0 z-10 relative">
-           <div className="flex items-center gap-4">
-             <div className="w-2 h-2 rounded-full bg-olive shadow-[0_0_5px_rgba(75,83,32,0.8)] animate-pulse"></div>
-             <h2 className="font-mono text-xs text-gray-600 dark:text-gray-400 tracking-widest hidden sm:block">STATUS PERANGKAT: <span className="text-olive font-bold">ONLINE DARI LAPANGAN</span></h2>
-           </div>
+          <div className="flex items-center gap-4">
+            <div className="w-2 h-2 rounded-full bg-olive shadow-[0_0_5px_rgba(75,83,32,0.8)] animate-pulse"></div>
+            <h2 className="font-mono text-xs text-gray-600 dark:text-gray-400 tracking-widest hidden sm:block">STATUS PERANGKAT: <span className="text-olive font-bold">ONLINE DARI LAPANGAN</span></h2>
+          </div>
 
-           <div className="flex items-center gap-0 border border-gray-300 dark:border-gray-700 rounded shadow-sm bg-gray-100 dark:bg-gray-900">
-             <div className="bg-white dark:bg-black px-4 py-1.5 text-right flex flex-col justify-center">
-               <span className="block text-xs font-bold text-gunmetal dark:text-white uppercase font-sans tracking-wider">{currentUser?.name || 'Pelapor Anonim'}</span>
-               <span className="block text-[9px] font-mono tracking-widest text-olive">{currentUser?.role || 'PELAPOR'}</span>
-             </div>
-             <div className="w-10 h-full bg-sand dark:bg-gunmetal border-l border-gray-300 dark:border-gray-700 flex items-center justify-center p-2">
-               <AlertCircle className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-             </div>
-           </div>
+          <div className="flex items-center gap-0 border border-gray-300 dark:border-gray-700 rounded shadow-sm bg-gray-100 dark:bg-gray-900">
+            <div className="bg-white dark:bg-black px-4 py-1.5 text-right flex flex-col justify-center">
+              <span className="block text-xs font-bold text-gunmetal dark:text-white uppercase font-sans tracking-wider">{currentUser?.name || 'Pelapor Anonim'}</span>
+              <span className="block text-[9px] font-mono tracking-widest text-olive">{currentUser?.role || 'PELAPOR'}</span>
+            </div>
+            <div className="w-10 h-full bg-sand dark:bg-gunmetal border-l border-gray-300 dark:border-gray-700 flex items-center justify-center p-2">
+              <AlertCircle className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+            </div>
+          </div>
         </header>
 
         {/* Scrollable Content Container */}
