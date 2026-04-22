@@ -1,11 +1,64 @@
-@import 'tailwindcss';
-
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
+@import "tailwindcss";
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+  --color-gunmetal: #1E293B;
+  --color-sand: #F5F0E6;
+  --color-olive: #68a309ff;
+  --color-khaki: #FDE68A;
+  --color-targetred: #e12323ff;
+  --color-camogreen: #0c8237ff;
+
+  --font-sans: "Inter", sans-serif;
+  --font-tactical: "Rajdhani", sans-serif;
+  --font-stencil: "Oswald", sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-sand text-gunmetal dark:bg-gunmetal dark:text-gray-200 font-sans cursor-crosshair selection:bg-camogreen selection:text-white;
+  }
+}
+
+@layer utilities {
+  .cursor-crosshair {
+    cursor: crosshair;
+  }
+
+  .glass-panel {
+    @apply bg-white/60 dark:bg-black/40 backdrop-blur-md border border-gray-300 dark:border-gray-700/50 shadow-xl;
+  }
+
+  .tactical-border {
+    @apply border-2 border-olive hover:border-camogreen transition-colors duration-300;
+  }
+}
+
+/* Typewriter animation */
+.typewriter-text {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typing 3s steps(40, end), blink-caret .75s step-end infinite;
+}
+
+@keyframes typing {
+  from {
+    max-width: 0
+  }
+
+  to {
+    max-width: 100%
+  }
+}
+
+@keyframes blink-caret {
+
+  from,
+  to {
+    border-color: transparent
+  }
+
+  50% {
+    border-color: #A3E635; /* new olive color */
+  }
 }
