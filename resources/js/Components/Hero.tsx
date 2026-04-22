@@ -1,7 +1,7 @@
 
 import { motion } from 'framer-motion';
 import { Crosshair } from 'lucide-react';
-import bgHero from '../img_1.png';
+import bgHero from '../../img_1.jpeg';
 
 const TracerBullet = ({ delay, top, duration, repeatDelay, angle = 0, origin = 'left' }: { delay: number; top: string; duration: number, repeatDelay: number, angle?: number, origin?: 'left' | 'right' }) => {
   const isRight = origin === 'right';
@@ -30,16 +30,16 @@ const Hero = () => {
       {/* Background Overlay */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-olive/40 via-gunmetal to-gunmetal z-10 pointer-events-none"></div>
-        
+
         {/* User Image Blended */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center grayscale mix-blend-overlay opacity-30 z-10 pointer-events-none" 
+        <div
+          className="absolute inset-0 bg-cover bg-center grayscale mix-blend-overlay opacity-30 z-10 pointer-events-none"
           style={{ backgroundImage: `url(${bgHero})` }}
         ></div>
 
         {/* Placeholder for tactical background pattern */}
         <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] pointer-events-none z-10"></div>
-        
+
         {/* Bullet Tracers Effect */}
         <TracerBullet delay={0} top="15%" duration={0.8} repeatDelay={2} />
         <TracerBullet delay={1.2} top="35%" duration={0.6} repeatDelay={3} origin="right" />
@@ -59,16 +59,16 @@ const Hero = () => {
         >
           <Crosshair className="text-targetred w-16 h-16 animate-pulse" />
         </motion.div>
-        
+
         <motion.h1
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
           className="text-5xl md:text-7xl font-stencil font-bold text-gunmetal dark:text-white mb-4 tracking-wider uppercase"
         >
-          SISTEM PELAPORAN <br/> <span className="text-targetred">HELPDESK DART</span>
+          SISTEM PELAPORAN <br /> <span className="text-targetred">HELPDESK DART</span>
         </motion.h1>
-        
+
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -76,10 +76,10 @@ const Hero = () => {
           className="text-lg md:text-xl text-gray-600 dark:text-gray-400 font-tactical mb-8 max-w-2xl mx-auto border-l-4 border-olive pl-4 text-left"
         >
           <span className="typewriter-text text-camogreen font-bold">STATUS: OPERASIONAL //</span>
-          <br/>
+          <br />
           Pusat komando pelaporan terpadu. Laporkan situasi keamanan, kerusakan indikasi, dan gangguan operasional dengan aman dan real-time.
         </motion.p>
-        
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -102,3 +102,4 @@ const Hero = () => {
 };
 
 export default Hero;
+
