@@ -26,7 +26,7 @@ const TracerBullet = ({ delay, top, duration, repeatDelay, angle = 0, origin = '
 
 const Hero = () => {
   return (
-    <section id="beranda" className="relative h-screen flex items-center justify-center overflow-hidden bg-gunmetal">
+    <section id="beranda" className="relative h-screen flex items-center justify-center overflow-hidden bg-sand dark:bg-gunmetal">
       {/* Background Overlay */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-olive/40 via-gunmetal to-gunmetal z-10 pointer-events-none"></div>
@@ -64,16 +64,16 @@ const Hero = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-5xl md:text-7xl font-stencil font-bold text-white mb-4 tracking-wider uppercase"
+          className="text-5xl md:text-7xl font-stencil font-bold text-gunmetal dark:text-white mb-4 tracking-wider uppercase"
         >
-          SISTEM PELAPORAN <br/> <span className="text-targetred">LAPOR-PAK</span>
+          SISTEM PELAPORAN <br/> <span className="text-targetred">HELPDESK DART</span>
         </motion.h1>
         
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.8 }}
-          className="text-lg md:text-xl text-gray-400 font-tactical mb-8 max-w-2xl mx-auto border-l-4 border-olive pl-4 text-left"
+          className="text-lg md:text-xl text-gray-600 dark:text-gray-400 font-tactical mb-8 max-w-2xl mx-auto border-l-4 border-olive pl-4 text-left"
         >
           <span className="typewriter-text text-camogreen font-bold">STATUS: OPERASIONAL //</span>
           <br/>
@@ -86,10 +86,10 @@ const Hero = () => {
           transition={{ duration: 0.5, delay: 1.2 }}
           className="flex justify-center gap-4"
         >
-          <a href="#kontak" className="px-8 py-4 bg-targetred hover:bg-red-700 text-white font-tactical font-bold text-lg tracking-widest uppercase transition-all tactical-border border-targetred hover:border-red-500 shadow-[0_0_15px_rgba(255,36,0,0.4)] hover:shadow-[0_0_25px_rgba(255,36,0,0.6)]">
+          <a href="#kontak" className="px-8 py-4 bg-targetred hover:bg-red-700 text-gunmetal dark:text-white font-tactical font-bold text-lg tracking-widest uppercase transition-all tactical-border border-targetred hover:border-red-500 shadow-[0_0_15px_rgba(255,36,0,0.4)] hover:shadow-[0_0_25px_rgba(255,36,0,0.6)]">
             Lapor Sekarang
           </a>
-          <a href="#intel" className="px-8 py-4 bg-transparent border-2 border-olive hover:bg-olive/20 text-white font-tactical font-bold text-lg tracking-widest uppercase transition-all">
+          <a href="#intel" className="px-8 py-4 bg-transparent border-2 border-olive hover:bg-olive/20 text-gunmetal dark:text-white font-tactical font-bold text-lg tracking-widest uppercase transition-all">
             Data Intelijen
           </a>
         </motion.div>

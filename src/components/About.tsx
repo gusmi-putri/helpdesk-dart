@@ -13,7 +13,7 @@ const About = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-5xl font-stencil text-white mb-4 uppercase">INTEL BRIEFING</h2>
+          <h2 className="text-3xl md:text-5xl font-stencil text-gunmetal dark:text-white mb-4 uppercase">INTEL BRIEFING</h2>
           <div className="w-24 h-1 bg-targetred mx-auto"></div>
         </motion.div>
 
@@ -43,11 +43,11 @@ const About = () => {
               transition={{ duration: 0.5, delay: index * 0.2 }}
               className="glass-panel p-8 tactical-border group"
             >
-              <div className="mb-4 bg-gunmetal inline-block p-4 rounded-sm border border-gray-700 group-hover:border-camogreen transition-all">
+              <div className="mb-4 bg-sand dark:bg-gunmetal inline-block p-4 rounded-sm border border-gray-300 dark:border-gray-700 group-hover:border-camogreen transition-all">
                 {item.icon}
               </div>
-              <h3 className="text-xl font-tactical font-bold text-white mb-3 tracking-wider">{item.title}</h3>
-              <p className="text-gray-400 leading-relaxed font-sans">{item.desc}</p>
+              <h3 className="text-xl font-tactical font-bold text-gunmetal dark:text-white mb-3 tracking-wider">{item.title}</h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed font-sans">{item.desc}</p>
             </motion.div>
           ))}
         </div>

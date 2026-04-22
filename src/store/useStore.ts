@@ -95,6 +95,7 @@ interface AppState {
   reports: Report[];
   logs: ActivityLog[];
   currentUser: User | null;
+  theme: 'dark' | 'light';
   
   // Actions
   login: (username: string) => User | null;
@@ -105,6 +106,7 @@ interface AppState {
   completeReport: (reportId: string, catatan: string, statusAkhir: string) => void;
   addLog: (level: ActivityLog['level'], user: string, activity: string) => void;
   markReportAsViewed: (reportId: string) => void;
+  toggleTheme: () => void;
 }
 
 export const useStore = create<AppState>()(
@@ -114,6 +116,9 @@ export const useStore = create<AppState>()(
       reports: INITIAL_REPORTS,
       logs: INITIAL_LOGS,
       currentUser: null,
+      theme: 'dark',
+
+      toggleTheme: () => set((state) => ({ theme: state.theme === 'dark' ? 'light' : 'dark' })),
 
       login: (username) => {
         const user = get().users.find((u) => u.username === username);
@@ -206,7 +211,7 @@ export const useStore = create<AppState>()(
       }
     }),
     {
-      name: 'laporpak-storage', 
+      name: 'helpdesk-dart-storage', 
     }
   )
 );

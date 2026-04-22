@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -30,10 +30,10 @@ const LandingPage = () => (
     <About />
     <Features />
     <Contact />
-    <footer className="bg-black py-8 border-t border-gray-800 text-center">
+    <footer className="bg-white dark:bg-black py-8 border-t border-gray-300 dark:border-gray-800 text-center">
       <div className="max-w-7xl mx-auto px-4">
-        <p className="text-gray-500 font-tactical tracking-widest text-sm">
-          &copy; {new Date().getFullYear()} LAPOR-PAK COMMAND CENTER. ALL RIGHTS RESERVED.
+        <p className="text-gray-600 dark:text-gray-500 font-tactical tracking-widest text-sm">
+          &copy; {new Date().getFullYear()} HELPDESK DART COMMAND CENTER. ALL RIGHTS RESERVED.
         </p>
         <p className="text-gray-600 text-xs mt-2 font-mono">
           SECURE CONNECTION ESTABLISHED. AES-256 ACTIVE.
@@ -45,9 +45,18 @@ const LandingPage = () => (
 
 function App() {
   const currentUser = useStore((state) => state.currentUser);
+  const theme = useStore((state) => state.theme);
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
 
   return (
-    <div className="bg-gunmetal min-h-screen font-sans selection:bg-targetred selection:text-white flex flex-col">
+    <div className="bg-sand dark:bg-gunmetal min-h-screen font-sans selection:bg-targetred selection:text-gunmetal dark:text-white flex flex-col">
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<LandingPage />} />
