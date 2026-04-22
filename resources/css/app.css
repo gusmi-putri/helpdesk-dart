@@ -1,5 +1,6 @@
 @import "tailwindcss";
-
+@source "../views";
+@source "../js";
 @theme {
   --color-gunmetal: #1E293B;
   --color-sand: #F5F0E6;
