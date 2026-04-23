@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-import React, { useState } from 'react';
-import { UserCog, AlertTriangle, CheckCircle, Clock, LogOut, ShieldAlert, Users, Database, Shield, Activity, Menu, X, CircleUser } from 'lucide-react';
-=======
 import React, { useState, useEffect } from 'react';
-import { UserCog, AlertTriangle, CheckCircle, Clock, LogOut, ShieldAlert, Users, Database, Shield, Activity } from 'lucide-react';
->>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
+import { UserCog, AlertTriangle, CheckCircle, Clock, LogOut, ShieldAlert, Users, Database, Shield, Activity, Menu, X, CircleUser } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { router } from '@inertiajs/react';
 
@@ -13,17 +8,8 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
   const logoutAction = useStore(state => state.logout);
 
   const [activeMenu, setActiveMenu] = useState<'MASUK' | 'SELESAI'>('MASUK');
-<<<<<<< HEAD
-  const [assigningReportId, setAssigningReportId] = useState<string | null>(null);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
-
-  const MOCK_TECHNICIANS = users.filter(u => u.role === 'Teknisi');
-
-  const handleAssignTechnician = (reportId: string, idTeknisi: string) => {
-    assignTechnician(reportId, idTeknisi);
-    setAssigningReportId(null);
-=======
   const [assigningReportId, setAssigningReportId] = useState<number | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
   // Auto-polling untuk real-time sinkronisasi
   useEffect(() => {
@@ -40,7 +26,6 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
         alert('Teknisi berhasil ditugaskan ke lapangan!');
       }
     });
->>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
   };
 
   const handleLogout = () => {
@@ -55,11 +40,11 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
     <div className="animate-in fade-in space-y-6 mt-6">
       <div className="flex gap-4">
         <div className="bg-white/60 dark:bg-black/60 border border-targetred p-4 flex-1 shadow-md">
-          <span className="text-gray-600 dark:text-gray-400 font-tactical text-xs tracking-wider block mb-1">ANTREAN PENDING</span>
+          <span className="text-gray-600 dark:text-gray-400 font-tactical text-xs tracking-wider block mb-1 uppercase">ANTREAN PENDING</span>
           <span className="text-targetred font-mono text-3xl font-bold">{incomingReports.filter((r: any) => r.status === 'PENDING').length}</span>
         </div>
         <div className="bg-white/60 dark:bg-black/60 border border-blue-600 p-4 flex-1 shadow-md">
-          <span className="text-gray-600 dark:text-gray-400 font-tactical text-xs tracking-wider block mb-1">SEDANG DIPROSES</span>
+          <span className="text-gray-600 dark:text-gray-400 font-tactical text-xs tracking-wider block mb-1 uppercase">SEDANG DIPROSES</span>
           <span className="text-blue-500 font-mono text-3xl font-bold">{incomingReports.filter((r: any) => r.status === 'PROSES').length}</span>
         </div>
       </div>
@@ -116,59 +101,16 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
                     )}
                   </td>
                   <td className="p-4 text-center">
-<<<<<<< HEAD
-                    {report.status === 'PENDING' ? (
-                      <div className="relative inline-block w-full">
-                        {assigningReportId === report.id ? (
-                          <div className="bg-white dark:bg-[#1a2024] border border-olive p-2 rounded-sm absolute right-0 top-0 w-64 z-20 shadow-2xl text-left">
-                            <h4 className="text-gray-600 dark:text-gray-400 text-xs font-tactical mb-2">PILIH PERSONEL TEKNISI:</h4>
-                            <div className="space-y-1">
-                              {MOCK_TECHNICIANS.map(tek => (
-                                <button
-                                  key={tek.id}
-                                  onClick={() => handleAssignTechnician(report.id, tek.id)}
-                                  className="w-full text-left px-3 py-2 text-xs text-gunmetal dark:text-white bg-gray-100 hover:bg-olive dark:bg-black dark:hover:bg-olive hover:text-gunmetal font-bold transition-colors flex justify-between items-center"
-                                >
-                                  <span>{tek.name}</span>
-                                  <span className="font-mono text-[10px] text-gray-500">{tek.id}</span>
-                                </button>
-                              ))}
-                            </div>
-                            <button
-                              onClick={() => setAssigningReportId(null)}
-                              className="mt-2 w-full text-[10px] text-gray-600 hover:text-targetred py-1 border border-transparent hover:border-targetred/30 transition-colors font-tactical tracking-widest"
-                            >
-                              [ BATALKAN ASSIGNMENT ]
-                            </button>
-                          </div>
-                        ) : (
-                          <button
-                            onClick={() => setAssigningReportId(report.id)}
-                            className="bg-targetred hover:bg-red-800 text-white w-full py-2 flex items-center justify-center font-tactical text-[11px] font-bold tracking-widest transition-all shadow-md"
-                          >
-                            TUGASKAN TEKNISI SEKARANG
-                          </button>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="text-gray-600 dark:text-gray-400 text-[10px] font-mono border border-gray-300 dark:border-gray-800 p-2 bg-gray-100 dark:bg-[#111]">
-                        [ TEKNISI DITUGASKAN ] <br />
-                        <span className="text-blue-600 dark:text-blue-400 font-bold block mt-1 text-xs">
-                          {MOCK_TECHNICIANS.find(t => t.id === report.idTeknisi)?.name}
-                        </span>
-                      </div>
-                    )}
-=======
                       {report.status === 'PENDING' ? (
                         <div className="relative inline-block w-full">
                           {assigningReportId === report.db_id ? (
                             <div className="bg-white dark:bg-[#1a2024] border border-olive p-2 rounded-sm absolute right-0 top-0 w-64 z-20 shadow-2xl text-left">
-                              <h4 className="text-gray-600 dark:text-gray-400 text-xs font-tactical mb-2">PILIH PERSONEL TEKNISI:</h4>
+                              <h4 className="text-gray-600 dark:text-gray-400 text-xs font-tactical mb-2 uppercase">PILIH PERSONEL TEKNISI:</h4>
                               <div className="space-y-1">
-                                {dbUsers.map((tek: any) => (
+                                {dbUsers.filter((u: any) => u.role === 'Teknisi').map((tek: any) => (
                                   <button 
                                     key={tek.id}
-                                    onClick={() => handleAssignTechnician(report.db_id, tek.id)}
+                                    onClick={() => handleAssignTechnician(report.db_id, tek.db_id)}
                                     className="w-full text-left px-3 py-2 text-xs text-gunmetal dark:text-white bg-gray-100 hover:bg-olive dark:bg-black dark:hover:bg-olive hover:text-gunmetal font-bold transition-colors flex justify-between items-center"
                                   >
                                     <span>{tek.name}</span>
@@ -178,7 +120,7 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
                               </div>
                               <button 
                                 onClick={() => setAssigningReportId(null)}
-                                className="mt-2 w-full text-[10px] text-gray-600 hover:text-targetred py-1 border border-transparent hover:border-targetred/30 transition-colors font-tactical tracking-widest"
+                                className="mt-2 w-full text-[10px] text-gray-600 hover:text-targetred py-1 border border-transparent hover:border-targetred/30 transition-colors font-tactical tracking-widest uppercase"
                               >
                                 [ BATALKAN ]
                               </button>
@@ -186,7 +128,7 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
                           ) : (
                             <button 
                               onClick={() => setAssigningReportId(report.db_id)}
-                              className="bg-targetred hover:bg-red-800 text-white w-full py-2 flex items-center justify-center font-tactical text-[11px] font-bold tracking-widest transition-all shadow-md"
+                              className="bg-targetred hover:bg-red-800 text-white w-full py-2 flex items-center justify-center font-tactical text-[11px] font-bold tracking-widest transition-all shadow-md uppercase"
                             >
                               TUGASKAN TEKNISI
                             </button>
@@ -195,12 +137,11 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
                       ) : (
                         <div className="text-gray-600 dark:text-gray-400 text-[10px] font-mono border border-gray-300 dark:border-gray-800 p-2 bg-gray-100 dark:bg-[#111]">
                           [ TEKNISI DITUGASKAN ] <br/>
-                          <span className="text-blue-600 dark:text-blue-400 font-bold block mt-1 text-xs">
+                          <span className="text-blue-600 dark:text-blue-400 font-bold block mt-1 text-xs uppercase">
                             {report.perbaikan.teknisi}
                           </span>
                         </div>
                       )}
->>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
                   </td>
                 </tr>
               ))}
@@ -246,45 +187,25 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
                     </div>
                   </td>
                   <td className="p-4">
-                    <div className="font-bold text-sm mb-1">{report.kerusakan.barangRusak}</div>
-                    <div className="text-gray-700 dark:text-gray-400 text-xs font-mono w-full max-w-sm">
-<<<<<<< HEAD
-                      Masuk: {report.tanggalLapor} <br />
-                      Selesai: <span className="text-gunmetal dark:text-white font-bold">{report.waktuPenyelesaian || '-'}</span>
-                    </div>
-                  </td>
-                  <td className="p-4">
-                    <div className="text-sm font-bold">
-                      {MOCK_TECHNICIANS.find(t => t.id === report.idTeknisi)?.name}
-                    </div>
-                    <div className="text-gray-600 dark:text-gray-500 text-[10px] font-mono mt-1">
-                      KODE OP: {report.idTeknisi}
-                    </div>
-                  </td>
-                  <td className="p-4">
-                    <div className="bg-white dark:bg-black/50 p-4 border-l-4 border-green-700 text-sm text-gray-800 dark:text-gray-300 relative shadow-inner">
-                      <span className="absolute top-1 left-2 text-xl text-gray-400 dark:text-gray-600 font-serif">"</span>
-                      <span className="pl-4 block italic font-serif leading-relaxed">{report.catatanTeknisi}</span>
-                    </div>
-=======
+                    <div className="font-bold text-sm mb-1 uppercase">{report.kerusakan.barangRusak}</div>
+                    <div className="text-gray-700 dark:text-gray-400 text-xs font-mono w-full max-w-sm uppercase">
                         Masuk: {report.kerusakan.tanggal} <br/>
                         Selesai: <span className="text-gunmetal dark:text-white font-bold">{report.perbaikan.tanggalPenanganan || '-'}</span>
                     </div>
                   </td>
                   <td className="p-4">
-                      <div className="text-sm font-bold">
+                      <div className="text-sm font-bold uppercase">
                         {report.perbaikan.teknisi}
                       </div>
-                      <div className="text-gray-600 dark:text-gray-500 text-[10px] font-mono mt-1">
+                      <div className="text-gray-600 dark:text-gray-500 text-[10px] font-mono mt-1 uppercase">
                         KODE OP: {report.db_id}
                       </div>
                   </td>
                   <td className="p-4">
                       <div className="bg-white dark:bg-black/50 p-4 border-l-4 border-green-700 text-sm text-gray-800 dark:text-gray-300 relative shadow-inner">
                         <span className="absolute top-1 left-2 text-xl text-gray-400 dark:text-gray-600 font-serif">"</span>
-                        <span className="pl-4 block italic font-serif leading-relaxed">{report.perbaikan.tindakan}</span>
+                        <span className="pl-4 block italic font-serif leading-relaxed uppercase">{report.perbaikan.tindakan}</span>
                       </div>
->>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
                   </td>
                 </tr>
               ))}
@@ -309,7 +230,7 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
       <aside className={`fixed inset-y-0 left-0 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 w-72 bg-white dark:bg-black border-r border-gray-300 dark:border-gray-800 z-50 flex-shrink-0 flex flex-col shadow-2xl`}>
         <div className="p-6 border-b border-gray-300 dark:border-gray-800 flex items-center gap-4 bg-gray-100 dark:bg-[#111]">
           <div className="relative">
-            <img src="/logo.png" alt="DART Logo" className="w-12 h-14 object-contain drop-shadow-[0_0_8px_rgba(255,215,0,0.5)]" />
+            <img src="/logo.png" alt="DART Logo" className="w-12 h-14 object-contain" />
           </div>
           <div>
             <h1 className="font-stencil text-2xl tracking-widest text-gunmetal dark:text-white leading-none">HELPDESK DART</h1>
@@ -317,20 +238,21 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
         </div>
 
         <nav className="flex-1 py-6 space-y-1">
+          <p className="px-6 text-[10px] font-mono font-bold tracking-widest text-gray-600 dark:text-gray-500 mb-4 uppercase">MODUL STAF //:</p>
 
           <button
-            onClick={() => setActiveMenu('MASUK')}
+            onClick={() => { setActiveMenu('MASUK'); setIsMobileMenuOpen(false); }}
             className={`w-full flex items-center gap-3 px-6 py-3.5 font-tactical text-sm tracking-wider transition-all border-l-2
-              ${activeMenu === 'MASUK' ? 'bg-gray-200 dark:bg-gray-800/80 text-gunmetal dark:text-white border-olive' : 'border-transparent text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'}
+              ${activeMenu === 'MASUK' ? 'bg-gray-200 dark:bg-gray-800/80 text-gunmetal dark:text-white border-olive' : 'border-transparent text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-900'}
             `}
           >
             <AlertTriangle className="w-5 h-5" /> PENUGASAN (ANTREAN)
           </button>
 
           <button
-            onClick={() => setActiveMenu('SELESAI')}
+            onClick={() => { setActiveMenu('SELESAI'); setIsMobileMenuOpen(false); }}
             className={`w-full flex items-center gap-3 px-6 py-3.5 font-tactical text-sm tracking-wider transition-all border-l-2
-              ${activeMenu === 'SELESAI' ? 'bg-gray-200 dark:bg-gray-800/80 text-gunmetal dark:text-white border-olive' : 'border-transparent text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'}
+              ${activeMenu === 'SELESAI' ? 'bg-gray-200 dark:bg-gray-800/80 text-gunmetal dark:text-white border-olive' : 'border-transparent text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-900'}
             `}
           >
             <CheckCircle className="w-5 h-5" /> REKAP ARSIP SELESAI
@@ -374,10 +296,10 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
             {/* Dynamic Heading based on active menu */}
             <div className="mb-6 flex justify-between items-end border-b border-gray-300 dark:border-gray-700 pb-4">
               <div>
-                <h2 className="text-2xl font-tactical font-bold text-gunmetal dark:text-white tracking-widest">
+                <h2 className="text-2xl font-tactical font-bold text-gunmetal dark:text-white tracking-widest uppercase">
                   {activeMenu === 'MASUK' ? 'MODUL PENUGASAN TEKNISI' : 'ARSIP DOKUMEN PENYELESAIAN'}
                 </h2>
-                <p className="text-xs font-mono text-gray-600 dark:text-gray-400 mt-1 uppercase">
+                <p className="text-xs font-mono text-gray-600 dark:text-gray-400 mt-1 uppercase tracking-widest">
                   Sistem Manajemen dan Penyaluran Tiket Kerusakan Aset.
                 </p>
               </div>
@@ -392,4 +314,3 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
 };
 
 export default DashboardStaf;
-
