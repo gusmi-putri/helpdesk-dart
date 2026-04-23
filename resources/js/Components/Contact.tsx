@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';
 import { motion } from 'framer-motion';
 import { Send, Terminal } from 'lucide-react';
 
 const Contact = () => {
   const [status, setStatus] = useState('idle');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     setStatus('sending');
     setTimeout(() => setStatus('sent'), 2000);

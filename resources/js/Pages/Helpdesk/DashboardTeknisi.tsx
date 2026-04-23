@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Wrench, MapPin, AlertCircle, Calendar, Send, FileText, ChevronRight, LogOut, Activity, ShieldAlert, CheckCircle2 } from 'lucide-react';
+import { Wrench, MapPin, AlertCircle, Calendar, Send, FileText, ChevronRight, LogOut, Activity, ShieldAlert, CheckCircle2, Menu, X, CircleUser } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { router } from '@inertiajs/react';
 
@@ -25,6 +25,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
 
   // Navigation Menu State (hanya untuk tampilan sidebar)
   const [activeMenu, setActiveMenu] = useState<'TUGAS'>('TUGAS');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
   const [catatan, setCatatan] = useState('');
   const [metode, setMetode] = useState('Offline');
@@ -49,6 +50,8 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
     });
   };
 
+<<<<<<< HEAD
+=======
   const handleHandleTask = (taskId: number) => {
     setIsSubmitting(true);
     router.post(`/reports/${taskId}/handle`, { teknisi_username: currentUser?.username }, {
@@ -60,6 +63,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
     });
   };
 
+>>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
   const handleLogout = () => {
     logoutAction();
     router.visit('/login');
@@ -82,12 +86,21 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
               ZONA AMAN. STANDBY UNTUK INSTRUKSI SELANJUTNYA DARI STAF KOMANDO.
             </div>
           ) : (
+<<<<<<< HEAD
+            tasks.map((task) => (
+              <div
+                key={task.id}
+                onClick={() => setSelectedTaskId(task.id)}
+                className={`p-4 border-2 transition-all cursor-pointer rounded-sm group
+                  ${selectedTask?.id === task.id
+=======
             tasks.map((task: any) => (
               <div
                 key={task.db_id}
                 onClick={() => setSelectedTaskId(task.db_id)}
                 className={`p-4 border-2 transition-all cursor-pointer rounded-sm group
                   ${selectedTaskId === task.db_id
+>>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
                     ? 'border-olive bg-gray-200 dark:bg-gray-800 shadow-[inset_4px_0_0_#4b5320]'
                     : 'border-transparent bg-white/60 dark:bg-black/60 hover:border-gray-300 dark:hover:border-gray-600 shadow-sm'
                   }
@@ -95,10 +108,17 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
               >
                 <div className="flex justify-between items-start mb-2">
                   <span className="bg-targetred text-white text-[10px] px-2 py-0.5 font-mono font-bold tracking-widest shadow-sm">
+<<<<<<< HEAD
+                    {task.id}
+                  </span>
+                  <span className="text-gray-600 dark:text-gray-400 text-xs font-mono flex items-center gap-1">
+                    <Calendar className="w-3 h-3 text-olive" /> {task.tanggalLapor?.split(',')[0]}
+=======
                     {task.caseId}
                   </span>
                   <span className="text-gray-600 dark:text-gray-400 text-xs font-mono flex items-center gap-1">
                     <Calendar className="w-3 h-3 text-olive" /> {task.kerusakan.tanggal.split(',')[0]}
+>>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
                   </span>
                 </div>
 
@@ -106,6 +126,11 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
                   {task.kerusakan.barangRusak}
                 </h3>
 
+<<<<<<< HEAD
+                <div className="flex items-start gap-2 text-gray-600 dark:text-gray-400 text-xs font-sans mt-2 pt-2 border-t border-gray-300 dark:border-gray-800">
+                  <MapPin className="w-3 h-3 mt-0.5 flex-shrink-0 text-olive" />
+                  <span className="line-clamp-1">{task.lokasi}</span>
+=======
                 <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-300 dark:border-gray-800">
                   <div className="flex items-start gap-2 text-gray-600 dark:text-gray-400 text-xs font-sans">
                     <MapPin className="w-3 h-3 mt-0.5 flex-shrink-0 text-olive" />
@@ -119,6 +144,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
                       AMBIL TUGAS
                     </button>
                   )}
+>>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
                 </div>
               </div>
             ))
@@ -154,7 +180,11 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
                 </div>
                 <div className="bg-white dark:bg-black px-4 py-2 text-center border shadow-sm border-gray-300 dark:border-gray-700">
                   <div className="text-[9px] font-mono text-gray-500 tracking-widest mb-1">KODE REFERENSI</div>
+<<<<<<< HEAD
+                  <div className="font-mono text-lg font-bold text-gunmetal dark:text-white">{selectedTask.id}</div>
+=======
                   <div className="font-mono text-lg font-bold text-gunmetal dark:text-white">{selectedTask.caseId}</div>
+>>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
                 </div>
               </div>
 
@@ -230,20 +260,33 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
   return (
     <div className="min-h-screen bg-sand dark:bg-gunmetal flex font-sans selection:bg-olive selection:text-gunmetal relative text-gunmetal dark:text-gray-200">
 
+<<<<<<< HEAD
+      {/* MOBILE OVERLAY */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
+=======
+>>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
       {/* MAN SIDEBAR - TACTICAL */}
-      <aside className="w-72 bg-white dark:bg-black border-r border-gray-300 dark:border-gray-800 relative z-20 flex-shrink-0 flex flex-col shadow-2xl">
+      <aside className={`fixed inset-y-0 left-0 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 w-72 bg-white dark:bg-black border-r border-gray-300 dark:border-gray-800 z-50 flex-shrink-0 flex flex-col shadow-2xl`}>
         <div className="p-6 border-b border-gray-300 dark:border-gray-800 flex items-center gap-4 bg-gray-100 dark:bg-[#111]">
           <div className="relative">
             <img src="/logo.png" alt="DART Logo" className="w-12 h-14 object-contain drop-shadow-[0_0_8px_rgba(255,215,0,0.5)]" />
           </div>
           <div>
-            <h1 className="font-stencil text-2xl tracking-widest text-gunmetal dark:text-white leading-none">DART</h1>
-            <span className="text-[10px] font-mono text-gray-600 dark:text-gray-500 block mt-1 tracking-widest uppercase">WORKSHOP MESIN</span>
+            <h1 className="font-stencil text-2xl tracking-widest text-gunmetal dark:text-white leading-none">HELPDESK-DART</h1>
           </div>
         </div>
 
         <nav className="flex-1 py-6 space-y-1">
+<<<<<<< HEAD
+=======
           <p className="px-6 text-[10px] font-mono font-bold tracking-widest text-gray-600 dark:text-gray-500 mb-4">MODUL TEKNISI //:</p>
+>>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
 
           <button
             onClick={() => setActiveMenu('TUGAS')}
@@ -264,7 +307,11 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
 
         <div className="p-4 border-t border-gray-300 dark:border-gray-800 bg-gray-100 dark:bg-[#111]">
           <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-500 hover:text-targetred hover:bg-red-900/20 font-tactical text-sm tracking-wider transition-all rounded-sm border border-transparent hover:border-targetred/30">
+<<<<<<< HEAD
+            <LogOut className="w-5 h-5" /> LOGOUT
+=======
             <LogOut className="w-5 h-5" /> TERMINASI SESI
+>>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
           </button>
         </div>
       </aside>
@@ -272,6 +319,27 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
       {/* MAIN CONTENT AREA */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-paper.png')] opacity-[0.05] pointer-events-none"></div>
+<<<<<<< HEAD
+
+        {/* Topbar */}
+        <header className="h-16 border-b border-gray-300 dark:border-gray-800 bg-white/80 dark:bg-black/50 backdrop-blur-md flex items-center justify-between px-4 md:px-8 flex-shrink-0 z-10 relative">
+          <button 
+            onClick={() => setIsMobileMenuOpen(true)}
+            className="md:hidden p-2 text-gray-600 dark:text-gray-400 hover:text-gunmetal dark:hover:text-white transition-colors"
+          >
+            <Menu className="w-6 h-6" />
+          </button>
+
+          <div className="flex items-center gap-0 border border-gray-300 dark:border-gray-700 rounded shadow-sm bg-gray-100 dark:bg-gray-900 ml-auto">
+            <div className="bg-white dark:bg-black px-4 py-1.5 text-right flex flex-col justify-center">
+              <span className="block text-xs font-bold text-gunmetal dark:text-white uppercase font-sans tracking-wider">{currentUser?.name || 'Teknisi Alfa'}</span>
+              <span className="block text-[9px] font-mono tracking-widest text-targetred">{currentUser?.id || 'TEKNISI LAPANGAN'}</span>
+            </div>
+            <div className="w-10 h-full bg-sand dark:bg-gunmetal border-l border-gray-300 dark:border-gray-700 flex items-center justify-center p-2">
+              <CircleUser className="w-6 h-6 text-gray-500 dark:text-gray-400" />
+            </div>
+          </div>
+=======
 
         {/* Topbar */}
         <header className="h-16 border-b border-gray-300 dark:border-gray-800 bg-white/80 dark:bg-black/50 backdrop-blur-md flex items-center justify-between px-8 flex-shrink-0 z-10 relative">
@@ -289,6 +357,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
                <img src="/logo.png" alt="Logo" className="w-6 h-6 object-contain drop-shadow-[0_0_5px_rgba(255,215,0,0.5)]" />
              </div>
            </div>
+>>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
         </header>
 
         {/* Scrollable Content Container */}

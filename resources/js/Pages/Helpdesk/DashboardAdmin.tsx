@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import {
   ShieldAlert, Users, Database, Search,
   Edit, Trash2, Shield, Settings, LogOut,
-  ChevronDown, ChevronRight, FileArchive, Wrench, Download, AlertTriangle, Radar
+  ChevronDown, ChevronRight, FileArchive, Wrench, Download, AlertTriangle, Radar,
+  Menu, X, CircleUser
 } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { router, useForm } from '@inertiajs/react';
@@ -37,6 +38,7 @@ const DashboardAdmin = (props: any) => {
   const [activeMenu, setActiveMenu] = useState<MenuTab>('REPORTS');
   const [activeSubReport, setActiveSubReport] = useState<SubMenuReport>('KERUSAKAN');
   const [isReportsExpanded, setIsReportsExpanded] = useState<boolean>(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
   // Auto-polling untuk real-time sinkronisasi
   useEffect(() => {
@@ -124,6 +126,7 @@ const DashboardAdmin = (props: any) => {
 
   const handleMenuClick = (menu: MenuTab) => {
     setActiveMenu(menu);
+    setIsMobileMenuOpen(false);
     if (menu === 'REPORTS') {
       setIsReportsExpanded(true);
     } else {
@@ -375,16 +378,23 @@ const DashboardAdmin = (props: any) => {
   return (
     <div className="min-h-screen bg-sand dark:bg-gunmetal flex font-sans selection:bg-olive selection:text-gunmetal relative text-gunmetal dark:text-gray-200">
 
+      {/* MOBILE OVERLAY */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* MAN SIDEBAR - TACTICAL */}
-      <aside className="w-72 bg-white dark:bg-black border-r border-gray-300 dark:border-gray-800 relative z-20 flex-shrink-0 flex flex-col shadow-2xl">
+      <aside className={`fixed inset-y-0 left-0 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 w-72 bg-white dark:bg-black border-r border-gray-300 dark:border-gray-800 z-50 flex-shrink-0 flex flex-col shadow-2xl`}>
         {/* Brand */}
         <div className="p-6 border-b border-gray-300 dark:border-gray-800 flex items-center gap-4 bg-gray-100 dark:bg-[#111]">
           <div className="relative">
             <img src="/logo.png" alt="DART Logo" className="w-12 h-14 object-contain drop-shadow-[0_0_8px_rgba(255,215,0,0.5)]" />
           </div>
           <div>
-            <h1 className="font-stencil text-2xl tracking-widest text-gunmetal dark:text-white leading-none">DART</h1>
-            <span className="text-[10px] font-mono text-gray-600 dark:text-gray-500 block mt-1 tracking-widest uppercase">COMMAND SYS</span>
+            <h1 className="font-stencil text-2xl tracking-widest text-gunmetal dark:text-white leading-none">HELPDESK-DART</h1>
           </div>
         </div>
 
@@ -471,21 +481,29 @@ const DashboardAdmin = (props: any) => {
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03] pointer-events-none"></div>
 
         {/* Topbar */}
-        <header className="h-16 border-b border-gray-300 dark:border-gray-800 bg-white/80 dark:bg-black/50 backdrop-blur-md flex items-center justify-between px-8 flex-shrink-0 z-10 relative">
+        <header className="h-16 border-b border-gray-300 dark:border-gray-800 bg-white/80 dark:bg-black/50 backdrop-blur-md flex items-center justify-between px-4 md:px-8 flex-shrink-0 z-10 relative">
           <div className="flex items-center gap-4">
-            <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.8)] animate-pulse"></div>
-            <h2 className="font-mono text-xs text-gray-600 dark:text-gray-400 tracking-widest hidden sm:block">STATUS JARINGAN: <span className="text-green-500 font-bold">TERENKRIPSI 256-BIT</span></h2>
+            <button 
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="md:hidden p-2 text-gray-600 dark:text-gray-400 hover:text-gunmetal dark:hover:text-white transition-colors"
+            >
+              <Menu className="w-6 h-6" />
+            </button>
+            <div className="flex items-center gap-4">
+              <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.8)] animate-pulse"></div>
+              <h2 className="font-mono text-xs text-gray-600 dark:text-gray-400 tracking-widest hidden sm:block">STATUS JARINGAN: <span className="text-green-500 font-bold">TERENKRIPSI 256-BIT</span></h2>
+            </div>
           </div>
-
-           <div className="flex items-center gap-0 border border-gray-300 dark:border-gray-700 rounded overflow-hidden shadow-lg bg-gray-100 dark:bg-gray-900">
-             <div className="bg-white dark:bg-black px-4 py-1.5 text-right flex flex-col justify-center">
-               <span className="block text-xs font-bold text-gunmetal dark:text-white uppercase font-sans tracking-wider">{currentUser?.name || 'Komandan Pusat'}</span>
-               <span className="block text-[9px] font-mono tracking-widest text-targetred">{currentUser?.id || 'ROOT-ACCESS'}</span>
-             </div>
-             <div className="w-10 h-full bg-sand dark:bg-gunmetal border-l border-gray-300 dark:border-gray-700 flex items-center justify-center p-2">
-               <img src="/logo.png" alt="Logo" className="w-6 h-6 object-contain drop-shadow-[0_0_5px_rgba(255,215,0,0.5)]" />
-             </div>
-           </div>
+          
+          <div className="flex items-center gap-0 border border-gray-300 dark:border-gray-700 rounded overflow-hidden shadow-lg bg-gray-100 dark:bg-gray-900 ml-auto">
+            <div className="bg-white dark:bg-black px-4 py-1.5 text-right flex flex-col justify-center">
+              <span className="block text-xs font-bold text-gunmetal dark:text-white uppercase font-sans tracking-wider">{currentUser?.name || 'KOMANDAN PUSAT'}</span>
+              <span className="block text-[9px] font-mono tracking-widest text-targetred">{currentUser?.id || 'ROOT-ACCESS'}</span>
+            </div>
+            <div className="w-10 h-full bg-sand dark:bg-gunmetal border-l border-gray-300 dark:border-gray-700 flex items-center justify-center p-2">
+              <CircleUser className="w-6 h-6 text-gray-500 dark:text-gray-400" />
+            </div>
+          </div>
         </header>
 
         {/* Scrollable Content Container */}
@@ -610,4 +628,3 @@ const DashboardAdmin = (props: any) => {
 };
 
 export default DashboardAdmin;
-

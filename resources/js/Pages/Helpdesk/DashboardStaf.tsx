@@ -1,13 +1,28 @@
+<<<<<<< HEAD
+import React, { useState } from 'react';
+import { UserCog, AlertTriangle, CheckCircle, Clock, LogOut, ShieldAlert, Users, Database, Shield, Activity, Menu, X, CircleUser } from 'lucide-react';
+=======
 import React, { useState, useEffect } from 'react';
 import { UserCog, AlertTriangle, CheckCircle, Clock, LogOut, ShieldAlert, Users, Database, Shield, Activity } from 'lucide-react';
+>>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
 import { useStore } from '@/store/useStore';
 import { router } from '@inertiajs/react';
 
 const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
   const currentUser = useStore(state => state.currentUser);
   const logoutAction = useStore(state => state.logout);
-  
+
   const [activeMenu, setActiveMenu] = useState<'MASUK' | 'SELESAI'>('MASUK');
+<<<<<<< HEAD
+  const [assigningReportId, setAssigningReportId] = useState<string | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+
+  const MOCK_TECHNICIANS = users.filter(u => u.role === 'Teknisi');
+
+  const handleAssignTechnician = (reportId: string, idTeknisi: string) => {
+    assignTechnician(reportId, idTeknisi);
+    setAssigningReportId(null);
+=======
   const [assigningReportId, setAssigningReportId] = useState<number | null>(null);
 
   // Auto-polling untuk real-time sinkronisasi
@@ -25,8 +40,9 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
         alert('Teknisi berhasil ditugaskan ke lapangan!');
       }
     });
+>>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
   };
-  
+
   const handleLogout = () => {
     logoutAction();
     router.visit('/login');
@@ -50,7 +66,7 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
 
       <div className="bg-white/60 dark:bg-black/60 border border-gray-300 dark:border-gray-700 rounded-sm overflow-hidden shadow-xl">
         <div className="p-4 border-b border-gray-300 dark:border-gray-700 bg-[#1a2024] flex items-center justify-between text-white">
-          <h3 className="font-tactical tracking-widest text-sm flex items-center gap-2"><AlertTriangle className="w-4 h-4 text-yellow-500"/> LAPORAN DALAM PENANGANAN STAFF</h3>
+          <h3 className="font-tactical tracking-widest text-sm flex items-center gap-2"><AlertTriangle className="w-4 h-4 text-yellow-500" /> LAPORAN DALAM PENANGANAN STAFF</h3>
         </div>
         <div className="overflow-x-auto p-2">
           <table className="w-full text-left font-sans">
@@ -100,6 +116,49 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
                     )}
                   </td>
                   <td className="p-4 text-center">
+<<<<<<< HEAD
+                    {report.status === 'PENDING' ? (
+                      <div className="relative inline-block w-full">
+                        {assigningReportId === report.id ? (
+                          <div className="bg-white dark:bg-[#1a2024] border border-olive p-2 rounded-sm absolute right-0 top-0 w-64 z-20 shadow-2xl text-left">
+                            <h4 className="text-gray-600 dark:text-gray-400 text-xs font-tactical mb-2">PILIH PERSONEL TEKNISI:</h4>
+                            <div className="space-y-1">
+                              {MOCK_TECHNICIANS.map(tek => (
+                                <button
+                                  key={tek.id}
+                                  onClick={() => handleAssignTechnician(report.id, tek.id)}
+                                  className="w-full text-left px-3 py-2 text-xs text-gunmetal dark:text-white bg-gray-100 hover:bg-olive dark:bg-black dark:hover:bg-olive hover:text-gunmetal font-bold transition-colors flex justify-between items-center"
+                                >
+                                  <span>{tek.name}</span>
+                                  <span className="font-mono text-[10px] text-gray-500">{tek.id}</span>
+                                </button>
+                              ))}
+                            </div>
+                            <button
+                              onClick={() => setAssigningReportId(null)}
+                              className="mt-2 w-full text-[10px] text-gray-600 hover:text-targetred py-1 border border-transparent hover:border-targetred/30 transition-colors font-tactical tracking-widest"
+                            >
+                              [ BATALKAN ASSIGNMENT ]
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setAssigningReportId(report.id)}
+                            className="bg-targetred hover:bg-red-800 text-white w-full py-2 flex items-center justify-center font-tactical text-[11px] font-bold tracking-widest transition-all shadow-md"
+                          >
+                            TUGASKAN TEKNISI SEKARANG
+                          </button>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="text-gray-600 dark:text-gray-400 text-[10px] font-mono border border-gray-300 dark:border-gray-800 p-2 bg-gray-100 dark:bg-[#111]">
+                        [ TEKNISI DITUGASKAN ] <br />
+                        <span className="text-blue-600 dark:text-blue-400 font-bold block mt-1 text-xs">
+                          {MOCK_TECHNICIANS.find(t => t.id === report.idTeknisi)?.name}
+                        </span>
+                      </div>
+                    )}
+=======
                       {report.status === 'PENDING' ? (
                         <div className="relative inline-block w-full">
                           {assigningReportId === report.db_id ? (
@@ -141,6 +200,7 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
                           </span>
                         </div>
                       )}
+>>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
                   </td>
                 </tr>
               ))}
@@ -154,10 +214,10 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
   const renderSelesai = () => (
     <div className="animate-in fade-in space-y-6 mt-6">
       <div className="bg-white/60 dark:bg-black/60 border border-gray-300 dark:border-gray-700 rounded-sm overflow-hidden shadow-xl">
-          <div className="p-4 border-b border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-[#1a2024] flex items-center justify-between text-gunmetal dark:text-white">
-            <h3 className="font-tactical tracking-widest text-sm flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-500"/> ARSIP PENYELESAIAN (SELESAI)</h3>
-          </div>
-          <div className="overflow-x-auto p-2">
+        <div className="p-4 border-b border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-[#1a2024] flex items-center justify-between text-gunmetal dark:text-white">
+          <h3 className="font-tactical tracking-widest text-sm flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-500" /> ARSIP PENYELESAIAN (SELESAI)</h3>
+        </div>
+        <div className="overflow-x-auto p-2">
           <table className="w-full text-left font-sans">
             <thead className="bg-[#1a2024] text-gray-600 dark:text-gray-400 border-b border-gray-300 dark:border-gray-700 font-tactical tracking-widest text-xs">
               <tr>
@@ -182,12 +242,31 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
                       {report.caseId}
                     </span>
                     <div className="mt-2 text-green-600 dark:text-green-500 text-[10px] font-mono font-bold flex items-center gap-1">
-                        <CheckCircle className="w-3 h-3" /> BERHASIL CLEAR
+                      <CheckCircle className="w-3 h-3" /> BERHASIL CLEAR
                     </div>
                   </td>
                   <td className="p-4">
                     <div className="font-bold text-sm mb-1">{report.kerusakan.barangRusak}</div>
                     <div className="text-gray-700 dark:text-gray-400 text-xs font-mono w-full max-w-sm">
+<<<<<<< HEAD
+                      Masuk: {report.tanggalLapor} <br />
+                      Selesai: <span className="text-gunmetal dark:text-white font-bold">{report.waktuPenyelesaian || '-'}</span>
+                    </div>
+                  </td>
+                  <td className="p-4">
+                    <div className="text-sm font-bold">
+                      {MOCK_TECHNICIANS.find(t => t.id === report.idTeknisi)?.name}
+                    </div>
+                    <div className="text-gray-600 dark:text-gray-500 text-[10px] font-mono mt-1">
+                      KODE OP: {report.idTeknisi}
+                    </div>
+                  </td>
+                  <td className="p-4">
+                    <div className="bg-white dark:bg-black/50 p-4 border-l-4 border-green-700 text-sm text-gray-800 dark:text-gray-300 relative shadow-inner">
+                      <span className="absolute top-1 left-2 text-xl text-gray-400 dark:text-gray-600 font-serif">"</span>
+                      <span className="pl-4 block italic font-serif leading-relaxed">{report.catatanTeknisi}</span>
+                    </div>
+=======
                         Masuk: {report.kerusakan.tanggal} <br/>
                         Selesai: <span className="text-gunmetal dark:text-white font-bold">{report.perbaikan.tanggalPenanganan || '-'}</span>
                     </div>
@@ -205,6 +284,7 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
                         <span className="absolute top-1 left-2 text-xl text-gray-400 dark:text-gray-600 font-serif">"</span>
                         <span className="pl-4 block italic font-serif leading-relaxed">{report.perbaikan.tindakan}</span>
                       </div>
+>>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
                   </td>
                 </tr>
               ))}
@@ -217,85 +297,93 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
 
   return (
     <div className="min-h-screen bg-sand dark:bg-gunmetal flex font-sans selection:bg-olive selection:text-gunmetal relative text-gunmetal dark:text-gray-200">
+      {/* MOBILE OVERLAY */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* MAN SIDEBAR - TACTICAL */}
-      <aside className="w-72 bg-white dark:bg-black border-r border-gray-300 dark:border-gray-800 relative z-20 flex-shrink-0 flex flex-col shadow-2xl">
+      <aside className={`fixed inset-y-0 left-0 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 w-72 bg-white dark:bg-black border-r border-gray-300 dark:border-gray-800 z-50 flex-shrink-0 flex flex-col shadow-2xl`}>
         <div className="p-6 border-b border-gray-300 dark:border-gray-800 flex items-center gap-4 bg-gray-100 dark:bg-[#111]">
           <div className="relative">
             <img src="/logo.png" alt="DART Logo" className="w-12 h-14 object-contain drop-shadow-[0_0_8px_rgba(255,215,0,0.5)]" />
           </div>
           <div>
-            <h1 className="font-stencil text-2xl tracking-widest text-gunmetal dark:text-white leading-none">DART</h1>
-            <span className="text-[10px] font-mono text-gray-600 dark:text-gray-500 block mt-1 tracking-widest uppercase">DISPATCHER KOMANDO</span>
+            <h1 className="font-stencil text-2xl tracking-widest text-gunmetal dark:text-white leading-none">HELPDESK DART</h1>
           </div>
         </div>
 
         <nav className="flex-1 py-6 space-y-1">
-          <p className="px-6 text-[10px] font-mono font-bold tracking-widest text-gray-600 dark:text-gray-500 mb-4">MODUL PENGENDALIAN //:</p>
-          
-          <button 
+
+          <button
             onClick={() => setActiveMenu('MASUK')}
             className={`w-full flex items-center gap-3 px-6 py-3.5 font-tactical text-sm tracking-wider transition-all border-l-2
               ${activeMenu === 'MASUK' ? 'bg-gray-200 dark:bg-gray-800/80 text-gunmetal dark:text-white border-olive' : 'border-transparent text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'}
             `}
           >
             <AlertTriangle className="w-5 h-5" /> PENUGASAN (ANTREAN)
-         </button>
+          </button>
 
-         <button 
+          <button
             onClick={() => setActiveMenu('SELESAI')}
             className={`w-full flex items-center gap-3 px-6 py-3.5 font-tactical text-sm tracking-wider transition-all border-l-2
               ${activeMenu === 'SELESAI' ? 'bg-gray-200 dark:bg-gray-800/80 text-gunmetal dark:text-white border-olive' : 'border-transparent text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'}
             `}
           >
             <CheckCircle className="w-5 h-5" /> REKAP ARSIP SELESAI
-         </button>
+          </button>
         </nav>
 
         <div className="p-4 border-t border-gray-300 dark:border-gray-800 bg-gray-100 dark:bg-[#111]">
-           <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-500 hover:text-targetred hover:bg-red-900/20 font-tactical text-sm tracking-wider transition-all rounded-sm border border-transparent hover:border-targetred/30">
-              <LogOut className="w-5 h-5" /> TERMINASI SESI
-           </button>
+          <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-500 hover:text-targetred hover:bg-red-900/20 font-tactical text-sm tracking-wider transition-all rounded-sm border border-transparent hover:border-targetred/30">
+            <LogOut className="w-5 h-5" /> LOGOUT
+          </button>
         </div>
       </aside>
 
       {/* MAIN CONTENT AREA */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-paper.png')] opacity-[0.05] pointer-events-none"></div>
-        
-        {/* Topbar */}
-        <header className="h-16 border-b border-gray-300 dark:border-gray-800 bg-white/80 dark:bg-black/50 backdrop-blur-md flex items-center justify-between px-8 flex-shrink-0 z-10 relative">
-           <div className="flex items-center gap-4">
-             <div className="w-2 h-2 rounded-full bg-olive shadow-[0_0_5px_rgba(75,83,32,0.8)] animate-pulse"></div>
-             <h2 className="font-mono text-xs text-gray-600 dark:text-gray-400 tracking-widest hidden sm:block">STATUS OTORISASI: <span className="text-olive font-bold">LEVEL STAF KOMANDO</span></h2>
-           </div>
 
-           <div className="flex items-center gap-0 border border-gray-300 dark:border-gray-700 rounded shadow-sm bg-gray-100 dark:bg-gray-900">
-             <div className="bg-white dark:bg-black px-4 py-1.5 text-right flex flex-col justify-center">
-               <span className="block text-xs font-bold text-gunmetal dark:text-white uppercase font-sans tracking-wider">{currentUser?.name || 'Staf Admin'}</span>
-               <span className="block text-[9px] font-mono tracking-widest text-olive">{currentUser?.role || 'STAF LOGISTIK'}</span>
-             </div>
-             <div className="w-10 h-full bg-sand dark:bg-gunmetal border-l border-gray-300 dark:border-gray-700 flex items-center justify-center p-2">
-               <img src="/logo.png" alt="Logo" className="w-6 h-6 object-contain drop-shadow-[0_0_5px_rgba(255,215,0,0.5)]" />
-             </div>
-           </div>
+        {/* Topbar */}
+        <header className="h-16 border-b border-gray-300 dark:border-gray-800 bg-white/80 dark:bg-black/50 backdrop-blur-md flex items-center justify-between px-4 md:px-8 flex-shrink-0 z-10 relative">
+          <button 
+            onClick={() => setIsMobileMenuOpen(true)}
+            className="md:hidden p-2 text-gray-600 dark:text-gray-400 hover:text-gunmetal dark:hover:text-white transition-colors"
+          >
+            <Menu className="w-6 h-6" />
+          </button>
+
+          <div className="flex items-center gap-0 border border-gray-300 dark:border-gray-700 rounded shadow-sm bg-gray-100 dark:bg-gray-900 ml-auto">
+            <div className="bg-white dark:bg-black px-4 py-1.5 text-right flex flex-col justify-center">
+              <span className="block text-xs font-bold text-gunmetal dark:text-white uppercase font-sans tracking-wider">{currentUser?.name || 'Staf Admin'}</span>
+              <span className="block text-[9px] font-mono tracking-widest text-targetred">{currentUser?.id || 'STAF LOGISTIK'}</span>
+            </div>
+            <div className="w-10 h-full bg-sand dark:bg-gunmetal border-l border-gray-300 dark:border-gray-700 flex items-center justify-center p-2">
+              <CircleUser className="w-6 h-6 text-gray-500 dark:text-gray-400" />
+            </div>
+          </div>
         </header>
 
         {/* Scrollable Content Container */}
         <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar z-10">
           <div className="max-w-[1400px] mx-auto">
-             {/* Dynamic Heading based on active menu */}
-             <div className="mb-6 flex justify-between items-end border-b border-gray-300 dark:border-gray-700 pb-4">
-                <div>
-                   <h2 className="text-2xl font-tactical font-bold text-gunmetal dark:text-white tracking-widest">
-                     {activeMenu === 'MASUK' ? 'MODUL PENUGASAN TEKNISI' : 'ARSIP DOKUMEN PENYELESAIAN'}
-                   </h2>
-                   <p className="text-xs font-mono text-gray-600 dark:text-gray-400 mt-1 uppercase">
-                     Sistem Manajemen dan Penyaluran Tiket Kerusakan Aset.
-                   </p>
-                </div>
-             </div>
-             
-             {activeMenu === 'MASUK' ? renderMasuk() : renderSelesai()}
+            {/* Dynamic Heading based on active menu */}
+            <div className="mb-6 flex justify-between items-end border-b border-gray-300 dark:border-gray-700 pb-4">
+              <div>
+                <h2 className="text-2xl font-tactical font-bold text-gunmetal dark:text-white tracking-widest">
+                  {activeMenu === 'MASUK' ? 'MODUL PENUGASAN TEKNISI' : 'ARSIP DOKUMEN PENYELESAIAN'}
+                </h2>
+                <p className="text-xs font-mono text-gray-600 dark:text-gray-400 mt-1 uppercase">
+                  Sistem Manajemen dan Penyaluran Tiket Kerusakan Aset.
+                </p>
+              </div>
+            </div>
+
+            {activeMenu === 'MASUK' ? renderMasuk() : renderSelesai()}
           </div>
         </div>
       </main>
