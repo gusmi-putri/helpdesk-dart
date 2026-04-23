@@ -4,7 +4,7 @@ import { Send, History, AlertCircle, Clock, CheckCircle2, ChevronRight, Activity
 import { useStore, type ReportStatus } from '@/store/useStore';
 =======
 import React, { useState, useEffect } from 'react';
-import { Send, History, AlertCircle, Clock, CheckCircle2, ChevronRight, Activity, Camera, LogOut, Shield, FilePlus } from 'lucide-react';
+import { Send, History, AlertCircle, Clock, CheckCircle2, ChevronRight, Activity, Camera, LogOut, Shield, FilePlus, Wrench } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 >>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
 import { router } from '@inertiajs/react';
@@ -26,7 +26,7 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [] }: any) => 
   // Auto-polling untuk real-time sinkronisasi
   useEffect(() => {
     const interval = setInterval(() => {
-      router.reload({ only: ['dbCases', 'dbUnits', 'dbUsers'], preserveScroll: true, preserveState: true });
+      router.reload({ only: ['dbCases', 'dbUnits', 'dbUsers'] });
     }, 3000);
     return () => clearInterval(interval);
   }, []);
@@ -35,6 +35,10 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [] }: any) => 
   const [unitId, setUnitId] = useState('');
   const [deskripsi, setDeskripsi] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+
+  // Cari item terpilih dari dbCases agar data di modal selalu fresh saat polling
+  const selectedItem = dbCases.find((c: any) => c.caseId === selectedItemId);
 
   // ==========================================
   // LOGIKA SUBMIT
@@ -174,7 +178,10 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [] }: any) => 
 
                 <div className="flex sm:flex-col items-center justify-between sm:items-end gap-3 min-w-[160px]">
                   {getStatusBadge(item.status)}
-                  <button className="text-gray-600 dark:text-gray-400 hover:text-gunmetal dark:hover:text-white transition-colors flex items-center gap-1 text-xs font-tactical font-bold uppercase tracking-widest border border-gray-300 dark:border-gray-700 px-2 py-1 bg-white dark:bg-black shadow-sm">
+                  <button 
+                    onClick={() => setSelectedItemId(item.caseId)}
+                    className="text-gray-600 dark:text-gray-400 hover:text-gunmetal dark:hover:text-white transition-colors flex items-center gap-1 text-xs font-tactical font-bold uppercase tracking-widest border border-gray-300 dark:border-gray-700 px-2 py-1 bg-white dark:bg-black shadow-sm"
+                  >
                     Detail <ChevronRight className="w-3 h-3" />
                   </button>
                 </div>
@@ -183,6 +190,112 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [] }: any) => 
           ))
         )}
       </div>
+
+      {/* MODAL DETAIL */}
+      {selectedItem && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-sand dark:bg-gunmetal border-2 border-olive w-full max-w-2xl shadow-2xl relative overflow-hidden flex flex-col max-h-[90vh]">
+            {/* Header Modal */}
+            <div className="bg-white dark:bg-black p-4 border-b border-gray-300 dark:border-gray-800 flex justify-between items-center">
+              <div className="flex items-center gap-3">
+                <Shield className="text-olive w-5 h-5" />
+                <h3 className="font-tactical font-bold text-lg tracking-widest uppercase">DETAIL LOGISTIK & PERBAIKAN</h3>
+              </div>
+              <button onClick={() => setSelectedItemId(null)} className="text-gray-500 hover:text-targetred font-mono text-xl">
+                [X]
+              </button>
+            </div>
+
+            <div className="p-6 overflow-y-auto space-y-6 custom-scrollbar">
+              {/* Seksi Laporan */}
+              <div className="space-y-4">
+                <div className="flex justify-between items-start border-b border-gray-300 dark:border-gray-800 pb-2">
+                  <span className="text-gray-600 dark:text-gray-400 font-mono text-[10px] tracking-widest uppercase italic">IDENTIFIKASI KASUS</span>
+                  <span className="bg-olive/20 text-olive px-2 py-0.5 font-mono text-xs font-bold border border-olive/30">{selectedItem.caseId}</span>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-mono text-gray-500 uppercase tracking-tighter">TANGGAL LAPORAN</p>
+                    <p className="text-sm font-bold">{selectedItem.kerusakan.tanggal}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-mono text-gray-500 uppercase tracking-tighter">STATUS OPERASIONAL</p>
+                    <div>{getStatusBadge(selectedItem.status)}</div>
+                  </div>
+                </div>
+
+                <div className="space-y-1 bg-white/40 dark:bg-black/40 p-3 border border-gray-300 dark:border-gray-800">
+                  <p className="text-[10px] font-mono text-gray-500 uppercase tracking-tighter">PERANGKAT / LOKASI</p>
+                  <p className="text-sm font-bold text-olive">{selectedItem.kerusakan.barangRusak} - {selectedItem.kerusakan.lokasi}</p>
+                </div>
+
+                <div className="space-y-1">
+                  <p className="text-[10px] font-mono text-gray-500 uppercase tracking-tighter">DESKRIPSI KERUSAKAN</p>
+                  <p className="text-sm bg-gray-200/50 dark:bg-gray-900/50 p-3 italic text-gray-700 dark:text-gray-300 border-l-2 border-targetred">
+                    "{selectedItem.kerusakan.deskripsi}"
+                  </p>
+                </div>
+              </div>
+
+              {/* Seksi Penanganan Teknisi */}
+              <div className="space-y-4 pt-4 border-t border-dashed border-gray-400 dark:border-gray-700">
+                <div className="flex items-center gap-2">
+                  <Wrench className="w-4 h-4 text-olive" />
+                  <span className="text-gray-600 dark:text-gray-400 font-mono text-[10px] tracking-widest uppercase italic">PENANGANAN TEKNIS</span>
+                </div>
+
+                {selectedItem.perbaikan.teknisi ? (
+                  <div className="space-y-4 animate-in slide-in-from-bottom-2 duration-300">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <p className="text-[10px] font-mono text-gray-500 uppercase tracking-tighter">PERSONEL BERTUGAS</p>
+                        <p className="text-sm font-bold text-blue-500">{selectedItem.perbaikan.teknisi}</p>
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-[10px] font-mono text-gray-500 uppercase tracking-tighter">STATUS PENANGANAN</p>
+                        <span className="text-[10px] font-mono font-bold px-2 py-0.5 border border-blue-500 text-blue-500 bg-blue-500/10 uppercase italic">
+                          {selectedItem.perbaikan.statusPerbaikan || 'DALAM ANALISA'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <p className="text-[10px] font-mono text-gray-500 uppercase tracking-tighter">TINDAKAN PERBAIKAN</p>
+                      <p className="text-sm text-gray-800 dark:text-gray-200">
+                        {selectedItem.perbaikan.tindakan || 'Belum ada catatan tindakan teknis.'}
+                      </p>
+                    </div>
+
+                    <div className="space-y-1">
+                      <p className="text-[10px] font-mono text-gray-500 uppercase tracking-tighter">SUKU CADANG TERPAKAI</p>
+                      <p className="text-xs font-mono text-olive uppercase font-bold">
+                        {selectedItem.perbaikan.sukuCadang || 'NIHIL'}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-6 text-center bg-gray-200/50 dark:bg-black/20 border border-gray-300 dark:border-gray-800">
+                    <p className="text-xs font-mono text-gray-500 uppercase tracking-widest">
+                      MENUNGGU PENUGASAN PERSONEL DARI PUSAT KONTROL...
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Footer Modal */}
+            <div className="p-4 bg-gray-100 dark:bg-black/40 border-t border-gray-300 dark:border-gray-800 flex justify-end">
+              <button 
+                onClick={() => setSelectedItemId(null)}
+                className="bg-gunmetal dark:bg-white text-white dark:text-gunmetal px-6 py-2 font-tactical font-bold text-xs tracking-widest uppercase hover:bg-olive dark:hover:bg-olive hover:text-white transition-all"
+              >
+                TUTUP ARSIP
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 

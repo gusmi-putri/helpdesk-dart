@@ -97,7 +97,7 @@ interface AppState {
   theme: 'dark' | 'light';
   
   // Actions
-  login: (username: string) => User | null;
+  login: (user: User) => void;
   logout: () => void;
   
   addReport: (pelapor: string, lokasi: string, barangRusak: string, deskripsi: string) => void;
@@ -119,15 +119,9 @@ export const useStore = create<AppState>()(
 
       toggleTheme: () => set((state) => ({ theme: state.theme === 'dark' ? 'light' : 'dark' })),
 
-      login: (username) => {
-        const user = get().users.find((u) => u.username === username);
-        if (user) {
-          set({ currentUser: user });
-          get().addLog('INFO', `${user.role} (${user.id})`, `Berhasil login ke dalam jaringan lokal.`);
-          return user;
-        }
-        get().addLog('ALERT', 'Sistem', `Upaya login gagal untuk kredensial: ${username}`);
-        return null;
+      login: (user) => {
+        set({ currentUser: user });
+        get().addLog('INFO', `${user.role} (${user.id})`, `Berhasil login ke dalam jaringan (Terverifikasi Database).`);
       },
 
       logout: () => {

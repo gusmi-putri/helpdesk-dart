@@ -28,7 +28,7 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
   // Auto-polling untuk real-time sinkronisasi
   useEffect(() => {
     const interval = setInterval(() => {
-      router.reload({ only: ['dbCases', 'dbUsers'], preserveScroll: true, preserveState: true });
+      router.reload({ only: ['dbCases', 'dbUsers'] });
     }, 3000);
     return () => clearInterval(interval);
   }, []);
