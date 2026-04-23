@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nomor_seri', 50);
             $table->string('nama_dart', 100);
+            $table->enum('jenis_dart', ['DART STD', 'DART STK', 'SKE', 'MOVING TARGET']);
             $table->string('asal_satuan', 100);
             $table->enum('status_unit', ['Siap Ops', 'Rusak', 'Perbaikan', 'Nonaktif']);
             $table->timestamps();

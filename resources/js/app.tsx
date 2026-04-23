@@ -34,6 +34,12 @@ createInertiaApp({
     setup({ el, App, props }) {
         const root = createRoot(el);
 
+        // Sync Auth User dari Laravel ke Zustand Store
+        const authUser = (props.initialPage.props.auth as any)?.user;
+        if (authUser) {
+            useStore.getState().login(authUser);
+        }
+
         root.render(<App {...props} />);
     },
     progress: {

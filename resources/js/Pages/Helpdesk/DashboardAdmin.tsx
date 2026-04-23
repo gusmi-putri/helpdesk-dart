@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import {
   ShieldAlert, Users, Database, Search,
   Edit, Trash2, Shield, Settings, LogOut,
-  ChevronDown, ChevronRight, FileArchive, Wrench, Download, AlertTriangle, Radar
+  ChevronDown, ChevronRight, FileArchive, Wrench, Download, AlertTriangle, Radar,
+  Menu, X, CircleUser
 } from 'lucide-react';
 import { useStore } from '@/store/useStore';
-import { router } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 
 type SubMenuReport = 'KERUSAKAN' | 'PERBAIKAN';
 type MenuTab = 'USERS' | 'LOGS' | 'REPORTS' | 'SETTINGS';
@@ -37,6 +38,7 @@ const DashboardAdmin = (props: any) => {
   const [activeMenu, setActiveMenu] = useState<MenuTab>('REPORTS');
   const [activeSubReport, setActiveSubReport] = useState<SubMenuReport>('KERUSAKAN');
   const [isReportsExpanded, setIsReportsExpanded] = useState<boolean>(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
   // Auto-polling untuk real-time sinkronisasi
   useEffect(() => {
@@ -50,14 +52,15 @@ const DashboardAdmin = (props: any) => {
   const currentUser = useStore(state => state.currentUser);
   const logoutAction = useStore(state => state.logout);
 
-  // State for Add/Edit Modal
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddMode, setIsAddMode] = useState(false);
   const [editingUser, setEditingUser] = useState<any>(null);
-  const [formData, setFormData] = useState({
+
+  const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
     username: '',
     password: '',
     nama_lengkap: '',
+    nrp_nip: '',
     role_id: '',
     asal_satuan: '',
     no_wa: '',
@@ -73,25 +76,20 @@ const DashboardAdmin = (props: any) => {
   const handleAddUser = () => {
     setIsAddMode(true);
     setEditingUser(null);
-    setFormData({
-      username: '',
-      password: '',
-      nama_lengkap: '',
-      role_id: '',
-      asal_satuan: '',
-      no_wa: '',
-      spesialisasi: ''
-    });
+    clearErrors();
+    reset();
     setIsEditModalOpen(true);
   };
 
   const handleEditUser = (user: any) => {
     setIsAddMode(false);
     setEditingUser(user);
-    setFormData({
+    clearErrors();
+    setData({
       username: user.username || '',
       password: '',
       nama_lengkap: user.name,
+      nrp_nip: user.nrp_nip || '',
       role_id: user.role_id || '',
       asal_satuan: user.asal_satuan || '',
       no_wa: user.no_wa || '',
@@ -103,11 +101,14 @@ const DashboardAdmin = (props: any) => {
   const handleSaveUser = (e: React.FormEvent) => {
     e.preventDefault();
     if (isAddMode) {
-      router.post('/users', formData, {
-        onSuccess: () => setIsEditModalOpen(false),
+      post('/users', {
+        onSuccess: () => {
+          setIsEditModalOpen(false);
+          reset();
+        },
       });
     } else {
-      router.put(`/users/${editingUser.db_id}`, formData, {
+      put(`/users/${editingUser.db_id}`, {
         onSuccess: () => setIsEditModalOpen(false),
       });
     }
@@ -127,6 +128,7 @@ const DashboardAdmin = (props: any) => {
 
   const handleMenuClick = (menu: MenuTab) => {
     setActiveMenu(menu);
+    setIsMobileMenuOpen(false);
     if (menu === 'REPORTS') {
       setIsReportsExpanded(true);
     } else {
@@ -378,16 +380,23 @@ const DashboardAdmin = (props: any) => {
   return (
     <div className="min-h-screen bg-sand dark:bg-gunmetal flex font-sans selection:bg-olive selection:text-gunmetal relative text-gunmetal dark:text-gray-200">
 
+      {/* MOBILE OVERLAY */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* MAN SIDEBAR - TACTICAL */}
-      <aside className="w-72 bg-white dark:bg-black border-r border-gray-300 dark:border-gray-800 relative z-20 flex-shrink-0 flex flex-col shadow-2xl">
+      <aside className={`fixed inset-y-0 left-0 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 w-72 bg-white dark:bg-black border-r border-gray-300 dark:border-gray-800 z-50 flex-shrink-0 flex flex-col shadow-2xl`}>
         {/* Brand */}
         <div className="p-6 border-b border-gray-300 dark:border-gray-800 flex items-center gap-4 bg-gray-100 dark:bg-[#111]">
           <div className="relative">
             <img src="/logo.png" alt="DART Logo" className="w-12 h-14 object-contain drop-shadow-[0_0_8px_rgba(255,215,0,0.5)]" />
           </div>
           <div>
-            <h1 className="font-stencil text-2xl tracking-widest text-gunmetal dark:text-white leading-none">DART</h1>
-            <span className="text-[10px] font-mono text-gray-600 dark:text-gray-500 block mt-1 tracking-widest uppercase">COMMAND SYS</span>
+            <h1 className="font-stencil text-2xl tracking-widest text-gunmetal dark:text-white leading-none">HELPDESK-DART</h1>
           </div>
         </div>
 
@@ -474,21 +483,29 @@ const DashboardAdmin = (props: any) => {
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03] pointer-events-none"></div>
 
         {/* Topbar */}
-        <header className="h-16 border-b border-gray-300 dark:border-gray-800 bg-white/80 dark:bg-black/50 backdrop-blur-md flex items-center justify-between px-8 flex-shrink-0 z-10 relative">
+        <header className="h-16 border-b border-gray-300 dark:border-gray-800 bg-white/80 dark:bg-black/50 backdrop-blur-md flex items-center justify-between px-4 md:px-8 flex-shrink-0 z-10 relative">
           <div className="flex items-center gap-4">
-            <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.8)] animate-pulse"></div>
-            <h2 className="font-mono text-xs text-gray-600 dark:text-gray-400 tracking-widest hidden sm:block">STATUS JARINGAN: <span className="text-green-500 font-bold">TERENKRIPSI 256-BIT</span></h2>
+            <button 
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="md:hidden p-2 text-gray-600 dark:text-gray-400 hover:text-gunmetal dark:hover:text-white transition-colors"
+            >
+              <Menu className="w-6 h-6" />
+            </button>
+            <div className="flex items-center gap-4">
+              <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.8)] animate-pulse"></div>
+              <h2 className="font-mono text-xs text-gray-600 dark:text-gray-400 tracking-widest hidden sm:block">STATUS JARINGAN: <span className="text-green-500 font-bold">TERENKRIPSI 256-BIT</span></h2>
+            </div>
           </div>
-
-           <div className="flex items-center gap-0 border border-gray-300 dark:border-gray-700 rounded overflow-hidden shadow-lg bg-gray-100 dark:bg-gray-900">
-             <div className="bg-white dark:bg-black px-4 py-1.5 text-right flex flex-col justify-center">
-               <span className="block text-xs font-bold text-gunmetal dark:text-white uppercase font-sans tracking-wider">{currentUser?.name || 'Komandan Pusat'}</span>
-               <span className="block text-[9px] font-mono tracking-widest text-targetred">{currentUser?.id || 'ROOT-ACCESS'}</span>
-             </div>
-             <div className="w-10 h-full bg-sand dark:bg-gunmetal border-l border-gray-300 dark:border-gray-700 flex items-center justify-center p-2">
-               <img src="/logo.png" alt="Logo" className="w-6 h-6 object-contain drop-shadow-[0_0_5px_rgba(255,215,0,0.5)]" />
-             </div>
-           </div>
+          
+          <div className="flex items-center gap-0 border border-gray-300 dark:border-gray-700 rounded overflow-hidden shadow-lg bg-gray-100 dark:bg-gray-900 ml-auto">
+            <div className="bg-white dark:bg-black px-4 py-1.5 text-right flex flex-col justify-center">
+              <span className="block text-xs font-bold text-gunmetal dark:text-white uppercase font-sans tracking-wider">{currentUser?.name || 'KOMANDAN PUSAT'}</span>
+              <span className="block text-[9px] font-mono tracking-widest text-targetred">{currentUser?.id || 'ROOT-ACCESS'}</span>
+            </div>
+            <div className="w-10 h-full bg-sand dark:bg-gunmetal border-l border-gray-300 dark:border-gray-700 flex items-center justify-center p-2">
+              <CircleUser className="w-6 h-6 text-gray-500 dark:text-gray-400" />
+            </div>
+          </div>
         </header>
 
         {/* Scrollable Content Container */}
@@ -517,40 +534,54 @@ const DashboardAdmin = (props: any) => {
                       <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Username</label>
                       <input
                         type="text"
-                        value={formData.username}
-                        onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                        className="w-full bg-white dark:bg-black border border-gray-400 dark:border-gray-700 p-2 text-sm font-mono focus:border-olive outline-none"
+                        value={data.username}
+                        onChange={(e) => setData('username', e.target.value)}
+                        className={`w-full bg-white dark:bg-black border ${errors.username ? 'border-red-500' : 'border-gray-400 dark:border-gray-700'} p-2 text-sm font-mono focus:border-olive outline-none uppercase`}
                         required
                       />
+                      {errors.username && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.username}</p>}
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">NRP / NIP</label>
+                      <input
+                        type="text"
+                        value={data.nrp_nip}
+                        onChange={(e) => setData('nrp_nip', e.target.value)}
+                        className={`w-full bg-white dark:bg-black border ${errors.nrp_nip ? 'border-red-500' : 'border-gray-400 dark:border-gray-700'} p-2 text-sm font-mono focus:border-olive outline-none uppercase`}
+                        placeholder="MASUKKAN NRP/NIP"
+                      />
+                      {errors.nrp_nip && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.nrp_nip}</p>}
                     </div>
                     <div>
                       <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Password</label>
                       <input
                         type="password"
-                        value={formData.password}
-                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                        className="w-full bg-white dark:bg-black border border-gray-400 dark:border-gray-700 p-2 text-sm font-mono focus:border-olive outline-none"
+                        value={data.password}
+                        onChange={(e) => setData('password', e.target.value)}
+                        className={`w-full bg-white dark:bg-black border ${errors.password ? 'border-red-500' : 'border-gray-400 dark:border-gray-700'} p-2 text-sm font-mono focus:border-olive outline-none`}
                         required={isAddMode}
                       />
+                      {errors.password && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.password}</p>}
                     </div>
                   </>
                 )}
-                <div className={isAddMode ? 'col-span-2' : 'col-span-2'}>
+                <div className="col-span-2">
                   <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Nama Lengkap</label>
                   <input
                     type="text"
-                    value={formData.nama_lengkap}
-                    onChange={(e) => setFormData({ ...formData, nama_lengkap: e.target.value })}
-                    className="w-full bg-white dark:bg-black border border-gray-400 dark:border-gray-700 p-2 text-sm font-mono focus:border-olive outline-none"
+                    value={data.nama_lengkap}
+                    onChange={(e) => setData('nama_lengkap', e.target.value)}
+                    className={`w-full bg-white dark:bg-black border ${errors.nama_lengkap ? 'border-red-500' : 'border-gray-400 dark:border-gray-700'} p-2 text-sm font-mono focus:border-olive outline-none`}
                     required
                   />
+                  {errors.nama_lengkap && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.nama_lengkap}</p>}
                 </div>
                 <div>
                   <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Hak Akses (Role)</label>
                   <select
-                    value={formData.role_id}
-                    onChange={(e) => setFormData({ ...formData, role_id: e.target.value })}
-                    className="w-full bg-white dark:bg-black border border-gray-400 dark:border-gray-700 p-2 text-sm font-mono focus:border-olive outline-none"
+                    value={data.role_id}
+                    onChange={(e) => setData('role_id', e.target.value)}
+                    className={`w-full bg-white dark:bg-black border ${errors.role_id ? 'border-red-500' : 'border-gray-400 dark:border-gray-700'} p-2 text-sm font-mono focus:border-olive outline-none`}
                     required
                   >
                     <option value="">PILIH ROLE</option>
@@ -558,13 +589,14 @@ const DashboardAdmin = (props: any) => {
                       <option key={role.id} value={role.id}>{role.name.toUpperCase()}</option>
                     ))}
                   </select>
+                  {errors.role_id && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.role_id}</p>}
                 </div>
                 <div>
                   <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">No. WhatsApp</label>
                   <input
                     type="text"
-                    value={formData.no_wa}
-                    onChange={(e) => setFormData({ ...formData, no_wa: e.target.value })}
+                    value={data.no_wa}
+                    onChange={(e) => setData('no_wa', e.target.value)}
                     className="w-full bg-white dark:bg-black border border-gray-400 dark:border-gray-700 p-2 text-sm font-mono focus:border-olive outline-none"
                     placeholder="08..."
                   />
@@ -573,8 +605,8 @@ const DashboardAdmin = (props: any) => {
                   <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Asal Satuan</label>
                   <input
                     type="text"
-                    value={formData.asal_satuan}
-                    onChange={(e) => setFormData({ ...formData, asal_satuan: e.target.value })}
+                    value={data.asal_satuan}
+                    onChange={(e) => setData('asal_satuan', e.target.value)}
                     className="w-full bg-white dark:bg-black border border-gray-400 dark:border-gray-700 p-2 text-sm font-mono focus:border-olive outline-none"
                   />
                 </div>
@@ -582,15 +614,19 @@ const DashboardAdmin = (props: any) => {
                   <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Spesialisasi</label>
                   <input
                     type="text"
-                    value={formData.spesialisasi}
-                    onChange={(e) => setFormData({ ...formData, spesialisasi: e.target.value })}
+                    value={data.spesialisasi}
+                    onChange={(e) => setData('spesialisasi', e.target.value)}
                     className="w-full bg-white dark:bg-black border border-gray-400 dark:border-gray-700 p-2 text-sm font-mono focus:border-olive outline-none"
                   />
                 </div>
               </div>
               <div className="pt-4 flex gap-2">
-                <button type="submit" className="flex-1 bg-olive text-white py-2 font-tactical font-bold tracking-widest hover:bg-camogreen transition-colors">
-                  {isAddMode ? 'DAFTARKAN PERSONEL' : 'SIMPAN PERUBAHAN'}
+                <button 
+                  type="submit" 
+                  disabled={processing}
+                  className="flex-1 bg-olive text-white py-2 font-tactical font-bold tracking-widest hover:bg-camogreen transition-colors disabled:opacity-50"
+                >
+                  {processing ? 'MEMPROSES...' : (isAddMode ? 'DAFTARKAN PERSONEL' : 'SIMPAN PERUBAHAN')}
                 </button>
                 <button type="button" onClick={() => setIsEditModalOpen(false)} className="flex-1 bg-transparent border border-gray-500 text-gray-500 py-2 font-tactical font-bold tracking-widest hover:bg-gray-500/10 transition-colors">
                   BATAL
@@ -605,4 +641,3 @@ const DashboardAdmin = (props: any) => {
 };
 
 export default DashboardAdmin;
-
