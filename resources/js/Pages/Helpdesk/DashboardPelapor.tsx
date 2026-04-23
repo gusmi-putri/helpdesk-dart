@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Send, History, AlertCircle, Clock, CheckCircle2, ChevronRight, Activity, Camera, LogOut, Shield, FilePlus } from 'lucide-react';
+import { Send, History, AlertCircle, Clock, CheckCircle2, ChevronRight, Activity, Camera, LogOut, Shield, FilePlus, Menu, X, CircleUser } from 'lucide-react';
 import { useStore, type ReportStatus } from '@/store/useStore';
 import { router } from '@inertiajs/react';
 
 const DashboardPelapor: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState<'FORM' | 'HISTORY'>('FORM');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
   // Ambil state dan aksi dari global store
   const currentUser = useStore(state => state.currentUser);
@@ -131,9 +132,9 @@ const DashboardPelapor: React.FC = () => {
 
       <div className="space-y-4 max-h-[700px] overflow-y-auto pr-2 custom-scrollbar">
         {history.length === 0 ? (
-           <div className="p-8 text-center text-gray-600 font-mono bg-white/40 dark:bg-black/40 border border-gray-300 dark:border-gray-800">
-             ANDA BELUM PERNAH MENGAJUKAN LAPORAN APAPUN.
-           </div>
+          <div className="p-8 text-center text-gray-600 font-mono bg-white/40 dark:bg-black/40 border border-gray-300 dark:border-gray-800">
+            ANDA BELUM PERNAH MENGAJUKAN LAPORAN APAPUN.
+          </div>
         ) : (
           history.map((item, index) => (
             <div key={index} className="relative group">
@@ -169,69 +170,77 @@ const DashboardPelapor: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-sand dark:bg-gunmetal flex font-sans selection:bg-olive selection:text-gunmetal relative text-gunmetal dark:text-gray-200">
-      
+
+      {/* MOBILE OVERLAY */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* MAN SIDEBAR - TACTICAL */}
-      <aside className="w-72 bg-white dark:bg-black border-r border-gray-300 dark:border-gray-800 relative z-20 flex-shrink-0 flex flex-col shadow-2xl">
+      <aside className={`fixed inset-y-0 left-0 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 w-72 bg-white dark:bg-black border-r border-gray-300 dark:border-gray-800 z-50 flex-shrink-0 flex flex-col shadow-2xl`}>
         {/* Brand */}
         <div className="p-6 border-b border-gray-300 dark:border-gray-800 flex items-center gap-4 bg-gray-100 dark:bg-[#111]">
           <div className="relative">
             <img src="/logo.png" alt="DART Logo" className="w-12 h-14 object-contain drop-shadow-[0_0_8px_rgba(255,215,0,0.5)]" />
           </div>
           <div>
-            <h1 className="font-stencil text-2xl tracking-widest text-gunmetal dark:text-white leading-none">DART</h1>
-            <span className="text-[10px] font-mono text-gray-600 dark:text-gray-500 block mt-1 tracking-widest uppercase">STASIUN PELAPOR</span>
+            <h1 className="font-stencil text-2xl tracking-widest text-gunmetal dark:text-white leading-none">HELPDESK DART</h1>
           </div>
         </div>
 
         <nav className="flex-1 py-6 space-y-1">
-          <p className="px-6 text-[10px] font-mono font-bold tracking-widest text-gray-600 dark:text-gray-500 mb-4">MODUL PELAPORAN //:</p>
-          
-          <button 
+
+          <button
             onClick={() => setActiveMenu('FORM')}
             className={`w-full flex items-center gap-3 px-6 py-3.5 font-tactical text-sm tracking-wider transition-all border-l-2
               ${activeMenu === 'FORM' ? 'bg-gray-200 dark:bg-gray-800/80 text-gunmetal dark:text-white border-olive' : 'border-transparent text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'}
             `}
           >
             <FilePlus className="w-5 h-5" /> BUAT LAPORAN BARU
-         </button>
+          </button>
 
-         <button 
+          <button
             onClick={() => setActiveMenu('HISTORY')}
             className={`w-full flex items-center gap-3 px-6 py-3.5 font-tactical text-sm tracking-wider transition-all border-l-2
               ${activeMenu === 'HISTORY' ? 'bg-gray-200 dark:bg-gray-800/80 text-gunmetal dark:text-white border-olive' : 'border-transparent text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'}
             `}
           >
             <History className="w-5 h-5" /> RIWAYAT STATUS
-         </button>
+          </button>
         </nav>
 
         <div className="p-4 border-t border-gray-300 dark:border-gray-800 bg-gray-100 dark:bg-[#111]">
-           <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-500 hover:text-targetred hover:bg-red-900/20 font-tactical text-sm tracking-wider transition-all rounded-sm border border-transparent hover:border-targetred/30">
-              <LogOut className="w-5 h-5" /> TERMINASI SESI
-           </button>
+          <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-500 hover:text-targetred hover:bg-red-900/20 font-tactical text-sm tracking-wider transition-all rounded-sm border border-transparent hover:border-targetred/30">
+            <LogOut className="w-5 h-5" /> LOGOUT
+          </button>
         </div>
       </aside>
 
       {/* MAIN CONTENT AREA */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-paper.png')] opacity-[0.05] pointer-events-none"></div>
-        
-        {/* Topbar */}
-        <header className="h-16 border-b border-gray-300 dark:border-gray-800 bg-white/80 dark:bg-black/50 backdrop-blur-md flex items-center justify-between px-8 flex-shrink-0 z-10 relative">
-           <div className="flex items-center gap-4">
-             <div className="w-2 h-2 rounded-full bg-olive shadow-[0_0_5px_rgba(75,83,32,0.8)] animate-pulse"></div>
-             <h2 className="font-mono text-xs text-gray-600 dark:text-gray-400 tracking-widest hidden sm:block">STATUS PERANGKAT: <span className="text-olive font-bold">ONLINE DARI LAPANGAN</span></h2>
-           </div>
 
-           <div className="flex items-center gap-0 border border-gray-300 dark:border-gray-700 rounded shadow-sm bg-gray-100 dark:bg-gray-900">
-             <div className="bg-white dark:bg-black px-4 py-1.5 text-right flex flex-col justify-center">
-               <span className="block text-xs font-bold text-gunmetal dark:text-white uppercase font-sans tracking-wider">{currentUser?.name || 'Pelapor Anonim'}</span>
-               <span className="block text-[9px] font-mono tracking-widest text-olive">{currentUser?.role || 'PELAPOR'}</span>
-             </div>
-             <div className="w-10 h-full bg-sand dark:bg-gunmetal border-l border-gray-300 dark:border-gray-700 flex items-center justify-center p-2">
-               <AlertCircle className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-             </div>
-           </div>
+        {/* Topbar */}
+        <header className="h-16 border-b border-gray-300 dark:border-gray-800 bg-white/80 dark:bg-black/50 backdrop-blur-md flex items-center justify-between px-4 md:px-8 flex-shrink-0 z-10 relative">
+          <button 
+            onClick={() => setIsMobileMenuOpen(true)}
+            className="md:hidden p-2 text-gray-600 dark:text-gray-400 hover:text-gunmetal dark:hover:text-white transition-colors"
+          >
+            <Menu className="w-6 h-6" />
+          </button>
+
+          <div className="flex items-center gap-0 border border-gray-300 dark:border-gray-700 rounded shadow-sm bg-gray-100 dark:bg-gray-900 ml-auto">
+            <div className="bg-white dark:bg-black px-4 py-1.5 text-right flex flex-col justify-center">
+              <span className="block text-xs font-bold text-gunmetal dark:text-white uppercase font-sans tracking-wider">{currentUser?.name || 'Pelapor Anonim'}</span>
+              <span className="block text-[9px] font-mono tracking-widest text-targetred">{currentUser?.id || 'PELAPOR'}</span>
+            </div>
+            <div className="w-10 h-full bg-sand dark:bg-gunmetal border-l border-gray-300 dark:border-gray-700 flex items-center justify-center p-2">
+              <CircleUser className="w-6 h-6 text-gray-500 dark:text-gray-400" />
+            </div>
+          </div>
         </header>
 
         {/* Scrollable Content Container */}

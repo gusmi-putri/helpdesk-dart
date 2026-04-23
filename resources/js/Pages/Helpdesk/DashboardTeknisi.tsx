@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Wrench, MapPin, AlertCircle, Calendar, Send, FileText, ChevronRight, LogOut, Activity, ShieldAlert, CheckCircle2 } from 'lucide-react';
+import { Wrench, MapPin, AlertCircle, Calendar, Send, FileText, ChevronRight, LogOut, Activity, ShieldAlert, CheckCircle2, Menu, X, CircleUser } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { router } from '@inertiajs/react';
 
@@ -19,6 +19,7 @@ const DashboardTeknisi: React.FC = () => {
 
   // Navigation Menu State (hanya untuk tampilan sidebar)
   const [activeMenu, setActiveMenu] = useState<'TUGAS'>('TUGAS');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
   const [catatan, setCatatan] = useState('');
   const [statusAkhir, setStatusAkhir] = useState('Selesai Sepenuhnya');
@@ -46,7 +47,7 @@ const DashboardTeknisi: React.FC = () => {
       setIsSubmitting(false);
     }, 600);
   };
-  
+
   const handleLogout = () => {
     logoutAction();
     router.visit('/login');
@@ -58,11 +59,11 @@ const DashboardTeknisi: React.FC = () => {
       <div className="xl:col-span-4 space-y-4">
         <div className="bg-white/60 dark:bg-black/60 border-b-2 border-olive p-4 flex justify-between items-center shadow-md">
           <h2 className="text-gunmetal dark:text-white font-tactical font-bold tracking-widest text-lg flex items-center gap-2">
-             <Activity className="w-5 h-5 text-olive"/> TARGET OPERASI 
+            <Activity className="w-5 h-5 text-olive" /> TARGET OPERASI
           </h2>
           <span className="bg-olive text-gunmetal font-bold text-xs px-2 py-1 font-mono">{tasks.length} KASUS</span>
         </div>
-        
+
         <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
           {tasks.length === 0 ? (
             <div className="p-6 border border-gray-300 dark:border-gray-800 bg-white/40 dark:bg-black/40 text-center font-mono text-gray-600 dark:text-gray-500 rounded-sm">
@@ -70,29 +71,29 @@ const DashboardTeknisi: React.FC = () => {
             </div>
           ) : (
             tasks.map((task) => (
-              <div 
-                key={task.id} 
+              <div
+                key={task.id}
                 onClick={() => setSelectedTaskId(task.id)}
                 className={`p-4 border-2 transition-all cursor-pointer rounded-sm group
-                  ${selectedTask?.id === task.id 
-                    ? 'border-olive bg-gray-200 dark:bg-gray-800 shadow-[inset_4px_0_0_#4b5320]' 
+                  ${selectedTask?.id === task.id
+                    ? 'border-olive bg-gray-200 dark:bg-gray-800 shadow-[inset_4px_0_0_#4b5320]'
                     : 'border-transparent bg-white/60 dark:bg-black/60 hover:border-gray-300 dark:hover:border-gray-600 shadow-sm'
                   }
                 `}
               >
                 <div className="flex justify-between items-start mb-2">
-                    <span className="bg-targetred text-white text-[10px] px-2 py-0.5 font-mono font-bold tracking-widest shadow-sm">
-                      {task.id}
-                    </span>
-                    <span className="text-gray-600 dark:text-gray-400 text-xs font-mono flex items-center gap-1">
-                      <Calendar className="w-3 h-3 text-olive" /> {task.tanggalLapor?.split(',')[0]}
-                    </span>
+                  <span className="bg-targetred text-white text-[10px] px-2 py-0.5 font-mono font-bold tracking-widest shadow-sm">
+                    {task.id}
+                  </span>
+                  <span className="text-gray-600 dark:text-gray-400 text-xs font-mono flex items-center gap-1">
+                    <Calendar className="w-3 h-3 text-olive" /> {task.tanggalLapor?.split(',')[0]}
+                  </span>
                 </div>
-                
+
                 <h3 className="text-gunmetal dark:text-white font-tactical text-lg font-bold mb-1 group-hover:text-olive transition-colors leading-tight line-clamp-2">
                   {task.barangRusak}
                 </h3>
-                
+
                 <div className="flex items-start gap-2 text-gray-600 dark:text-gray-400 text-xs font-sans mt-2 pt-2 border-t border-gray-300 dark:border-gray-800">
                   <MapPin className="w-3 h-3 mt-0.5 flex-shrink-0 text-olive" />
                   <span className="line-clamp-1">{task.lokasi}</span>
@@ -116,7 +117,7 @@ const DashboardTeknisi: React.FC = () => {
         ) : (
           <div className="bg-white/80 dark:bg-black/60 border border-gray-300 dark:border-gray-800 shadow-2xl rounded-sm relative overflow-hidden flex flex-col">
             <div className="absolute top-0 left-0 w-1 h-full bg-olive"></div>
-            
+
             {/* DETAIL TUGAS PANEL */}
             <div className="p-6 md:p-8 border-b border-gray-300 dark:border-gray-800 bg-gray-50 dark:bg-[#1a2024] relative">
               <div className="flex flex-col md:flex-row justify-between items-start mb-4 gap-4">
@@ -130,8 +131,8 @@ const DashboardTeknisi: React.FC = () => {
                   </div>
                 </div>
                 <div className="bg-white dark:bg-black px-4 py-2 text-center border shadow-sm border-gray-300 dark:border-gray-700">
-                   <div className="text-[9px] font-mono text-gray-500 tracking-widest mb-1">KODE REFERENSI</div>
-                   <div className="font-mono text-lg font-bold text-gunmetal dark:text-white">{selectedTask.id}</div>
+                  <div className="text-[9px] font-mono text-gray-500 tracking-widest mb-1">KODE REFERENSI</div>
+                  <div className="font-mono text-lg font-bold text-gunmetal dark:text-white">{selectedTask.id}</div>
                 </div>
               </div>
 
@@ -197,7 +198,7 @@ const DashboardTeknisi: React.FC = () => {
                 </div>
               </form>
             </div>
-            
+
           </div>
         )}
       </div>
@@ -206,23 +207,29 @@ const DashboardTeknisi: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-sand dark:bg-gunmetal flex font-sans selection:bg-olive selection:text-gunmetal relative text-gunmetal dark:text-gray-200">
-      
+
+      {/* MOBILE OVERLAY */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* MAN SIDEBAR - TACTICAL */}
-      <aside className="w-72 bg-white dark:bg-black border-r border-gray-300 dark:border-gray-800 relative z-20 flex-shrink-0 flex flex-col shadow-2xl">
+      <aside className={`fixed inset-y-0 left-0 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 w-72 bg-white dark:bg-black border-r border-gray-300 dark:border-gray-800 z-50 flex-shrink-0 flex flex-col shadow-2xl`}>
         <div className="p-6 border-b border-gray-300 dark:border-gray-800 flex items-center gap-4 bg-gray-100 dark:bg-[#111]">
           <div className="relative">
             <img src="/logo.png" alt="DART Logo" className="w-12 h-14 object-contain drop-shadow-[0_0_8px_rgba(255,215,0,0.5)]" />
           </div>
           <div>
-            <h1 className="font-stencil text-2xl tracking-widest text-gunmetal dark:text-white leading-none">DART</h1>
-            <span className="text-[10px] font-mono text-gray-600 dark:text-gray-500 block mt-1 tracking-widest uppercase">WORKSHOP MESIN</span>
+            <h1 className="font-stencil text-2xl tracking-widest text-gunmetal dark:text-white leading-none">HELPDESK-DART</h1>
           </div>
         </div>
 
         <nav className="flex-1 py-6 space-y-1">
-          <p className="px-6 text-[10px] font-mono font-bold tracking-widest text-gray-600 dark:text-gray-500 mb-4">MODUL TEKNISI //:</p>
-          
-          <button 
+
+          <button
             onClick={() => setActiveMenu('TUGAS')}
             className={`w-full flex items-center justify-between px-6 py-3.5 font-tactical text-sm tracking-wider transition-all border-l-2
               ${activeMenu === 'TUGAS' ? 'bg-gray-200 dark:bg-gray-800/80 text-gunmetal dark:text-white border-olive' : 'border-transparent text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'}
@@ -232,54 +239,56 @@ const DashboardTeknisi: React.FC = () => {
               <Activity className="w-5 h-5" /> OPERATION TARGETS
             </div>
             {tasks.length > 0 && (
-               <span className="bg-targetred text-white text-[10px] w-5 h-5 flex items-center justify-center font-bold font-mono animate-pulse">
-                 {tasks.length}
-               </span>
+              <span className="bg-targetred text-white text-[10px] w-5 h-5 flex items-center justify-center font-bold font-mono animate-pulse">
+                {tasks.length}
+              </span>
             )}
-         </button>
+          </button>
         </nav>
 
         <div className="p-4 border-t border-gray-300 dark:border-gray-800 bg-gray-100 dark:bg-[#111]">
-           <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-500 hover:text-targetred hover:bg-red-900/20 font-tactical text-sm tracking-wider transition-all rounded-sm border border-transparent hover:border-targetred/30">
-              <LogOut className="w-5 h-5" /> TERMINASI SESI
-           </button>
+          <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-500 hover:text-targetred hover:bg-red-900/20 font-tactical text-sm tracking-wider transition-all rounded-sm border border-transparent hover:border-targetred/30">
+            <LogOut className="w-5 h-5" /> LOGOUT
+          </button>
         </div>
       </aside>
 
       {/* MAIN CONTENT AREA */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-paper.png')] opacity-[0.05] pointer-events-none"></div>
-        
-        {/* Topbar */}
-        <header className="h-16 border-b border-gray-300 dark:border-gray-800 bg-white/80 dark:bg-black/50 backdrop-blur-md flex items-center justify-between px-8 flex-shrink-0 z-10 relative">
-           <div className="flex items-center gap-4">
-             <div className="w-2 h-2 rounded-full bg-olive shadow-[0_0_5px_rgba(75,83,32,0.8)] animate-pulse"></div>
-             <h2 className="font-mono text-xs text-gray-600 dark:text-gray-400 tracking-widest hidden sm:block">ZONA AKTIF: <span className="text-olive font-bold">SEKTOR KUNING (PERBAIKAN)</span></h2>
-           </div>
 
-           <div className="flex items-center gap-0 border border-gray-300 dark:border-gray-700 rounded shadow-sm bg-gray-100 dark:bg-gray-900">
-             <div className="bg-white dark:bg-black px-4 py-1.5 text-right flex flex-col justify-center">
-               <span className="block text-xs font-bold text-gunmetal dark:text-white uppercase font-sans tracking-wider">{currentUser?.name || 'Teknisi Alfa'}</span>
-               <span className="block text-[9px] font-mono tracking-widest text-olive">{currentUser?.role || 'TEKNISI LAPANGAN'}</span>
-             </div>
-             <div className="w-10 h-full bg-sand dark:bg-gunmetal border-l border-gray-300 dark:border-gray-700 flex items-center justify-center p-2">
-               <img src="/logo.png" alt="Logo" className="w-6 h-6 object-contain drop-shadow-[0_0_5px_rgba(255,215,0,0.5)]" />
-             </div>
-           </div>
+        {/* Topbar */}
+        <header className="h-16 border-b border-gray-300 dark:border-gray-800 bg-white/80 dark:bg-black/50 backdrop-blur-md flex items-center justify-between px-4 md:px-8 flex-shrink-0 z-10 relative">
+          <button 
+            onClick={() => setIsMobileMenuOpen(true)}
+            className="md:hidden p-2 text-gray-600 dark:text-gray-400 hover:text-gunmetal dark:hover:text-white transition-colors"
+          >
+            <Menu className="w-6 h-6" />
+          </button>
+
+          <div className="flex items-center gap-0 border border-gray-300 dark:border-gray-700 rounded shadow-sm bg-gray-100 dark:bg-gray-900 ml-auto">
+            <div className="bg-white dark:bg-black px-4 py-1.5 text-right flex flex-col justify-center">
+              <span className="block text-xs font-bold text-gunmetal dark:text-white uppercase font-sans tracking-wider">{currentUser?.name || 'Teknisi Alfa'}</span>
+              <span className="block text-[9px] font-mono tracking-widest text-targetred">{currentUser?.id || 'TEKNISI LAPANGAN'}</span>
+            </div>
+            <div className="w-10 h-full bg-sand dark:bg-gunmetal border-l border-gray-300 dark:border-gray-700 flex items-center justify-center p-2">
+              <CircleUser className="w-6 h-6 text-gray-500 dark:text-gray-400" />
+            </div>
+          </div>
         </header>
 
         {/* Scrollable Content Container */}
         <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar z-10">
           <div className="max-w-[1400px] mx-auto">
-             <div className="mb-4 border-b border-gray-300 dark:border-gray-700 pb-4">
-                <h2 className="text-2xl font-tactical font-bold text-gunmetal dark:text-white tracking-widest">
-                  PORTAL AKSELERASI MEKANIS
-                </h2>
-                <p className="text-xs font-mono text-gray-600 dark:text-gray-400 mt-1 uppercase">
-                  Pusat Instruksi & Penyerahan Berita Acara Perbaikan Tingkat II
-                </p>
-             </div>
-             {renderDashboard()}
+            <div className="mb-4 border-b border-gray-300 dark:border-gray-700 pb-4">
+              <h2 className="text-2xl font-tactical font-bold text-gunmetal dark:text-white tracking-widest">
+                PORTAL AKSELERASI MEKANIS
+              </h2>
+              <p className="text-xs font-mono text-gray-600 dark:text-gray-400 mt-1 uppercase">
+                Pusat Instruksi & Penyerahan Berita Acara Perbaikan Tingkat II
+              </p>
+            </div>
+            {renderDashboard()}
           </div>
         </div>
       </main>
