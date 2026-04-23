@@ -367,7 +367,7 @@ const DashboardAdmin: React.FC = () => {
         {/* Brand */}
         <div className="p-6 border-b border-gray-300 dark:border-gray-800 flex items-center gap-4 bg-gray-100 dark:bg-[#111]">
           <div className="relative">
-            <Shield className="w-10 h-10 text-targetred" />
+            <img src="/logo.png" alt="DART Logo" className="w-12 h-14 object-contain drop-shadow-[0_0_8px_rgba(255,215,0,0.5)]" />
           </div>
           <div>
             <h1 className="font-stencil text-2xl tracking-widest text-gunmetal dark:text-white leading-none">DART</h1>
@@ -470,7 +470,7 @@ const DashboardAdmin: React.FC = () => {
                <span className="block text-[9px] font-mono tracking-widest text-targetred">{currentUser?.id || 'ROOT-ACCESS'}</span>
              </div>
              <div className="w-10 h-full bg-sand dark:bg-gunmetal border-l border-gray-300 dark:border-gray-700 flex items-center justify-center p-2">
-               <ShieldAlert className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+               <img src="/logo.png" alt="Logo" className="w-6 h-6 object-contain drop-shadow-[0_0_5px_rgba(255,215,0,0.5)]" />
              </div>
            </div>
         </header>

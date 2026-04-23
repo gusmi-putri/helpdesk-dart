@@ -39,7 +39,7 @@ const Navbar = () => {
             className="flex items-center gap-2 cursor-pointer" 
             onClick={() => handleNavClick('BERANDA')}
           >
-            <ShieldAlert className="text-targetred w-8 h-8" />
+            <img src="/logo.png" alt="DART Logo" className="w-9 h-10 object-contain drop-shadow-[0_0_8px_rgba(255,215,0,0.4)]" />
             <span className="font-stencil text-2xl tracking-widest text-gunmetal dark:text-white">Helpdesk DART</span>
           </div>
           <div className="hidden md:block">
