@@ -13,10 +13,10 @@ Route::get('/login', function () {
     return Inertia::render('Helpdesk/Login');
 })->name('login');
 
-Route::get('/admin', [DashboardController::class, 'admin'])->middleware('role:Admin');
-Route::get('/pelapor', [DashboardController::class, 'pelapor'])->middleware('role:Admin,Pelapor');
-Route::get('/staf', [DashboardController::class, 'staf'])->middleware('role:Admin,Staf');
-Route::get('/teknisi', [DashboardController::class, 'teknisi'])->middleware('role:Admin,Teknisi');
+Route::get('/admin', [DashboardController::class, 'admin']);
+Route::get('/pelapor', [DashboardController::class, 'pelapor']);
+Route::get('/staf', [DashboardController::class, 'staf']);
+Route::get('/teknisi', [DashboardController::class, 'teknisi']);
 Route::resource('users', \App\Http\Controllers\UserController::class);
 
 // Reports Actions

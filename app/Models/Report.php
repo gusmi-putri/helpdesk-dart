@@ -12,6 +12,15 @@ class Report extends Model
         'status_laporan', 'metode_perbaikan', 'tgl_ditunjuk', 'tgl_selesai', 'catatan_teknisi'
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'tanggal_lapor' => 'datetime',
+            'tgl_ditunjuk' => 'datetime',
+            'tgl_selesai' => 'datetime',
+        ];
+    }
+
     public function unit() { return $this->belongsTo(Unit::class); }
     public function pelapor() { return $this->belongsTo(User::class, 'user_id'); }
     public function staf() { return $this->belongsTo(User::class, 'staff_id'); }

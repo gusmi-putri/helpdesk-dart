@@ -45,10 +45,9 @@ export interface ActivityLog {
 // ==========================================
 const MOCK_USERS: User[] = [
   { id: 'USR-001', username: 'admin', name: 'Komandan Pusat', role: 'Admin', status: 'Aktif', lastLogin: 'Baru saja' },
-  { id: 'USR-002', username: 'pelapor', name: 'Sersan Budi', role: 'Pelapor', status: 'Aktif', lastLogin: '2 Jam lalu' },
-  { id: 'USR-003', username: 'staf', name: 'Kopral Jono', role: 'Staf', status: 'Aktif', lastLogin: '5 Menit lalu' },
-  { id: 'USR-004', username: 'teknisi', name: 'Sertu Bambang', role: 'Teknisi', status: 'Aktif', lastLogin: '1 Hari lalu' },
-  { id: 'USR-005', username: 'wira', name: 'Pratu Wira', role: 'Teknisi', status: 'Aktif', lastLogin: '4 Hari lalu' },
+  { id: 'USR-002', username: 'pelapor1', name: 'Pos Pantau Alpha', role: 'Pelapor', status: 'Aktif', lastLogin: '2 Jam lalu' },
+  { id: 'USR-003', username: 'staf1', name: 'Staf Komando 01', role: 'Staf', status: 'Aktif', lastLogin: '5 Menit lalu' },
+  { id: 'USR-004', username: 'teknisi1', name: 'Teknisi Alfa', role: 'Teknisi', status: 'Aktif', lastLogin: '1 Hari lalu' },
 ];
 
 const INITIAL_REPORTS: Report[] = [
@@ -211,7 +210,7 @@ export const useStore = create<AppState>()(
       }
     }),
     {
-      name: 'helpdesk-dart-storage', 
+      name: 'helpdesk-dart-storage-v2', 
     }
   )
 );

@@ -18,17 +18,18 @@ class DashboardController extends Controller
                 'db_id' => $report->id,
                 'status' => strtoupper($report->status_laporan),
                 'kerusakan' => [
-                    'tanggal' => $report->tanggal_lapor->format('d F Y, H:i'),
+                    'tanggal' => $report->tanggal_lapor ? $report->tanggal_lapor->format('d F Y, H:i') : '-',
                     'pelapor' => $report->pelapor ? $report->pelapor->nama_lengkap : 'Unknown',
                     'lokasi' => $report->unit ? $report->unit->asal_satuan : 'Unknown',
                     'barangRusak' => $report->unit ? $report->unit->nama_dart : 'Hardware Anonim',
                     'deskripsi' => $report->deskripsi_kerusakan,
                 ],
                 'perbaikan' => [
+                    'teknisi_id' => $report->teknisi_id,
                     'teknisi' => $report->teknisi ? $report->teknisi->nama_lengkap : null,
                     'tanggalPenanganan' => $report->tgl_ditunjuk ? $report->tgl_ditunjuk->format('d F Y, H:i') : null,
                     'tindakan' => $report->catatan_teknisi,
-                    'sukuCadang' => null, // Not in new schema yet or handled differently
+                    'sukuCadang' => null, 
                     'statusPerbaikan' => $report->status_laporan === 'Selesai' ? 'TUNTAS' : ($report->status_laporan === 'Proses' ? 'DIKERJAKAN' : 'MENUNGGU'),
                 ]
             ];
@@ -43,8 +44,9 @@ class DashboardController extends Controller
                 'db_id' => $u->id,
                 'id' => 'USR-'.str_pad($u->id, 3, '0', STR_PAD_LEFT),
                 'name' => $u->nama_lengkap,
+                'username' => $u->username,
                 'role' => $u->role ? $u->role->nama_role : 'No Role',
-                'status' => 'Aktif', // Default
+                'status' => 'Aktif',
                 'lastLogin' => 'Baru saja'
             ];
         });
@@ -75,9 +77,7 @@ class DashboardController extends Controller
 
     public function pelapor()
     {
-        // For now using the first pelapor found as mock auth context
-        $user = User::whereHas('role', function($q) { $q->where('nama_role', 'Pelapor'); })->first();
-        $cases = $this->formatReports(Report::where('user_id', $user->id));
+        $cases = $this->formatReports(Report::query()); // Filtered in frontend for now or we can filter here
         $units = \App\Models\Unit::all();
         
         return Inertia::render('Helpdesk/DashboardPelapor', [
@@ -97,8 +97,19 @@ class DashboardController extends Controller
     public function staf()
     {
         $cases = $this->formatReports(Report::query());
+        $technicians = User::whereHas('role', function($q) {
+            $q->where('nama_role', 'Teknisi');
+        })->get()->map(function($u) {
+            return [
+                'id' => $u->id,
+                'name' => $u->nama_lengkap,
+                'username' => $u->username
+            ];
+        });
+
         return Inertia::render('Helpdesk/DashboardStaf', [
-            'dbCases' => $cases
+            'dbCases' => $cases,
+            'dbUsers' => $technicians
         ]);
     }
 }

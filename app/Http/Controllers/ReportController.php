@@ -34,7 +34,18 @@ class ReportController extends Controller
     public function handle(Request $request, $id)
     {
         $report = Report::findOrFail($id);
-        $teknisi = User::whereHas('role', function($q) { $q->where('nama_role', 'Teknisi'); })->first();
+        
+        $teknisi = null;
+        if ($request->has('teknisi_id')) {
+            $teknisi = User::find($request->teknisi_id);
+        } elseif ($request->has('teknisi_username')) {
+            $teknisi = User::where('username', $request->teknisi_username)->first();
+        }
+        
+        // Fallback jika tidak ditemukan
+        if (!$teknisi) {
+            $teknisi = User::whereHas('role', function($q) { $q->where('nama_role', 'Teknisi'); })->first();
+        }
 
         $report->update([
             'status_laporan' => 'Proses',
@@ -42,7 +53,7 @@ class ReportController extends Controller
             'tgl_ditunjuk' => now()
         ]);
 
-        return redirect()->back()->with('message', 'Tugas berhasil diambil alih!');
+        return redirect()->back()->with('message', 'Teknisi berhasil ditugaskan!');
     }
 
     public function complete(Request $request, $id)

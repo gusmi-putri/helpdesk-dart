@@ -12,6 +12,14 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
   // Note: Backend formatReports maps status_laporan to status (DIPROSES, PENDING, SELESAI)
   const tasks = dbCases.filter((r: any) => r.status === 'PROSES' || r.status === 'PENDING');
 
+  // Auto-polling untuk real-time sinkronisasi
+  useEffect(() => {
+    const interval = setInterval(() => {
+      router.reload({ only: ['dbCases'], preserveScroll: true, preserveState: true });
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const selectedTask = tasks.find((t: any) => t.db_id === selectedTaskId) || null;
 
@@ -43,7 +51,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
 
   const handleHandleTask = (taskId: number) => {
     setIsSubmitting(true);
-    router.post(`/reports/${taskId}/handle`, {}, {
+    router.post(`/reports/${taskId}/handle`, { teknisi_username: currentUser?.username }, {
       onSuccess: () => {
         alert(`[BERHASIL] Tugas telah diambil alih!`);
         setIsSubmitting(false);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ShieldAlert, Users, Database, Search,
   Edit, Trash2, Shield, Settings, LogOut,
@@ -37,6 +37,14 @@ const DashboardAdmin = (props: any) => {
   const [activeMenu, setActiveMenu] = useState<MenuTab>('REPORTS');
   const [activeSubReport, setActiveSubReport] = useState<SubMenuReport>('KERUSAKAN');
   const [isReportsExpanded, setIsReportsExpanded] = useState<boolean>(true);
+
+  // Auto-polling untuk real-time sinkronisasi
+  useEffect(() => {
+    const interval = setInterval(() => {
+      router.reload({ only: ['dbCases', 'dbUsers', 'dbLogs'], preserveScroll: true, preserveState: true });
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Data dari Global Store
   const currentUser = useStore(state => state.currentUser);
@@ -338,7 +346,7 @@ const DashboardAdmin = (props: any) => {
                   <td className="p-4">
                     <span className={`px-3 py-1.5 font-mono text-[10px] font-bold tracking-widest border shadow-inner
                       ${c.status === 'SELESAI' ? 'bg-green-900/30 text-green-500 border-green-800' :
-                        c.status === 'DIPROSES' ? 'bg-blue-900/30 text-blue-500 border-blue-800' :
+                        c.status === 'PROSES' ? 'bg-blue-900/30 text-blue-500 border-blue-800' :
                           'bg-targetred text-white border-targetred animate-pulse'}
                     `}>
                       {c.status}
