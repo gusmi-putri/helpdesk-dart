@@ -77,12 +77,20 @@ class DashboardController extends Controller
 
     public function pelapor()
     {
-        $cases = $this->formatReports(Report::query()); // Filtered in frontend for now or we can filter here
+        $cases = $this->formatReports(Report::query());
         $units = \App\Models\Unit::all();
+        $users = User::all()->map(function($u) {
+            return [
+                'db_id' => $u->id,
+                'username' => $u->username,
+                'name' => $u->nama_lengkap
+            ];
+        });
         
         return Inertia::render('Helpdesk/DashboardPelapor', [
             'dbCases' => $cases,
-            'dbUnits' => $units
+            'dbUnits' => $units,
+            'dbUsers' => $users
         ]);
     }
 

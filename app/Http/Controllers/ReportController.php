@@ -16,13 +16,20 @@ class ReportController extends Controller
         $request->validate([
             'unit_id' => 'required|exists:units,id',
             'deskripsi' => 'required|string',
+            'user_id' => 'nullable|exists:users,id'
         ]);
+        
+        $userId = $request->user_id;
 
-        $pelapor = User::whereHas('role', function($q) { $q->where('nama_role', 'Pelapor'); })->first();
+        // Fallback jika tidak ada user_id (misal masih development awal)
+        if (!$userId) {
+            $pelapor = User::whereHas('role', function($q) { $q->where('nama_role', 'Pelapor'); })->first();
+            $userId = $pelapor->id;
+        }
 
         Report::create([
             'unit_id' => $request->unit_id,
-            'user_id' => $pelapor->id,
+            'user_id' => $userId,
             'tanggal_lapor' => now(),
             'deskripsi_kerusakan' => $request->deskripsi,
             'status_laporan' => 'Pending'
