@@ -1,45 +1,30 @@
 import React, { useState } from 'react';
-import { router } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 import { useStore } from '@/store/useStore';
 
 const Login: React.FC = () => {
   const loginAction = useStore((state) => state.login);
 
-  // State manajemen form
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const { data, setData, post, processing, errors } = useForm({
+    username: '',
+    password: '',
+  });
 
-  // State untuk penanganan error & status loading/sukses
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
 
-  // ==========================================
-  // LOGIKA VALIDASI LOGIN DENGAN ZUSTAND
-  // ==========================================
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
     setSuccessMsg('');
-    setIsLoading(true);
 
-    // Simulasi delay jaringan (500ms) agar terasa nyata
-    setTimeout(() => {
-      // Panggil aksi login global
-      const user = loginAction(username);
-
-      if (user) {
-        setSuccessMsg(`Akses Diberikan. Redirecting ke Dashboard ${user.role}...`);
-
-        setTimeout(() => {
-          router.visit(`/${user.role.toLowerCase()}`);
-        }, 800);
-
-      } else {
-        setError('Akses Ditolak. Kredensial tidak valid atau tidak diizinkan.');
-        setIsLoading(false);
-      }
-    }, 500);
+    post('/login', {
+      onSuccess: (page) => {
+        const user = (page.props.auth as any).user;
+        if (user) {
+          loginAction(user);
+          setSuccessMsg(`Akses Diberikan. Redirecting ke Dashboard ${user.role}...`);
+        }
+      },
+    });
   };
 
   return (
@@ -67,10 +52,10 @@ const Login: React.FC = () => {
         </div>
 
         {/* Notifikasi Error */}
-        {error && (
+        {errors.auth && (
           <div className="mb-6 p-3 bg-red-900/40 border border-targetred text-targetred text-sm font-mono flex items-start">
             <span className="mr-2">❌</span>
-            <span>{error}</span>
+            <span>{errors.auth}</span>
           </div>
         )}
 
@@ -89,9 +74,9 @@ const Login: React.FC = () => {
             </label>
             <input
               type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full bg-white/60 dark:bg-white/60 dark:bg-black/60 border border-gray-300 dark:border-gray-700 text-gunmetal dark:text-white px-4 py-3 focus:outline-none focus:border-camogreen focus:ring-1 focus:ring-camogreen transition-colors font-mono"
+              value={data.username}
+              onChange={(e) => setData('username', e.target.value)}
+              className={`w-full bg-white/60 dark:bg-black/60 border ${errors.auth ? 'border-targetred' : 'border-gray-300 dark:border-gray-700'} text-gunmetal dark:text-white px-4 py-3 focus:outline-none focus:border-camogreen focus:ring-1 focus:ring-camogreen transition-colors font-mono`}
               placeholder="Masukkan ID..."
               required
             />
@@ -103,9 +88,9 @@ const Login: React.FC = () => {
             </label>
             <input
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-white/60 dark:bg-white/60 dark:bg-black/60 border border-gray-300 dark:border-gray-700 text-gunmetal dark:text-white px-4 py-3 focus:outline-none focus:border-camogreen focus:ring-1 focus:ring-camogreen transition-colors font-mono tracking-[0.2em]"
+              value={data.password}
+              onChange={(e) => setData('password', e.target.value)}
+              className={`w-full bg-white/60 dark:bg-black/60 border ${errors.auth ? 'border-targetred' : 'border-gray-300 dark:border-gray-700'} text-gunmetal dark:text-white px-4 py-3 focus:outline-none focus:border-camogreen focus:ring-1 focus:ring-camogreen transition-colors font-mono tracking-[0.2em]`}
               placeholder="••••••••"
               required
             />
@@ -113,13 +98,13 @@ const Login: React.FC = () => {
 
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={processing}
             className="w-full bg-targetred hover:bg-red-700 text-gunmetal dark:text-white font-tactical font-bold py-3 px-4 rounded-sm transition-all duration-300 uppercase tracking-widest flex justify-center items-center group relative overflow-hidden"
           >
             {/* Subtle sweep animation on hover */}
             <span className="absolute inset-0 w-full h-full bg-white/20 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
             <span className="relative">
-              {isLoading ? 'LOGIN...' : 'LOGIN'}
+              {processing ? 'LOGIN...' : 'LOGIN'}
             </span>
           </button>
         </form>
