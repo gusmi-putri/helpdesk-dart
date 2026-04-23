@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
+=======
+import React, { useState, useEffect } from 'react';
+>>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
 import {
   ShieldAlert, Users, Database, Search,
   Edit, Trash2, Shield, Settings, LogOut,
@@ -33,85 +37,99 @@ interface CaseData {
   };
 }
 
-const MOCK_CASES: CaseData[] = [
-  {
-    caseId: 'CASE-26-04-001',
-    status: 'SELESAI',
-    kerusakan: {
-      tanggal: '21 April 2026, 08:30',
-      pelapor: 'Pos Pantau Alpha',
-      lokasi: 'Menara Utara',
-      barangRusak: 'Kamera Thermal Sektor Utara',
-      deskripsi: 'Kamera memberikan tampilan blank memancarkan artefak hitam setelah cuaca buruk. Diperlukan penanganan cepat karena area blind spot.',
-    },
-    perbaikan: {
-      teknisi: 'Sertu Bambang',
-      tanggalPenanganan: '21 April 2026, 10:15',
-      tindakan: 'Melakukan kalibrasi ulang sensor thermal dan penggantian kabel optik yang terputus akibat gangguan cuaca.',
-      sukuCadang: 'Kabel Optik Mil-Spec, Lensa Sensor Cadangan',
-      statusPerbaikan: 'TUNTAS'
-    }
-  },
-  {
-    caseId: 'CASE-26-04-002',
-    status: 'PENDING',
-    kerusakan: {
-      tanggal: '21 April 2026, 09:15',
-      pelapor: 'Gudang Logistik',
-      lokasi: 'Bunker Bawah Tanah',
-      barangRusak: 'Sensor Pintu Baja Taktis',
-      deskripsi: 'Pintu baja otomatis macet total. Pemindai RF-ID berkedip merah terus-menerus dan menolak semua akses card level 3.',
-    },
-    perbaikan: {
-      teknisi: null,
-      tanggalPenanganan: null,
-      tindakan: null,
-      sukuCadang: null,
-      statusPerbaikan: 'MENUNGGU'
-    }
-  },
-  {
-    caseId: 'CASE-26-04-003',
-    status: 'DIPROSES',
-    kerusakan: {
-      tanggal: '21 April 2026, 11:20',
-      pelapor: 'Area Latihan B',
-      lokasi: 'Gudang Persenjataan',
-      barangRusak: 'Sistem Ventilasi Udara',
-      deskripsi: 'Kipas exhaust berdengung keras dan tidak menyedot udara dengan maksimal. Membuat suhu ruangan menjadi tidak stabil.',
-    },
-    perbaikan: {
-      teknisi: 'Pratu Wira',
-      tanggalPenanganan: '21 April 2026, 13:00',
-      tindakan: 'Sedang dilakukan pengecekan motor kipas dan dinamo. Membutuhkan izin kelistrikan sebelum mematikan panel utama.',
-      sukuCadang: '-',
-      statusPerbaikan: 'DIANALISA'
-    }
-  }
-];
-
-const DashboardAdmin: React.FC = () => {
+const DashboardAdmin = (props: any) => {
+  const { dbCases = [], dbUsers = [], dbLogs = [], dbRoles = [] } = props;
   const [activeMenu, setActiveMenu] = useState<MenuTab>('REPORTS');
   const [activeSubReport, setActiveSubReport] = useState<SubMenuReport>('KERUSAKAN');
   const [isReportsExpanded, setIsReportsExpanded] = useState<boolean>(true);
+<<<<<<< HEAD
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+=======
+
+  // Auto-polling untuk real-time sinkronisasi
+  useEffect(() => {
+    const interval = setInterval(() => {
+      router.reload({ only: ['dbCases', 'dbUsers', 'dbLogs'], preserveScroll: true, preserveState: true });
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+>>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
 
   // Data dari Global Store
   const currentUser = useStore(state => state.currentUser);
-  const MOCK_USERS = useStore(state => state.users);
-  const MOCK_LOGS = useStore(state => state.logs);
   const logoutAction = useStore(state => state.logout);
 
+<<<<<<< HEAD
+=======
+  // State for Add/Edit Modal
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isAddMode, setIsAddMode] = useState(false);
+  const [editingUser, setEditingUser] = useState<any>(null);
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+    nama_lengkap: '',
+    role_id: '',
+    asal_satuan: '',
+    no_wa: '',
+    spesialisasi: ''
+  });
+
+>>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
   // Handlers
   const handlePrintCasePDF = (caseData: CaseData) => {
     alert(`[SYSTEM COMMAND: GENERATE PDF]\nMempersiapkan Ekspor PDF untuk Kasus: ${caseData.caseId}\n\nMenggabungkan Dokumen:\n- Halaman 1: Formulir Lapor Kerusakan (Sumber: ${caseData.kerusakan.pelapor})\n- Halaman 2: Formulir Tindakan Perbaikan (Teknisi: ${caseData.perbaikan.teknisi || 'Belum Berjalan'})`);
     console.log("PDF Triggered for Case:", caseData);
   };
 
-  const handleEditUser = (name: string) => alert(`Membuka panel edit untuk petugas: ${name}`);
-  const handleDeleteUser = (name: string) => {
-    const confirm = window.confirm(`PERINGATAN PROTOKOL: Yakin ingin menghapus akses ${name} dari Sistem Utama?`);
-    if (confirm) console.log(`Data ${name} dihapus.`);
+  const handleAddUser = () => {
+    setIsAddMode(true);
+    setEditingUser(null);
+    setFormData({
+      username: '',
+      password: '',
+      nama_lengkap: '',
+      role_id: '',
+      asal_satuan: '',
+      no_wa: '',
+      spesialisasi: ''
+    });
+    setIsEditModalOpen(true);
+  };
+
+  const handleEditUser = (user: any) => {
+    setIsAddMode(false);
+    setEditingUser(user);
+    setFormData({
+      username: user.username || '',
+      password: '',
+      nama_lengkap: user.name,
+      role_id: user.role_id || '',
+      asal_satuan: user.asal_satuan || '',
+      no_wa: user.no_wa || '',
+      spesialisasi: user.spesialisasi || ''
+    });
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveUser = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isAddMode) {
+      router.post('/users', formData, {
+        onSuccess: () => setIsEditModalOpen(false),
+      });
+    } else {
+      router.put(`/users/${editingUser.db_id}`, formData, {
+        onSuccess: () => setIsEditModalOpen(false),
+      });
+    }
+  };
+
+  const handleDeleteUser = (user: any) => {
+    const confirm = window.confirm(`PERINGATAN PROTOKOL: Yakin ingin menghapus akses ${user.name} dari Sistem Utama?`);
+    if (confirm) {
+      router.delete(`/users/${user.db_id}`);
+    }
   };
 
   const handleLogout = () => {
@@ -139,9 +157,17 @@ const DashboardAdmin: React.FC = () => {
         <h3 className="text-gunmetal dark:text-white font-tactical font-bold text-lg tracking-widest flex items-center gap-3">
           <Users className="text-olive w-6 h-6" /> REPOSITORI PERSONEL
         </h3>
-        <div className="relative">
-          <Search className="w-4 h-4 absolute left-3 top-2.5 text-gray-600 dark:text-gray-500" />
-          <input type="text" placeholder="Cari ID / Nama..." className="bg-sand dark:bg-gunmetal border border-gray-600 pl-9 pr-4 py-2 text-sm font-mono text-gunmetal dark:text-white focus:outline-none focus:border-olive transition-colors w-64 shadow-inner" />
+        <div className="flex items-center gap-4">
+          <button
+            onClick={handleAddUser}
+            className="bg-olive hover:bg-camogreen text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-olive shadow-[0_0_15px_rgba(75,83,32,0.3)]"
+          >
+            <Shield className="w-4 h-4" /> TAMBAH PERSONEL
+          </button>
+          <div className="relative">
+            <Search className="w-4 h-4 absolute left-3 top-2.5 text-gray-600 dark:text-gray-500" />
+            <input type="text" placeholder="Cari ID / Nama..." className="bg-sand dark:bg-gunmetal border border-gray-600 pl-9 pr-4 py-2 text-sm font-mono text-gunmetal dark:text-white focus:outline-none focus:border-olive transition-colors w-64 shadow-inner" />
+          </div>
         </div>
       </div>
       <div className="overflow-x-auto">
@@ -157,8 +183,13 @@ const DashboardAdmin: React.FC = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-800">
+<<<<<<< HEAD
             {MOCK_USERS.map((u) => (
               <tr key={u.id} className="hover:bg-gray-200 dark:hover:bg-gray-800/80 transition-colors group">
+=======
+            {dbUsers.map((u: any) => (
+              <tr key={u.id} className="hover:bg-gray-200 dark:bg-gray-800/80 transition-colors group">
+>>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
                 <td className="p-4 font-mono text-gray-700 dark:text-gray-300 border-l-2 border-transparent group-hover:border-olive">{u.id}</td>
                 <td className="p-4 text-gunmetal dark:text-white font-bold">{u.name}</td>
                 <td className="p-4">
@@ -179,10 +210,10 @@ const DashboardAdmin: React.FC = () => {
                 </td>
                 <td className="p-4 text-gray-600 dark:text-gray-400 text-xs font-mono">{u.lastLogin}</td>
                 <td className="p-4 flex gap-2 justify-end">
-                  <button onClick={() => handleEditUser(u.name)} className="p-2 bg-gray-300 dark:bg-gray-800 hover:bg-olive hover:text-gunmetal dark:hover:text-white text-gray-700 dark:text-gray-300 transition-colors border border-gray-400 dark:border-gray-600">
+                  <button onClick={() => handleEditUser(u)} className="p-2 bg-gray-300 dark:bg-gray-800 hover:bg-olive hover:text-gunmetal dark:hover:text-white text-gray-700 dark:text-gray-300 transition-colors border border-gray-400 dark:border-gray-600">
                     <Edit className="w-4 h-4" />
                   </button>
-                  <button onClick={() => handleDeleteUser(u.name)} className="p-2 bg-gray-300 dark:bg-gray-800 hover:bg-targetred hover:text-white text-gray-700 dark:text-gray-300 transition-colors border border-gray-400 dark:border-gray-600">
+                  <button onClick={() => handleDeleteUser(u)} className="p-2 bg-gray-300 dark:bg-gray-800 hover:bg-targetred hover:text-white text-gray-700 dark:text-gray-300 transition-colors border border-gray-400 dark:border-gray-600">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </td>
@@ -214,7 +245,7 @@ const DashboardAdmin: React.FC = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-300 dark:divide-gray-800 text-gray-700 dark:text-gray-300 bg-sand dark:bg-gunmetal">
-            {MOCK_LOGS.map((log) => (
+            {dbLogs.map((log: any) => (
               <tr key={log.id} className="hover:bg-gray-200 dark:hover:bg-gray-800/50 group">
                 <td className="p-3 text-gray-600 dark:text-gray-500 border-l-2 border-transparent group-hover:border-yellow-400">{log.time}</td>
                 <td className="p-3">
@@ -245,10 +276,19 @@ const DashboardAdmin: React.FC = () => {
         <div className="relative z-10">
           <h2 className="text-2xl font-tactical font-bold text-gunmetal dark:text-white tracking-widest flex items-center gap-3">
             <Radar className="text-olive w-8 h-8 animate-spin-slow" />
+<<<<<<< HEAD
             {activeSubReport === 'KERUSAKAN' ? 'LAPORAN KERUSAKAN' : 'LAPORAN PERBAIKAN'}
           </h2>
           <p className="text-gray-600 dark:text-gray-400 font-mono text-xs mt-2 tracking-widest">
 
+=======
+            {activeSubReport === 'KERUSAKAN' ? 'DATABASE LAPORAN KERUSAKAN' : 'KENDALI LAPORAN PERBAIKAN'}
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400 font-mono text-xs mt-2 tracking-widest">
+            {activeSubReport === 'KERUSAKAN'
+              ? 'Kumpulan pelaporan insiden/kerusakan yang disubmit oleh Pelapor.'
+              : 'Progres penanganan dan status teknisi pada masing-masing kasus.'}
+>>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
           </p>
         </div>
       </div>
@@ -278,7 +318,7 @@ const DashboardAdmin: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-300 dark:divide-gray-800">
-              {MOCK_CASES.map((c) => (
+              {dbCases.map((c: CaseData) => (
                 <tr key={c.caseId} className="hover:bg-gray-200 dark:hover:bg-gray-800/60 transition-colors group text-gunmetal dark:text-gray-200">
                   <td className="p-4 font-mono text-olive font-bold border-l-2 border-transparent group-hover:border-olive">
                     {c.caseId}
@@ -330,7 +370,11 @@ const DashboardAdmin: React.FC = () => {
                   <td className="p-4">
                     <span className={`px-3 py-1.5 font-mono text-[10px] font-bold tracking-widest border shadow-inner
                       ${c.status === 'SELESAI' ? 'bg-green-900/30 text-green-500 border-green-800' :
+<<<<<<< HEAD
                         c.status === 'DIPROSES' ? 'bg-blue-900/30 text-blue-500 border-blue-800' :
+=======
+                        c.status === 'PROSES' ? 'bg-blue-900/30 text-blue-500 border-blue-800' :
+>>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
                           'bg-targetred text-white border-targetred animate-pulse'}
                     `}>
                       {c.status}
@@ -362,6 +406,7 @@ const DashboardAdmin: React.FC = () => {
   return (
     <div className="min-h-screen bg-sand dark:bg-gunmetal flex font-sans selection:bg-olive selection:text-gunmetal relative text-gunmetal dark:text-gray-200">
 
+<<<<<<< HEAD
       {/* MOBILE OVERLAY */}
       {isMobileMenuOpen && (
         <div 
@@ -370,6 +415,8 @@ const DashboardAdmin: React.FC = () => {
         />
       )}
 
+=======
+>>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
       {/* MAN SIDEBAR - TACTICAL */}
       <aside className={`fixed inset-y-0 left-0 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 w-72 bg-white dark:bg-black border-r border-gray-300 dark:border-gray-800 z-50 flex-shrink-0 flex flex-col shadow-2xl`}>
         {/* Brand */}
@@ -384,6 +431,11 @@ const DashboardAdmin: React.FC = () => {
 
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto custom-scrollbar py-6">
+<<<<<<< HEAD
+=======
+          <p className="px-6 text-[10px] font-mono font-bold tracking-widest text-gray-600 dark:text-gray-500 mb-4">MAIN MODULES //:</p>
+
+>>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
           <div className="space-y-1">
             {/* Manajemen Personel */}
             <button
@@ -448,8 +500,16 @@ const DashboardAdmin: React.FC = () => {
 
         {/* Utilities */}
         <div className="p-4 border-t border-gray-300 dark:border-gray-800 bg-gray-100 dark:bg-[#111]">
+<<<<<<< HEAD
           <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-500 hover:text-targetred hover:bg-red-900/20 mt-1 font-tactical text-sm tracking-wider transition-all rounded-sm">
             <LogOut className="w-5 h-5" /> LOGOUT
+=======
+          <button className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-500 hover:text-gunmetal dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-800 font-tactical text-sm tracking-wider transition-all rounded-sm">
+            <Settings className="w-5 h-5" /> KONFIGURASI
+          </button>
+          <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-500 hover:text-targetred hover:bg-red-900/20 mt-1 font-tactical text-sm tracking-wider transition-all rounded-sm">
+            <LogOut className="w-5 h-5" /> TERMINASI SESI
+>>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
           </button>
         </div>
       </aside>
@@ -458,6 +518,16 @@ const DashboardAdmin: React.FC = () => {
       <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
         {/* Tactical Grid Background Overlay */}
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03] pointer-events-none"></div>
+<<<<<<< HEAD
+=======
+
+        {/* Topbar */}
+        <header className="h-16 border-b border-gray-300 dark:border-gray-800 bg-white/80 dark:bg-black/50 backdrop-blur-md flex items-center justify-between px-8 flex-shrink-0 z-10 relative">
+          <div className="flex items-center gap-4">
+            <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.8)] animate-pulse"></div>
+            <h2 className="font-mono text-xs text-gray-600 dark:text-gray-400 tracking-widest hidden sm:block">STATUS JARINGAN: <span className="text-green-500 font-bold">TERENKRIPSI 256-BIT</span></h2>
+          </div>
+>>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
 
         {/* Topbar */}
         <header className="h-16 border-b border-gray-300 dark:border-gray-800 bg-white/80 dark:bg-black/50 backdrop-blur-md flex items-center justify-between px-4 md:px-8 flex-shrink-0 z-10 relative">
@@ -488,6 +558,106 @@ const DashboardAdmin: React.FC = () => {
           </div>
         </div>
       </main>
+
+      {/* EDIT USER MODAL */}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-sand dark:bg-gunmetal border-2 border-olive w-full max-w-md shadow-[0_0_50px_rgba(75,83,32,0.3)] animate-in zoom-in-95 duration-200">
+            <div className="p-4 border-b border-olive bg-olive/10 flex justify-between items-center">
+              <h3 className="font-tactical font-bold text-olive tracking-widest uppercase">PENGATURAN PERSONEL</h3>
+              <button onClick={() => setIsEditModalOpen(false)} className="text-gray-500 hover:text-targetred">✕</button>
+            </div>
+            <form onSubmit={handleSaveUser} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto custom-scrollbar">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {isAddMode && (
+                  <>
+                    <div>
+                      <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Username</label>
+                      <input
+                        type="text"
+                        value={formData.username}
+                        onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                        className="w-full bg-white dark:bg-black border border-gray-400 dark:border-gray-700 p-2 text-sm font-mono focus:border-olive outline-none"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Password</label>
+                      <input
+                        type="password"
+                        value={formData.password}
+                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                        className="w-full bg-white dark:bg-black border border-gray-400 dark:border-gray-700 p-2 text-sm font-mono focus:border-olive outline-none"
+                        required={isAddMode}
+                      />
+                    </div>
+                  </>
+                )}
+                <div className={isAddMode ? 'col-span-2' : 'col-span-2'}>
+                  <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Nama Lengkap</label>
+                  <input
+                    type="text"
+                    value={formData.nama_lengkap}
+                    onChange={(e) => setFormData({ ...formData, nama_lengkap: e.target.value })}
+                    className="w-full bg-white dark:bg-black border border-gray-400 dark:border-gray-700 p-2 text-sm font-mono focus:border-olive outline-none"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Hak Akses (Role)</label>
+                  <select
+                    value={formData.role_id}
+                    onChange={(e) => setFormData({ ...formData, role_id: e.target.value })}
+                    className="w-full bg-white dark:bg-black border border-gray-400 dark:border-gray-700 p-2 text-sm font-mono focus:border-olive outline-none"
+                    required
+                  >
+                    <option value="">PILIH ROLE</option>
+                    {dbRoles?.map((role: any) => (
+                      <option key={role.id} value={role.id}>{role.name.toUpperCase()}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">No. WhatsApp</label>
+                  <input
+                    type="text"
+                    value={formData.no_wa}
+                    onChange={(e) => setFormData({ ...formData, no_wa: e.target.value })}
+                    className="w-full bg-white dark:bg-black border border-gray-400 dark:border-gray-700 p-2 text-sm font-mono focus:border-olive outline-none"
+                    placeholder="08..."
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Asal Satuan</label>
+                  <input
+                    type="text"
+                    value={formData.asal_satuan}
+                    onChange={(e) => setFormData({ ...formData, asal_satuan: e.target.value })}
+                    className="w-full bg-white dark:bg-black border border-gray-400 dark:border-gray-700 p-2 text-sm font-mono focus:border-olive outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Spesialisasi</label>
+                  <input
+                    type="text"
+                    value={formData.spesialisasi}
+                    onChange={(e) => setFormData({ ...formData, spesialisasi: e.target.value })}
+                    className="w-full bg-white dark:bg-black border border-gray-400 dark:border-gray-700 p-2 text-sm font-mono focus:border-olive outline-none"
+                  />
+                </div>
+              </div>
+              <div className="pt-4 flex gap-2">
+                <button type="submit" className="flex-1 bg-olive text-white py-2 font-tactical font-bold tracking-widest hover:bg-camogreen transition-colors">
+                  {isAddMode ? 'DAFTARKAN PERSONEL' : 'SIMPAN PERUBAHAN'}
+                </button>
+                <button type="button" onClick={() => setIsEditModalOpen(false)} className="flex-1 bg-transparent border border-gray-500 text-gray-500 py-2 font-tactical font-bold tracking-widest hover:bg-gray-500/10 transition-colors">
+                  BATAL
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,16 +1,19 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
 import { UserCog, AlertTriangle, CheckCircle, Clock, LogOut, ShieldAlert, Users, Database, Shield, Activity, Menu, X, CircleUser } from 'lucide-react';
+=======
+import React, { useState, useEffect } from 'react';
+import { UserCog, AlertTriangle, CheckCircle, Clock, LogOut, ShieldAlert, Users, Database, Shield, Activity } from 'lucide-react';
+>>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
 import { useStore } from '@/store/useStore';
 import { router } from '@inertiajs/react';
 
-const DashboardStaf: React.FC = () => {
-  const reports = useStore(state => state.reports);
-  const users = useStore(state => state.users);
-  const assignTechnician = useStore(state => state.assignTechnician);
+const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
   const currentUser = useStore(state => state.currentUser);
   const logoutAction = useStore(state => state.logout);
 
   const [activeMenu, setActiveMenu] = useState<'MASUK' | 'SELESAI'>('MASUK');
+<<<<<<< HEAD
   const [assigningReportId, setAssigningReportId] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
@@ -19,6 +22,25 @@ const DashboardStaf: React.FC = () => {
   const handleAssignTechnician = (reportId: string, idTeknisi: string) => {
     assignTechnician(reportId, idTeknisi);
     setAssigningReportId(null);
+=======
+  const [assigningReportId, setAssigningReportId] = useState<number | null>(null);
+
+  // Auto-polling untuk real-time sinkronisasi
+  useEffect(() => {
+    const interval = setInterval(() => {
+      router.reload({ only: ['dbCases', 'dbUsers'], preserveScroll: true, preserveState: true });
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+  
+  const handleAssignTechnician = (reportId: number, idTeknisi: number) => {
+    router.post(`/reports/${reportId}/handle`, { teknisi_id: idTeknisi }, {
+      onSuccess: () => {
+        setAssigningReportId(null);
+        alert('Teknisi berhasil ditugaskan ke lapangan!');
+      }
+    });
+>>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
   };
 
   const handleLogout = () => {
@@ -26,19 +48,19 @@ const DashboardStaf: React.FC = () => {
     router.visit('/login');
   };
 
-  const incomingReports = reports.filter((r) => r.status === 'PENDING' || r.status === 'DIPROSES');
-  const completedReports = reports.filter((r) => r.status === 'SELESAI');
+  const incomingReports = dbCases.filter((r: any) => r.status === 'PENDING' || r.status === 'PROSES');
+  const completedReports = dbCases.filter((r: any) => r.status === 'SELESAI');
 
   const renderMasuk = () => (
     <div className="animate-in fade-in space-y-6 mt-6">
       <div className="flex gap-4">
         <div className="bg-white/60 dark:bg-black/60 border border-targetred p-4 flex-1 shadow-md">
           <span className="text-gray-600 dark:text-gray-400 font-tactical text-xs tracking-wider block mb-1">ANTREAN PENDING</span>
-          <span className="text-targetred font-mono text-3xl font-bold">{incomingReports.filter(r => r.status === 'PENDING').length}</span>
+          <span className="text-targetred font-mono text-3xl font-bold">{incomingReports.filter((r: any) => r.status === 'PENDING').length}</span>
         </div>
         <div className="bg-white/60 dark:bg-black/60 border border-blue-600 p-4 flex-1 shadow-md">
           <span className="text-gray-600 dark:text-gray-400 font-tactical text-xs tracking-wider block mb-1">SEDANG DIPROSES</span>
-          <span className="text-blue-500 font-mono text-3xl font-bold">{incomingReports.filter(r => r.status === 'DIPROSES').length}</span>
+          <span className="text-blue-500 font-mono text-3xl font-bold">{incomingReports.filter((r: any) => r.status === 'PROSES').length}</span>
         </div>
       </div>
 
@@ -65,22 +87,22 @@ const DashboardStaf: React.FC = () => {
                   </td>
                 </tr>
               )}
-              {incomingReports.map((report) => (
-                <tr key={report.id} className="hover:bg-gray-200 dark:hover:bg-gray-800/30 transition-colors text-gunmetal dark:text-white">
+              {incomingReports.map((report: any) => (
+                <tr key={report.db_id} className="hover:bg-gray-200 dark:hover:bg-gray-800/30 transition-colors text-gunmetal dark:text-white">
                   <td className="p-4">
                     <span className="font-mono font-bold text-sm bg-white dark:bg-black px-2 py-1 border border-gray-300 dark:border-gray-700 block text-center w-fit">
-                      {report.id}
+                      {report.caseId}
                     </span>
                   </td>
                   <td className="p-4">
-                    <div className="font-bold text-sm">{report.pelapor}</div>
+                    <div className="font-bold text-sm">{report.kerusakan.pelapor}</div>
                     <div className="text-gray-600 dark:text-gray-400 text-xs font-mono mt-1 flex items-center gap-1">
-                      <Clock className="w-3 h-3" /> {report.tanggalLapor}
+                      <Clock className="w-3 h-3" /> {report.kerusakan.tanggal}
                     </div>
                   </td>
                   <td className="p-4">
-                    <div className="font-bold mb-1">{report.barangRusak}</div>
-                    <div className="text-gray-700 dark:text-gray-400 text-xs">LOK: {report.lokasi}</div>
+                    <div className="font-bold mb-1">{report.kerusakan.barangRusak}</div>
+                    <div className="text-gray-700 dark:text-gray-400 text-xs">LOK: {report.kerusakan.lokasi}</div>
                   </td>
                   <td className="p-4">
                     {report.status === 'PENDING' ? (
@@ -94,6 +116,7 @@ const DashboardStaf: React.FC = () => {
                     )}
                   </td>
                   <td className="p-4 text-center">
+<<<<<<< HEAD
                     {report.status === 'PENDING' ? (
                       <div className="relative inline-block w-full">
                         {assigningReportId === report.id ? (
@@ -135,6 +158,49 @@ const DashboardStaf: React.FC = () => {
                         </span>
                       </div>
                     )}
+=======
+                      {report.status === 'PENDING' ? (
+                        <div className="relative inline-block w-full">
+                          {assigningReportId === report.db_id ? (
+                            <div className="bg-white dark:bg-[#1a2024] border border-olive p-2 rounded-sm absolute right-0 top-0 w-64 z-20 shadow-2xl text-left">
+                              <h4 className="text-gray-600 dark:text-gray-400 text-xs font-tactical mb-2">PILIH PERSONEL TEKNISI:</h4>
+                              <div className="space-y-1">
+                                {dbUsers.map((tek: any) => (
+                                  <button 
+                                    key={tek.id}
+                                    onClick={() => handleAssignTechnician(report.db_id, tek.id)}
+                                    className="w-full text-left px-3 py-2 text-xs text-gunmetal dark:text-white bg-gray-100 hover:bg-olive dark:bg-black dark:hover:bg-olive hover:text-gunmetal font-bold transition-colors flex justify-between items-center"
+                                  >
+                                    <span>{tek.name}</span>
+                                    <span className="font-mono text-[10px] text-gray-500">{tek.id}</span>
+                                  </button>
+                                ))}
+                              </div>
+                              <button 
+                                onClick={() => setAssigningReportId(null)}
+                                className="mt-2 w-full text-[10px] text-gray-600 hover:text-targetred py-1 border border-transparent hover:border-targetred/30 transition-colors font-tactical tracking-widest"
+                              >
+                                [ BATALKAN ]
+                              </button>
+                            </div>
+                          ) : (
+                            <button 
+                              onClick={() => setAssigningReportId(report.db_id)}
+                              className="bg-targetred hover:bg-red-800 text-white w-full py-2 flex items-center justify-center font-tactical text-[11px] font-bold tracking-widest transition-all shadow-md"
+                            >
+                              TUGASKAN TEKNISI
+                            </button>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="text-gray-600 dark:text-gray-400 text-[10px] font-mono border border-gray-300 dark:border-gray-800 p-2 bg-gray-100 dark:bg-[#111]">
+                          [ TEKNISI DITUGASKAN ] <br/>
+                          <span className="text-blue-600 dark:text-blue-400 font-bold block mt-1 text-xs">
+                            {report.perbaikan.teknisi}
+                          </span>
+                        </div>
+                      )}
+>>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
                   </td>
                 </tr>
               ))}
@@ -158,30 +224,31 @@ const DashboardStaf: React.FC = () => {
                 <th className="p-4 w-32">ID LAPORAN</th>
                 <th className="p-4">DETAIL KERUSAKAN</th>
                 <th className="p-4">PELAKSANA (TEKNISI)</th>
-                <th className="p-4">CATATAN PERBAIKAN DARI TEKNISI</th>
+                <th className="p-4">CATATAN PERBAIKAN</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-300 dark:divide-gray-800 text-gunmetal dark:text-white">
               {completedReports.length === 0 && (
                 <tr>
                   <td colSpan={4} className="p-8 text-center text-gray-600 dark:text-gray-500 font-mono">
-                    BELUM ADA DATA ARSIP PERBAIKAN YANG DISELESAIKAN HARI INI.
+                    BELUM ADA DATA ARSIP PERBAIKAN.
                   </td>
                 </tr>
               )}
-              {completedReports.map((report) => (
-                <tr key={report.id} className="hover:bg-gray-200 dark:hover:bg-gray-800/30 transition-colors">
+              {completedReports.map((report: any) => (
+                <tr key={report.db_id} className="hover:bg-gray-200 dark:hover:bg-gray-800/30 transition-colors">
                   <td className="p-4">
                     <span className="font-mono text-gray-600 dark:text-gray-400 text-sm bg-white dark:bg-black px-2 py-1 border border-gray-300 dark:border-gray-700 block w-fit">
-                      {report.id}
+                      {report.caseId}
                     </span>
                     <div className="mt-2 text-green-600 dark:text-green-500 text-[10px] font-mono font-bold flex items-center gap-1">
                       <CheckCircle className="w-3 h-3" /> BERHASIL CLEAR
                     </div>
                   </td>
                   <td className="p-4">
-                    <div className="font-bold text-sm mb-1">{report.barangRusak}</div>
+                    <div className="font-bold text-sm mb-1">{report.kerusakan.barangRusak}</div>
                     <div className="text-gray-700 dark:text-gray-400 text-xs font-mono w-full max-w-sm">
+<<<<<<< HEAD
                       Masuk: {report.tanggalLapor} <br />
                       Selesai: <span className="text-gunmetal dark:text-white font-bold">{report.waktuPenyelesaian || '-'}</span>
                     </div>
@@ -199,6 +266,25 @@ const DashboardStaf: React.FC = () => {
                       <span className="absolute top-1 left-2 text-xl text-gray-400 dark:text-gray-600 font-serif">"</span>
                       <span className="pl-4 block italic font-serif leading-relaxed">{report.catatanTeknisi}</span>
                     </div>
+=======
+                        Masuk: {report.kerusakan.tanggal} <br/>
+                        Selesai: <span className="text-gunmetal dark:text-white font-bold">{report.perbaikan.tanggalPenanganan || '-'}</span>
+                    </div>
+                  </td>
+                  <td className="p-4">
+                      <div className="text-sm font-bold">
+                        {report.perbaikan.teknisi}
+                      </div>
+                      <div className="text-gray-600 dark:text-gray-500 text-[10px] font-mono mt-1">
+                        KODE OP: {report.db_id}
+                      </div>
+                  </td>
+                  <td className="p-4">
+                      <div className="bg-white dark:bg-black/50 p-4 border-l-4 border-green-700 text-sm text-gray-800 dark:text-gray-300 relative shadow-inner">
+                        <span className="absolute top-1 left-2 text-xl text-gray-400 dark:text-gray-600 font-serif">"</span>
+                        <span className="pl-4 block italic font-serif leading-relaxed">{report.perbaikan.tindakan}</span>
+                      </div>
+>>>>>>> 6467b13e2edc2594387b86f9a7f8877889317944
                   </td>
                 </tr>
               ))}
