@@ -11,11 +11,11 @@ type SubMenuReport = 'KERUSAKAN' | 'PERBAIKAN';
 type MenuTab = 'USERS' | 'LOGS' | 'REPORTS' | 'SETTINGS';
 
 // ==========================================
-// RELATIONAL MOCK DATA (CASES)
+// RELATIONAL DATABASE DATA INTERFACES
 // ==========================================
 interface CaseData {
   caseId: string;
-  status: 'PENDING' | 'DIPROSES' | 'SELESAI';
+  status: 'PENDING' | 'PROSES' | 'SELESAI';
   kerusakan: {
     tanggal: string;
     pelapor: string;
@@ -41,7 +41,7 @@ const DashboardAdmin = (props: any) => {
   // Auto-polling untuk real-time sinkronisasi
   useEffect(() => {
     const interval = setInterval(() => {
-      router.reload({ only: ['dbCases', 'dbUsers', 'dbLogs'], preserveScroll: true, preserveState: true });
+      router.reload({ only: ['dbCases', 'dbUsers', 'dbLogs'] });
     }, 3000);
     return () => clearInterval(interval);
   }, []);
