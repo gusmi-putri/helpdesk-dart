@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('username', 50)->unique();
             $table->string('password');
             $table->string('nama_lengkap', 100);
+            $table->string('nrp_nip', 50)->unique()->nullable();
             $table->string('asal_satuan', 100)->nullable();
             $table->string('no_wa', 20)->nullable();
             $table->string('spesialisasi', 100)->nullable();

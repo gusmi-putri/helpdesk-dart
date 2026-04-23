@@ -60,6 +60,7 @@ const DashboardAdmin = (props: any) => {
     username: '',
     password: '',
     nama_lengkap: '',
+    nrp_nip: '',
     role_id: '',
     asal_satuan: '',
     no_wa: '',
@@ -88,6 +89,7 @@ const DashboardAdmin = (props: any) => {
       username: user.username || '',
       password: '',
       nama_lengkap: user.name,
+      nrp_nip: user.nrp_nip || '',
       role_id: user.role_id || '',
       asal_satuan: user.asal_satuan || '',
       no_wa: user.no_wa || '',
@@ -534,10 +536,21 @@ const DashboardAdmin = (props: any) => {
                         type="text"
                         value={data.username}
                         onChange={(e) => setData('username', e.target.value)}
-                        className={`w-full bg-white dark:bg-black border ${errors.username ? 'border-red-500' : 'border-gray-400 dark:border-gray-700'} p-2 text-sm font-mono focus:border-olive outline-none`}
+                        className={`w-full bg-white dark:bg-black border ${errors.username ? 'border-red-500' : 'border-gray-400 dark:border-gray-700'} p-2 text-sm font-mono focus:border-olive outline-none uppercase`}
                         required
                       />
                       {errors.username && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.username}</p>}
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">NRP / NIP</label>
+                      <input
+                        type="text"
+                        value={data.nrp_nip}
+                        onChange={(e) => setData('nrp_nip', e.target.value)}
+                        className={`w-full bg-white dark:bg-black border ${errors.nrp_nip ? 'border-red-500' : 'border-gray-400 dark:border-gray-700'} p-2 text-sm font-mono focus:border-olive outline-none uppercase`}
+                        placeholder="MASUKKAN NRP/NIP"
+                      />
+                      {errors.nrp_nip && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.nrp_nip}</p>}
                     </div>
                     <div>
                       <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Password</label>
