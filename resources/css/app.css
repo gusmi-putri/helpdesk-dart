@@ -1,4 +1,8 @@
 @import "tailwindcss";
+@source "../views";
+@source "../js";
+
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --color-gunmetal: #1E293B;
