@@ -214,13 +214,12 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [] }: any) => 
             <img src="/logo.png" alt="DART Logo" className="w-12 h-14 object-contain" />
           </div>
           <div>
-            <h1 className="font-stencil text-2xl tracking-widest text-gunmetal dark:text-white leading-none">HELPDESK DART</h1>
+            <h1 className="font-stencil text-2xl tracking-widest text-gunmetal dark:text-white leading-none">HELPDESK-DART</h1>
           </div>
         </div>
 
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto custom-scrollbar py-6">
-          <p className="px-6 text-[10px] font-mono font-bold tracking-widest text-gray-600 dark:text-gray-500 mb-4 uppercase">MODUL PELAPORAN //:</p>
 
           <button
             onClick={() => { setActiveMenu('FORM'); setIsMobileMenuOpen(false); }}
