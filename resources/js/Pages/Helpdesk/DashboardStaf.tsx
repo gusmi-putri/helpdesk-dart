@@ -156,7 +156,7 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
     <div className="animate-in fade-in space-y-6 mt-6">
       <div className="bg-white/60 dark:bg-black/60 border border-gray-300 dark:border-gray-700 rounded-sm overflow-hidden shadow-xl">
         <div className="p-4 border-b border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-[#1a2024] flex items-center justify-between text-gunmetal dark:text-white">
-          <h3 className="font-tactical tracking-widest text-sm flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-500" /> ARSIP PENYELESAIAN (SELESAI)</h3>
+          <h3 className="font-tactical tracking-widest text-sm flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-500" /> ARSIP PENYELESAIAN (SELESAI) </h3>
         </div>
         <div className="overflow-x-auto p-2">
           <table className="w-full text-left font-sans">
@@ -233,12 +233,11 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
             <img src="/logo.png" alt="DART Logo" className="w-12 h-14 object-contain" />
           </div>
           <div>
-            <h1 className="font-stencil text-2xl tracking-widest text-gunmetal dark:text-white leading-none">HELPDESK DART</h1>
+            <h1 className="font-stencil text-2xl tracking-widest text-gunmetal dark:text-white leading-none">HELPDESK-DART</h1>
           </div>
         </div>
 
         <nav className="flex-1 py-6 space-y-1">
-          <p className="px-6 text-[10px] font-mono font-bold tracking-widest text-gray-600 dark:text-gray-500 mb-4 uppercase">MODUL STAF //:</p>
 
           <button
             onClick={() => { setActiveMenu('MASUK'); setIsMobileMenuOpen(false); }}
@@ -300,7 +299,7 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
                   {activeMenu === 'MASUK' ? 'MODUL PENUGASAN TEKNISI' : 'ARSIP DOKUMEN PENYELESAIAN'}
                 </h2>
                 <p className="text-xs font-mono text-gray-600 dark:text-gray-400 mt-1 uppercase tracking-widest">
-                  Sistem Manajemen dan Penyaluran Tiket Kerusakan Aset.
+                  Sistem Manajemen Pelaporan Kerusakan Dart.
                 </p>
               </div>
             </div>

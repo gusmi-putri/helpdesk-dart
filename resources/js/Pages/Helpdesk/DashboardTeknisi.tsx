@@ -71,15 +71,15 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
       <div className="xl:col-span-4 space-y-4">
         <div className="bg-white/60 dark:bg-black/60 border-b-2 border-olive p-4 flex justify-between items-center shadow-md">
           <h2 className="text-gunmetal dark:text-white font-tactical font-bold tracking-widest text-lg flex items-center gap-2">
-            <Activity className="w-5 h-5 text-olive" /> TARGET OPERASI
+            <Activity className="w-5 h-5 text-olive" /> DAFTAR KERUSAKAN DART
           </h2>
-          <span className="bg-olive text-gunmetal font-bold text-xs px-2 py-1 font-mono">{tasks.length} KASUS</span>
+          <span className="bg-olive text-gunmetal font-bold text-xs px-2 py-1 font-mono">{tasks.length} KERUSKAN</span>
         </div>
 
         <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
           {tasks.length === 0 ? (
             <div className="p-6 border border-gray-300 dark:border-gray-800 bg-white/40 dark:bg-black/40 text-center font-mono text-gray-600 dark:text-gray-500 rounded-sm">
-              ZONA AMAN. STANDBY UNTUK INSTRUKSI SELANJUTNYA DARI STAF KOMANDO.
+              BELUM ADA LAPORAN KERUSAKAN, STANDBY UNTUK INSTRUKSI SELANJUTNYA...
             </div>
           ) : (
             tasks.map((task: any) => (
@@ -133,7 +133,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
             <Wrench className="w-20 h-20 text-gray-400 dark:text-gray-700 mb-6 opacity-30" />
             <h3 className="text-gray-600 dark:text-gray-500 font-tactical text-2xl tracking-widest mb-2 uppercase">MODE STANDBY AKTIF</h3>
             <p className="text-gray-600 dark:text-gray-500 font-mono text-sm max-w-md uppercase tracking-tighter">
-              Pilih satu target operasi pada daftar di sebelah kiri untuk meninjau instruksi kerusakan dan menuliskan format Berita Acara Perbaikan (BAP) kepada Staf.
+              Pilih satu laporan kerusakan pada daftar di sebelah kiri untuk meninjau instruksi kerusakan dan menuliskan format Berita Acara Perbaikan (BAP) kepada Staf.
             </p>
           </div>
         ) : (
@@ -186,7 +186,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
                   <textarea
                     value={catatan} onChange={(e) => setCatatan(e.target.value)} required rows={5}
                     className="w-full bg-sand dark:bg-gunmetal border border-gray-400 dark:border-gray-700 text-gunmetal dark:text-white p-4 focus:outline-none focus:border-olive transition-colors font-sans text-sm resize-y uppercase"
-                    placeholder="Contoh: Mengganti rotor dinamo kipas dengan nomor seri AX-901B. Melakukan penyesuaian voltase jalur sekunder..."
+                    placeholder="Contoh: Mengganti motor dart dengan nomor seri AX-901B. Melakukan penyesuaian kembali pada koneksi kabel..."
                   />
                 </div>
 
@@ -250,7 +250,6 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
         </div>
 
         <nav className="flex-1 py-6 space-y-1">
-          <p className="px-6 text-[10px] font-mono font-bold tracking-widest text-gray-600 dark:text-gray-500 mb-4 uppercase">MODUL TEKNISI //:</p>
 
           <button
             onClick={() => { setActiveMenu('TUGAS'); setIsMobileMenuOpen(false); }}
@@ -259,7 +258,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
             `}
           >
             <div className="flex items-center gap-3">
-              <Activity className="w-5 h-5" /> OPERATION TARGETS
+              <Activity className="w-5 h-5" /> DAFTAR KERUSAKAN
             </div>
             {tasks.length > 0 && (
               <span className="bg-targetred text-white text-[10px] w-5 h-5 flex items-center justify-center font-bold font-mono animate-pulse">
@@ -290,8 +289,6 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
               <Menu className="w-6 h-6" />
             </button>
             <div className="flex items-center gap-4">
-              <div className="w-2 h-2 rounded-full bg-olive shadow-[0_0_5px_rgba(75,83,32,0.8)] animate-pulse"></div>
-              <h2 className="font-mono text-xs text-gray-600 dark:text-gray-400 tracking-widest hidden sm:block uppercase">ZONA AKTIF: <span className="text-olive font-bold">SEKTOR KUNING (PERBAIKAN)</span></h2>
             </div>
           </div>
 
@@ -311,10 +308,10 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
           <div className="max-w-[1400px] mx-auto">
             <div className="mb-4 border-b border-gray-300 dark:border-gray-700 pb-4">
               <h2 className="text-2xl font-tactical font-bold text-gunmetal dark:text-white tracking-widest uppercase">
-                PORTAL AKSELERASI MEKANIS
+                PORTAL PERBAIKAN DART
               </h2>
               <p className="text-xs font-mono text-gray-600 dark:text-gray-400 mt-1 uppercase tracking-widest">
-                Pusat Instruksi & Penyerahan Berita Acara Perbaikan Tingkat II
+                Pusat Instruksi & Penyerahan Berita Acara Perbaikan DART
               </p>
             </div>
             {renderDashboard()}
