@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Wrench, MapPin, AlertCircle, Calendar, Send, FileText, ChevronRight, LogOut, Activity, ShieldAlert, CheckCircle2, Menu, X, CircleUser } from 'lucide-react';
 import { useStore } from '@/store/useStore';
-import { router } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 
 const DashboardTeknisi = ({ dbCases = [] }: any) => {
   // Zustand Global State
@@ -19,44 +19,38 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
     return () => clearInterval(interval);
   }, []);
 
+  const { data, setData, post, processing, reset, errors } = useForm({
+    catatan: '',
+    metode: 'Offline',
+    foto_selesai: null as File | null,
+  });
+
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
   const selectedTask = tasks.find((t: any) => t.db_id === selectedTaskId) || null;
 
   // Navigation Menu State
   const [activeMenu, setActiveMenu] = useState<'TUGAS'>('TUGAS');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
-  const [catatan, setCatatan] = useState('');
-  const [metode, setMetode] = useState('Offline');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const showNotification = (message: string, type: 'success' | 'error' = 'success') => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 4000);
+  };
 
   const handleSubmitLaporan = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedTask) return;
+    if (!selectedTaskId) return;
 
-    setIsSubmitting(true);
-    router.post(`/reports/${selectedTask.db_id}/complete`, {
-      catatan: catatan,
-      metode: metode
-    }, {
+    post(`/reports/${selectedTaskId}/complete`, {
       onSuccess: () => {
-        alert(`[BERHASIL] Log Penanganan untuk Kasus ${selectedTask.caseId} telah diserobot ke sistem pusat.`);
-        setCatatan('');
+        showNotification('LOG PENANGANAN TELAH DISEROBOT KE SISTEM PUSAT.');
+        reset();
         setSelectedTaskId(null);
-        setIsSubmitting(false);
       },
-      onError: () => setIsSubmitting(false)
-    });
-  };
-
-  const handleHandleTask = (taskId: number) => {
-    setIsSubmitting(true);
-    router.post(`/reports/${taskId}/handle`, { teknisi_username: currentUser?.username }, {
-      onSuccess: () => {
-        alert(`[BERHASIL] Tugas telah diambil alih!`);
-        setIsSubmitting(false);
-      },
-      onError: () => setIsSubmitting(false)
+      onError: () => {
+        showNotification('GAGAL MENGUNGGAH BAP. CEK PROTOKOL.', 'error');
+      }
     });
   };
 
@@ -111,14 +105,6 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
                     <MapPin className="w-3 h-3 mt-0.5 flex-shrink-0 text-olive" />
                     <span className="line-clamp-1 uppercase">{task.kerusakan.lokasi}</span>
                   </div>
-                  {task.status === 'PENDING' && (
-                    <button
-                      onClick={(e) => { e.stopPropagation(); handleHandleTask(task.db_id); }}
-                      className="text-[10px] bg-olive hover:bg-camogreen text-white px-2 py-1 font-tactical font-bold uppercase tracking-wider transition-colors"
-                    >
-                      AMBIL TUGAS
-                    </button>
-                  )}
                 </div>
               </div>
             ))
@@ -158,16 +144,27 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
                 </div>
               </div>
 
-              <div className="bg-white dark:bg-black/50 p-5 border border-gray-300 dark:border-gray-800 rounded-sm mt-4 relative">
-                <span className="absolute -top-3 left-4 bg-gray-50 dark:bg-[#1a2024] px-2 text-[10px] font-mono font-bold text-olive border-x border-gray-300 dark:border-gray-800 uppercase">Uraian Saksi / Pelapor</span>
-                <p className="text-sm text-gunmetal dark:text-gray-300 font-sans leading-relaxed italic border-l-2 border-gray-300 dark:border-gray-700 pl-4 mt-2 uppercase">
-                  {selectedTask.kerusakan.deskripsi}
-                </p>
-                <div className="flex justify-end mt-2">
-                  <span className="text-[10px] bg-gray-200 dark:bg-gray-800 px-2 py-1 font-mono text-gray-600 dark:text-gray-400 font-bold uppercase">
-                    SUMBER: {selectedTask.kerusakan.pelapor}
-                  </span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                <div className="bg-white dark:bg-black/50 p-5 border border-gray-300 dark:border-gray-800 rounded-sm relative">
+                  <span className="absolute -top-3 left-4 bg-gray-50 dark:bg-[#1a2024] px-2 text-[10px] font-mono font-bold text-olive border-x border-gray-300 dark:border-gray-800 uppercase">Uraian Saksi / Pelapor</span>
+                  <p className="text-sm text-gunmetal dark:text-gray-300 font-sans leading-relaxed italic border-l-2 border-gray-300 dark:border-gray-700 pl-4 mt-2 uppercase">
+                    {selectedTask.kerusakan.deskripsi}
+                  </p>
+                  <div className="flex justify-end mt-2">
+                    <span className="text-[10px] bg-gray-200 dark:bg-gray-800 px-2 py-1 font-mono text-gray-600 dark:text-gray-400 font-bold uppercase">
+                      SUMBER: {selectedTask.kerusakan.pelapor}
+                    </span>
+                  </div>
                 </div>
+
+                {selectedTask.kerusakan.foto_bukti && (
+                  <div className="border border-gray-300 dark:border-gray-800 rounded-sm overflow-hidden bg-black flex items-center justify-center group relative h-40 md:h-full">
+                    <img src={selectedTask.kerusakan.foto_bukti} alt="Bukti Kerusakan" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-3">
+                      <span className="text-[10px] font-mono text-white font-bold tracking-widest uppercase">FOTO KERUSAKAN TERLAMPIR</span>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -184,10 +181,29 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
                     Catatan Eksekusi & Penggantian Sparepart
                   </label>
                   <textarea
-                    value={catatan} onChange={(e) => setCatatan(e.target.value)} required rows={5}
-                    className="w-full bg-sand dark:bg-gunmetal border border-gray-400 dark:border-gray-700 text-gunmetal dark:text-white p-4 focus:outline-none focus:border-olive transition-colors font-sans text-sm resize-y uppercase"
+                    value={data.catatan} 
+                    onChange={(e) => setData('catatan', e.target.value)} 
+                    required rows={5}
+                    className={`w-full bg-sand dark:bg-gunmetal border ${errors.catatan ? 'border-red-500' : 'border-gray-400 dark:border-gray-700'} text-gunmetal dark:text-white p-4 focus:outline-none focus:border-olive transition-colors font-sans text-sm resize-y uppercase`}
                     placeholder="Contoh: Mengganti motor dart dengan nomor seri AX-901B. Melakukan penyesuaian kembali pada koneksi kabel..."
                   />
+                  {errors.catatan && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.catatan}</p>}
+                </div>
+
+                <div className="border-2 border-dashed border-gray-300 dark:border-gray-800 p-4 text-center hover:border-olive transition-all group cursor-pointer relative">
+                  <input 
+                    type="file" 
+                    accept="image/*"
+                    className="absolute inset-0 opacity-0 cursor-pointer" 
+                    onChange={(e) => setData('foto_selesai', e.target.files ? e.target.files[0] : null)}
+                  />
+                  <div className="flex items-center justify-center gap-3">
+                    <Activity className="w-5 h-5 text-gray-400 group-hover:text-olive transition-colors" />
+                    <span className="text-xs font-mono text-gray-500 group-hover:text-olive uppercase">
+                      {data.foto_selesai ? `[DOKUMEN: ${data.foto_selesai.name}]` : 'UNGGAH FOTO BUKTI SELESAI PERBAIKAN'}
+                    </span>
+                  </div>
+                  {errors.foto_selesai && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.foto_selesai}</p>}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
@@ -197,7 +213,8 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
                     </label>
                     <div className="relative">
                       <select
-                        value={metode} onChange={(e) => setMetode(e.target.value)}
+                        value={data.metode} 
+                        onChange={(e) => setData('metode', e.target.value)}
                         className="w-full bg-sand dark:bg-gunmetal border border-gray-400 dark:border-gray-700 text-gunmetal dark:text-white p-3.5 focus:outline-none focus:border-olive transition-colors font-tactical font-bold text-base tracking-widest appearance-none pr-10 uppercase"
                       >
                         <option value="Offline">METODE: OFFLINE (PENANGANAN LANGSUNG)</option>
@@ -208,10 +225,11 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
                   </div>
 
                   <button
-                    type="submit" disabled={isSubmitting}
+                    type="submit" 
+                    disabled={processing}
                     className="w-full bg-olive hover:bg-camogreen text-gunmetal dark:text-white font-tactical font-bold py-3.5 px-6 rounded-sm transition-all duration-300 uppercase tracking-widest flex justify-center items-center gap-2 shadow-lg disabled:opacity-50"
                   >
-                    {isSubmitting ? (
+                    {processing ? (
                       <span className="flex items-center gap-2"><span className="w-5 h-5 animate-spin border-2 border-gunmetal dark:border-white border-t-transparent rounded-full" /> MENGUNGGAH...</span>
                     ) : (
                       <><CheckCircle2 className="w-5 h-5" /> TANDAI TUGAS SELESAI</>
@@ -318,6 +336,28 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
           </div>
         </div>
       </main>
+
+      {/* TACTICAL NOTIFICATION OVERLAY */}
+      {notification && (
+        <div className="fixed bottom-8 right-8 z-[100] animate-in slide-in-from-right-10 duration-300">
+          <div className={`
+            flex items-center gap-4 p-4 border-l-4 shadow-2xl min-w-[320px] backdrop-blur-md
+            ${notification.type === 'success' 
+              ? 'bg-olive/90 border-gunmetal text-white' 
+              : 'bg-targetred/90 border-white text-white'}
+          `}>
+            <div className="bg-white/20 p-2 rounded-sm">
+              {notification.type === 'success' ? <CheckCircle2 className="w-6 h-6" /> : <ShieldAlert className="w-6 h-6" />}
+            </div>
+            <div>
+              <div className="text-[10px] font-mono font-bold tracking-[0.2em] opacity-70 uppercase">
+                {notification.type === 'success' ? 'SYSTEM NOTIFICATION' : 'ENCRYPTED ERROR'}
+              </div>
+              <div className="text-sm font-tactical tracking-widest font-bold uppercase">{notification.message}</div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

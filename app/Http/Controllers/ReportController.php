@@ -16,20 +16,24 @@ class ReportController extends Controller
         $request->validate([
             'unit_id' => 'required|exists:units,id',
             'deskripsi' => 'required|string',
-            'user_id' => 'nullable|exists:users,id'
+            'klasifikasi' => 'required|in:RINGAN,SEDANG,DARURAT',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
-        
-        $userId = $request->user_id;
 
-        // Fallback jika tidak ada user_id (misal masih development awal)
-        if (!$userId) {
-            $pelapor = User::whereHas('role', function($q) { $q->where('nama_role', 'Pelapor'); })->first();
-            $userId = $pelapor->id;
+        $fotoPath = null;
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('public/reports', $filename);
+            $fotoPath = $filename;
         }
-
+        
         Report::create([
             'unit_id' => $request->unit_id,
-            'user_id' => $userId,
+            'user_id' => $request->user()->id,
+            'lokasi_laporan' => $request->user()->asal_satuan,
+            'klasifikasi' => $request->klasifikasi,
+            'file_bukti' => $fotoPath,
             'tanggal_lapor' => now(),
             'deskripsi_kerusakan' => $request->deskripsi,
             'status_laporan' => 'Pending'
@@ -56,6 +60,7 @@ class ReportController extends Controller
 
         $report->update([
             'status_laporan' => 'Proses',
+            'staff_id' => $request->user()->id,
             'teknisi_id' => $teknisi->id,
             'tgl_ditunjuk' => now()
         ]);
@@ -68,13 +73,23 @@ class ReportController extends Controller
         $report = Report::findOrFail($id);
         $request->validate([
             'catatan' => 'required|string',
-            'metode' => 'required|in:Online,Offline'
+            'metode' => 'required|in:Online,Offline',
+            'foto_selesai' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
+
+        $fotoSelesai = $report->file_bukti_selesai;
+        if ($request->hasFile('foto_selesai')) {
+            $file = $request->file('foto_selesai');
+            $filename = 'done_' . time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('public/reports', $filename);
+            $fotoSelesai = $filename;
+        }
 
         $report->update([
             'status_laporan' => 'Selesai',
             'catatan_teknisi' => $request->catatan,
             'metode_perbaikan' => $request->metode,
+            'file_bukti_selesai' => $fotoSelesai,
             'tgl_selesai' => now()
         ]);
 

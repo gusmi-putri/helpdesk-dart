@@ -19,10 +19,13 @@ class DashboardController extends Controller
                 'status' => strtoupper($report->status_laporan),
                 'kerusakan' => [
                     'tanggal' => $report->tanggal_lapor ? $report->tanggal_lapor->format('d F Y, H:i') : '-',
+                    'pelapor_id' => $report->user_id,
                     'pelapor' => $report->pelapor ? $report->pelapor->nama_lengkap : 'Unknown',
-                    'lokasi' => $report->unit ? $report->unit->asal_satuan : 'Unknown',
+                    'lokasi' => $report->lokasi_laporan ?? ($report->unit ? $report->unit->asal_satuan : 'Unknown'),
                     'barangRusak' => $report->unit ? $report->unit->nama_dart : 'Hardware Anonim',
                     'deskripsi' => $report->deskripsi_kerusakan,
+                    'klasifikasi' => $report->klasifikasi ?? 'RINGAN',
+                    'foto_bukti' => $report->file_bukti ? asset('storage/reports/' . $report->file_bukti) : null,
                 ],
                 'perbaikan' => [
                     'teknisi_id' => $report->teknisi_id,
@@ -101,7 +104,9 @@ class DashboardController extends Controller
 
     public function teknisi()
     {
-        $cases = $this->formatReports(Report::query());
+        // Teknisi hanya melihat tugas yang diberikan kepadanya
+        $cases = $this->formatReports(Report::where('teknisi_id', auth()->id()));
+        
         return Inertia::render('Helpdesk/DashboardTeknisi', [
             'dbCases' => $cases
         ]);
@@ -110,13 +115,18 @@ class DashboardController extends Controller
     public function staf()
     {
         $cases = $this->formatReports(Report::query());
+        
+        // Hanya ambil teknisi yang tidak sedang memegang laporan status 'Proses'
         $technicians = User::whereHas('role', function($q) {
             $q->where('nama_role', 'Teknisi');
+        })->whereDoesntHave('reportsDitangani', function($q) {
+            $q->where('status_laporan', 'Proses');
         })->get()->map(function($u) {
             return [
                 'id' => $u->id,
                 'name' => $u->nama_lengkap,
-                'username' => $u->username
+                'username' => $u->username,
+                'spesialisasi' => $u->spesialisasi
             ];
         });
 

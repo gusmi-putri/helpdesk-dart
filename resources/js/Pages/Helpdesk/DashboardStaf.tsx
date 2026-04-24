@@ -10,6 +10,12 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
   const [activeMenu, setActiveMenu] = useState<'MASUK' | 'SELESAI'>('MASUK');
   const [assigningReportId, setAssigningReportId] = useState<number | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
+  const showNotification = (message: string, type: 'success' | 'error' = 'success') => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 4000);
+  };
 
   // Auto-polling untuk real-time sinkronisasi
   useEffect(() => {
@@ -23,7 +29,10 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
     router.post(`/reports/${reportId}/handle`, { teknisi_id: idTeknisi }, {
       onSuccess: () => {
         setAssigningReportId(null);
-        alert('Teknisi berhasil ditugaskan ke lapangan!');
+        showNotification('PERSONEL BERHASIL DITUGASKAN KE TITIK LAPORAN.');
+      },
+      onError: () => {
+        showNotification('GAGAL MENGHUBUNGI PERSONEL. CEK JARINGAN.', 'error');
       }
     });
   };
@@ -107,14 +116,17 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
                           <div className="bg-white dark:bg-[#1a2024] border border-olive p-2 rounded-sm absolute right-0 top-0 w-64 z-20 shadow-2xl text-left">
                             <h4 className="text-gray-600 dark:text-gray-400 text-xs font-tactical mb-2 uppercase">PILIH PERSONEL TEKNISI:</h4>
                             <div className="space-y-1">
-                              {dbUsers.filter((u: any) => u.role === 'Teknisi').map((tek: any) => (
+                              {dbUsers.map((tek: any) => (
                                 <button
                                   key={tek.id}
-                                  onClick={() => handleAssignTechnician(report.db_id, tek.db_id)}
-                                  className="w-full text-left px-3 py-2 text-xs text-gunmetal dark:text-white bg-gray-100 hover:bg-olive dark:bg-black dark:hover:bg-olive hover:text-gunmetal font-bold transition-colors flex justify-between items-center"
+                                  onClick={() => handleAssignTechnician(report.db_id, tek.id)}
+                                  className="w-full text-left px-3 py-2 text-xs text-gunmetal dark:text-white bg-gray-100 hover:bg-olive dark:bg-black dark:hover:bg-olive hover:text-gunmetal font-bold transition-colors flex justify-between items-center group"
                                 >
-                                  <span>{tek.name}</span>
-                                  <span className="font-mono text-[10px] text-gray-500">{tek.id}</span>
+                                  <div className="flex flex-col">
+                                    <span>{tek.name}</span>
+                                    <span className="text-[8px] text-olive font-mono">{tek.spesialisasi || 'GENERALIST'}</span>
+                                  </div>
+                                  <span className="font-mono text-[10px] text-gray-500 group-hover:text-gunmetal">{tek.username}</span>
                                 </button>
                               ))}
                             </div>
@@ -308,6 +320,28 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
           </div>
         </div>
       </main>
+
+      {/* TACTICAL NOTIFICATION OVERLAY */}
+      {notification && (
+        <div className="fixed bottom-8 right-8 z-[100] animate-in slide-in-from-right-10 duration-300">
+          <div className={`
+            flex items-center gap-4 p-4 border-l-4 shadow-2xl min-w-[320px] backdrop-blur-md
+            ${notification.type === 'success' 
+              ? 'bg-olive/90 border-gunmetal text-white' 
+              : 'bg-targetred/90 border-white text-white'}
+          `}>
+            <div className="bg-white/20 p-2 rounded-sm">
+              {notification.type === 'success' ? <CheckCircle className="w-6 h-6" /> : <ShieldAlert className="w-6 h-6" />}
+            </div>
+            <div>
+              <div className="text-[10px] font-mono font-bold tracking-[0.2em] opacity-70 uppercase">
+                {notification.type === 'success' ? 'SYSTEM NOTIFICATION' : 'ENCRYPTED ERROR'}
+              </div>
+              <div className="text-sm font-tactical tracking-widest font-bold uppercase">{notification.message}</div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

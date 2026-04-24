@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Send, History, AlertCircle, Clock, CheckCircle2, ChevronRight, Activity, Camera, LogOut, Shield, FilePlus, Menu, X, CircleUser, Wrench } from 'lucide-react';
 import { useStore, type ReportStatus } from '@/store/useStore';
-import { router } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 
 const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [] }: any) => {
   const [activeMenu, setActiveMenu] = useState<'FORM' | 'HISTORY'>('FORM');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
+  const showNotification = (message: string, type: 'success' | 'error' = 'success') => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 4000);
+  };
 
   // Ambil state dan aksi dari global store
   const currentUser = useStore(state => state.currentUser);
@@ -15,7 +21,7 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [] }: any) => 
   const dbUser = dbUsers.find((u: any) => u.username === currentUser?.username);
 
   // Ambil riwayat laporan milik user ini saja
-  const history = dbCases.filter((r: any) => r.kerusakan.pelapor === (dbUser?.name || currentUser?.name));
+  const history = dbCases.filter((r: any) => r.kerusakan.pelapor_id === dbUser?.db_id);
 
   // Auto-polling untuk real-time sinkronisasi
   useEffect(() => {
@@ -25,10 +31,14 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [] }: any) => 
     return () => clearInterval(interval);
   }, []);
 
-  // State Input Form
-  const [unitId, setUnitId] = useState('');
-  const [deskripsi, setDeskripsi] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  // State Form dengan useForm untuk menangani file upload
+  const { data, setData, post, processing, reset, errors } = useForm({
+    unit_id: '',
+    deskripsi: '',
+    klasifikasi: 'RINGAN',
+    foto: null as File | null,
+  });
+
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
   // Cari item terpilih dari dbCases agar data di modal selalu fresh saat polling
@@ -39,23 +49,15 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [] }: any) => 
   // ==========================================
   const handleSubmitNewReport = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
 
-    router.post('/reports', {
-      unit_id: unitId,
-      deskripsi: deskripsi,
-      user_id: dbUser?.db_id
-    }, {
+    post('/reports', {
       onSuccess: () => {
-        setUnitId('');
-        setDeskripsi('');
-        setIsSubmitting(false);
-        alert(`[SYSTEM] Laporan telah ditransmisikan ke Command Center.`);
+        reset();
+        showNotification('LAPORAN TELAH DITRANSMISIKAN KE COMMAND CENTER.');
         setActiveMenu('HISTORY');
       },
       onError: () => {
-        setIsSubmitting(false);
-        alert(`[ERROR] Gagal mengirim laporan. Periksa koneksi satelit.`);
+        showNotification('GAGAL MENGIRIM LAPORAN. CEK KONEKSI SATELIT.', 'error');
       }
     });
   };
@@ -86,42 +88,75 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [] }: any) => 
         </div>
 
         <form onSubmit={handleSubmitNewReport} className="space-y-6 relative z-10">
-          <div>
-            <label className="block text-[10px] font-mono font-bold text-gray-500 dark:text-gray-400 mb-2 tracking-widest uppercase">PILIH UNIT DART</label>
-            <select
-              value={unitId}
-              onChange={(e) => setUnitId(e.target.value)}
-              className="w-full bg-sand/50 dark:bg-black/50 border border-gray-300 dark:border-gray-700 p-3 text-sm font-mono text-gunmetal dark:text-white focus:outline-none focus:border-olive transition-colors"
-              required
-            >
-              <option value="">-- IDENTIFIKASI UNIT --</option>
-              {dbUnits.map((unit: any) => (
-                <option key={unit.id} value={unit.id}>
-                  {unit.nomor_seri} - {unit.nama_dart} ({unit.asal_satuan})
-                </option>
-              ))}
-            </select>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-[10px] font-mono font-bold text-gray-500 dark:text-gray-400 mb-2 tracking-widest uppercase">PILIH UNIT DART</label>
+              <select
+                value={data.unit_id}
+                onChange={(e) => setData('unit_id', e.target.value)}
+                className={`w-full bg-sand/50 dark:bg-black/50 border ${errors.unit_id ? 'border-red-500' : 'border-gray-300 dark:border-gray-700'} p-3 text-sm font-mono text-gunmetal dark:text-white focus:outline-none focus:border-olive transition-colors`}
+                required
+              >
+                <option value="">-- IDENTIFIKASI UNIT --</option>
+                {dbUnits.map((unit: any) => (
+                  <option key={unit.id} value={unit.id}>
+                    {unit.nomor_seri} - {unit.nama_dart} ({unit.asal_satuan})
+                  </option>
+                ))}
+              </select>
+              {errors.unit_id && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.unit_id}</p>}
+            </div>
+
+            <div>
+              <label className="block text-[10px] font-mono font-bold text-gray-500 dark:text-gray-400 mb-2 tracking-widest uppercase">TINGKAT KERUSAKAN</label>
+              <select
+                value={data.klasifikasi}
+                onChange={(e) => setData('klasifikasi', e.target.value)}
+                className="w-full bg-sand/50 dark:bg-black/50 border border-gray-300 dark:border-gray-700 p-3 text-sm font-mono text-gunmetal dark:text-white focus:outline-none focus:border-olive transition-colors"
+                required
+              >
+                <option value="RINGAN">🟢 RINGAN</option>
+                <option value="SEDANG">🟡 SEDANG</option>
+                <option value="DARURAT">🔴 DARURAT / TINGGI</option>
+              </select>
+            </div>
           </div>
 
           <div>
             <label className="block text-[10px] font-mono font-bold text-gray-500 dark:text-gray-400 mb-2 tracking-widest uppercase">DESKRIPSI KERUSAKAN</label>
             <textarea
-              value={deskripsi}
-              onChange={(e) => setDeskripsi(e.target.value)}
-              className="w-full bg-sand/50 dark:bg-black/50 border border-gray-300 dark:border-gray-700 p-3 text-sm font-mono text-gunmetal dark:text-white h-40 focus:outline-none focus:border-olive transition-colors resize-none"
+              value={data.deskripsi}
+              onChange={(e) => setData('deskripsi', e.target.value)}
+              className={`w-full bg-sand/50 dark:bg-black/50 border ${errors.deskripsi ? 'border-red-500' : 'border-gray-400 dark:border-gray-700'} p-3 text-sm font-mono text-gunmetal dark:text-white h-32 focus:outline-none focus:border-olive transition-colors resize-none`}
               placeholder="Jelaskan secara teknis kondisi kerusakan..."
               required
             />
+            {errors.deskripsi && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.deskripsi}</p>}
+          </div>
+
+          <div className="border-2 border-dashed border-gray-300 dark:border-gray-800 p-6 text-center hover:border-olive transition-all group">
+            <label className="cursor-pointer block">
+              <Camera className="w-8 h-8 mx-auto mb-2 text-gray-400 group-hover:text-olive transition-colors" />
+              <span className="block text-xs font-mono text-gray-500 group-hover:text-olive">
+                {data.foto ? `[FILE: ${data.foto.name}]` : 'UPLOAD FOTO BUKTI KERUSAKAN (MAX 2MB)'}
+              </span>
+              <input 
+                type="file" 
+                accept="image/*"
+                className="hidden" 
+                onChange={(e) => setData('foto', e.target.files ? e.target.files[0] : null)}
+              />
+            </label>
           </div>
 
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={processing}
             className="w-full bg-olive hover:bg-camogreen text-white font-tactical font-bold py-4 tracking-[0.3em] transition-all flex items-center justify-center gap-3 group relative overflow-hidden disabled:opacity-50 shadow-lg"
           >
             <span className="absolute inset-0 bg-white/10 -translate-x-full group-hover:animate-[shimmer_2s_infinite]"></span>
             <Send size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-            {isSubmitting ? 'TRANSMITTING...' : 'KIRIM LAPORAN'}
+            {processing ? 'TRANSMITTING...' : 'KIRIM LAPORAN'}
           </button>
         </form>
       </div>
