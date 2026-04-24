@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react';
 import {
-  ShieldAlert, Users, Database, Search,
+  Users, Database, Search,
   Edit, Trash2, Shield, Settings, LogOut,
   ChevronDown, ChevronRight, FileArchive, Wrench, Download, AlertTriangle, Radar,
-  Menu, X, CircleUser
+  Menu, CircleUser
 } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { router, useForm } from '@inertiajs/react';
@@ -52,6 +53,7 @@ const DashboardAdmin = (props: any) => {
   const currentUser = useStore(state => state.currentUser);
   const logoutAction = useStore(state => state.logout);
 
+  // State for Add/Edit Modal
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddMode, setIsAddMode] = useState(false);
   const [editingUser, setEditingUser] = useState<any>(null);
@@ -174,7 +176,7 @@ const DashboardAdmin = (props: any) => {
           </thead>
           <tbody className="divide-y divide-gray-800">
             {dbUsers.map((u: any) => (
-              <tr key={u.id} className="hover:bg-gray-200 dark:bg-gray-800/80 transition-colors group">
+              <tr key={u.id} className="hover:bg-gray-200 dark:hover:bg-gray-800/80 transition-colors group">
                 <td className="p-4 font-mono text-gray-700 dark:text-gray-300 border-l-2 border-transparent group-hover:border-olive">{u.id}</td>
                 <td className="p-4 text-gunmetal dark:text-white font-bold">{u.name}</td>
                 <td className="p-4">
@@ -261,11 +263,11 @@ const DashboardAdmin = (props: any) => {
         <div className="relative z-10">
           <h2 className="text-2xl font-tactical font-bold text-gunmetal dark:text-white tracking-widest flex items-center gap-3">
             <Radar className="text-olive w-8 h-8 animate-spin-slow" />
-            {activeSubReport === 'KERUSAKAN' ? 'DATABASE LAPORAN KERUSAKAN' : 'KENDALI LAPORAN PERBAIKAN'}
+            {activeSubReport === 'KERUSAKAN' ? 'LAPORAN KERUSAKAN' : 'LAPORAN PERBAIKAN'}
           </h2>
           <p className="text-gray-600 dark:text-gray-400 font-mono text-xs mt-2 tracking-widest">
             {activeSubReport === 'KERUSAKAN'
-              ? 'Kumpulan pelaporan insiden/kerusakan yang disubmit oleh Pelapor.'
+              ? 'Kumpulan pelaporan dart/kerusakan yang disubmit oleh Pelapor.'
               : 'Progres penanganan dan status teknisi pada masing-masing kasus.'}
           </p>
         </div>
@@ -382,7 +384,7 @@ const DashboardAdmin = (props: any) => {
 
       {/* MOBILE OVERLAY */}
       {isMobileMenuOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm"
           onClick={() => setIsMobileMenuOpen(false)}
         />
@@ -402,7 +404,6 @@ const DashboardAdmin = (props: any) => {
 
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto custom-scrollbar py-6">
-          <p className="px-6 text-[10px] font-mono font-bold tracking-widest text-gray-600 dark:text-gray-500 mb-4">MAIN MODULES //:</p>
 
           <div className="space-y-1">
             {/* Manajemen Personel */}
@@ -468,11 +469,8 @@ const DashboardAdmin = (props: any) => {
 
         {/* Utilities */}
         <div className="p-4 border-t border-gray-300 dark:border-gray-800 bg-gray-100 dark:bg-[#111]">
-          <button className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-500 hover:text-gunmetal dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-800 font-tactical text-sm tracking-wider transition-all rounded-sm">
-            <Settings className="w-5 h-5" /> KONFIGURASI
-          </button>
           <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-500 hover:text-targetred hover:bg-red-900/20 mt-1 font-tactical text-sm tracking-wider transition-all rounded-sm">
-            <LogOut className="w-5 h-5" /> TERMINASI SESI
+            <LogOut className="w-5 h-5" /> LOGOUT
           </button>
         </div>
       </aside>
@@ -485,18 +483,14 @@ const DashboardAdmin = (props: any) => {
         {/* Topbar */}
         <header className="h-16 border-b border-gray-300 dark:border-gray-800 bg-white/80 dark:bg-black/50 backdrop-blur-md flex items-center justify-between px-4 md:px-8 flex-shrink-0 z-10 relative">
           <div className="flex items-center gap-4">
-            <button 
+            <button
               onClick={() => setIsMobileMenuOpen(true)}
-              className="md:hidden p-2 text-gray-600 dark:text-gray-400 hover:text-gunmetal dark:hover:text-white transition-colors"
+              className="md:hidden p-2 text-gray-600 dark:text-gray-400 hover:text-gunmetal dark:hover:text-white transition-colors -ml-2"
             >
               <Menu className="w-6 h-6" />
             </button>
-            <div className="flex items-center gap-4">
-              <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.8)] animate-pulse"></div>
-              <h2 className="font-mono text-xs text-gray-600 dark:text-gray-400 tracking-widest hidden sm:block">STATUS JARINGAN: <span className="text-green-500 font-bold">TERENKRIPSI 256-BIT</span></h2>
-            </div>
           </div>
-          
+
           <div className="flex items-center gap-0 border border-gray-300 dark:border-gray-700 rounded overflow-hidden shadow-lg bg-gray-100 dark:bg-gray-900 ml-auto">
             <div className="bg-white dark:bg-black px-4 py-1.5 text-right flex flex-col justify-center">
               <span className="block text-xs font-bold text-gunmetal dark:text-white uppercase font-sans tracking-wider">{currentUser?.name || 'KOMANDAN PUSAT'}</span>
@@ -621,8 +615,8 @@ const DashboardAdmin = (props: any) => {
                 </div>
               </div>
               <div className="pt-4 flex gap-2">
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   disabled={processing}
                   className="flex-1 bg-olive text-white py-2 font-tactical font-bold tracking-widest hover:bg-camogreen transition-colors disabled:opacity-50"
                 >

@@ -18,7 +18,7 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
     }, 3000);
     return () => clearInterval(interval);
   }, []);
-  
+
   const handleAssignTechnician = (reportId: number, idTeknisi: number) => {
     router.post(`/reports/${reportId}/handle`, { teknisi_id: idTeknisi }, {
       onSuccess: () => {
@@ -101,47 +101,47 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
                     )}
                   </td>
                   <td className="p-4 text-center">
-                      {report.status === 'PENDING' ? (
-                        <div className="relative inline-block w-full">
-                          {assigningReportId === report.db_id ? (
-                            <div className="bg-white dark:bg-[#1a2024] border border-olive p-2 rounded-sm absolute right-0 top-0 w-64 z-20 shadow-2xl text-left">
-                              <h4 className="text-gray-600 dark:text-gray-400 text-xs font-tactical mb-2 uppercase">PILIH PERSONEL TEKNISI:</h4>
-                              <div className="space-y-1">
-                                {dbUsers.filter((u: any) => u.role === 'Teknisi').map((tek: any) => (
-                                  <button 
-                                    key={tek.id}
-                                    onClick={() => handleAssignTechnician(report.db_id, tek.db_id)}
-                                    className="w-full text-left px-3 py-2 text-xs text-gunmetal dark:text-white bg-gray-100 hover:bg-olive dark:bg-black dark:hover:bg-olive hover:text-gunmetal font-bold transition-colors flex justify-between items-center"
-                                  >
-                                    <span>{tek.name}</span>
-                                    <span className="font-mono text-[10px] text-gray-500">{tek.id}</span>
-                                  </button>
-                                ))}
-                              </div>
-                              <button 
-                                onClick={() => setAssigningReportId(null)}
-                                className="mt-2 w-full text-[10px] text-gray-600 hover:text-targetred py-1 border border-transparent hover:border-targetred/30 transition-colors font-tactical tracking-widest uppercase"
-                              >
-                                [ BATALKAN ]
-                              </button>
+                    {report.status === 'PENDING' ? (
+                      <div className="relative inline-block w-full">
+                        {assigningReportId === report.db_id ? (
+                          <div className="bg-white dark:bg-[#1a2024] border border-olive p-2 rounded-sm absolute right-0 top-0 w-64 z-20 shadow-2xl text-left">
+                            <h4 className="text-gray-600 dark:text-gray-400 text-xs font-tactical mb-2 uppercase">PILIH PERSONEL TEKNISI:</h4>
+                            <div className="space-y-1">
+                              {dbUsers.filter((u: any) => u.role === 'Teknisi').map((tek: any) => (
+                                <button
+                                  key={tek.id}
+                                  onClick={() => handleAssignTechnician(report.db_id, tek.db_id)}
+                                  className="w-full text-left px-3 py-2 text-xs text-gunmetal dark:text-white bg-gray-100 hover:bg-olive dark:bg-black dark:hover:bg-olive hover:text-gunmetal font-bold transition-colors flex justify-between items-center"
+                                >
+                                  <span>{tek.name}</span>
+                                  <span className="font-mono text-[10px] text-gray-500">{tek.id}</span>
+                                </button>
+                              ))}
                             </div>
-                          ) : (
-                            <button 
-                              onClick={() => setAssigningReportId(report.db_id)}
-                              className="bg-targetred hover:bg-red-800 text-white w-full py-2 flex items-center justify-center font-tactical text-[11px] font-bold tracking-widest transition-all shadow-md uppercase"
+                            <button
+                              onClick={() => setAssigningReportId(null)}
+                              className="mt-2 w-full text-[10px] text-gray-600 hover:text-targetred py-1 border border-transparent hover:border-targetred/30 transition-colors font-tactical tracking-widest uppercase"
                             >
-                              TUGASKAN TEKNISI
+                              [ BATALKAN ]
                             </button>
-                          )}
-                        </div>
-                      ) : (
-                        <div className="text-gray-600 dark:text-gray-400 text-[10px] font-mono border border-gray-300 dark:border-gray-800 p-2 bg-gray-100 dark:bg-[#111]">
-                          [ TEKNISI DITUGASKAN ] <br/>
-                          <span className="text-blue-600 dark:text-blue-400 font-bold block mt-1 text-xs uppercase">
-                            {report.perbaikan.teknisi}
-                          </span>
-                        </div>
-                      )}
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setAssigningReportId(report.db_id)}
+                            className="bg-targetred hover:bg-red-800 text-white w-full py-2 flex items-center justify-center font-tactical text-[11px] font-bold tracking-widest transition-all shadow-md uppercase"
+                          >
+                            TUGASKAN TEKNISI
+                          </button>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="text-gray-600 dark:text-gray-400 text-[10px] font-mono border border-gray-300 dark:border-gray-800 p-2 bg-gray-100 dark:bg-[#111]">
+                        [ TEKNISI DITUGASKAN ] <br />
+                        <span className="text-blue-600 dark:text-blue-400 font-bold block mt-1 text-xs uppercase">
+                          {report.perbaikan.teknisi}
+                        </span>
+                      </div>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -189,23 +189,23 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
                   <td className="p-4">
                     <div className="font-bold text-sm mb-1 uppercase">{report.kerusakan.barangRusak}</div>
                     <div className="text-gray-700 dark:text-gray-400 text-xs font-mono w-full max-w-sm uppercase">
-                        Masuk: {report.kerusakan.tanggal} <br/>
-                        Selesai: <span className="text-gunmetal dark:text-white font-bold">{report.perbaikan.tanggalPenanganan || '-'}</span>
+                      Masuk: {report.kerusakan.tanggal} <br />
+                      Selesai: <span className="text-gunmetal dark:text-white font-bold">{report.perbaikan.tanggalPenanganan || '-'}</span>
                     </div>
                   </td>
                   <td className="p-4">
-                      <div className="text-sm font-bold uppercase">
-                        {report.perbaikan.teknisi}
-                      </div>
-                      <div className="text-gray-600 dark:text-gray-500 text-[10px] font-mono mt-1 uppercase">
-                        KODE OP: {report.db_id}
-                      </div>
+                    <div className="text-sm font-bold uppercase">
+                      {report.perbaikan.teknisi}
+                    </div>
+                    <div className="text-gray-600 dark:text-gray-500 text-[10px] font-mono mt-1 uppercase">
+                      KODE OP: {report.db_id}
+                    </div>
                   </td>
                   <td className="p-4">
-                      <div className="bg-white dark:bg-black/50 p-4 border-l-4 border-green-700 text-sm text-gray-800 dark:text-gray-300 relative shadow-inner">
-                        <span className="absolute top-1 left-2 text-xl text-gray-400 dark:text-gray-600 font-serif">"</span>
-                        <span className="pl-4 block italic font-serif leading-relaxed uppercase">{report.perbaikan.tindakan}</span>
-                      </div>
+                    <div className="bg-white dark:bg-black/50 p-4 border-l-4 border-green-700 text-sm text-gray-800 dark:text-gray-300 relative shadow-inner">
+                      <span className="absolute top-1 left-2 text-xl text-gray-400 dark:text-gray-600 font-serif">"</span>
+                      <span className="pl-4 block italic font-serif leading-relaxed uppercase">{report.perbaikan.tindakan}</span>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -220,7 +220,7 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
     <div className="min-h-screen bg-sand dark:bg-gunmetal flex font-sans selection:bg-olive selection:text-gunmetal relative text-gunmetal dark:text-gray-200">
       {/* MOBILE OVERLAY */}
       {isMobileMenuOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm"
           onClick={() => setIsMobileMenuOpen(false)}
         />
@@ -272,7 +272,7 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
 
         {/* Topbar */}
         <header className="h-16 border-b border-gray-300 dark:border-gray-800 bg-white/80 dark:bg-black/50 backdrop-blur-md flex items-center justify-between px-4 md:px-8 flex-shrink-0 z-10 relative">
-          <button 
+          <button
             onClick={() => setIsMobileMenuOpen(true)}
             className="md:hidden p-2 text-gray-600 dark:text-gray-400 hover:text-gunmetal dark:hover:text-white transition-colors"
           >

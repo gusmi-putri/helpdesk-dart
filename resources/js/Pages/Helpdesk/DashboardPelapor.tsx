@@ -75,7 +75,7 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [] }: any) => 
         <div className="absolute top-0 right-0 p-4 opacity-10">
           <FilePlus size={80} />
         </div>
-        
+
         <div className="mb-8">
           <h2 className="text-2xl font-tactical font-bold text-gunmetal dark:text-white tracking-widest flex items-center gap-3 uppercase">
             <Send className="text-olive" /> Transmisi Laporan Baru
@@ -147,8 +147,8 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [] }: any) => 
           </div>
         ) : (
           history.map((item: any, index: number) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               onClick={() => setSelectedItemId(item.caseId)}
               className="glass-panel p-5 border-l-4 border-l-gray-400 dark:border-l-gray-700 hover:border-l-olive transition-all cursor-pointer group hover:bg-white/40 dark:hover:bg-black/40"
             >
@@ -158,9 +158,9 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [] }: any) => 
                   <span className="text-xs font-mono text-gray-500 tracking-tighter">{item.kerusakan.tanggal}</span>
                 </div>
                 <div className={`px-3 py-1 text-[9px] font-tactical font-bold tracking-[0.2em] flex items-center gap-2 border
-                  ${item.status === 'SELESAI' ? 'bg-green-900/20 text-green-500 border-green-800' : 
-                    item.status === 'PROSES' ? 'bg-blue-900/20 text-blue-500 border-blue-800' : 
-                    'bg-yellow-900/20 text-yellow-500 border-yellow-800'}
+                  ${item.status === 'SELESAI' ? 'bg-green-900/20 text-green-500 border-green-800' :
+                    item.status === 'PROSES' ? 'bg-blue-900/20 text-blue-500 border-blue-800' :
+                      'bg-yellow-900/20 text-yellow-500 border-yellow-800'}
                 `}>
                   {item.status === 'SELESAI' ? <CheckCircle2 size={10} /> : <Clock size={10} />}
                   {item.status}
@@ -179,7 +179,7 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [] }: any) => 
                   </div>
                   {item.perbaikan.teknisi && (
                     <div className="text-[10px] text-olive font-bold font-mono flex items-center gap-1">
-                       [TEKNISI: {item.perbaikan.teknisi.toUpperCase()}]
+                      [TEKNISI: {item.perbaikan.teknisi.toUpperCase()}]
                     </div>
                   )}
                 </div>
@@ -200,7 +200,7 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [] }: any) => 
 
       {/* MOBILE OVERLAY */}
       {isMobileMenuOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm"
           onClick={() => setIsMobileMenuOpen(false)}
         />
@@ -254,7 +254,7 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [] }: any) => 
 
         {/* Topbar */}
         <header className="h-16 border-b border-gray-300 dark:border-gray-800 bg-white/80 dark:bg-black/50 backdrop-blur-md flex items-center justify-between px-4 md:px-8 flex-shrink-0 z-10 relative">
-          <button 
+          <button
             onClick={() => setIsMobileMenuOpen(true)}
             className="md:hidden p-2 text-gray-600 dark:text-gray-400 hover:text-gunmetal dark:hover:text-white transition-colors"
           >
@@ -315,9 +315,9 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [] }: any) => 
                     <div>
                       <p className="text-[9px] text-gray-500 font-mono uppercase tracking-widest">Status Perbaikan</p>
                       <span className={`inline-block px-3 py-1 text-[10px] font-tactical font-bold tracking-widest border mt-1
-                        ${selectedItem.status === 'SELESAI' ? 'bg-green-900/20 text-green-500 border-green-800' : 
-                          selectedItem.status === 'PROSES' ? 'bg-blue-900/20 text-blue-500 border-blue-800' : 
-                          'bg-yellow-900/20 text-yellow-500 border-yellow-800'}
+                        ${selectedItem.status === 'SELESAI' ? 'bg-green-900/20 text-green-500 border-green-800' :
+                          selectedItem.status === 'PROSES' ? 'bg-blue-900/20 text-blue-500 border-blue-800' :
+                            'bg-yellow-900/20 text-yellow-500 border-yellow-800'}
                       `}>
                         {selectedItem.perbaikan.statusPerbaikan || selectedItem.status}
                       </span>
@@ -357,7 +357,7 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [] }: any) => 
               </div>
             </div>
             <div className="p-4 bg-gray-100 dark:bg-black/40 border-t border-olive/20 text-right">
-              <button 
+              <button
                 onClick={() => setSelectedItemId(null)}
                 className="px-6 py-2 bg-olive text-white font-tactical font-bold text-xs tracking-widest hover:bg-camogreen transition-colors"
               >

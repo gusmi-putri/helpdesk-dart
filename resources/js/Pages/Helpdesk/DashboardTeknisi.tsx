@@ -232,7 +232,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
 
       {/* MOBILE OVERLAY */}
       {isMobileMenuOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm"
           onClick={() => setIsMobileMenuOpen(false)}
         />
@@ -283,7 +283,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
         {/* Topbar */}
         <header className="h-16 border-b border-gray-300 dark:border-gray-800 bg-white/80 dark:bg-black/50 backdrop-blur-md flex items-center justify-between px-4 md:px-8 flex-shrink-0 z-10 relative">
           <div className="flex items-center gap-4">
-            <button 
+            <button
               onClick={() => setIsMobileMenuOpen(true)}
               className="md:hidden p-2 text-gray-600 dark:text-gray-400 hover:text-gunmetal dark:hover:text-white transition-colors"
             >
@@ -294,7 +294,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
               <h2 className="font-mono text-xs text-gray-600 dark:text-gray-400 tracking-widest hidden sm:block uppercase">ZONA AKTIF: <span className="text-olive font-bold">SEKTOR KUNING (PERBAIKAN)</span></h2>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-0 border border-gray-300 dark:border-gray-700 rounded shadow-sm bg-gray-100 dark:bg-gray-900 ml-auto">
             <div className="bg-white dark:bg-black px-4 py-1.5 text-right flex flex-col justify-center">
               <span className="block text-xs font-bold text-gunmetal dark:text-white uppercase font-sans tracking-wider">{currentUser?.name || 'Teknisi Alfa'}</span>
