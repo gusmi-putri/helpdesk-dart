@@ -19,11 +19,11 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/admin', [DashboardController::class, 'admin']);
-    Route::get('/pelapor', [DashboardController::class, 'pelapor']);
-    Route::get('/staf', [DashboardController::class, 'staf']);
-    Route::get('/teknisi', [DashboardController::class, 'teknisi']);
-    Route::resource('users', \App\Http\Controllers\UserController::class);
+    Route::get('/admin', [DashboardController::class, 'admin'])->middleware('role:Admin');
+    Route::get('/pelapor', [DashboardController::class, 'pelapor'])->middleware('role:Pelapor');
+    Route::get('/staf', [DashboardController::class, 'staf'])->middleware('role:Staf');
+    Route::get('/teknisi', [DashboardController::class, 'teknisi'])->middleware('role:Teknisi');
+    Route::resource('users', \App\Http\Controllers\UserController::class)->middleware('role:Admin');
 });
 
 // Reports Actions
@@ -31,4 +31,4 @@ Route::post('/reports', [ReportController::class, 'store'])->name('reports.store
 Route::post('/reports/{id}/handle', [ReportController::class, 'handle'])->name('reports.handle');
 Route::post('/reports/{id}/complete', [ReportController::class, 'complete'])->name('reports.complete');
 
-// require __DIR__.'/auth.php'; // Dinonaktifkan sementara karena menggunakan Zustand auth
+

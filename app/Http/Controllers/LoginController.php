@@ -19,10 +19,19 @@ class LoginController extends Controller
             $request->session()->regenerate();
 
             $user = Auth::user();
+            
+            if (!$user->role) {
+                Auth::logout();
+                return back()->withErrors([
+                    'auth' => 'Akun Anda tidak memiliki peran (role) yang valid. Hubungi Admin.',
+                ]);
+            }
+
             $role = $user->role->nama_role;
+            $redirectPath = '/' . strtolower($role);
 
             // Redirect ke dashboard sesuai role
-            return redirect()->intended(strtolower($role));
+            return redirect()->intended($redirectPath);
         }
 
         return back()->withErrors([

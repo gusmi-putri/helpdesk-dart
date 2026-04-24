@@ -8,7 +8,7 @@ const Login: React.FC = () => {
   const { data, setData, post, processing, errors } = useForm({
     username: '',
     password: '',
-  });
+  }) as any;
 
   const [successMsg, setSuccessMsg] = useState('');
 
@@ -80,6 +80,11 @@ const Login: React.FC = () => {
               placeholder="Masukkan ID..."
               required
             />
+            {errors.username && (
+              <p className="mt-1 text-targetred text-[10px] font-mono uppercase italic">
+                {errors.username}
+              </p>
+            )}
           </div>
 
           <div>
@@ -94,6 +99,11 @@ const Login: React.FC = () => {
               placeholder="••••••••"
               required
             />
+            {errors.password && (
+              <p className="mt-1 text-targetred text-[10px] font-mono uppercase italic">
+                {errors.password}
+              </p>
+            )}
           </div>
 
           <button
