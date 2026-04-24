@@ -2,13 +2,19 @@ import React, { useState } from 'react';
 import { useForm } from '@inertiajs/react';
 import { useStore } from '@/store/useStore';
 
+interface LoginData {
+  username: string;
+  password: string;
+  auth?: string;
+}
+
 const Login: React.FC = () => {
   const loginAction = useStore((state) => state.login);
 
-  const { data, setData, post, processing, errors } = useForm({
+  const { data, setData, post, processing, errors } = useForm<LoginData>({
     username: '',
     password: '',
-  }) as any;
+  });
 
   const [successMsg, setSuccessMsg] = useState('');
 
