@@ -37,7 +37,7 @@ class HandleInertiaRequests extends Middleware
                     'id' => 'USR-' . str_pad($request->user()->id, 3, '0', STR_PAD_LEFT),
                     'username' => $request->user()->username,
                     'name' => $request->user()->nama_lengkap,
-                    'role' => $request->user()->role->nama_role,
+                    'role' => $request->user()->role?->nama_role ?? 'No Role',
                 ] : null,
             ],
         ];
