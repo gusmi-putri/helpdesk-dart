@@ -4,7 +4,7 @@ import {
   Users, Database, Search,
   Edit, Trash2, Shield, Settings, LogOut,
   ChevronDown, ChevronRight, FileArchive, Wrench, Download, AlertTriangle, Radar,
-  Menu, CircleUser
+  Menu, CircleUser, Eye
 } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { router, useForm } from '@inertiajs/react';
@@ -55,6 +55,10 @@ const DashboardAdmin = (props: any) => {
 
   // State for Add/Edit Modal
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<any>(null);
+  const [selectedUser, setSelectedUser] = useState<any>(null);
   const [isAddMode, setIsAddMode] = useState(false);
   const [editingUser, setEditingUser] = useState<any>(null);
 
@@ -71,7 +75,7 @@ const DashboardAdmin = (props: any) => {
 
   // Handlers
   const handlePrintCasePDF = (caseData: CaseData) => {
-    alert(`[SYSTEM COMMAND: GENERATE PDF]\nMempersiapkan Ekspor PDF untuk Kasus: ${caseData.caseId}\n\nMenggabungkan Dokumen:\n- Halaman 1: Formulir Lapor Kerusakan (Sumber: ${caseData.kerusakan.pelapor})\n- Halaman 2: Formulir Tindakan Perbaikan (Teknisi: ${caseData.perbaikan.teknisi || 'Belum Berjalan'})`);
+    // In a real app, this would trigger a backend PDF generation
     console.log("PDF Triggered for Case:", caseData);
   };
 
@@ -81,6 +85,11 @@ const DashboardAdmin = (props: any) => {
     clearErrors();
     reset();
     setIsEditModalOpen(true);
+  };
+
+  const handleShowDetail = (user: any) => {
+    setSelectedUser(user);
+    setIsDetailModalOpen(true);
   };
 
   const handleEditUser = (user: any) => {
@@ -117,9 +126,18 @@ const DashboardAdmin = (props: any) => {
   };
 
   const handleDeleteUser = (user: any) => {
-    const confirm = window.confirm(`PERINGATAN PROTOKOL: Yakin ingin menghapus akses ${user.name} dari Sistem Utama?`);
-    if (confirm) {
-      router.delete(`/users/${user.db_id}`);
+    setUserToDelete(user);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDeleteUser = () => {
+    if (userToDelete) {
+      router.delete(`/users/${userToDelete.db_id}`, {
+        onSuccess: () => {
+          setIsDeleteModalOpen(false);
+          setUserToDelete(null);
+        }
+      });
     }
   };
 
@@ -167,10 +185,10 @@ const DashboardAdmin = (props: any) => {
           <thead className="bg-[#1a2024] text-gray-600 dark:text-gray-400 font-tactical tracking-widest border-b border-gray-300 dark:border-gray-700">
             <tr>
               <th className="p-4">ID PERSONEL</th>
+              <th className="p-4">NRP / NIP</th>
               <th className="p-4">NAMA LENGKAP</th>
               <th className="p-4">HAK AKSES</th>
               <th className="p-4">STATUS AKTIF</th>
-              <th className="p-4">JEJAK LOGIN</th>
               <th className="p-4 text-right">TINDAKAN</th>
             </tr>
           </thead>
@@ -178,6 +196,7 @@ const DashboardAdmin = (props: any) => {
             {dbUsers.map((u: any) => (
               <tr key={u.id} className="hover:bg-gray-200 dark:hover:bg-gray-800/80 transition-colors group">
                 <td className="p-4 font-mono text-gray-700 dark:text-gray-300 border-l-2 border-transparent group-hover:border-olive">{u.id}</td>
+                <td className="p-4 font-mono text-xs text-gray-600 dark:text-gray-400">{u.nrp_nip || '-'}</td>
                 <td className="p-4 text-gunmetal dark:text-white font-bold">{u.name}</td>
                 <td className="p-4">
                   <span className={`px-3 py-1 text-[10px] font-mono font-bold tracking-widest border
@@ -197,10 +216,13 @@ const DashboardAdmin = (props: any) => {
                 </td>
                 <td className="p-4 text-gray-600 dark:text-gray-400 text-xs font-mono">{u.lastLogin}</td>
                 <td className="p-4 flex gap-2 justify-end">
-                  <button onClick={() => handleEditUser(u)} className="p-2 bg-gray-300 dark:bg-gray-800 hover:bg-olive hover:text-gunmetal dark:hover:text-white text-gray-700 dark:text-gray-300 transition-colors border border-gray-400 dark:border-gray-600">
+                  <button onClick={() => handleShowDetail(u)} className="p-2 bg-gray-300 dark:bg-gray-800 hover:bg-blue-600 hover:text-white text-gray-700 dark:text-gray-300 transition-colors border border-gray-400 dark:border-gray-600" title="Detail">
+                    <Eye className="w-4 h-4" />
+                  </button>
+                  <button onClick={() => handleEditUser(u)} className="p-2 bg-gray-300 dark:bg-gray-800 hover:bg-olive hover:text-gunmetal dark:hover:text-white text-gray-700 dark:text-gray-300 transition-colors border border-gray-400 dark:border-gray-600" title="Edit">
                     <Edit className="w-4 h-4" />
                   </button>
-                  <button onClick={() => handleDeleteUser(u)} className="p-2 bg-gray-300 dark:bg-gray-800 hover:bg-targetred hover:text-white text-gray-700 dark:text-gray-300 transition-colors border border-gray-400 dark:border-gray-600">
+                  <button onClick={() => handleDeleteUser(u)} className="p-2 bg-gray-300 dark:bg-gray-800 hover:bg-targetred hover:text-white text-gray-700 dark:text-gray-300 transition-colors border border-gray-400 dark:border-gray-600" title="Hapus">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </td>
@@ -512,6 +534,99 @@ const DashboardAdmin = (props: any) => {
         </div>
       </main>
 
+      {/* DETAIL USER MODAL */}
+      {isDetailModalOpen && selectedUser && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-sand dark:bg-gunmetal border-2 border-olive w-full max-w-lg shadow-[0_0_50px_rgba(75,83,32,0.4)]">
+            <div className="p-4 border-b border-olive bg-olive/10 flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <Shield className="w-5 h-5 text-olive" />
+                <h3 className="font-tactical font-bold text-olive tracking-widest uppercase">DETAIL DATA PERSONEL</h3>
+              </div>
+              <button onClick={() => setIsDetailModalOpen(false)} className="text-gray-500 hover:text-targetred">✕</button>
+            </div>
+            
+            <div className="p-6">
+              <div className="grid grid-cols-2 gap-y-4 gap-x-8">
+                <div className="col-span-2 flex items-center gap-4 mb-4 pb-4 border-b border-gray-300 dark:border-gray-800">
+                  <div className="w-16 h-16 bg-olive/20 border border-olive flex items-center justify-center">
+                    <Users className="w-8 h-8 text-olive" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-mono text-gray-500 uppercase tracking-tighter">{selectedUser.id}</p>
+                    <h4 className="text-xl font-bold text-gunmetal dark:text-white uppercase">{selectedUser.name}</h4>
+                    <span className="text-[10px] font-mono bg-olive text-white px-2 py-0.5 tracking-widest">{selectedUser.role.toUpperCase()}</span>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-mono text-gray-500 dark:text-gray-500 mb-1 tracking-widest uppercase">Username</label>
+                  <p className="text-sm font-mono font-bold text-gunmetal dark:text-white">{selectedUser.username}</p>
+                </div>
+                <div>
+                  <label className="block text-[10px] font-mono text-gray-500 dark:text-gray-500 mb-1 tracking-widest uppercase">NRP / NIP</label>
+                  <p className="text-sm font-mono font-bold text-gunmetal dark:text-white">{selectedUser.nrp_nip || '-'}</p>
+                </div>
+                <div>
+                  <label className="block text-[10px] font-mono text-gray-500 dark:text-gray-500 mb-1 tracking-widest uppercase">No. WhatsApp</label>
+                  <p className="text-sm font-mono font-bold text-gunmetal dark:text-white">{selectedUser.no_wa || '-'}</p>
+                </div>
+                <div>
+                  <label className="block text-[10px] font-mono text-gray-500 dark:text-gray-500 mb-1 tracking-widest uppercase">Asal Satuan</label>
+                  <p className="text-sm font-mono font-bold text-gunmetal dark:text-white uppercase">{selectedUser.asal_satuan || '-'}</p>
+                </div>
+                <div className="col-span-2">
+                  <label className="block text-[10px] font-mono text-gray-500 dark:text-gray-500 mb-1 tracking-widest uppercase">Spesialisasi</label>
+                  <p className={`text-sm font-mono font-bold p-2 bg-gray-200 dark:bg-black/40 border border-gray-300 dark:border-gray-800 ${selectedUser.role !== 'Teknisi' ? 'text-gray-500 italic' : 'text-gunmetal dark:text-blue-400'}`}>
+                    {selectedUser.role === 'Teknisi' ? (selectedUser.spesialisasi || 'BELUM DIATUR') : 'TIDAK TERSEDIA (NON-TEKNISI)'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-8 pt-4 border-t border-gray-300 dark:border-gray-800 flex justify-end">
+                <button 
+                  onClick={() => setIsDetailModalOpen(false)} 
+                  className="bg-gunmetal dark:bg-black text-white px-8 py-2 font-tactical font-bold tracking-widest hover:bg-gray-800 transition-colors border border-gray-600"
+                >
+                  TUTUP
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* DELETE CONFIRMATION MODAL */}
+      {isDeleteModalOpen && userToDelete && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+          <div className="bg-sand dark:bg-gunmetal border-2 border-targetred w-full max-w-sm shadow-[0_0_50px_rgba(200,30,30,0.4)] animate-in zoom-in-95 duration-200">
+            <div className="p-4 border-b border-targetred bg-targetred/10 flex items-center gap-3">
+              <AlertTriangle className="w-6 h-6 text-targetred animate-pulse" />
+              <h3 className="font-tactical font-bold text-targetred tracking-widest uppercase">KONFIRMASI PENGHAPUSAN</h3>
+            </div>
+            <div className="p-6">
+              <p className="text-sm font-mono text-gray-700 dark:text-gray-300 leading-relaxed uppercase">
+                PERINGATAN: Anda akan menghapus akses personil <span className="text-targetred font-bold underline">{userToDelete.name}</span> dari basis data sistem utama. Tindakan ini tidak dapat dibatalkan.
+              </p>
+              <div className="mt-8 grid grid-cols-2 gap-3">
+                <button 
+                  onClick={confirmDeleteUser}
+                  className="bg-targetred text-white py-2 font-tactical font-bold tracking-widest hover:bg-red-700 transition-all shadow-[0_0_15px_rgba(200,30,30,0.3)]"
+                >
+                  HAPUS AKSES
+                </button>
+                <button 
+                  onClick={() => setIsDeleteModalOpen(false)}
+                  className="bg-transparent border border-gray-500 text-gray-500 py-2 font-tactical font-bold tracking-widest hover:bg-gray-500/10 transition-all"
+                >
+                  BATAL
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* EDIT USER MODAL */}
       {isEditModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
@@ -522,7 +637,21 @@ const DashboardAdmin = (props: any) => {
             </div>
             <form onSubmit={handleSaveUser} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto custom-scrollbar">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {isAddMode && (
+                <div>
+                  <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">NRP / NIP</label>
+                  <input
+                    type="text"
+                    value={data.nrp_nip}
+                    onChange={(e) => setData('nrp_nip', e.target.value)}
+                    className={`w-full bg-white dark:bg-black border ${errors.nrp_nip ? 'border-red-500' : 'border-gray-400 dark:border-gray-700'} p-2 text-sm font-mono focus:border-olive outline-none uppercase`}
+                    placeholder="MASUKKAN NRP/NIP"
+                    required
+                    minLength={8}
+                  />
+                  {errors.nrp_nip && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.nrp_nip}</p>}
+                </div>
+
+                {isAddMode ? (
                   <>
                     <div>
                       <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Username</label>
@@ -532,19 +661,9 @@ const DashboardAdmin = (props: any) => {
                         onChange={(e) => setData('username', e.target.value)}
                         className={`w-full bg-white dark:bg-black border ${errors.username ? 'border-red-500' : 'border-gray-400 dark:border-gray-700'} p-2 text-sm font-mono focus:border-olive outline-none uppercase`}
                         required
+                        autoComplete="off"
                       />
                       {errors.username && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.username}</p>}
-                    </div>
-                    <div>
-                      <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">NRP / NIP</label>
-                      <input
-                        type="text"
-                        value={data.nrp_nip}
-                        onChange={(e) => setData('nrp_nip', e.target.value)}
-                        className={`w-full bg-white dark:bg-black border ${errors.nrp_nip ? 'border-red-500' : 'border-gray-400 dark:border-gray-700'} p-2 text-sm font-mono focus:border-olive outline-none uppercase`}
-                        placeholder="MASUKKAN NRP/NIP"
-                      />
-                      {errors.nrp_nip && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.nrp_nip}</p>}
                     </div>
                     <div>
                       <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Password</label>
@@ -554,10 +673,17 @@ const DashboardAdmin = (props: any) => {
                         onChange={(e) => setData('password', e.target.value)}
                         className={`w-full bg-white dark:bg-black border ${errors.password ? 'border-red-500' : 'border-gray-400 dark:border-gray-700'} p-2 text-sm font-mono focus:border-olive outline-none`}
                         required={isAddMode}
+                        autoComplete="new-password"
+                        minLength={8}
                       />
                       {errors.password && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.password}</p>}
                     </div>
                   </>
+                ) : (
+                  <div className="bg-gray-100 dark:bg-gray-900/50 p-2 border border-gray-300 dark:border-gray-800 flex flex-col justify-center">
+                    <label className="block text-[9px] font-mono text-gray-500 uppercase tracking-widest">Username (Locked)</label>
+                    <p className="text-xs font-mono font-bold text-gray-600 dark:text-gray-400">{data.username}</p>
+                  </div>
                 )}
                 <div className="col-span-2">
                   <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Nama Lengkap</label>
@@ -605,12 +731,16 @@ const DashboardAdmin = (props: any) => {
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Spesialisasi</label>
+                  <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">
+                    Spesialisasi {dbRoles?.find((r: any) => r.id == data.role_id)?.name !== 'Teknisi' && '(KHUSUS TEKNISI)'}
+                  </label>
                   <input
                     type="text"
                     value={data.spesialisasi}
                     onChange={(e) => setData('spesialisasi', e.target.value)}
-                    className="w-full bg-white dark:bg-black border border-gray-400 dark:border-gray-700 p-2 text-sm font-mono focus:border-olive outline-none"
+                    disabled={dbRoles?.find((r: any) => r.id == data.role_id)?.name !== 'Teknisi'}
+                    className={`w-full bg-white dark:bg-black border border-gray-400 dark:border-gray-700 p-2 text-sm font-mono focus:border-olive outline-none ${dbRoles?.find((r: any) => r.id == data.role_id)?.name !== 'Teknisi' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    placeholder={dbRoles?.find((r: any) => r.id == data.role_id)?.name !== 'Teknisi' ? 'NON-TEKNISI' : 'MISAL: JARINGAN / HARDWARE'}
                   />
                 </div>
               </div>
