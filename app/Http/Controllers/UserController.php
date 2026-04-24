@@ -30,11 +30,14 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $adminRoleId = \App\Models\Role::where('nama_role', 'Admin')->first()?->id;
+
         $request->validate([
             'username' => 'required|string|max:50|unique:users',
             'password' => 'required|string|min:8',
             'nama_lengkap' => 'required|string|max:100',
-            'role_id' => 'required|exists:roles,id',
+            'nrp_nip' => 'required|string|min:8|max:50',
+            'role_id' => ['required', 'exists:roles,id', 'not_in:' . $adminRoleId],
             'asal_satuan' => 'nullable|string|max:100',
             'no_wa' => 'nullable|string|max:20',
             'spesialisasi' => 'nullable|string|max:100',
@@ -44,6 +47,7 @@ class UserController extends Controller
             'username' => $request->username,
             'password' => bcrypt($request->password),
             'nama_lengkap' => $request->nama_lengkap,
+            'nrp_nip' => $request->nrp_nip,
             'role_id' => $request->role_id,
             'asal_satuan' => $request->asal_satuan,
             'no_wa' => $request->no_wa,
@@ -60,15 +64,18 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
+        $adminRoleId = \App\Models\Role::where('nama_role', 'Admin')->first()?->id;
+
         $request->validate([
             'nama_lengkap' => 'required|string|max:100',
-            'role_id' => 'required|exists:roles,id',
+            'nrp_nip' => 'required|string|min:8|max:50',
+            'role_id' => ['required', 'exists:roles,id', 'not_in:' . $adminRoleId],
             'asal_satuan' => 'nullable|string|max:100',
             'no_wa' => 'nullable|string|max:20',
             'spesialisasi' => 'nullable|string|max:100',
         ]);
 
-        $user->update($request->only('nama_lengkap', 'role_id', 'asal_satuan', 'no_wa', 'spesialisasi'));
+        $user->update($request->only('nama_lengkap', 'nrp_nip', 'role_id', 'asal_satuan', 'no_wa', 'spesialisasi'));
 
         return redirect()->back()->with('message', 'Data personel telah diperbarui.');
     }

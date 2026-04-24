@@ -45,7 +45,12 @@ class DashboardController extends Controller
                 'id' => 'USR-'.str_pad($u->id, 3, '0', STR_PAD_LEFT),
                 'name' => $u->nama_lengkap,
                 'username' => $u->username,
+                'nrp_nip' => $u->nrp_nip,
+                'no_wa' => $u->no_wa,
+                'asal_satuan' => $u->asal_satuan,
+                'spesialisasi' => $u->spesialisasi,
                 'role' => $u->role ? $u->role->nama_role : 'No Role',
+                'role_id' => $u->role_id,
                 'status' => 'Aktif',
                 'lastLogin' => 'Baru saja'
             ];
@@ -60,7 +65,7 @@ class DashboardController extends Controller
             ];
         });
 
-        $roles = \App\Models\Role::all()->map(function($r) {
+        $roles = \App\Models\Role::where('nama_role', '!=', 'Admin')->get()->map(function($r) {
             return [
                 'id' => $r->id,
                 'name' => $r->nama_role
