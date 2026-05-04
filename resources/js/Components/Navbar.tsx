@@ -35,8 +35,8 @@ const Navbar = () => {
     <nav className="fixed w-full z-50 glass-panel border-b border-olive">
       <div className="w-full px-4 sm:px-8 xl:px-16">
         <div className="flex items-center justify-between h-16">
-          <div 
-            className="flex items-center gap-2 cursor-pointer" 
+          <div
+            className="flex items-center gap-2 cursor-pointer"
             onClick={() => handleNavClick('BERANDA')}
           >
             <img src="/logo.png" alt="DART Logo" className="w-9 h-10 object-contain drop-shadow-[0_0_8px_rgba(255,215,0,0.4)]" />
@@ -49,18 +49,17 @@ const Navbar = () => {
                   key={item}
                   onClick={() => handleNavClick(item)}
                   className={`px-3 py-2 text-sm font-tactical font-bold tracking-wider transition-all border-b-2 
-                    ${
-                      (item === 'DASHBOARD' && url === '/login') 
-                        ? 'text-targetred border-targetred' 
-                        : 'text-gray-700 dark:text-gray-300 hover:text-targetred hover:border-targetred border-transparent'
+                    ${(item === 'DASHBOARD' && url === '/login')
+                      ? 'text-targetred border-targetred'
+                      : 'text-gray-700 dark:text-gray-300 hover:text-targetred hover:border-targetred border-transparent'
                     }
                   `}
                 >
                   {item}
                 </button>
               ))}
-              <button 
-                onClick={toggleTheme} 
+              <button
+                onClick={toggleTheme}
                 className="text-gray-700 dark:text-gray-300 hover:text-targetred transition-colors ml-4"
                 title="Toggle Theme"
               >
@@ -79,7 +78,7 @@ const Navbar = () => {
         </div>
       </div>
       {isOpen && (
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="md:hidden bg-sand dark:bg-gunmetal border-b border-olive"
@@ -90,8 +89,7 @@ const Navbar = () => {
                 key={item}
                 onClick={() => handleNavClick(item)}
                 className={`w-full text-left block px-3 py-2 text-base font-tactical font-bold tracking-wider transition-colors
-                  ${
-                    (item === 'DASHBOARD' && url === '/login')
+                  ${(item === 'DASHBOARD' && url === '/login')
                     ? 'text-targetred bg-white/40 dark:bg-white/40 dark:bg-black/40'
                     : 'text-gray-700 dark:text-gray-300 hover:text-targetred hover:bg-white dark:bg-black/20'
                   }
@@ -101,11 +99,11 @@ const Navbar = () => {
               </button>
             ))}
             <button
-                onClick={() => { toggleTheme(); setIsOpen(false); }}
-                className="w-full text-left flex items-center gap-2 px-3 py-2 text-base font-tactical font-bold tracking-wider text-gray-700 dark:text-gray-300 hover:text-targetred transition-colors"
+              onClick={() => { toggleTheme(); setIsOpen(false); }}
+              className="w-full text-left flex items-center gap-2 px-3 py-2 text-base font-tactical font-bold tracking-wider text-gray-700 dark:text-gray-300 hover:text-targetred transition-colors"
             >
-               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-               {theme === 'dark' ? 'LIGHT MODE' : 'DARK MODE'}
+              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              {theme === 'dark' ? 'LIGHT MODE' : 'DARK MODE'}
             </button>
           </div>
         </motion.div>

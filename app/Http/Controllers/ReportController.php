@@ -16,7 +16,10 @@ class ReportController extends Controller
         $request->validate([
             'unit_id' => 'required|exists:units,id',
             'deskripsi' => 'required|string',
-            'user_id' => 'nullable|exists:users,id'
+            'tingkat_kerusakan' => 'required|in:Ringan,Sedang,Parah',
+            'urgensi' => 'required|in:Sangat Mendesak,Bisa Menunggu,Pemeliharaan Rutin',
+            'user_id' => 'nullable|exists:users,id',
+            'file_bukti.*' => 'nullable|file|mimes:jpg,jpeg,png,gif,mp4,mov,avi,webm|max:102400',
         ]);
         
         $userId = $request->user_id;
@@ -27,11 +30,24 @@ class ReportController extends Controller
             $userId = $pelapor->id;
         }
 
+        // Handle file uploads (max 5 files)
+        $filePaths = [];
+        if ($request->hasFile('file_bukti')) {
+            $files = array_slice($request->file('file_bukti'), 0, 5);
+            foreach ($files as $file) {
+                $path = $file->store('bukti', 'public');
+                $filePaths[] = $path;
+            }
+        }
+
         Report::create([
             'unit_id' => $request->unit_id,
             'user_id' => $userId,
             'tanggal_lapor' => now(),
             'deskripsi_kerusakan' => $request->deskripsi,
+            'tingkat_kerusakan' => $request->tingkat_kerusakan,
+            'urgensi' => $request->urgensi,
+            'file_bukti' => !empty($filePaths) ? json_encode($filePaths) : null,
             'status_laporan' => 'Pending'
         ]);
 
