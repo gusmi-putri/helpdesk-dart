@@ -74,9 +74,8 @@ const DashboardAdmin = (props: any) => {
   });
 
   // Handlers
-  const handlePrintCasePDF = (caseData: CaseData) => {
-    // In a real app, this would trigger a backend PDF generation
-    console.log("PDF Triggered for Case:", caseData);
+  const handlePrintCasePDF = (caseData: any) => {
+    window.open(`/reports/${caseData.db_id}/pdf`, '_blank');
   };
 
   const handleAddUser = () => {

@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, History, AlertCircle, Clock, CheckCircle2, ChevronRight, Activity, Camera, LogOut, Shield, FilePlus, Menu, X as XIcon, CircleUser, Wrench, Upload, Phone, MapPin, Info, Trash2 } from 'lucide-react';
 import { useStore, type ReportStatus } from '@/store/useStore';
-import { router } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 
 const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser = null }: any) => {
   const [activeMenu, setActiveMenu] = useState<'FORM' | 'HISTORY'>('FORM');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const addNotification = useStore(state => state.addNotification);
 
   // Ambil state dan aksi dari global store
   const currentUser = useStore(state => state.currentUser);
@@ -15,7 +16,7 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
   const dbUser = dbUsers.find((u: any) => u.username === currentUser?.username);
 
   // Ambil riwayat laporan milik user ini saja
-  const history = dbCases.filter((r: any) => r.kerusakan.pelapor === (dbUser?.name || currentUser?.name));
+  const history = dbCases.filter((r: any) => r.kerusakan.pelapor_id === dbUser?.db_id);
 
   // Auto-polling untuk real-time sinkronisasi
   useEffect(() => {
@@ -25,18 +26,20 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
     return () => clearInterval(interval);
   }, []);
 
-  // State Input Form
-  const [unitId, setUnitId] = useState('');
-  const [deskripsi, setDeskripsi] = useState('');
-  const [tingkatKerusakan, setTingkatKerusakan] = useState('');
-  const [urgensi, setUrgensi] = useState('');
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const { data, setData, post, processing, reset, errors } = useForm({
+    unit_id: '',
+    deskripsi: '',
+    tingkat_kerusakan: '',
+    urgensi: '',
+    klasifikasi: '', // Will be inferred or can be left empty
+    file_bukti: [] as File[],
+  });
+
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const [selectedItemId, setSelectedItemId] = useState<number | string | null>(null);
 
   // Cari item terpilih dari dbCases agar data di modal selalu fresh saat polling
-  const selectedItem = dbCases.find((c: any) => c.caseId === selectedItemId);
+  const selectedItem = dbCases.find((c: any) => c.db_id === selectedItemId);
 
   // ==========================================
   // LOGIKA SUBMIT
@@ -44,38 +47,26 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const newFiles = Array.from(e.target.files);
-      setSelectedFiles(prev => [...prev, ...newFiles].slice(0, 5));
+      setData('file_bukti', [...data.file_bukti, ...newFiles].slice(0, 5));
     }
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const removeFile = (index: number) => {
-    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+    setData('file_bukti', data.file_bukti.filter((_, i) => i !== index));
   };
 
   const handleSubmitNewReport = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
 
-    const formData = new FormData();
-    formData.append('unit_id', unitId);
-    formData.append('deskripsi', deskripsi);
-    formData.append('tingkat_kerusakan', tingkatKerusakan);
-    formData.append('urgensi', urgensi);
-    formData.append('user_id', dbUser?.db_id || '');
-    selectedFiles.forEach(file => formData.append('file_bukti[]', file));
-
-    router.post('/reports', formData, {
-      forceFormData: true,
+    post('/reports', {
       onSuccess: () => {
-        setUnitId(''); setDeskripsi(''); setTingkatKerusakan(''); setUrgensi(''); setSelectedFiles([]);
-        setIsSubmitting(false);
-        alert(`[SYSTEM] Laporan berhasil ditransmisikan ke Command Center.`);
+        reset();
+        addNotification('LAPORAN TELAH DITRANSMISIKAN KE COMMAND CENTER.');
         setActiveMenu('HISTORY');
       },
       onError: () => {
-        setIsSubmitting(false);
-        alert(`[ERROR] Gagal mengirim laporan. Periksa koneksi.`);
+        addNotification('GAGAL MENGIRIM LAPORAN. CEK KONEKSI SATELIT.', 'error');
       }
     });
   };
@@ -115,7 +106,8 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
         </div>
       </div>
 
-      <form onSubmit={handleSubmitNewReport} className="space-y-5">
+      <form onSubmit={handleSubmitNewReport} className="space-y-6">
+        {/* ====== NOMOR SERI DART ====== */}
 
         {/* ====== DATA PELAPOR (READ-ONLY) ====== */}
         <div className="glass-panel p-6 border-l-4 border-l-olive space-y-5">
@@ -141,45 +133,44 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
           <p className="text-[10px] text-gray-400 dark:text-gray-500 italic">Data diambil otomatis dari profil akun Anda. Hubungi Admin jika ada kesalahan.</p>
         </div>
 
-        {/* ====== NOMOR SERI DART ====== */}
         <div className="glass-panel p-6 border-l-4 border-l-olive">
           <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Nomor Seri DART <span className="text-targetred">*</span></label>
-          <select value={unitId} onChange={(e) => setUnitId(e.target.value)} required
+          <select value={data.unit_id} onChange={(e) => setData('unit_id', e.target.value)} required
             className="w-full bg-white dark:bg-black/50 border border-gray-300 dark:border-gray-700 px-4 py-3 text-sm text-gunmetal dark:text-white focus:outline-none focus:border-olive focus:ring-1 focus:ring-olive transition-colors rounded-sm">
             <option value="">-- Pilih Unit DART --</option>
             {dbUnits.map((unit: any) => (
               <option key={unit.id} value={unit.id}>{unit.nomor_seri} — {unit.nama_dart} ({unit.asal_satuan})</option>
             ))}
           </select>
+          {errors.unit_id && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.unit_id}</p>}
         </div>
 
-        {/* ====== TINGKAT KERUSAKAN ====== */}
         <div className="glass-panel p-6 border-l-4 border-l-olive">
           <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Tingkat Kerusakan <span className="text-targetred">*</span></label>
           <div className="space-y-3">
             {['Ringan', 'Sedang', 'Parah'].map(level => (
-              <label key={level} className={`flex items-center gap-3 p-3 rounded-sm border cursor-pointer transition-all ${tingkatKerusakan === level ? 'border-olive bg-olive/10 dark:bg-olive/20' : 'border-gray-200 dark:border-gray-700 hover:border-olive/50 hover:bg-gray-50 dark:hover:bg-gray-800/50'}`}>
-                <input type="radio" name="tingkat_kerusakan" value={level} checked={tingkatKerusakan === level} onChange={(e) => setTingkatKerusakan(e.target.value)} required
+              <label key={level} className={`flex items-center gap-3 p-3 rounded-sm border cursor-pointer transition-all ${data.tingkat_kerusakan === level ? 'border-olive bg-olive/10 dark:bg-olive/20' : 'border-gray-200 dark:border-gray-700 hover:border-olive/50 hover:bg-gray-50 dark:hover:bg-gray-800/50'}`}>
+                <input type="radio" name="tingkat_kerusakan" value={level} checked={data.tingkat_kerusakan === level} onChange={(e) => setData('tingkat_kerusakan', e.target.value)} required
                   className="w-4 h-4 accent-olive" />
                 <span className="text-sm text-gunmetal dark:text-gray-200 font-medium">{level}</span>
                 <span className="text-[10px] text-gray-400 ml-auto">{level === 'Ringan' ? 'Masih bisa beroperasi' : level === 'Sedang' ? 'Fungsi terganggu sebagian' : 'Tidak dapat beroperasi'}</span>
               </label>
             ))}
           </div>
+          {errors.tingkat_kerusakan && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.tingkat_kerusakan}</p>}
         </div>
 
-        {/* ====== UPLOAD FOTO / VIDEO ====== */}
         <div className="glass-panel p-6 border-l-4 border-l-olive">
           <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Upload Photo / Video Kendala <span className="text-targetred">*</span></label>
           <p className="text-xs text-gray-400 dark:text-gray-500 mb-4">Upload maksimum 5 file yang didukung: image atau video. Maks 100 MB per file.</p>
           <input type="file" ref={fileInputRef} onChange={handleFileSelect} accept="image/*,video/*" multiple className="hidden" />
-          <button type="button" onClick={() => fileInputRef.current?.click()} disabled={selectedFiles.length >= 5}
+          <button type="button" onClick={() => fileInputRef.current?.click()} disabled={data.file_bukti.length >= 5}
             className="flex items-center gap-2 px-5 py-2.5 border-2 border-dashed border-olive/60 text-olive font-semibold text-sm rounded-sm hover:bg-olive/10 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
             <Upload size={18} /> Tambahkan file
           </button>
-          {selectedFiles.length > 0 && (
+          {data.file_bukti.length > 0 && (
             <div className="mt-4 space-y-2">
-              {selectedFiles.map((file, i) => (
+              {data.file_bukti.map((file, i) => (
                 <div key={i} className="flex items-center justify-between p-2.5 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-sm">
                   <div className="flex items-center gap-2 text-sm text-gunmetal dark:text-gray-300 truncate">
                     <Camera size={14} className="text-olive flex-shrink-0" />
@@ -189,12 +180,12 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
                   <button type="button" onClick={() => removeFile(i)} className="text-gray-400 hover:text-targetred transition-colors p-1"><Trash2 size={14} /></button>
                 </div>
               ))}
-              <p className="text-[10px] text-gray-400">{selectedFiles.length}/5 file terpilih</p>
+              <p className="text-[10px] text-gray-400">{data.file_bukti.length}/5 file terpilih</p>
             </div>
           )}
+          {errors.file_bukti && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.file_bukti}</p>}
         </div>
 
-        {/* ====== STATUS KEBUTUHAN PERBAIKAN ====== */}
         <div className="glass-panel p-6 border-l-4 border-l-olive">
           <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Status Kebutuhan Perbaikan <span className="text-targetred">*</span></label>
           <p className="text-xs text-gray-400 dark:text-gray-500 italic mb-3">"Pilihlah tingkat urgensi dengan jujur sesuai kondisi di lapangan agar tim teknisi dapat memprioritaskan penanganan secara efektif."</p>
@@ -204,8 +195,8 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
               { val: 'Bisa Menunggu', desc: 'Perlu diperbaiki tapi tidak mendesak' },
               { val: 'Pemeliharaan Rutin', desc: 'Perawatan berkala / preventif' },
             ].map(opt => (
-              <label key={opt.val} className={`flex items-center gap-3 p-3 rounded-sm border cursor-pointer transition-all ${urgensi === opt.val ? 'border-olive bg-olive/10 dark:bg-olive/20' : 'border-gray-200 dark:border-gray-700 hover:border-olive/50 hover:bg-gray-50 dark:hover:bg-gray-800/50'}`}>
-                <input type="radio" name="urgensi" value={opt.val} checked={urgensi === opt.val} onChange={(e) => setUrgensi(e.target.value)} required
+              <label key={opt.val} className={`flex items-center gap-3 p-3 rounded-sm border cursor-pointer transition-all ${data.urgensi === opt.val ? 'border-olive bg-olive/10 dark:bg-olive/20' : 'border-gray-200 dark:border-gray-700 hover:border-olive/50 hover:bg-gray-50 dark:hover:bg-gray-800/50'}`}>
+                <input type="radio" name="urgensi" value={opt.val} checked={data.urgensi === opt.val} onChange={(e) => setData('urgensi', e.target.value)} required
                   className="w-4 h-4 accent-olive" />
                 <div>
                   <span className="text-sm text-gunmetal dark:text-gray-200 font-medium">{opt.val}</span>
@@ -214,25 +205,25 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
               </label>
             ))}
           </div>
+          {errors.urgensi && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.urgensi}</p>}
         </div>
 
-        {/* ====== DESKRIPSI KENDALA ====== */}
         <div className="glass-panel p-6 border-l-4 border-l-olive">
           <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Deskripsikan kendala yang akan dilaporkan <span className="text-targetred">*</span></label>
-          <textarea value={deskripsi} onChange={(e) => setDeskripsi(e.target.value)} required rows={5}
+          <textarea value={data.deskripsi} onChange={(e) => setData('deskripsi', e.target.value)} required rows={5}
             className="w-full bg-white dark:bg-black/50 border border-gray-300 dark:border-gray-700 px-4 py-3 text-sm text-gunmetal dark:text-white focus:outline-none focus:border-olive focus:ring-1 focus:ring-olive transition-colors resize-none rounded-sm"
-            placeholder="Jelaskan secara detail kondisi kerusakan, kronologi kejadian, dan gejala yang terjadi..." />
+            placeholder="Jelaskan secara detail kondisi kerusakan, kronologi kejadian, and gejala yang terjadi..." />
+          {errors.deskripsi && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.deskripsi}</p>}
         </div>
 
-        {/* ====== SUBMIT ====== */}
-        <button type="submit" disabled={isSubmitting}
+        <button type="submit" disabled={processing}
           className="w-full bg-olive hover:bg-camogreen text-white font-tactical font-bold py-4 tracking-[0.3em] transition-all flex items-center justify-center gap-3 group relative overflow-hidden disabled:opacity-50 shadow-lg rounded-sm">
           <span className="absolute inset-0 bg-white/10 -translate-x-full group-hover:animate-[shimmer_2s_infinite]"></span>
           <Send size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-          {isSubmitting ? 'MENGIRIM LAPORAN...' : 'KIRIM LAPORAN PENGADUAN'}
+          {processing ? 'MENGIRIM LAPORAN...' : 'KIRIM LAPORAN PENGADUAN'}
         </button>
-      </form>
-    </div>
+        </form>
+      </div>
   );
 
   const renderHistory = () => (
@@ -256,7 +247,7 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
           history.map((item: any, index: number) => (
             <div
               key={index}
-              onClick={() => setSelectedItemId(item.caseId)}
+              onClick={() => setSelectedItemId(item.db_id)}
               className="glass-panel p-5 border-l-4 border-l-gray-400 dark:border-l-gray-700 hover:border-l-olive transition-all cursor-pointer group hover:bg-white/40 dark:hover:bg-black/40"
             >
               <div className="flex justify-between items-start mb-3">

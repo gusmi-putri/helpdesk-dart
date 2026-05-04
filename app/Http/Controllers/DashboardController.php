@@ -7,9 +7,21 @@ use Inertia\Inertia;
 use App\Models\Report;
 use App\Models\User;
 use App\Models\SystemLog;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DashboardController extends Controller
 {
+    public function exportPdf($id)
+    {
+        $report = Report::with(['unit', 'pelapor', 'teknisi'])->findOrFail($id);
+
+        // Tambahkan atribut case_id secara manual untuk template
+        $report->case_id = 'DRT-' . str_pad($report->id, 5, '0', STR_PAD_LEFT);
+
+        $pdf = Pdf::loadView('pdf.bap_template', compact('report'));
+        
+        return $pdf->download('BAP_' . $report->case_id . '.pdf');
+    }
     private function formatReports($query)
     {
         return $query->with(['unit', 'pelapor', 'teknisi'])->get()->map(function ($report) {
@@ -19,13 +31,16 @@ class DashboardController extends Controller
                 'status' => strtoupper($report->status_laporan),
                 'kerusakan' => [
                     'tanggal' => $report->tanggal_lapor ? $report->tanggal_lapor->format('d F Y, H:i') : '-',
+                    'pelapor_id' => $report->user_id,
                     'pelapor' => $report->pelapor ? $report->pelapor->nama_lengkap : 'Unknown',
-                    'lokasi' => $report->unit ? $report->unit->asal_satuan : 'Unknown',
+                    'lokasi' => $report->lokasi_laporan ?? ($report->unit ? $report->unit->asal_satuan : 'Unknown'),
                     'barangRusak' => $report->unit ? $report->unit->nama_dart : 'Hardware Anonim',
                     'deskripsi' => $report->deskripsi_kerusakan,
-                    'tingkatKerusakan' => $report->tingkat_kerusakan ?? '-',
+                    'klasifikasi' => $report->klasifikasi ?? ($report->tingkat_kerusakan ?? 'RINGAN'),
+                    'tingkatKerusakan' => $report->tingkat_kerusakan ?? ($report->klasifikasi ?? '-'),
                     'urgensi' => $report->urgensi ?? '-',
-                    'fileBukti' => $report->file_bukti ? json_decode($report->file_bukti, true) : [],
+                    'foto_bukti' => $report->file_bukti && !json_decode($report->file_bukti) ? asset('storage/reports/' . $report->file_bukti) : null,
+                    'fileBukti' => $report->file_bukti ? collect(json_decode($report->file_bukti, true) ?? [])->map(fn($path) => asset('storage/' . $path))->toArray() : [],
                 ],
                 'perbaikan' => [
                     'teknisi_id' => $report->teknisi_id,
@@ -116,7 +131,9 @@ class DashboardController extends Controller
 
     public function teknisi()
     {
-        $cases = $this->formatReports(Report::query());
+        // Teknisi hanya melihat tugas yang diberikan kepadanya
+        $cases = $this->formatReports(Report::where('teknisi_id', auth()->id()));
+        
         return Inertia::render('Helpdesk/DashboardTeknisi', [
             'dbCases' => $cases
         ]);
@@ -125,13 +142,18 @@ class DashboardController extends Controller
     public function staf()
     {
         $cases = $this->formatReports(Report::query());
+        
+        // Hanya ambil teknisi yang tidak sedang memegang laporan status 'Proses'
         $technicians = User::whereHas('role', function($q) {
             $q->where('nama_role', 'Teknisi');
+        })->whereDoesntHave('reportsDitangani', function($q) {
+            $q->where('status_laporan', 'Proses');
         })->get()->map(function($u) {
             return [
                 'id' => $u->id,
                 'name' => $u->nama_lengkap,
-                'username' => $u->username
+                'username' => $u->username,
+                'spesialisasi' => $u->spesialisasi
             ];
         });
 

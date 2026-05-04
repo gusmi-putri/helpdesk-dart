@@ -18,16 +18,17 @@ class ReportController extends Controller
             'deskripsi' => 'required|string',
             'tingkat_kerusakan' => 'required|in:Ringan,Sedang,Parah',
             'urgensi' => 'required|in:Sangat Mendesak,Bisa Menunggu,Pemeliharaan Rutin',
-            'user_id' => 'nullable|exists:users,id',
+            'klasifikasi' => 'nullable|in:RINGAN,SEDANG,DARURAT',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'file_bukti.*' => 'nullable|file|mimes:jpg,jpeg,png,gif,mp4,mov,avi,webm|max:102400',
         ]);
-        
-        $userId = $request->user_id;
 
-        // Fallback jika tidak ada user_id (misal masih development awal)
-        if (!$userId) {
-            $pelapor = User::whereHas('role', function($q) { $q->where('nama_role', 'Pelapor'); })->first();
-            $userId = $pelapor->id;
+        $fotoPath = null;
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('public/reports', $filename);
+            $fotoPath = $filename;
         }
 
         // Handle file uploads (max 5 files)
@@ -42,14 +43,18 @@ class ReportController extends Controller
 
         Report::create([
             'unit_id' => $request->unit_id,
-            'user_id' => $userId,
+            'user_id' => $request->user()->id,
+            'lokasi_laporan' => $request->user()->asal_satuan,
+            'klasifikasi' => $request->klasifikasi ?? strtoupper($request->tingkat_kerusakan),
+            'file_bukti' => !empty($filePaths) ? json_encode($filePaths) : $fotoPath,
             'tanggal_lapor' => now(),
             'deskripsi_kerusakan' => $request->deskripsi,
             'tingkat_kerusakan' => $request->tingkat_kerusakan,
             'urgensi' => $request->urgensi,
-            'file_bukti' => !empty($filePaths) ? json_encode($filePaths) : null,
             'status_laporan' => 'Pending'
         ]);
+
+        \App\Models\SystemLog::log('WARN', $request->user()->id, "Mengirimkan laporan kerusakan baru di lokasi: {$request->user()->asal_satuan}");
 
         return redirect()->back()->with('message', 'Laporan berhasil ditransmisikan ke Pusat Komando!');
     }
@@ -72,9 +77,12 @@ class ReportController extends Controller
 
         $report->update([
             'status_laporan' => 'Proses',
+            'staff_id' => $request->user()->id,
             'teknisi_id' => $teknisi->id,
             'tgl_ditunjuk' => now()
         ]);
+
+        \App\Models\SystemLog::log('INFO', $request->user()->id, "Menugaskan teknisi {$teknisi->nama_lengkap} untuk menangani kasus: DRT-" . str_pad($report->id, 5, '0', STR_PAD_LEFT));
 
         return redirect()->back()->with('message', 'Teknisi berhasil ditugaskan!');
     }
@@ -84,15 +92,27 @@ class ReportController extends Controller
         $report = Report::findOrFail($id);
         $request->validate([
             'catatan' => 'required|string',
-            'metode' => 'required|in:Online,Offline'
+            'metode' => 'required|in:Online,Offline',
+            'foto_selesai' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
+
+        $fotoSelesai = $report->file_bukti_selesai;
+        if ($request->hasFile('foto_selesai')) {
+            $file = $request->file('foto_selesai');
+            $filename = 'done_' . time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('public/reports', $filename);
+            $fotoSelesai = $filename;
+        }
 
         $report->update([
             'status_laporan' => 'Selesai',
             'catatan_teknisi' => $request->catatan,
             'metode_perbaikan' => $request->metode,
+            'file_bukti_selesai' => $fotoSelesai,
             'tgl_selesai' => now()
         ]);
+
+        \App\Models\SystemLog::log('SUCCESS', $request->user()->id, "Menyelesaikan penanganan laporan DRT-" . str_pad($report->id, 5, '0', STR_PAD_LEFT) . " dengan metode {$request->metode}");
 
         return redirect()->back()->with('message', 'Laporan perbaikan telah difinalisasi!');
     }

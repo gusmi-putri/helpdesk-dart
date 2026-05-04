@@ -30,5 +30,6 @@ Route::middleware(['auth'])->group(function () {
 Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
 Route::post('/reports/{id}/handle', [ReportController::class, 'handle'])->name('reports.handle');
 Route::post('/reports/{id}/complete', [ReportController::class, 'complete'])->name('reports.complete');
+Route::get('/reports/{id}/pdf', [DashboardController::class, 'exportPdf'])->name('reports.pdf');
 
 

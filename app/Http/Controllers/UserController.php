@@ -54,6 +54,9 @@ class UserController extends Controller
             'spesialisasi' => $request->spesialisasi,
         ]);
 
+        $admin = auth()->user();
+        \App\Models\SystemLog::log('INFO', $admin->id, "Mendaftarkan personel baru: {$request->nama_lengkap} ({$request->username})");
+
         return redirect()->back()->with('message', 'Personel baru berhasil didaftarkan ke sistem.');
     }
 
@@ -77,6 +80,9 @@ class UserController extends Controller
 
         $user->update($request->only('nama_lengkap', 'nrp_nip', 'role_id', 'asal_satuan', 'no_wa', 'spesialisasi'));
 
+        $admin = auth()->user();
+        \App\Models\SystemLog::log('INFO', $admin->id, "Memperbarui data personel: {$user->nama_lengkap}");
+
         return redirect()->back()->with('message', 'Data personel telah diperbarui.');
     }
 
@@ -86,7 +92,11 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         $user = User::findOrFail($id);
+        $userName = $user->nama_lengkap;
         $user->delete();
+
+        $admin = auth()->user();
+        \App\Models\SystemLog::log('ALERT', $admin->id, "Menghapus akses personel dari sistem: {$userName}");
 
         return redirect()->back()->with('message', 'User deleted successfully.');
     }

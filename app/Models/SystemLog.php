@@ -14,4 +14,13 @@ class SystemLog extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public static function log($level, $userId, $activity)
+    {
+        return self::create([
+            'level' => $level,
+            'user_id' => $userId,
+            'activity_payload' => $activity
+        ]);
+    }
 }
