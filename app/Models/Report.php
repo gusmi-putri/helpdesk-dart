@@ -8,7 +8,8 @@ class Report extends Model
 {
     protected $fillable = [
         'unit_id', 'user_id', 'staff_id', 'teknisi_id', 'tanggal_lapor',
-        'deskripsi_kerusakan', 'file_bukti', 'file_bukti_selesai',
+        'deskripsi_kerusakan', 'tingkat_kerusakan', 'urgensi',
+        'file_bukti', 'file_bukti_selesai',
         'status_laporan', 'metode_perbaikan', 'tgl_ditunjuk', 'tgl_selesai', 'catatan_teknisi'
     ];
 

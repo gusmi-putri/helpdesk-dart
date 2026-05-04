@@ -23,6 +23,9 @@ class DashboardController extends Controller
                     'lokasi' => $report->unit ? $report->unit->asal_satuan : 'Unknown',
                     'barangRusak' => $report->unit ? $report->unit->nama_dart : 'Hardware Anonim',
                     'deskripsi' => $report->deskripsi_kerusakan,
+                    'tingkatKerusakan' => $report->tingkat_kerusakan ?? '-',
+                    'urgensi' => $report->urgensi ?? '-',
+                    'fileBukti' => $report->file_bukti ? json_decode($report->file_bukti, true) : [],
                 ],
                 'perbaikan' => [
                     'teknisi_id' => $report->teknisi_id,
@@ -91,11 +94,23 @@ class DashboardController extends Controller
                 'name' => $u->nama_lengkap
             ];
         });
+
+        // Kirim data profil user yang sedang login untuk auto-fill form
+        $auth = auth()->user();
+        $authUser = $auth ? [
+            'id' => $auth->id,
+            'username' => $auth->username,
+            'nama_lengkap' => $auth->nama_lengkap,
+            'nrp_nip' => $auth->nrp_nip ?? '',
+            'asal_satuan' => $auth->asal_satuan ?? '',
+            'no_wa' => $auth->no_wa ?? '',
+        ] : null;
         
         return Inertia::render('Helpdesk/DashboardPelapor', [
             'dbCases' => $cases,
             'dbUnits' => $units,
-            'dbUsers' => $users
+            'dbUsers' => $users,
+            'authUser' => $authUser,
         ]);
     }
 
