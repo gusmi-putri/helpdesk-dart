@@ -16,8 +16,11 @@ class ReportController extends Controller
         $request->validate([
             'unit_id' => 'required|exists:units,id',
             'deskripsi' => 'required|string',
-            'klasifikasi' => 'required|in:RINGAN,SEDANG,DARURAT',
+            'tingkat_kerusakan' => 'required|in:Ringan,Sedang,Parah',
+            'urgensi' => 'required|in:Sangat Mendesak,Bisa Menunggu,Pemeliharaan Rutin',
+            'klasifikasi' => 'nullable|in:RINGAN,SEDANG,DARURAT',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'file_bukti.*' => 'nullable|file|mimes:jpg,jpeg,png,gif,mp4,mov,avi,webm|max:102400',
         ]);
 
         $fotoPath = null;
@@ -27,15 +30,27 @@ class ReportController extends Controller
             $file->storeAs('public/reports', $filename);
             $fotoPath = $filename;
         }
-        
+
+        // Handle file uploads (max 5 files)
+        $filePaths = [];
+        if ($request->hasFile('file_bukti')) {
+            $files = array_slice($request->file('file_bukti'), 0, 5);
+            foreach ($files as $file) {
+                $path = $file->store('bukti', 'public');
+                $filePaths[] = $path;
+            }
+        }
+
         Report::create([
             'unit_id' => $request->unit_id,
             'user_id' => $request->user()->id,
             'lokasi_laporan' => $request->user()->asal_satuan,
-            'klasifikasi' => $request->klasifikasi,
-            'file_bukti' => $fotoPath,
+            'klasifikasi' => $request->klasifikasi ?? strtoupper($request->tingkat_kerusakan),
+            'file_bukti' => !empty($filePaths) ? json_encode($filePaths) : $fotoPath,
             'tanggal_lapor' => now(),
             'deskripsi_kerusakan' => $request->deskripsi,
+            'tingkat_kerusakan' => $request->tingkat_kerusakan,
+            'urgensi' => $request->urgensi,
             'status_laporan' => 'Pending'
         ]);
 

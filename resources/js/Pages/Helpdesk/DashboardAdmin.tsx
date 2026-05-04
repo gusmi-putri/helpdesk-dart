@@ -545,7 +545,7 @@ const DashboardAdmin = (props: any) => {
               </div>
               <button onClick={() => setIsDetailModalOpen(false)} className="text-gray-500 hover:text-targetred">✕</button>
             </div>
-            
+
             <div className="p-6">
               <div className="grid grid-cols-2 gap-y-4 gap-x-8">
                 <div className="col-span-2 flex items-center gap-4 mb-4 pb-4 border-b border-gray-300 dark:border-gray-800">
@@ -584,8 +584,8 @@ const DashboardAdmin = (props: any) => {
               </div>
 
               <div className="mt-8 pt-4 border-t border-gray-300 dark:border-gray-800 flex justify-end">
-                <button 
-                  onClick={() => setIsDetailModalOpen(false)} 
+                <button
+                  onClick={() => setIsDetailModalOpen(false)}
                   className="bg-gunmetal dark:bg-black text-white px-8 py-2 font-tactical font-bold tracking-widest hover:bg-gray-800 transition-colors border border-gray-600"
                 >
                   TUTUP
@@ -609,13 +609,13 @@ const DashboardAdmin = (props: any) => {
                 PERINGATAN: Anda akan menghapus akses personil <span className="text-targetred font-bold underline">{userToDelete.name}</span> dari basis data sistem utama. Tindakan ini tidak dapat dibatalkan.
               </p>
               <div className="mt-8 grid grid-cols-2 gap-3">
-                <button 
+                <button
                   onClick={confirmDeleteUser}
                   className="bg-targetred text-white py-2 font-tactical font-bold tracking-widest hover:bg-red-700 transition-all shadow-[0_0_15px_rgba(200,30,30,0.3)]"
                 >
                   HAPUS AKSES
                 </button>
-                <button 
+                <button
                   onClick={() => setIsDeleteModalOpen(false)}
                   className="bg-transparent border border-gray-500 text-gray-500 py-2 font-tactical font-bold tracking-widest hover:bg-gray-500/10 transition-all"
                 >

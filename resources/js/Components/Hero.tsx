@@ -31,9 +31,8 @@ const Hero = () => {
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-olive/40 via-gunmetal to-gunmetal z-10 pointer-events-none"></div>
 
-        {/* User Image Blended */}
         <div
-          className="absolute inset-0 bg-cover bg-center grayscale mix-blend-overlay opacity-30 z-10 pointer-events-none"
+          className="absolute inset-0 bg-cover bg-center grayscale mix-blend-overlay opacity-30 z-10 pointer-events-none scale-110"
           style={{ backgroundImage: `url(${bgHero})` }}
         ></div>
 

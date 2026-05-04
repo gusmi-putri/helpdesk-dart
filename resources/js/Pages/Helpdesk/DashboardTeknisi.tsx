@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Wrench, MapPin, AlertCircle, Calendar, Send, FileText, ChevronRight, LogOut, Activity, ShieldAlert, CheckCircle2, Menu, X, CircleUser } from 'lucide-react';
+import { Wrench, MapPin, AlertCircle, Calendar, Send, FileText, ChevronRight, LogOut, Activity, ShieldAlert, CheckCircle2, Menu, X, CircleUser, Shield } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { router, useForm } from '@inertiajs/react';
 
@@ -259,8 +259,8 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
       {/* MAN SIDEBAR - TACTICAL */}
       <aside className={`fixed inset-y-0 left-0 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 w-72 bg-white dark:bg-black border-r border-gray-300 dark:border-gray-800 z-50 flex-shrink-0 flex flex-col shadow-2xl`}>
         <div className="p-6 border-b border-gray-300 dark:border-gray-800 flex items-center gap-4 bg-gray-100 dark:bg-[#111]">
-          <div className="relative">
-            <img src="/logo.png" alt="DART Logo" className="w-12 h-14 object-contain" />
+          <div className="w-12 h-12 flex items-center justify-center bg-olive/10 border border-olive/30 rounded-sm">
+            <Shield className="w-8 h-8 text-olive" />
           </div>
           <div>
             <h1 className="font-stencil text-2xl tracking-widest text-gunmetal dark:text-white leading-none">HELPDESK-DART</h1>

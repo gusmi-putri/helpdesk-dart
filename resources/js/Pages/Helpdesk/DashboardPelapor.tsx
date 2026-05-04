@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { Send, History, AlertCircle, Clock, CheckCircle2, ChevronRight, Activity, Camera, LogOut, Shield, FilePlus, Menu, X, CircleUser, Wrench } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Send, History, AlertCircle, Clock, CheckCircle2, ChevronRight, Activity, Camera, LogOut, Shield, FilePlus, Menu, X as XIcon, CircleUser, Wrench, Upload, Phone, MapPin, Info, Trash2 } from 'lucide-react';
 import { useStore, type ReportStatus } from '@/store/useStore';
 import { router, useForm } from '@inertiajs/react';
 
-const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [] }: any) => {
+const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser = null }: any) => {
   const [activeMenu, setActiveMenu] = useState<'FORM' | 'HISTORY'>('FORM');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
@@ -31,14 +31,16 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [] }: any) => 
     return () => clearInterval(interval);
   }, []);
 
-  // State Form dengan useForm untuk menangani file upload
   const { data, setData, post, processing, reset, errors } = useForm({
     unit_id: '',
     deskripsi: '',
-    klasifikasi: 'RINGAN',
-    foto: null as File | null,
+    tingkat_kerusakan: '',
+    urgensi: '',
+    klasifikasi: '', // Will be inferred or can be left empty
+    file_bukti: [] as File[],
   });
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
   // Cari item terpilih dari dbCases agar data di modal selalu fresh saat polling
@@ -47,6 +49,18 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [] }: any) => 
   // ==========================================
   // LOGIKA SUBMIT
   // ==========================================
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const newFiles = Array.from(e.target.files);
+      setData('file_bukti', [...data.file_bukti, ...newFiles].slice(0, 5));
+    }
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const removeFile = (index: number) => {
+    setData('file_bukti', data.file_bukti.filter((_, i) => i !== index));
+  };
+
   const handleSubmitNewReport = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -72,96 +86,149 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [] }: any) => 
   // ==========================================
 
   const renderForm = () => (
-    <div className="max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="glass-panel p-8 border-t-4 border-t-olive shadow-2xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-4 opacity-10">
-          <FilePlus size={80} />
-        </div>
+    <div className="max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6">
 
-        <div className="mb-8">
-          <h2 className="text-2xl font-tactical font-bold text-gunmetal dark:text-white tracking-widest flex items-center gap-3 uppercase">
-            <Send className="text-olive" /> Transmisi Laporan Baru
+      {/* ====== HEADER PANEL ====== */}
+      <div className="glass-panel border-t-4 border-t-olive overflow-hidden">
+        <div className="p-6 md:p-8">
+          <h2 className="text-2xl md:text-3xl font-tactical font-bold text-gunmetal dark:text-white tracking-wider uppercase mb-3">
+            Form Pengaduan Kerusakan DART
           </h2>
-          <p className="text-gray-600 dark:text-gray-400 text-xs font-mono mt-2 tracking-widest">
-            ISI FORMULIR DI BAWAH UNTUK MELAPORKAN KERUSAKAN UNIT DART.
+          <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
+            Tim teknis akan melakukan verifikasi data dan ketersediaan suku cadang setelah menerima laporan ini.
+            Kami akan menghubungi Anda kembali untuk proses tindak lanjut.
           </p>
+          <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">
+            Jika kendala bersifat <strong className="text-targetred">darurat (Urgent)</strong>, mohon hubungi pusat bantuan kami di:
+          </p>
+          <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+            <li className="flex items-start gap-2"><Phone size={16} className="text-olive mt-0.5 flex-shrink-0" /><span><strong>Telepon:</strong> (+62) 822-2541-8071</span></li>
+            <li className="flex items-start gap-2"><MapPin size={16} className="text-olive mt-0.5 flex-shrink-0" /><span><strong>Alamat:</strong> Jl. PSM No.50, Sukapura, Kec. Kiaracondong, Kota Bandung, Jawa Barat 40285 Bengpuskomlek Puskomlekad</span></li>
+          </ul>
+        </div>
+        <div className="px-6 md:px-8 py-3 bg-targetred/10 border-t border-targetred/30">
+          <p className="text-xs text-targetred font-semibold flex items-center gap-1.5"><AlertCircle size={14} /> Tanda <span className="font-bold">*</span> menunjukkan pertanyaan yang wajib diisi</p>
+        </div>
+      </div>
+
+      <form onSubmit={handleSubmitNewReport} className="space-y-5">
+
+        {/* ====== DATA PELAPOR (READ-ONLY) ====== */}
+        <div className="glass-panel p-6 border-l-4 border-l-olive space-y-5">
+          <h3 className="text-xs font-tactical font-bold text-olive tracking-[0.2em] uppercase flex items-center gap-2"><CircleUser size={16} /> Data Pelapor</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">Nama Lengkap</label>
+              <input type="text" readOnly value={authUser?.nama_lengkap || currentUser?.name || ''} className="w-full bg-gray-100 dark:bg-gray-800/60 border border-gray-300 dark:border-gray-700 px-4 py-2.5 text-sm text-gunmetal dark:text-gray-300 cursor-not-allowed rounded-sm" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">Pangkat / NRP / Golongan</label>
+              <input type="text" readOnly value={authUser?.nrp_nip || '-'} className="w-full bg-gray-100 dark:bg-gray-800/60 border border-gray-300 dark:border-gray-700 px-4 py-2.5 text-sm text-gunmetal dark:text-gray-300 cursor-not-allowed rounded-sm" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">Satuan Kerja</label>
+              <input type="text" readOnly value={authUser?.asal_satuan || '-'} className="w-full bg-gray-100 dark:bg-gray-800/60 border border-gray-300 dark:border-gray-700 px-4 py-2.5 text-sm text-gunmetal dark:text-gray-300 cursor-not-allowed rounded-sm" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">Nomor WhatsApp Aktif</label>
+              <input type="text" readOnly value={authUser?.no_wa || '-'} className="w-full bg-gray-100 dark:bg-gray-800/60 border border-gray-300 dark:border-gray-700 px-4 py-2.5 text-sm text-gunmetal dark:text-gray-300 cursor-not-allowed rounded-sm" />
+            </div>
+          </div>
+          <p className="text-[10px] text-gray-400 dark:text-gray-500 italic">Data diambil otomatis dari profil akun Anda. Hubungi Admin jika ada kesalahan.</p>
         </div>
 
-        <form onSubmit={handleSubmitNewReport} className="space-y-6 relative z-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-[10px] font-mono font-bold text-gray-500 dark:text-gray-400 mb-2 tracking-widest uppercase">PILIH UNIT DART</label>
-              <select
-                value={data.unit_id}
-                onChange={(e) => setData('unit_id', e.target.value)}
-                className={`w-full bg-sand/50 dark:bg-black/50 border ${errors.unit_id ? 'border-red-500' : 'border-gray-300 dark:border-gray-700'} p-3 text-sm font-mono text-gunmetal dark:text-white focus:outline-none focus:border-olive transition-colors`}
-                required
-              >
-                <option value="">-- IDENTIFIKASI UNIT --</option>
-                {dbUnits.map((unit: any) => (
-                  <option key={unit.id} value={unit.id}>
-                    {unit.nomor_seri} - {unit.nama_dart} ({unit.asal_satuan})
-                  </option>
-                ))}
-              </select>
-              {errors.unit_id && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.unit_id}</p>}
-            </div>
+        <div className="glass-panel p-6 border-l-4 border-l-olive">
+          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Nomor Seri DART <span className="text-targetred">*</span></label>
+          <select value={data.unit_id} onChange={(e) => setData('unit_id', e.target.value)} required
+            className="w-full bg-white dark:bg-black/50 border border-gray-300 dark:border-gray-700 px-4 py-3 text-sm text-gunmetal dark:text-white focus:outline-none focus:border-olive focus:ring-1 focus:ring-olive transition-colors rounded-sm">
+            <option value="">-- Pilih Unit DART --</option>
+            {dbUnits.map((unit: any) => (
+              <option key={unit.id} value={unit.id}>{unit.nomor_seri} — {unit.nama_dart} ({unit.asal_satuan})</option>
+            ))}
+          </select>
+          {errors.unit_id && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.unit_id}</p>}
+        </div>
 
-            <div>
-              <label className="block text-[10px] font-mono font-bold text-gray-500 dark:text-gray-400 mb-2 tracking-widest uppercase">TINGKAT KERUSAKAN</label>
-              <select
-                value={data.klasifikasi}
-                onChange={(e) => setData('klasifikasi', e.target.value)}
-                className="w-full bg-sand/50 dark:bg-black/50 border border-gray-300 dark:border-gray-700 p-3 text-sm font-mono text-gunmetal dark:text-white focus:outline-none focus:border-olive transition-colors"
-                required
-              >
-                <option value="RINGAN">🟢 RINGAN</option>
-                <option value="SEDANG">🟡 SEDANG</option>
-                <option value="DARURAT">🔴 DARURAT / TINGGI</option>
-              </select>
-            </div>
+        <div className="glass-panel p-6 border-l-4 border-l-olive">
+          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Tingkat Kerusakan <span className="text-targetred">*</span></label>
+          <div className="space-y-3">
+            {['Ringan', 'Sedang', 'Parah'].map(level => (
+              <label key={level} className={`flex items-center gap-3 p-3 rounded-sm border cursor-pointer transition-all ${data.tingkat_kerusakan === level ? 'border-olive bg-olive/10 dark:bg-olive/20' : 'border-gray-200 dark:border-gray-700 hover:border-olive/50 hover:bg-gray-50 dark:hover:bg-gray-800/50'}`}>
+                <input type="radio" name="tingkat_kerusakan" value={level} checked={data.tingkat_kerusakan === level} onChange={(e) => setData('tingkat_kerusakan', e.target.value)} required
+                  className="w-4 h-4 accent-olive" />
+                <span className="text-sm text-gunmetal dark:text-gray-200 font-medium">{level}</span>
+                <span className="text-[10px] text-gray-400 ml-auto">{level === 'Ringan' ? 'Masih bisa beroperasi' : level === 'Sedang' ? 'Fungsi terganggu sebagian' : 'Tidak dapat beroperasi'}</span>
+              </label>
+            ))}
           </div>
+          {errors.tingkat_kerusakan && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.tingkat_kerusakan}</p>}
+        </div>
 
-          <div>
-            <label className="block text-[10px] font-mono font-bold text-gray-500 dark:text-gray-400 mb-2 tracking-widest uppercase">DESKRIPSI KERUSAKAN</label>
-            <textarea
-              value={data.deskripsi}
-              onChange={(e) => setData('deskripsi', e.target.value)}
-              className={`w-full bg-sand/50 dark:bg-black/50 border ${errors.deskripsi ? 'border-red-500' : 'border-gray-400 dark:border-gray-700'} p-3 text-sm font-mono text-gunmetal dark:text-white h-32 focus:outline-none focus:border-olive transition-colors resize-none`}
-              placeholder="Jelaskan secara teknis kondisi kerusakan..."
-              required
-            />
-            {errors.deskripsi && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.deskripsi}</p>}
-          </div>
-
-          <div className="border-2 border-dashed border-gray-300 dark:border-gray-800 p-6 text-center hover:border-olive transition-all group">
-            <label className="cursor-pointer block">
-              <Camera className="w-8 h-8 mx-auto mb-2 text-gray-400 group-hover:text-olive transition-colors" />
-              <span className="block text-xs font-mono text-gray-500 group-hover:text-olive">
-                {data.foto ? `[FILE: ${data.foto.name}]` : 'UPLOAD FOTO BUKTI KERUSAKAN (MAX 2MB)'}
-              </span>
-              <input 
-                type="file" 
-                accept="image/*"
-                className="hidden" 
-                onChange={(e) => setData('foto', e.target.files ? e.target.files[0] : null)}
-              />
-            </label>
-          </div>
-
-          <button
-            type="submit"
-            disabled={processing}
-            className="w-full bg-olive hover:bg-camogreen text-white font-tactical font-bold py-4 tracking-[0.3em] transition-all flex items-center justify-center gap-3 group relative overflow-hidden disabled:opacity-50 shadow-lg"
-          >
-            <span className="absolute inset-0 bg-white/10 -translate-x-full group-hover:animate-[shimmer_2s_infinite]"></span>
-            <Send size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-            {processing ? 'TRANSMITTING...' : 'KIRIM LAPORAN'}
+        <div className="glass-panel p-6 border-l-4 border-l-olive">
+          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Upload Photo / Video Kendala <span className="text-targetred">*</span></label>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mb-4">Upload maksimum 5 file yang didukung: image atau video. Maks 100 MB per file.</p>
+          <input type="file" ref={fileInputRef} onChange={handleFileSelect} accept="image/*,video/*" multiple className="hidden" />
+          <button type="button" onClick={() => fileInputRef.current?.click()} disabled={data.file_bukti.length >= 5}
+            className="flex items-center gap-2 px-5 py-2.5 border-2 border-dashed border-olive/60 text-olive font-semibold text-sm rounded-sm hover:bg-olive/10 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+            <Upload size={18} /> Tambahkan file
           </button>
-        </form>
+          {data.file_bukti.length > 0 && (
+            <div className="mt-4 space-y-2">
+              {data.file_bukti.map((file, i) => (
+                <div key={i} className="flex items-center justify-between p-2.5 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-sm">
+                  <div className="flex items-center gap-2 text-sm text-gunmetal dark:text-gray-300 truncate">
+                    <Camera size={14} className="text-olive flex-shrink-0" />
+                    <span className="truncate">{file.name}</span>
+                    <span className="text-[10px] text-gray-400 flex-shrink-0">({(file.size / 1024 / 1024).toFixed(1)} MB)</span>
+                  </div>
+                  <button type="button" onClick={() => removeFile(i)} className="text-gray-400 hover:text-targetred transition-colors p-1"><Trash2 size={14} /></button>
+                </div>
+              ))}
+              <p className="text-[10px] text-gray-400">{data.file_bukti.length}/5 file terpilih</p>
+            </div>
+          )}
+          {errors.file_bukti && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.file_bukti}</p>}
+        </div>
+
+        <div className="glass-panel p-6 border-l-4 border-l-olive">
+          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Status Kebutuhan Perbaikan <span className="text-targetred">*</span></label>
+          <p className="text-xs text-gray-400 dark:text-gray-500 italic mb-3">"Pilihlah tingkat urgensi dengan jujur sesuai kondisi di lapangan agar tim teknisi dapat memprioritaskan penanganan secara efektif."</p>
+          <div className="space-y-3">
+            {[
+              { val: 'Sangat Mendesak', desc: 'Butuh penanganan segera, operasi terhenti' },
+              { val: 'Bisa Menunggu', desc: 'Perlu diperbaiki tapi tidak mendesak' },
+              { val: 'Pemeliharaan Rutin', desc: 'Perawatan berkala / preventif' },
+            ].map(opt => (
+              <label key={opt.val} className={`flex items-center gap-3 p-3 rounded-sm border cursor-pointer transition-all ${data.urgensi === opt.val ? 'border-olive bg-olive/10 dark:bg-olive/20' : 'border-gray-200 dark:border-gray-700 hover:border-olive/50 hover:bg-gray-50 dark:hover:bg-gray-800/50'}`}>
+                <input type="radio" name="urgensi" value={opt.val} checked={data.urgensi === opt.val} onChange={(e) => setData('urgensi', e.target.value)} required
+                  className="w-4 h-4 accent-olive" />
+                <div>
+                  <span className="text-sm text-gunmetal dark:text-gray-200 font-medium">{opt.val}</span>
+                  <span className="block text-[10px] text-gray-400">{opt.desc}</span>
+                </div>
+              </label>
+            ))}
+          </div>
+          {errors.urgensi && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.urgensi}</p>}
+        </div>
+
+        <div className="glass-panel p-6 border-l-4 border-l-olive">
+          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Deskripsikan kendala yang akan dilaporkan <span className="text-targetred">*</span></label>
+          <textarea value={data.deskripsi} onChange={(e) => setData('deskripsi', e.target.value)} required rows={5}
+            className="w-full bg-white dark:bg-black/50 border border-gray-300 dark:border-gray-700 px-4 py-3 text-sm text-gunmetal dark:text-white focus:outline-none focus:border-olive focus:ring-1 focus:ring-olive transition-colors resize-none rounded-sm"
+            placeholder="Jelaskan secara detail kondisi kerusakan, kronologi kejadian, and gejala yang terjadi..." />
+          {errors.deskripsi && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.deskripsi}</p>}
+        </div>
+
+        <button type="submit" disabled={processing}
+          className="w-full bg-olive hover:bg-camogreen text-white font-tactical font-bold py-4 tracking-[0.3em] transition-all flex items-center justify-center gap-3 group relative overflow-hidden disabled:opacity-50 shadow-lg rounded-sm">
+          <span className="absolute inset-0 bg-white/10 -translate-x-full group-hover:animate-[shimmer_2s_infinite]"></span>
+          <Send size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+          {processing ? 'MENGIRIM LAPORAN...' : 'KIRIM LAPORAN PENGADUAN'}
+        </button>
       </div>
     </div>
-  );
+);
 
   const renderHistory = () => (
     <div className="max-w-4xl mx-auto animate-in fade-in duration-500">
