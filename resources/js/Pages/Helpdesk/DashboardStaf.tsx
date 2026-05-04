@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { UserCog, AlertTriangle, CheckCircle, Clock, LogOut, ShieldAlert, Users, Database, Shield, Activity, Menu, X, CircleUser } from 'lucide-react';
+import { UserCog, AlertTriangle, CheckCircle, Clock, LogOut, ShieldAlert, Users, Database, Shield, Activity, Menu, X, CircleUser, Eye, Camera } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { router } from '@inertiajs/react';
 
@@ -9,13 +9,9 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
 
   const [activeMenu, setActiveMenu] = useState<'MASUK' | 'SELESAI'>('MASUK');
   const [assigningReportId, setAssigningReportId] = useState<number | null>(null);
+  const [viewingProof, setViewingProof] = useState<any[] | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
-  const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
-
-  const showNotification = (message: string, type: 'success' | 'error' = 'success') => {
-    setNotification({ message, type });
-    setTimeout(() => setNotification(null), 4000);
-  };
+  const addNotification = useStore(state => state.addNotification);
 
   // Auto-polling untuk real-time sinkronisasi
   useEffect(() => {
@@ -29,10 +25,10 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
     router.post(`/reports/${reportId}/handle`, { teknisi_id: idTeknisi }, {
       onSuccess: () => {
         setAssigningReportId(null);
-        showNotification('PERSONEL BERHASIL DITUGASKAN KE TITIK LAPORAN.');
+        addNotification('PERSONEL BERHASIL DITUGASKAN KE TITIK LAPORAN.');
       },
       onError: () => {
-        showNotification('GAGAL MENGHUBUNGI PERSONEL. CEK JARINGAN.', 'error');
+        addNotification('GAGAL MENGHUBUNGI PERSONEL. CEK JARINGAN.', 'error');
       }
     });
   };
@@ -67,10 +63,11 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
             <thead className="bg-[#1a2024] text-gray-600 dark:text-gray-400 border-b border-gray-300 dark:border-gray-700 font-tactical tracking-widest text-xs">
               <tr>
                 <th className="p-4">ID LAPORAN</th>
-                <th className="p-4">ASAL & WAKTU</th>
-                <th className="p-4">RINCIAN KERUSAKAN</th>
+                <th className="p-4">PELAPOR & WAKTU</th>
+                <th className="p-4">UNIT & LOKASI</th>
+                <th className="p-4">URGENSI / KERUSAKAN</th>
                 <th className="p-4">STATUS</th>
-                <th className="p-4 text-center">DISPATCH TEKNISI</th>
+                <th className="p-4 text-center">AKSI DISPATCH</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-300 dark:divide-gray-800">
@@ -95,8 +92,21 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
                     </div>
                   </td>
                   <td className="p-4">
-                    <div className="font-bold mb-1">{report.kerusakan.barangRusak}</div>
-                    <div className="text-gray-700 dark:text-gray-400 text-xs">LOK: {report.kerusakan.lokasi}</div>
+                    <div className="font-bold mb-1">{report.unit?.nama_dart || 'UNIT TIDAK DIKENAL'}</div>
+                    <div className="text-gray-700 dark:text-gray-400 text-[10px] font-mono">LOK: {report.kerusakan.lokasi}</div>
+                  </td>
+                  <td className="p-4">
+                    <div className="flex flex-col gap-1">
+                      <span className={`text-[9px] font-bold px-2 py-0.5 w-fit border ${
+                        report.kerusakan.urgensi === 'Sangat Mendesak' ? 'bg-red-900/20 text-red-500 border-red-800' : 
+                        'bg-blue-900/20 text-blue-500 border-blue-800'
+                      }`}>
+                        {report.kerusakan.urgensi?.toUpperCase() || 'NORMAL'}
+                      </span>
+                      <span className="text-xs font-bold text-gunmetal dark:text-gray-300">
+                        {report.kerusakan.tingkatKerusakan || report.kerusakan.barangRusak}
+                      </span>
+                    </div>
                   </td>
                   <td className="p-4">
                     {report.status === 'PENDING' ? (
@@ -138,12 +148,22 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
                             </button>
                           </div>
                         ) : (
-                          <button
-                            onClick={() => setAssigningReportId(report.db_id)}
-                            className="bg-targetred hover:bg-red-800 text-white w-full py-2 flex items-center justify-center font-tactical text-[11px] font-bold tracking-widest transition-all shadow-md uppercase"
-                          >
-                            TUGASKAN TEKNISI
-                          </button>
+                          <div className="flex flex-col gap-2">
+                            <button
+                              onClick={() => setAssigningReportId(report.db_id)}
+                              className="w-full bg-olive hover:bg-camogreen text-white px-3 py-2 text-[10px] font-tactical font-bold tracking-[0.2em] transition-all flex items-center justify-center gap-2 border border-olive shadow-[0_0_15px_rgba(75,83,32,0.2)]"
+                            >
+                              <ShieldAlert className="w-3.5 h-3.5" /> TUGASKAN PERSONEL
+                            </button>
+                            {report.kerusakan.fileBukti && report.kerusakan.fileBukti.length > 0 && (
+                              <button
+                                onClick={() => setViewingProof(report.kerusakan.fileBukti)}
+                                className="w-full bg-gray-200 dark:bg-black hover:bg-gray-300 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 px-3 py-1.5 text-[10px] font-mono font-bold tracking-widest transition-colors flex items-center justify-center gap-2 border border-gray-300 dark:border-gray-700"
+                              >
+                                <Eye className="w-3 h-3 text-olive" /> LIHAT BUKTI KENDALA
+                              </button>
+                            )}
+                          </div>
                         )}
                       </div>
                     ) : (
@@ -321,27 +341,38 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
         </div>
       </main>
 
-      {/* TACTICAL NOTIFICATION OVERLAY */}
-      {notification && (
-        <div className="fixed bottom-8 right-8 z-[100] animate-in slide-in-from-right-10 duration-300">
-          <div className={`
-            flex items-center gap-4 p-4 border-l-4 shadow-2xl min-w-[320px] backdrop-blur-md
-            ${notification.type === 'success' 
-              ? 'bg-olive/90 border-gunmetal text-white' 
-              : 'bg-targetred/90 border-white text-white'}
-          `}>
-            <div className="bg-white/20 p-2 rounded-sm">
-              {notification.type === 'success' ? <CheckCircle className="w-6 h-6" /> : <ShieldAlert className="w-6 h-6" />}
+      {/* PROOF VIEWER MODAL */}
+      {viewingProof && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+          <div className="bg-white dark:bg-gunmetal border-2 border-olive w-full max-w-2xl shadow-2xl animate-in zoom-in-95">
+            <div className="p-4 border-b border-olive bg-olive/10 flex justify-between items-center">
+              <h3 className="font-tactical font-bold text-olive tracking-widest uppercase flex items-center gap-2">
+                <Camera className="w-5 h-5" /> LAMPIRAN BUKTI KENDALA
+              </h3>
+              <button onClick={() => setViewingProof(null)} className="text-gray-500 hover:text-targetred transition-colors font-bold text-xl">✕</button>
             </div>
-            <div>
-              <div className="text-[10px] font-mono font-bold tracking-[0.2em] opacity-70 uppercase">
-                {notification.type === 'success' ? 'SYSTEM NOTIFICATION' : 'ENCRYPTED ERROR'}
+            <div className="p-6">
+              <div className="grid grid-cols-2 gap-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                {viewingProof.map((url, i) => (
+                  <div key={i} className="border border-gray-300 dark:border-gray-800 rounded-sm overflow-hidden bg-black flex items-center justify-center h-48">
+                    <img src={url} alt={`Bukti ${i}`} className="max-w-full max-h-full object-contain" />
+                  </div>
+                ))}
               </div>
-              <div className="text-sm font-tactical tracking-widest font-bold uppercase">{notification.message}</div>
+              <div className="mt-8 flex justify-end">
+                <button
+                  onClick={() => setViewingProof(null)}
+                  className="bg-gunmetal dark:bg-black text-white px-8 py-2 font-tactical font-bold tracking-widest hover:bg-gray-800 transition-colors border border-gray-600"
+                >
+                  TUTUP
+                </button>
+              </div>
             </div>
           </div>
         </div>
       )}
+
+      {/* REMOVED LOCAL NOTIFICATION RENDERER */}
     </div>
   );
 };

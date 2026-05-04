@@ -31,12 +31,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
   // Navigation Menu State
   const [activeMenu, setActiveMenu] = useState<'TUGAS'>('TUGAS');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
-  const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
-
-  const showNotification = (message: string, type: 'success' | 'error' = 'success') => {
-    setNotification({ message, type });
-    setTimeout(() => setNotification(null), 4000);
-  };
+  const addNotification = useStore(state => state.addNotification);
 
   const handleSubmitLaporan = (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,12 +39,12 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
 
     post(`/reports/${selectedTaskId}/complete`, {
       onSuccess: () => {
-        showNotification('LOG PENANGANAN TELAH DISEROBOT KE SISTEM PUSAT.');
+        addNotification('LOG PENANGANAN TELAH DISEROBOT KE SISTEM PUSAT.');
         reset();
         setSelectedTaskId(null);
       },
       onError: () => {
-        showNotification('GAGAL MENGUNGGAH BAP. CEK PROTOKOL.', 'error');
+        addNotification('GAGAL MENGUNGGAH BAP. CEK PROTOKOL.', 'error');
       }
     });
   };
@@ -134,7 +129,8 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
                     {selectedTask.kerusakan.barangRusak}
                   </h2>
                   <div className="flex flex-wrap gap-4 text-[11px] font-mono font-bold text-gray-600 dark:text-gray-400 mt-3">
-                    <span className="flex items-center gap-1.5 px-2 py-1 bg-red-900/10 border border-red-900/30 text-targetred uppercase"><AlertCircle className="w-3.5 h-3.5" /> KLASIFIKASI: TINGGI</span>
+                    <span className="flex items-center gap-1.5 px-2 py-1 bg-red-900/10 border border-red-900/30 text-targetred uppercase"><AlertCircle className="w-3.5 h-3.5" /> KLASIFIKASI: {selectedTask.kerusakan.urgensi?.toUpperCase() || 'NORMAL'}</span>
+                    <span className="flex items-center gap-1.5 px-2 py-1 bg-olive/10 border border-olive/30 text-olive uppercase"><Wrench className="w-3.5 h-3.5" /> LEVEL: {selectedTask.kerusakan.tingkatKerusakan?.toUpperCase() || 'UMUM'}</span>
                     <span className="flex items-center gap-1.5 px-2 py-1 bg-gray-200 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gunmetal dark:text-gray-300 uppercase"><MapPin className="w-3.5 h-3.5 text-olive" /> TITIK: {selectedTask.kerusakan.lokasi}</span>
                   </div>
                 </div>
@@ -157,12 +153,13 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
                   </div>
                 </div>
 
-                {selectedTask.kerusakan.foto_bukti && (
-                  <div className="border border-gray-300 dark:border-gray-800 rounded-sm overflow-hidden bg-black flex items-center justify-center group relative h-40 md:h-full">
-                    <img src={selectedTask.kerusakan.foto_bukti} alt="Bukti Kerusakan" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-3">
-                      <span className="text-[10px] font-mono text-white font-bold tracking-widest uppercase">FOTO KERUSAKAN TERLAMPIR</span>
-                    </div>
+                {selectedTask.kerusakan.fileBukti && selectedTask.kerusakan.fileBukti.length > 0 && (
+                  <div className="grid grid-cols-2 gap-2 mt-4">
+                    {selectedTask.kerusakan.fileBukti.map((file: string, i: number) => (
+                      <div key={i} className="border border-gray-300 dark:border-gray-800 rounded-sm overflow-hidden bg-black flex items-center justify-center group relative h-24">
+                        <img src={file} alt={`Bukti ${i}`} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
@@ -337,27 +334,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
         </div>
       </main>
 
-      {/* TACTICAL NOTIFICATION OVERLAY */}
-      {notification && (
-        <div className="fixed bottom-8 right-8 z-[100] animate-in slide-in-from-right-10 duration-300">
-          <div className={`
-            flex items-center gap-4 p-4 border-l-4 shadow-2xl min-w-[320px] backdrop-blur-md
-            ${notification.type === 'success' 
-              ? 'bg-olive/90 border-gunmetal text-white' 
-              : 'bg-targetred/90 border-white text-white'}
-          `}>
-            <div className="bg-white/20 p-2 rounded-sm">
-              {notification.type === 'success' ? <CheckCircle2 className="w-6 h-6" /> : <ShieldAlert className="w-6 h-6" />}
-            </div>
-            <div>
-              <div className="text-[10px] font-mono font-bold tracking-[0.2em] opacity-70 uppercase">
-                {notification.type === 'success' ? 'SYSTEM NOTIFICATION' : 'ENCRYPTED ERROR'}
-              </div>
-              <div className="text-sm font-tactical tracking-widest font-bold uppercase">{notification.message}</div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* REMOVED LOCAL NOTIFICATION RENDERER */}
     </div>
   );
 };

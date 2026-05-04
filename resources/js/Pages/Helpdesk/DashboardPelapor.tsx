@@ -6,12 +6,7 @@ import { router, useForm } from '@inertiajs/react';
 const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser = null }: any) => {
   const [activeMenu, setActiveMenu] = useState<'FORM' | 'HISTORY'>('FORM');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
-  const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
-
-  const showNotification = (message: string, type: 'success' | 'error' = 'success') => {
-    setNotification({ message, type });
-    setTimeout(() => setNotification(null), 4000);
-  };
+  const addNotification = useStore(state => state.addNotification);
 
   // Ambil state dan aksi dari global store
   const currentUser = useStore(state => state.currentUser);
@@ -41,10 +36,10 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const [selectedItemId, setSelectedItemId] = useState<number | string | null>(null);
 
   // Cari item terpilih dari dbCases agar data di modal selalu fresh saat polling
-  const selectedItem = dbCases.find((c: any) => c.caseId === selectedItemId);
+  const selectedItem = dbCases.find((c: any) => c.db_id === selectedItemId);
 
   // ==========================================
   // LOGIKA SUBMIT
@@ -67,11 +62,11 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
     post('/reports', {
       onSuccess: () => {
         reset();
-        showNotification('LAPORAN TELAH DITRANSMISIKAN KE COMMAND CENTER.');
+        addNotification('LAPORAN TELAH DITRANSMISIKAN KE COMMAND CENTER.');
         setActiveMenu('HISTORY');
       },
       onError: () => {
-        showNotification('GAGAL MENGIRIM LAPORAN. CEK KONEKSI SATELIT.', 'error');
+        addNotification('GAGAL MENGIRIM LAPORAN. CEK KONEKSI SATELIT.', 'error');
       }
     });
   };
@@ -111,7 +106,8 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
         </div>
       </div>
 
-      <form onSubmit={handleSubmitNewReport} className="space-y-5">
+      <form onSubmit={handleSubmitNewReport} className="space-y-6">
+        {/* ====== NOMOR SERI DART ====== */}
 
         {/* ====== DATA PELAPOR (READ-ONLY) ====== */}
         <div className="glass-panel p-6 border-l-4 border-l-olive space-y-5">
@@ -226,9 +222,9 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
           <Send size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
           {processing ? 'MENGIRIM LAPORAN...' : 'KIRIM LAPORAN PENGADUAN'}
         </button>
+        </form>
       </div>
-    </div>
-);
+  );
 
   const renderHistory = () => (
     <div className="max-w-4xl mx-auto animate-in fade-in duration-500">
@@ -251,7 +247,7 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
           history.map((item: any, index: number) => (
             <div
               key={index}
-              onClick={() => setSelectedItemId(item.caseId)}
+              onClick={() => setSelectedItemId(item.db_id)}
               className="glass-panel p-5 border-l-4 border-l-gray-400 dark:border-l-gray-700 hover:border-l-olive transition-all cursor-pointer group hover:bg-white/40 dark:hover:bg-black/40"
             >
               <div className="flex justify-between items-start mb-3">

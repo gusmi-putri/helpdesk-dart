@@ -7,9 +7,21 @@ use Inertia\Inertia;
 use App\Models\Report;
 use App\Models\User;
 use App\Models\SystemLog;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DashboardController extends Controller
 {
+    public function exportPdf($id)
+    {
+        $report = Report::with(['unit', 'pelapor', 'teknisi'])->findOrFail($id);
+
+        // Tambahkan atribut case_id secara manual untuk template
+        $report->case_id = 'DRT-' . str_pad($report->id, 5, '0', STR_PAD_LEFT);
+
+        $pdf = Pdf::loadView('pdf.bap_template', compact('report'));
+        
+        return $pdf->download('BAP_' . $report->case_id . '.pdf');
+    }
     private function formatReports($query)
     {
         return $query->with(['unit', 'pelapor', 'teknisi'])->get()->map(function ($report) {
@@ -28,7 +40,7 @@ class DashboardController extends Controller
                     'tingkatKerusakan' => $report->tingkat_kerusakan ?? ($report->klasifikasi ?? '-'),
                     'urgensi' => $report->urgensi ?? '-',
                     'foto_bukti' => $report->file_bukti && !json_decode($report->file_bukti) ? asset('storage/reports/' . $report->file_bukti) : null,
-                    'fileBukti' => $report->file_bukti ? (json_decode($report->file_bukti, true) ?? []) : [],
+                    'fileBukti' => $report->file_bukti ? collect(json_decode($report->file_bukti, true) ?? [])->map(fn($path) => asset('storage/' . $path))->toArray() : [],
                 ],
                 'perbaikan' => [
                     'teknisi_id' => $report->teknisi_id,
