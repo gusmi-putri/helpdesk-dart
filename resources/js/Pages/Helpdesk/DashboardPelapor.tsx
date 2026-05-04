@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Send, History, AlertCircle, Clock, CheckCircle2, ChevronRight, Activity, Camera, LogOut, Shield, FilePlus, Menu, X as XIcon, CircleUser, Wrench, Upload, Phone, MapPin, Info, Trash2 } from 'lucide-react';
 import { useStore, type ReportStatus } from '@/store/useStore';
 import { router, useForm } from '@inertiajs/react';
+import SearchableSelect from '@/Components/SearchableSelect';
 
 const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser = null }: any) => {
   const [activeMenu, setActiveMenu] = useState<'FORM' | 'HISTORY'>('FORM');
@@ -134,15 +135,19 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
         </div>
 
         <div className="glass-panel p-6 border-l-4 border-l-olive">
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Nomor Seri DART <span className="text-targetred">*</span></label>
-          <select value={data.unit_id} onChange={(e) => setData('unit_id', e.target.value)} required
-            className="w-full bg-white dark:bg-black/50 border border-gray-300 dark:border-gray-700 px-4 py-3 text-sm text-gunmetal dark:text-white focus:outline-none focus:border-olive focus:ring-1 focus:ring-olive transition-colors rounded-sm">
-            <option value="">-- Pilih Unit DART --</option>
-            {dbUnits.map((unit: any) => (
-              <option key={unit.id} value={unit.id}>{unit.nomor_seri} — {unit.nama_dart} ({unit.asal_satuan})</option>
-            ))}
-          </select>
-          {errors.unit_id && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.unit_id}</p>}
+          <SearchableSelect 
+            label="Nomor Seri DART"
+            placeholder="Ketik nomor seri atau nama unit DART..."
+            options={dbUnits.map((unit: any) => ({
+              id: unit.id,
+              label: unit.nomor_seri,
+              sublabel: unit.nama_dart,
+              tag: unit.asal_satuan
+            }))}
+            value={data.unit_id}
+            onChange={(val) => setData('unit_id', val.toString())}
+            error={errors.unit_id}
+          />
         </div>
 
         <div className="glass-panel p-6 border-l-4 border-l-olive">
