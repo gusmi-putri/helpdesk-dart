@@ -97,6 +97,8 @@ const DashboardAdmin = (props: any) => {
   const [isUnitHistoryModalOpen, setIsUnitHistoryModalOpen] = useState(false);
   const [selectedUnitForHistory, setSelectedUnitForHistory] = useState<any>(null);
   const [unitSearch, setUnitSearch] = useState<string>('');
+  const [isRecapModalOpen, setIsRecapModalOpen] = useState(false);
+  const [recapPeriod, setRecapPeriod] = useState<'weekly' | 'monthly' | 'yearly'>('monthly');
 
   // Handlers
   const handlePrintCasePDF = (caseData: any) => {
@@ -261,6 +263,11 @@ const DashboardAdmin = (props: any) => {
     } else {
       setIsReportsExpanded(false);
     }
+  };
+
+  const handleExportRecap = () => {
+    window.open(`/admin/recap/export?period=${recapPeriod}`, '_blank');
+    setIsRecapModalOpen(false);
   };
 
   // ==========================================
@@ -724,16 +731,24 @@ const DashboardAdmin = (props: any) => {
             </p>
           </div>
 
-          <div className="flex items-center gap-2 bg-gray-100 dark:bg-black p-1 border border-gray-300 dark:border-gray-800 relative z-10">
-            {(['ALL', 'PENDING', 'PROSES', 'SELESAI'] as const).map(status => (
-                <button
-                    key={status}
-                    onClick={() => setReportStatusFilter(status)}
-                    className={`px-3 py-1.5 text-[9px] font-tactical font-bold transition-all ${reportStatusFilter === status ? 'bg-olive text-white shadow-lg' : 'text-gray-500 hover:text-white hover:bg-gray-800'}`}
-                >
-                    {status === 'ALL' ? 'SEMUA' : status}
-                </button>
-            ))}
+          <div className="flex flex-wrap items-center gap-2 relative z-10">
+            <button 
+                onClick={() => setIsRecapModalOpen(true)}
+                className="bg-targetred text-white px-5 py-2 font-tactical font-bold text-xs tracking-widest hover:bg-red-700 transition-all flex items-center gap-2 shadow-lg"
+            >
+              <FileArchive className="w-4 h-4" /> EKSPOR REKAP
+            </button>
+            <div className="flex items-center gap-2 bg-gray-100 dark:bg-black p-1 border border-gray-300 dark:border-gray-800">
+                {(['ALL', 'PENDING', 'PROSES', 'SELESAI'] as const).map(status => (
+                    <button
+                        key={status}
+                        onClick={() => setReportStatusFilter(status)}
+                        className={`px-3 py-1.5 text-[9px] font-tactical font-bold transition-all ${reportStatusFilter === status ? 'bg-olive text-white shadow-lg' : 'text-gray-500 hover:text-white hover:bg-gray-800'}`}
+                    >
+                        {status === 'ALL' ? 'SEMUA' : status}
+                    </button>
+                ))}
+            </div>
           </div>
         </div>
 
@@ -1017,6 +1032,74 @@ const DashboardAdmin = (props: any) => {
     );
   };
 
+  const renderRecapModal = () => {
+    return (
+      <div className="fixed inset-0 z-[150] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+        <div className="bg-sand dark:bg-gunmetal border-2 border-targetred w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-200">
+          <div className="p-4 border-b border-targetred bg-targetred/10 flex justify-between items-center">
+            <h3 className="font-tactical font-bold text-targetred tracking-widest uppercase flex items-center gap-2">
+              <FileArchive className="w-5 h-5" /> EKSPOR REKAPITULASI
+            </h3>
+            <button onClick={() => setIsRecapModalOpen(false)} className="text-gray-500 hover:text-targetred text-xl">✕</button>
+          </div>
+          
+          <div className="p-6">
+            <p className="text-xs font-mono text-gray-600 dark:text-gray-400 mb-6 uppercase tracking-tight">
+              Pilih periode laporan untuk diekspor ke format PDF (Landscape). Laporan ini mencakup seluruh data unit, teknisi, dan status penyelesaian.
+            </p>
+            
+            <div className="grid grid-cols-1 gap-3">
+              {(['weekly', 'monthly', 'yearly'] as const).map(period => (
+                <button
+                  key={period}
+                  onClick={() => setRecapPeriod(period)}
+                  className={`w-full p-4 border-2 flex items-center justify-between transition-all group
+                    ${recapPeriod === period 
+                      ? 'border-targetred bg-targetred/10 text-gunmetal dark:text-white shadow-[0_0_15px_rgba(200,30,30,0.2)]' 
+                      : 'border-gray-300 dark:border-gray-800 hover:border-gray-400 dark:hover:border-gray-600 text-gray-500'}
+                  `}
+                >
+                  <div className="text-left">
+                    <p className="text-sm font-tactical font-bold uppercase tracking-widest">
+                      {period === 'weekly' ? 'Rekap Mingguan' : period === 'monthly' ? 'Rekap Bulanan' : 'Rekap Tahunan'}
+                    </p>
+                    <p className="text-[9px] font-mono mt-1 italic">
+                      {period === 'weekly' ? '7 Hari Terakhir' : period === 'monthly' ? 'Bulan Berjalan' : 'Tahun Berjalan'}
+                    </p>
+                  </div>
+                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${recapPeriod === period ? 'border-targetred bg-targetred' : 'border-gray-400'}`}>
+                    {recapPeriod === period && <div className="w-2 h-2 bg-white rounded-full"></div>}
+                  </div>
+                </button>
+              ))}
+            </div>
+            
+            <div className="mt-8 grid grid-cols-2 gap-3">
+              <button
+                onClick={handleExportRecap}
+                className="bg-targetred text-white py-3 font-tactical font-bold tracking-widest hover:bg-red-700 transition-all flex items-center justify-center gap-2 shadow-lg"
+              >
+                <Download className="w-4 h-4" /> EKSPOR PDF
+              </button>
+              <button
+                onClick={() => setIsRecapModalOpen(false)}
+                className="bg-transparent border border-gray-500 text-gray-500 py-3 font-tactical font-bold tracking-widest hover:bg-gray-500/10 transition-all"
+              >
+                BATAL
+              </button>
+            </div>
+          </div>
+          
+          <div className="p-3 bg-black/20 text-center">
+            <p className="text-[8px] font-mono text-gray-500 uppercase tracking-widest">
+              Generated by Command Center Security Module
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   // ==========================================
   // MAIN RENDER WITH NESTED SIDEBAR LAYOUT
   // ==========================================
@@ -1084,15 +1167,7 @@ const DashboardAdmin = (props: any) => {
               )}
             </button>
 
-            {/* Log Sistem */}
-            <button
-              onClick={() => handleMenuClick('LOGS')}
-              className={`w-full flex items-center gap-3 px-6 py-3.5 font-tactical text-sm tracking-wider transition-all border-l-2
-                ${activeMenu === 'LOGS' ? 'bg-gray-200 dark:bg-gray-800/80 text-gunmetal dark:text-white border-olive shadow-[inset_0_0_20px_rgba(75,83,32,0.05)]' : 'border-transparent text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'}
-              `}
-            >
-              <Database className="w-5 h-5" /> LOG & AKTIVITAS SISTEM
-            </button>
+
 
             {/* Manajemen Unit */}
             <button
@@ -1141,6 +1216,16 @@ const DashboardAdmin = (props: any) => {
                 </button>
               </div>
             </div>
+
+            {/* Log Sistem */}
+            <button
+              onClick={() => handleMenuClick('LOGS')}
+              className={`w-full flex items-center gap-3 px-6 py-3.5 font-tactical text-sm tracking-wider transition-all border-l-2
+                ${activeMenu === 'LOGS' ? 'bg-gray-200 dark:bg-gray-800/80 text-gunmetal dark:text-white border-olive shadow-[inset_0_0_20px_rgba(75,83,32,0.05)]' : 'border-transparent text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'}
+              `}
+            >
+              <Database className="w-5 h-5" /> LOG & AKTIVITAS SISTEM
+            </button>
 
           </div>
         </nav>
@@ -1191,6 +1276,7 @@ const DashboardAdmin = (props: any) => {
             {activeMenu === 'UNITS' && renderUnitsTable()}
             {activeMenu === 'APPROVAL' && renderApprovalTable()}
             {isUnitHistoryModalOpen && renderUnitHistoryModal()}
+            {isRecapModalOpen && renderRecapModal()}
           </div>
         </div>
       </main>
