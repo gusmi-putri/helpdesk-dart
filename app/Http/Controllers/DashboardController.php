@@ -28,6 +28,7 @@ class DashboardController extends Controller
             return [
                 'caseId' => 'LPR-' . str_pad($report->id, 5, '0', STR_PAD_LEFT),
                 'db_id' => $report->id,
+                'unit_id' => $report->unit_id,
                 'status' => strtoupper($report->status_laporan),
                 'kerusakan' => [
                     'tanggal' => $report->tanggal_lapor ? $report->tanggal_lapor->format('d F Y, H:i') : '-',

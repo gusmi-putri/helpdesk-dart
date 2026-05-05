@@ -18,6 +18,8 @@ type MenuTab = 'ANALYTICS' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SETTINGS'
 // ==========================================
 interface CaseData {
   caseId: string;
+  db_id: number;
+  unit_id: number;
   status: 'PENDING' | 'PROSES' | 'SELESAI';
   kerusakan: {
     tanggal: string;
@@ -92,6 +94,8 @@ const DashboardAdmin = (props: any) => {
   const [isUnitAddMode, setIsUnitAddMode] = useState(true);
   const [isUnitDeleteModalOpen, setIsUnitDeleteModalOpen] = useState(false);
   const [unitToDelete, setUnitToDelete] = useState<any>(null);
+  const [isUnitHistoryModalOpen, setIsUnitHistoryModalOpen] = useState(false);
+  const [selectedUnitForHistory, setSelectedUnitForHistory] = useState<any>(null);
 
   // Handlers
   const handlePrintCasePDF = (caseData: any) => {
@@ -189,6 +193,11 @@ const DashboardAdmin = (props: any) => {
   const handleDeleteUnit = (unit: any) => {
     setUnitToDelete(unit);
     setIsUnitDeleteModalOpen(true);
+  };
+
+  const handleShowUnitHistory = (unit: any) => {
+    setSelectedUnitForHistory(unit);
+    setIsUnitHistoryModalOpen(true);
   };
 
   const handleConfirmDeleteUnit = () => {
@@ -601,6 +610,9 @@ const DashboardAdmin = (props: any) => {
                       </span>
                     </td>
                     <td className="p-4 flex gap-2 justify-end">
+                      <button onClick={() => handleShowUnitHistory(unit)} className="p-2 bg-gray-300 dark:bg-gray-800 hover:bg-blue-600 hover:text-white text-gray-700 dark:text-gray-300 transition-colors border border-gray-400 dark:border-gray-600" title="Riwayat Perbaikan Unit">
+                        <Clock className="w-4 h-4" />
+                      </button>
                       <button onClick={() => handleEditUnit(unit)} className="p-2 bg-gray-300 dark:bg-gray-800 hover:bg-olive hover:text-white text-gray-700 dark:text-gray-300 transition-colors border border-gray-400 dark:border-gray-600" title="Edit Unit">
                         <Edit className="w-4 h-4" />
                       </button>
@@ -859,6 +871,103 @@ const DashboardAdmin = (props: any) => {
     );
   };
 
+  const renderUnitHistoryModal = () => {
+    if (!selectedUnitForHistory) return null;
+    
+    // Filter cases based on unit_id
+    const unitHistory = dbCases.filter((c: any) => c.unit_id === selectedUnitForHistory.id || c.unit_id === selectedUnitForHistory.db_id);
+    
+    return (
+      <div className="fixed inset-0 z-[140] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div className="bg-sand dark:bg-gunmetal border-2 border-blue-600 w-full max-w-4xl shadow-2xl animate-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
+          <div className="p-4 border-b border-blue-600 bg-blue-900/10 flex justify-between items-center">
+            <h3 className="font-tactical font-bold text-blue-500 tracking-widest uppercase flex items-center gap-2">
+              <Clock className="w-5 h-5" /> RIWAYAT PERBAIKAN: {selectedUnitForHistory.nomor_seri}
+            </h3>
+            <button onClick={() => setIsUnitHistoryModalOpen(false)} className="text-gray-500 hover:text-targetred text-xl">✕</button>
+          </div>
+          
+          <div className="p-6 overflow-y-auto custom-scrollbar flex-1">
+            <div className="mb-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+               <div className="p-3 bg-white/40 dark:bg-black/40 border border-gray-300 dark:border-gray-800">
+                  <p className="text-[9px] font-mono text-gray-500 uppercase tracking-widest">Nama Unit</p>
+                  <p className="text-sm font-bold uppercase">{selectedUnitForHistory.nama_dart}</p>
+               </div>
+               <div className="p-3 bg-white/40 dark:bg-black/40 border border-gray-300 dark:border-gray-800">
+                  <p className="text-[9px] font-mono text-gray-500 uppercase tracking-widest">Jenis DART</p>
+                  <p className="text-sm font-bold uppercase">{selectedUnitForHistory.jenis_dart}</p>
+               </div>
+               <div className="p-3 bg-white/40 dark:bg-black/40 border border-gray-300 dark:border-gray-800">
+                  <p className="text-[9px] font-mono text-gray-500 uppercase tracking-widest">Lokasi</p>
+                  <p className="text-sm font-bold uppercase">{selectedUnitForHistory.asal_satuan}</p>
+               </div>
+               <div className="p-3 bg-white/40 dark:bg-black/40 border border-gray-300 dark:border-gray-800">
+                  <p className="text-[9px] font-mono text-gray-500 uppercase tracking-widest">Total Kasus</p>
+                  <p className="text-sm font-bold uppercase text-blue-500">{unitHistory.length} ENTRI</p>
+               </div>
+            </div>
+
+            <div className="space-y-4">
+              {unitHistory.length === 0 ? (
+                <div className="p-10 text-center text-gray-500 italic font-mono uppercase tracking-widest border border-dashed border-gray-400 dark:border-gray-700">
+                  Unit ini belum memiliki catatan kerusakan/perbaikan di sistem.
+                </div>
+              ) : (
+                unitHistory.map((entry: CaseData) => (
+                  <div key={entry.caseId} className="border border-gray-300 dark:border-gray-800 bg-white/20 dark:bg-black/20 p-4 relative group">
+                    <div className="absolute top-0 left-0 w-1 h-full bg-blue-600 opacity-50"></div>
+                    <div className="flex justify-between items-start mb-3">
+                      <div>
+                        <span className="text-[10px] font-mono font-bold text-blue-500 bg-blue-900/10 px-2 py-0.5 border border-blue-900/30 uppercase">{entry.caseId}</span>
+                        <h4 className="text-sm font-bold mt-2 uppercase">{entry.kerusakan.deskripsi}</h4>
+                      </div>
+                      <span className={`px-2 py-0.5 text-[9px] font-mono font-bold border uppercase
+                        ${entry.status === 'SELESAI' ? 'bg-green-900/20 text-green-500 border-green-800' : 'bg-yellow-900/20 text-yellow-500 border-yellow-800'}
+                      `}>
+                        {entry.status}
+                      </span>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 pt-4 border-t border-gray-300 dark:border-gray-800/50">
+                       <div className="text-[10px] font-mono">
+                          <p className="text-gray-500 uppercase tracking-tighter">Tanggal Lapor</p>
+                          <p className="font-bold text-gray-700 dark:text-gray-300">{entry.kerusakan.tanggal}</p>
+                       </div>
+                       <div className="text-[10px] font-mono">
+                          <p className="text-gray-500 uppercase tracking-tighter">Teknisi</p>
+                          <p className="font-bold text-gray-700 dark:text-gray-300">{entry.perbaikan.teknisi || 'BELUM DITUNJUK'}</p>
+                       </div>
+                       <div className="text-[10px] font-mono">
+                          <p className="text-gray-500 uppercase tracking-tighter">Penyelesaian</p>
+                          <p className="font-bold text-gray-700 dark:text-gray-300">{entry.perbaikan.tanggalSelesai || '-'}</p>
+                       </div>
+                    </div>
+                    
+                    {entry.perbaikan.tindakan && (
+                      <div className="mt-4 p-3 bg-gray-100 dark:bg-black/40 border-l-2 border-gray-400 dark:border-gray-700">
+                        <p className="text-[9px] font-mono text-gray-500 uppercase mb-1">Catatan Tindakan:</p>
+                        <p className="text-xs italic text-gray-700 dark:text-gray-400 uppercase">{entry.perbaikan.tindakan}</p>
+                      </div>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+          
+          <div className="p-4 border-t border-gray-300 dark:border-gray-800 bg-gray-100 dark:bg-black/20 flex justify-end">
+            <button
+              onClick={() => setIsUnitHistoryModalOpen(false)}
+              className="bg-gunmetal dark:bg-black text-white px-8 py-2 font-tactical font-bold tracking-widest hover:bg-gray-800 transition-colors border border-gray-600 uppercase"
+            >
+              Tutup Audit
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   // ==========================================
   // MAIN RENDER WITH NESTED SIDEBAR LAYOUT
   // ==========================================
@@ -1032,6 +1141,7 @@ const DashboardAdmin = (props: any) => {
             {activeMenu === 'LOGS' && renderLogsTable()}
             {activeMenu === 'UNITS' && renderUnitsTable()}
             {activeMenu === 'APPROVAL' && renderApprovalTable()}
+            {isUnitHistoryModalOpen && renderUnitHistoryModal()}
           </div>
         </div>
       </main>
