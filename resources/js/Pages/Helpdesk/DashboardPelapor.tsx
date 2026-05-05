@@ -134,7 +134,7 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
           <p className="text-[10px] text-gray-400 dark:text-gray-500 italic">Data diambil otomatis dari profil akun Anda. Hubungi Admin jika ada kesalahan.</p>
         </div>
 
-        <div className="glass-panel p-6 border-l-4 border-l-olive">
+        <div className="glass-panel p-6 border-l-4 border-l-olive !overflow-visible relative z-20">
           <SearchableSelect 
             label="Nomor Seri DART"
             placeholder="Ketik nomor seri atau nama unit DART..."
@@ -142,7 +142,7 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
               id: unit.id,
               label: unit.nomor_seri,
               sublabel: unit.nama_dart,
-              tag: unit.asal_satuan
+              tag: `${unit.jenis_dart} | ${unit.asal_satuan}`
             }))}
             value={data.unit_id}
             onChange={(val) => setData('unit_id', val.toString())}

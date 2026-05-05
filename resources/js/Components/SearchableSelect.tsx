@@ -35,7 +35,7 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
     opt.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
     (opt.sublabel && opt.sublabel.toLowerCase().includes(searchQuery.toLowerCase())) ||
     (opt.tag && opt.tag.toLowerCase().includes(searchQuery.toLowerCase()))
-  ).slice(0, 50); // Limit to 50 results for performance
+  ).slice(0, 50);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -48,21 +48,23 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
   }, []);
 
   return (
-    <div className="relative" ref={containerRef}>
+    <div className="relative" ref={containerRef} style={{ zIndex: isOpen ? 100 : 1 }}>
       {label && <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{label} <span className="text-targetred">*</span></label>}
       
+      {/* Trigger Area */}
       <div 
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full bg-white dark:bg-black/50 border ${error ? 'border-red-500' : 'border-gray-300 dark:border-gray-700'} px-4 py-3 text-sm flex items-center justify-between cursor-pointer transition-all rounded-sm hover:border-olive group`}
+        className={`w-full bg-white dark:bg-black/50 border ${error ? 'border-red-500' : isOpen ? 'border-olive ring-1 ring-olive' : 'border-gray-300 dark:border-gray-700'} px-4 py-3 text-sm flex items-center justify-between cursor-pointer transition-all rounded-sm hover:border-olive group relative z-10`}
       >
-        <span className={`${selectedOption ? 'text-gunmetal dark:text-white font-medium' : 'text-gray-400'}`}>
+        <span className={`truncate ${selectedOption ? 'text-gunmetal dark:text-white font-medium' : 'text-gray-400'}`}>
           {selectedOption ? `${selectedOption.label} — ${selectedOption.sublabel} (${selectedOption.tag})` : placeholder}
         </span>
-        <ChevronDown size={18} className={`text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown size={18} className={`text-gray-400 transition-transform flex-shrink-0 ${isOpen ? 'rotate-180 text-olive' : ''}`} />
       </div>
 
+      {/* Dropdown Area - Kembali ke Absolute agar sinkron dengan container */}
       {isOpen && (
-        <div className="absolute z-50 w-full mt-1 bg-white dark:bg-gunmetal border border-gray-300 dark:border-gray-700 shadow-2xl rounded-sm overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="absolute left-0 right-0 top-full mt-1 bg-white dark:bg-gunmetal border border-gray-300 dark:border-gray-700 shadow-2xl rounded-sm overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-[100]">
           <div className="p-2 border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-black/20 flex items-center gap-2">
             <Search size={14} className="text-gray-400" />
             <input 
