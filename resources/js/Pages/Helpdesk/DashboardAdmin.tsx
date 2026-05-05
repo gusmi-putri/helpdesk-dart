@@ -30,7 +30,7 @@ interface CaseData {
     teknisi: string | null;
     tanggalPenanganan: string | null;
     tindakan: string | null;
-    sukuCadang: string | null;
+    metodePerbaikan: string | null;
     statusPerbaikan: 'MENUNGGU' | 'DIANALISA' | 'PERBAIKAN' | 'TUNTAS';
   };
 }
@@ -559,9 +559,9 @@ const DashboardAdmin = (props: any) => {
                         <div className="text-xs leading-relaxed mb-3">
                           {c.perbaikan.tindakan || 'Belum ada tindakan.'}
                         </div>
-                        {c.perbaikan.sukuCadang && (
+                        {c.perbaikan.metodePerbaikan && (
                           <div className="text-[10px] text-green-600 dark:text-green-500 bg-green-900/10 px-2 py-1 border border-green-900/50 inline-block font-mono">
-                            SPAREPART: {c.perbaikan.sukuCadang}
+                            METODE PERBAIKAN: {c.perbaikan.metodePerbaikan}
                           </div>
                         )}
                       </td>

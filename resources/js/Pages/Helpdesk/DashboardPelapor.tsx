@@ -471,9 +471,9 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
                     <p className="text-xs text-gunmetal dark:text-gray-200 font-mono leading-relaxed">
                       {selectedItem.perbaikan.tindakan}
                     </p>
-                    {selectedItem.perbaikan.sukuCadang && (
+                    {selectedItem.perbaikan.metodePerbaikan && (
                       <div className="mt-3 pt-3 border-t border-olive/20">
-                        <span className="text-[9px] font-bold text-olive tracking-tighter uppercase">SUKU CADANG DIGANTI: {selectedItem.perbaikan.sukuCadang}</span>
+                        <span className="text-[9px] font-bold text-olive tracking-tighter uppercase">METODE PERBAIKAN: {selectedItem.perbaikan.metodePerbaikan}</span>
                       </div>
                     )}
                   </div>

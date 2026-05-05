@@ -7,8 +7,8 @@ import { createRoot } from 'react-dom/client';
 import { useStore } from '@/store/useStore';
 
 // Listen for Inertia flash messages globally
-router.on('finish', (event) => {
-    const flash = event.detail.page?.props?.flash as any;
+router.on('success', (event: any) => {
+    const flash = event.detail.page?.props?.flash;
     if (flash) {
         if (flash.success || flash.message) {
             useStore.getState().addNotification(flash.success || flash.message, 'success');

@@ -47,7 +47,7 @@ class DashboardController extends Controller
                     'teknisi' => $report->teknisi ? $report->teknisi->nama_lengkap : null,
                     'tanggalPenanganan' => $report->tgl_ditunjuk ? $report->tgl_ditunjuk->format('d F Y, H:i') : null,
                     'tindakan' => $report->catatan_teknisi,
-                    'sukuCadang' => null, 
+                    'metodePerbaikan' => $report->metode_perbaikan, 
                     'statusPerbaikan' => $report->status_laporan === 'Selesai' ? 'TUNTAS' : ($report->status_laporan === 'Proses' ? 'DIKERJAKAN' : 'MENUNGGU'),
                 ]
             ];

@@ -181,7 +181,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
               <form onSubmit={handleSubmitLaporan} className="space-y-6">
                 <div>
                   <label className="block text-gray-600 dark:text-gray-400 text-xs font-mono font-bold mb-2 tracking-widest uppercase">
-                    Catatan Eksekusi & Penggantian Sparepart
+                    Catatan Eksekusi & Metode Perbaikan
                   </label>
                   <textarea
                     value={data.catatan} 
@@ -221,7 +221,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
                         className="w-full bg-sand dark:bg-gunmetal border border-gray-400 dark:border-gray-700 text-gunmetal dark:text-white p-3.5 focus:outline-none focus:border-olive transition-colors font-tactical font-bold text-base tracking-widest appearance-none pr-10 uppercase"
                       >
                         <option value="Offline">METODE: OFFLINE (PENANGANAN LANGSUNG)</option>
-                        <option value="Remote">METODE: REMOTE (AKSES DARING)</option>
+                        <option value="Online">METODE: ONLINE (AKSES DARING)</option>
                       </select>
                       <ChevronRight className="absolute right-4 top-4 w-5 h-5 text-gray-500 rotate-90 pointer-events-none" />
                     </div>
