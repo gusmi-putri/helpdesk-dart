@@ -4,13 +4,14 @@ import {
   Users, Database, Search,
   Edit, Trash2, Shield, Settings, LogOut,
   ChevronDown, ChevronRight, FileArchive, Wrench, Download, AlertTriangle, Radar,
-  Menu, CircleUser, Eye
+  Menu, CircleUser, Eye, Activity
 } from 'lucide-react';
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useStore } from '@/store/useStore';
 import { router, useForm } from '@inertiajs/react';
 
 type SubMenuReport = 'KERUSAKAN' | 'PERBAIKAN';
-type MenuTab = 'USERS' | 'LOGS' | 'REPORTS' | 'SETTINGS';
+type MenuTab = 'ANALYTICS' | 'USERS' | 'LOGS' | 'REPORTS' | 'SETTINGS';
 
 // ==========================================
 // RELATIONAL DATABASE DATA INTERFACES
@@ -36,7 +37,7 @@ interface CaseData {
 
 const DashboardAdmin = (props: any) => {
   const { dbCases = [], dbUsers = [], dbLogs = [], dbRoles = [] } = props;
-  const [activeMenu, setActiveMenu] = useState<MenuTab>('REPORTS');
+  const [activeMenu, setActiveMenu] = useState<MenuTab>('ANALYTICS');
   const [activeSubReport, setActiveSubReport] = useState<SubMenuReport>('KERUSAKAN');
   const [isReportsExpanded, setIsReportsExpanded] = useState<boolean>(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
@@ -158,6 +159,114 @@ const DashboardAdmin = (props: any) => {
   // ==========================================
   // VIEW RENDERERS
   // ==========================================
+
+  const renderAnalyticsDashboard = () => {
+    // Data Aggregation
+    const statusCounts = { PENDING: 0, PROSES: 0, SELESAI: 0 };
+    const urgencyCounts: Record<string, number> = {};
+    const unitCounts: Record<string, number> = {};
+
+    dbCases.forEach((c: any) => {
+      // Status
+      if (statusCounts[c.status as keyof typeof statusCounts] !== undefined) {
+        statusCounts[c.status as keyof typeof statusCounts]++;
+      }
+      // Urgency
+      const urgency = c.kerusakan.urgensi || 'Normal';
+      urgencyCounts[urgency] = (urgencyCounts[urgency] || 0) + 1;
+      // Unit/Lokasi
+      const lokasi = c.kerusakan.lokasi || 'Unknown';
+      unitCounts[lokasi] = (unitCounts[lokasi] || 0) + 1;
+    });
+
+    const statusData = [
+      { name: 'PENDING', value: statusCounts.PENDING, color: '#dc2626' }, // targetred
+      { name: 'PROSES', value: statusCounts.PROSES, color: '#3b82f6' },  // blue
+      { name: 'SELESAI', value: statusCounts.SELESAI, color: '#22c55e' } // green
+    ];
+
+    const urgencyData = Object.keys(urgencyCounts).map(key => ({
+      name: key,
+      value: urgencyCounts[key]
+    }));
+
+    const unitData = Object.keys(unitCounts).map(key => ({
+      name: key,
+      value: unitCounts[key]
+    }));
+
+    return (
+      <div className="space-y-6 animate-in fade-in duration-500">
+        <h2 className="text-2xl font-tactical font-bold text-gunmetal dark:text-white tracking-widest flex items-center gap-3 mb-6">
+          <Activity className="text-olive w-6 h-6" /> TACTICAL OVERVIEW
+        </h2>
+
+        {/* Stats Row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-white/60 dark:bg-black/60 border border-gray-300 dark:border-gray-700 p-6 flex flex-col items-center justify-center relative overflow-hidden shadow-lg">
+             <div className="absolute top-0 left-0 w-full h-1 bg-targetred"></div>
+             <span className="text-[10px] font-mono text-gray-500 uppercase tracking-widest mb-2">Kasus Tertunda</span>
+             <span className="text-4xl font-tactical font-bold text-targetred">{statusCounts.PENDING}</span>
+          </div>
+          <div className="bg-white/60 dark:bg-black/60 border border-gray-300 dark:border-gray-700 p-6 flex flex-col items-center justify-center relative overflow-hidden shadow-lg">
+             <div className="absolute top-0 left-0 w-full h-1 bg-blue-500"></div>
+             <span className="text-[10px] font-mono text-gray-500 uppercase tracking-widest mb-2">Kasus Dalam Proses</span>
+             <span className="text-4xl font-tactical font-bold text-blue-500">{statusCounts.PROSES}</span>
+          </div>
+          <div className="bg-white/60 dark:bg-black/60 border border-gray-300 dark:border-gray-700 p-6 flex flex-col items-center justify-center relative overflow-hidden shadow-lg">
+             <div className="absolute top-0 left-0 w-full h-1 bg-green-500"></div>
+             <span className="text-[10px] font-mono text-gray-500 uppercase tracking-widest mb-2">Kasus Selesai</span>
+             <span className="text-4xl font-tactical font-bold text-green-500">{statusCounts.SELESAI}</span>
+          </div>
+        </div>
+
+        {/* Charts Row */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Status Chart */}
+          <div className="bg-white/60 dark:bg-black/60 border border-gray-300 dark:border-gray-700 p-6 shadow-lg">
+            <h3 className="text-xs font-tactical font-bold text-gunmetal dark:text-gray-300 tracking-widest mb-6 uppercase border-b border-gray-300 dark:border-gray-700 pb-2">Status Penanganan Kasus</h3>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={statusData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={80}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {statusData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <RechartsTooltip contentStyle={{ backgroundColor: '#1a2024', border: '1px solid #4B5320', color: '#fff' }} itemStyle={{ color: '#fff' }} />
+                  <Legend wrapperStyle={{ fontSize: '10px', fontFamily: 'monospace' }} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Urgency Chart */}
+          <div className="bg-white/60 dark:bg-black/60 border border-gray-300 dark:border-gray-700 p-6 shadow-lg">
+            <h3 className="text-xs font-tactical font-bold text-gunmetal dark:text-gray-300 tracking-widest mb-6 uppercase border-b border-gray-300 dark:border-gray-700 pb-2">Klasifikasi Urgensi</h3>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={urgencyData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" vertical={false} />
+                  <XAxis dataKey="name" stroke="#6b7280" style={{ fontSize: '10px', fontFamily: 'monospace' }} />
+                  <YAxis stroke="#6b7280" style={{ fontSize: '10px', fontFamily: 'monospace' }} allowDecimals={false} />
+                  <RechartsTooltip cursor={{ fill: 'rgba(75,83,32,0.1)' }} contentStyle={{ backgroundColor: '#1a2024', border: '1px solid #4B5320', color: '#fff' }} />
+                  <Bar dataKey="value" fill="#4B5320" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   const renderUsersTable = () => (
     <div className="bg-white/60 dark:bg-black/60 border border-gray-300 dark:border-gray-700 shadow-xl overflow-hidden animate-in fade-in relative">
@@ -427,6 +536,16 @@ const DashboardAdmin = (props: any) => {
         <nav className="flex-1 overflow-y-auto custom-scrollbar py-6">
 
           <div className="space-y-1">
+            {/* Analytics Dashboard */}
+            <button
+              onClick={() => handleMenuClick('ANALYTICS')}
+              className={`w-full flex items-center gap-3 px-6 py-3.5 font-tactical text-sm tracking-wider transition-all border-l-2
+                ${activeMenu === 'ANALYTICS' ? 'bg-gray-200 dark:bg-gray-800/80 text-gunmetal dark:text-white border-olive shadow-[inset_0_0_20px_rgba(75,83,32,0.05)]' : 'border-transparent text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'}
+              `}
+            >
+              <Radar className="w-5 h-5" /> TACTICAL OVERVIEW
+            </button>
+
             {/* Manajemen Personel */}
             <button
               onClick={() => handleMenuClick('USERS')}
@@ -526,6 +645,7 @@ const DashboardAdmin = (props: any) => {
         {/* Scrollable Content Container */}
         <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar z-10">
           <div className="max-w-[1400px] mx-auto">
+            {activeMenu === 'ANALYTICS' && renderAnalyticsDashboard()}
             {activeMenu === 'REPORTS' && renderReportsDashboard()}
             {activeMenu === 'USERS' && renderUsersTable()}
             {activeMenu === 'LOGS' && renderLogsTable()}
