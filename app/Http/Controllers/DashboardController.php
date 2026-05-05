@@ -16,7 +16,7 @@ class DashboardController extends Controller
         $report = Report::with(['unit', 'pelapor', 'teknisi'])->findOrFail($id);
 
         // Tambahkan atribut case_id secara manual untuk template
-        $report->case_id = 'DRT-' . str_pad($report->id, 5, '0', STR_PAD_LEFT);
+        $report->case_id = 'LPR-' . str_pad($report->id, 5, '0', STR_PAD_LEFT);
 
         $pdf = Pdf::loadView('pdf.bap_template', compact('report'));
         
@@ -26,7 +26,7 @@ class DashboardController extends Controller
     {
         return $query->with(['unit', 'pelapor', 'teknisi'])->get()->map(function ($report) {
             return [
-                'caseId' => 'DRT-' . str_pad($report->id, 5, '0', STR_PAD_LEFT),
+                'caseId' => 'LPR-' . str_pad($report->id, 5, '0', STR_PAD_LEFT),
                 'db_id' => $report->id,
                 'status' => strtoupper($report->status_laporan),
                 'kerusakan' => [
@@ -47,7 +47,7 @@ class DashboardController extends Controller
                     'teknisi' => $report->teknisi ? $report->teknisi->nama_lengkap : null,
                     'tanggalPenanganan' => $report->tgl_ditunjuk ? $report->tgl_ditunjuk->format('d F Y, H:i') : null,
                     'tindakan' => $report->catatan_teknisi,
-                    'sukuCadang' => null, 
+                    'metodePerbaikan' => $report->metode_perbaikan, 
                     'statusPerbaikan' => $report->status_laporan === 'Selesai' ? 'TUNTAS' : ($report->status_laporan === 'Proses' ? 'DIKERJAKAN' : 'MENUNGGU'),
                 ]
             ];

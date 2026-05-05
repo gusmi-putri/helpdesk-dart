@@ -82,7 +82,7 @@ class ReportController extends Controller
             'tgl_ditunjuk' => now()
         ]);
 
-        \App\Models\SystemLog::log('INFO', $request->user()->id, "Menugaskan teknisi {$teknisi->nama_lengkap} untuk menangani kasus: DRT-" . str_pad($report->id, 5, '0', STR_PAD_LEFT));
+        \App\Models\SystemLog::log('INFO', $request->user()->id, "Menugaskan teknisi {$teknisi->nama_lengkap} untuk menangani kasus: LPR-" . str_pad($report->id, 5, '0', STR_PAD_LEFT));
 
         return redirect()->back()->with('message', 'Teknisi berhasil ditugaskan!');
     }
@@ -104,16 +104,17 @@ class ReportController extends Controller
             $fotoSelesai = $filename;
         }
 
-        $report->update([
-            'status_laporan' => 'Selesai',
-            'catatan_teknisi' => $request->catatan,
-            'metode_perbaikan' => $request->metode,
-            'file_bukti_selesai' => $fotoSelesai,
-            'tgl_selesai' => now()
-        ]);
+        $report->status_laporan = 'Selesai';
+        $report->catatan_teknisi = $request->catatan;
+        $report->metode_perbaikan = $request->metode;
+        $report->file_bukti_selesai = $fotoSelesai;
+        $report->tgl_selesai = now();
+        
+        if ($report->save()) {
+            \App\Models\SystemLog::log('SUCCESS', $request->user()->id, "Menyelesaikan penanganan laporan LPR-" . str_pad($report->id, 5, '0', STR_PAD_LEFT) . " dengan metode {$request->metode}");
+            return redirect()->back()->with('message', 'Laporan perbaikan telah difinalisasi!');
+        }
 
-        \App\Models\SystemLog::log('SUCCESS', $request->user()->id, "Menyelesaikan penanganan laporan DRT-" . str_pad($report->id, 5, '0', STR_PAD_LEFT) . " dengan metode {$request->metode}");
-
-        return redirect()->back()->with('message', 'Laporan perbaikan telah difinalisasi!');
+        return redirect()->back()->with('error', 'Gagal memfinalisasi laporan. Cek status sistem.');
     }
 }

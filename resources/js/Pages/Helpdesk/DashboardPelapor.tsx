@@ -12,12 +12,6 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
   // Ambil state dan aksi dari global store
   const currentUser = useStore(state => state.currentUser);
   const logoutAction = useStore(state => state.logout);
-  const [currentTime, setCurrentTime] = useState(new Date());
-
-  useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
 
   // Temukan db_id user saat ini berdasarkan username di Zustand
   const dbUser = dbUsers.find((u: any) => u.username === currentUser?.username);
@@ -372,17 +366,6 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
               <Menu className="w-6 h-6" />
             </button>
 
-            {/* TACTICAL CLOCK */}
-            <div className="hidden md:flex items-center gap-3 px-4 py-1.5 bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-sm font-mono shadow-inner">
-               <div className="flex flex-col items-center leading-none">
-                  <span className="text-[10px] text-olive font-bold tracking-tighter uppercase">Waktu Ops</span>
-                  <span className="text-xs text-gunmetal dark:text-gray-300 font-bold tracking-widest">WIB</span>
-               </div>
-               <div className="w-[2px] h-6 bg-gray-300 dark:bg-gray-800"></div>
-               <span className="text-xl font-bold text-gunmetal dark:text-white tracking-widest">
-                  {currentTime.toLocaleTimeString('id-ID', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-               </span>
-            </div>
           </div>
 
           <div className="flex items-center gap-0 border border-gray-300 dark:border-gray-700 rounded shadow-sm bg-gray-100 dark:bg-gray-900 ml-auto">
@@ -471,9 +454,9 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
                     <p className="text-xs text-gunmetal dark:text-gray-200 font-mono leading-relaxed">
                       {selectedItem.perbaikan.tindakan}
                     </p>
-                    {selectedItem.perbaikan.sukuCadang && (
+                    {selectedItem.perbaikan.metodePerbaikan && (
                       <div className="mt-3 pt-3 border-t border-olive/20">
-                        <span className="text-[9px] font-bold text-olive tracking-tighter uppercase">SUKU CADANG DIGANTI: {selectedItem.perbaikan.sukuCadang}</span>
+                        <span className="text-[9px] font-bold text-olive tracking-tighter uppercase">METODE PERBAIKAN: {selectedItem.perbaikan.metodePerbaikan}</span>
                       </div>
                     )}
                   </div>

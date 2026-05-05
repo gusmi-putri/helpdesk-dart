@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { UserCog, AlertTriangle, CheckCircle, Clock, LogOut, ShieldAlert, Users, Database, Shield, Activity, Menu, X, CircleUser, Eye, Camera } from 'lucide-react';
+import { UserCog, AlertTriangle, CheckCircle, Clock, LogOut, ShieldAlert, Users, Database, Shield, Activity, Menu, X, CircleUser, Eye, Camera, Wrench } from 'lucide-react';
 import { useStore } from '@/store/useStore';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 
-const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
-  const currentUser = useStore(state => state.currentUser);
-  const logoutAction = useStore(state => state.logout);
-
+const DashboardStaf = (props: any) => {
+  const { dbCases = [], dbUsers = [], dbRoles = [] } = props;
   const [activeMenu, setActiveMenu] = useState<'MASUK' | 'SELESAI'>('MASUK');
   const [assigningReportId, setAssigningReportId] = useState<number | null>(null);
   const [viewingProof, setViewingProof] = useState<any[] | null>(null);
+  const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+
+  const selectedReport = dbCases.find((c: any) => c.db_id === selectedReportId);
+
+  const { auth } = usePage().props as any;
+  const currentUser = auth.user;
+  const logoutAction = useStore(state => state.logout);
   const addNotification = useStore(state => state.addNotification);
 
   // Auto-polling untuk real-time sinkronisasi
@@ -81,9 +86,12 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
               {incomingReports.map((report: any) => (
                 <tr key={report.db_id} className="hover:bg-gray-200 dark:hover:bg-gray-800/30 transition-colors text-gunmetal dark:text-white">
                   <td className="p-4">
-                    <span className="font-mono font-bold text-sm bg-white dark:bg-black px-2 py-1 border border-gray-300 dark:border-gray-700 block text-center w-fit">
+                    <button 
+                      onClick={() => setSelectedReportId(report.db_id)}
+                      className="font-mono font-bold text-sm bg-white dark:bg-black px-2 py-1 border border-gray-300 dark:border-gray-700 block text-center w-fit hover:border-olive hover:text-olive transition-colors group/tid"
+                    >
                       {report.caseId}
-                    </span>
+                    </button>
                   </td>
                   <td className="p-4">
                     <div className="font-bold text-sm">{report.kerusakan.pelapor}</div>
@@ -92,7 +100,7 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
                     </div>
                   </td>
                   <td className="p-4">
-                    <div className="font-bold mb-1">{report.unit?.nama_dart || 'UNIT TIDAK DIKENAL'}</div>
+                    <div className="font-bold mb-1">{report.unit?.nama_dart || report.kerusakan.barangRusak || 'UNIT TIDAK DIKENAL'}</div>
                     <div className="text-gray-700 dark:text-gray-400 text-[10px] font-mono">LOK: {report.kerusakan.lokasi}</div>
                   </td>
                   <td className="p-4">
@@ -211,9 +219,12 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
               {completedReports.map((report: any) => (
                 <tr key={report.db_id} className="hover:bg-gray-200 dark:hover:bg-gray-800/30 transition-colors">
                   <td className="p-4">
-                    <span className="font-mono text-gray-600 dark:text-gray-400 text-sm bg-white dark:bg-black px-2 py-1 border border-gray-300 dark:border-gray-700 block w-fit">
+                    <button 
+                      onClick={() => setSelectedReportId(report.db_id)}
+                      className="font-mono text-gray-600 dark:text-gray-400 text-sm bg-white dark:bg-black px-2 py-1 border border-gray-300 dark:border-gray-700 block w-fit hover:border-olive hover:text-olive transition-colors"
+                    >
                       {report.caseId}
-                    </span>
+                    </button>
                     <div className="mt-2 text-green-600 dark:text-green-500 text-[10px] font-mono font-bold flex items-center gap-1">
                       <CheckCircle className="w-3 h-3" /> BERHASIL CLEAR
                     </div>
@@ -236,7 +247,12 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
                   <td className="p-4">
                     <div className="bg-white dark:bg-black/50 p-4 border-l-4 border-green-700 text-sm text-gray-800 dark:text-gray-300 relative shadow-inner">
                       <span className="absolute top-1 left-2 text-xl text-gray-400 dark:text-gray-600 font-serif">"</span>
-                      <span className="pl-4 block italic font-serif leading-relaxed uppercase">{report.perbaikan.tindakan}</span>
+                      <span className="pl-4 block italic font-serif leading-relaxed uppercase mb-3">{report.perbaikan.tindakan}</span>
+                      {report.perbaikan.metodePerbaikan && (
+                        <div className="ml-4 text-[10px] text-green-600 dark:text-green-500 bg-green-900/10 px-2 py-1 border border-green-900/50 inline-block font-mono uppercase">
+                          METODE: {report.perbaikan.metodePerbaikan}
+                        </div>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -303,12 +319,15 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
 
         {/* Topbar */}
         <header className="h-16 border-b border-gray-300 dark:border-gray-800 bg-white/80 dark:bg-black/50 backdrop-blur-md flex items-center justify-between px-4 md:px-8 flex-shrink-0 z-10 relative">
-          <button
-            onClick={() => setIsMobileMenuOpen(true)}
-            className="md:hidden p-2 text-gray-600 dark:text-gray-400 hover:text-gunmetal dark:hover:text-white transition-colors"
-          >
-            <Menu className="w-6 h-6" />
-          </button>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="md:hidden p-2 text-gray-600 dark:text-gray-400 hover:text-gunmetal dark:hover:text-white transition-colors"
+            >
+              <Menu className="w-6 h-6" />
+            </button>
+
+          </div>
 
           <div className="flex items-center gap-0 border border-gray-300 dark:border-gray-700 rounded shadow-sm bg-gray-100 dark:bg-gray-900 ml-auto">
             <div className="bg-white dark:bg-black px-4 py-1.5 text-right flex flex-col justify-center">
@@ -363,6 +382,103 @@ const DashboardStaf = ({ dbCases = [], dbUsers = [] }: any) => {
                 <button
                   onClick={() => setViewingProof(null)}
                   className="bg-gunmetal dark:bg-black text-white px-8 py-2 font-tactical font-bold tracking-widest hover:bg-gray-800 transition-colors border border-gray-600"
+                >
+                  TUTUP
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL DETAIL TIKET */}
+      {selectedReportId && selectedReport && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
+          <div className="bg-sand dark:bg-gunmetal border-2 border-olive w-full max-w-2xl shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className="p-4 border-b border-olive bg-olive/10 flex justify-between items-center">
+              <h3 className="font-tactical font-bold text-olive tracking-widest uppercase flex items-center gap-2">
+                <Activity size={18} /> RINCIAN TIKET: {selectedReport.caseId}
+              </h3>
+              <button onClick={() => setSelectedReportId(null)} className="text-gray-500 hover:text-targetred text-xl">✕</button>
+            </div>
+            <div className="p-8 space-y-8 overflow-y-auto max-h-[80vh] custom-scrollbar">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Bagian Pelaporan */}
+                <div className="space-y-4">
+                  <h4 className="text-[10px] font-mono font-bold text-gray-500 tracking-[0.2em] border-b border-gray-300 dark:border-gray-800 pb-2 uppercase">DATA PELAPORAN</h4>
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-[9px] text-gray-500 font-mono uppercase tracking-widest">Barang Rusak</p>
+                      <p className="text-sm font-bold text-gunmetal dark:text-white uppercase">{selectedReport.kerusakan.barangRusak}</p>
+                    </div>
+                    <div>
+                      <p className="text-[9px] text-gray-500 font-mono uppercase tracking-widest">Lokasi Kejadian</p>
+                      <p className="text-sm font-bold text-olive uppercase">{selectedReport.kerusakan.lokasi}</p>
+                    </div>
+                    <div>
+                      <p className="text-[9px] text-gray-500 font-mono uppercase tracking-widest">Waktu Transmisi</p>
+                      <p className="text-sm font-mono text-gray-700 dark:text-gray-300">{selectedReport.kerusakan.tanggal}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bagian Status & Penanganan */}
+                <div className="space-y-4">
+                  <h4 className="text-[10px] font-mono font-bold text-gray-500 tracking-[0.2em] border-b border-gray-300 dark:border-gray-800 pb-2 uppercase">STATUS SISTEM</h4>
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-[9px] text-gray-500 font-mono uppercase tracking-widest">Status Perbaikan</p>
+                      <span className={`inline-block px-3 py-1 text-[10px] font-tactical font-bold tracking-widest border mt-1
+                        ${selectedReport.status === 'SELESAI' ? 'bg-green-900/20 text-green-500 border-green-800' :
+                          selectedReport.status === 'PROSES' ? 'bg-blue-900/20 text-blue-500 border-blue-800' :
+                            'bg-yellow-900/20 text-yellow-500 border-yellow-800'}
+                      `}>
+                        {selectedReport.perbaikan.statusPerbaikan || selectedReport.status}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="text-[9px] text-gray-500 font-mono uppercase tracking-widest">Teknisi Penanggung Jawab</p>
+                      <p className="text-sm font-bold text-gunmetal dark:text-white flex items-center gap-2">
+                        <Wrench size={14} className="text-olive" /> {selectedReport.perbaikan.teknisi ? selectedReport.perbaikan.teknisi.toUpperCase() : 'BELUM ADA PENUGASAN'}
+                      </p>
+                      {selectedReport.perbaikan.tanggalPenanganan && (
+                        <p className="text-[10px] text-gray-500 font-mono mt-1 uppercase tracking-tighter">
+                          Instruksi: {selectedReport.perbaikan.tanggalPenanganan}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Deskripsi & Catatan */}
+              <div className="space-y-4">
+                <div className="bg-sand/30 dark:bg-black/30 p-4 border border-gray-300 dark:border-gray-800">
+                  <p className="text-[9px] text-gray-500 font-mono uppercase tracking-widest mb-2">DESKRIPSI KRONOLOGI:</p>
+                  <p className="text-xs text-gray-700 dark:text-gray-400 font-mono leading-relaxed italic">
+                    "{selectedReport.kerusakan.deskripsi}"
+                  </p>
+                </div>
+
+                {selectedReport.perbaikan.tindakan && (
+                  <div className="bg-olive/5 p-4 border border-olive/30">
+                    <p className="text-[9px] text-olive font-mono uppercase tracking-widest mb-2">TINDAKAN PERBAIKAN (TEKNISI):</p>
+                    <p className="text-xs text-gunmetal dark:text-gray-200 font-mono leading-relaxed">
+                      {selectedReport.perbaikan.tindakan}
+                    </p>
+                    {selectedReport.perbaikan.metodePerbaikan && (
+                      <div className="mt-3 pt-3 border-t border-olive/20">
+                        <span className="text-[9px] font-bold text-olive tracking-tighter uppercase">METODE PERBAIKAN: {selectedReport.perbaikan.metodePerbaikan}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-8 flex justify-end">
+                <button
+                  onClick={() => setSelectedReportId(null)}
+                  className="bg-olive text-white px-8 py-2 font-tactical font-bold tracking-widest hover:bg-camogreen transition-colors"
                 >
                   TUTUP
                 </button>

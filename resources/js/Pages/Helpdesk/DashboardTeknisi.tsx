@@ -7,12 +7,6 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
   // Zustand Global State
   const currentUser = useStore(state => state.currentUser);
   const logoutAction = useStore(state => state.logout);
-  const [currentTime, setCurrentTime] = useState(new Date());
-
-  useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
 
   // Ambil tugas yang di-assign ke teknisi ini dan statusnya masih PROSES atau PENDING
   const tasks = dbCases.filter((r: any) => r.status === 'PROSES' || r.status === 'PENDING');
@@ -181,7 +175,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
               <form onSubmit={handleSubmitLaporan} className="space-y-6">
                 <div>
                   <label className="block text-gray-600 dark:text-gray-400 text-xs font-mono font-bold mb-2 tracking-widest uppercase">
-                    Catatan Eksekusi & Penggantian Sparepart
+                    Catatan Eksekusi & Metode Perbaikan
                   </label>
                   <textarea
                     value={data.catatan}
@@ -221,7 +215,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
                         className="w-full bg-sand dark:bg-gunmetal border border-gray-400 dark:border-gray-700 text-gunmetal dark:text-white p-3.5 focus:outline-none focus:border-olive transition-colors font-tactical font-bold text-base tracking-widest appearance-none pr-10 uppercase"
                       >
                         <option value="Offline">METODE: OFFLINE (PENANGANAN LANGSUNG)</option>
-                        <option value="Remote">METODE: REMOTE (AKSES DARING)</option>
+                        <option value="Online">METODE: ONLINE (AKSES DARING)</option>
                       </select>
                       <ChevronRight className="absolute right-4 top-4 w-5 h-5 text-gray-500 rotate-90 pointer-events-none" />
                     </div>
@@ -309,18 +303,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
             >
               <Menu className="w-6 h-6" />
             </button>
-
-            {/* TACTICAL CLOCK */}
-            <div className="hidden md:flex items-center gap-3 px-4 py-1.5 bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-sm font-mono shadow-inner">
-              <div className="flex flex-col items-center leading-none">
-                <span className="text-[10px] text-olive font-bold tracking-tighter uppercase">Waktu Ops</span>
-                <span className="text-xs text-gunmetal dark:text-gray-300 font-bold tracking-widest">WIB</span>
-              </div>
-              <div className="w-[2px] h-6 bg-gray-300 dark:bg-gray-800"></div>
-              <span className="text-xl font-bold text-gunmetal dark:text-white tracking-widest">
-                {currentTime.toLocaleTimeString('id-ID', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-              </span>
-            </div>
+            
           </div>
 
           <div className="flex items-center gap-0 border border-gray-300 dark:border-gray-700 rounded shadow-sm bg-gray-100 dark:bg-gray-900 ml-auto">

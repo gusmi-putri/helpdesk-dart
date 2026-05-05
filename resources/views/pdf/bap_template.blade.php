@@ -28,7 +28,7 @@
     <div class="header">
         <h1>COMMAND CENTER DART</h1>
         <p>BENGPUSKOMLEK PUSKOMLEKAD — SISTEM MANAJEMEN PEMELIHARAAN TERPADU</p>
-        <p>Jl. PSM No.50, Sukapura, Bandung, Jawa Barat</p>
+        <p>Jl. PSM No.50, Sukapura, Kec. Kiaracondong, Kota Bandung, Jawa Barat 40285</p>
     </div>
 
     <div class="doc-title">BERITA ACARA PERBAIKAN (BAP) UNIT DART</div>
@@ -44,22 +44,22 @@
     </div>
 
     <div class="section">
-        <div class="section-title">II. DETAIL PELAPORAN</div>
+        <div class="section-title">II. RINCIAN LAPORAN</div>
         <table class="grid">
-            <tr><td class="label">NAMA PELAPOR</td><td class="separator">:</td><td>{{ $report->pelapor->nama_lengkap }}</td></tr>
-            <tr><td class="label">URGENSI</td><td class="separator">:</td><td>{{ $report->urgensi }}</td></tr>
-            <tr><td class="label">TINGKAT KERUSAKAN</td><td class="separator">:</td><td>{{ $report->tingkat_kerusakan }}</td></tr>
-            <tr><td class="label">DESKRIPSI KENDALA</td><td class="separator">:</td><td>{{ $report->deskripsi_kerusakan }}</td></tr>
+            <tr><td class="label">NAMA PELAPOR</td><td class="separator">:</td><td>{{ strtoupper($report->pelapor->nama_lengkap) }}</td></tr>
+            <tr><td class="label">KLASIFIKASI URGENSI</td><td class="separator">:</td><td>{{ strtoupper($report->urgensi) }}</td></tr>
+            <tr><td class="label">TINGKAT KERUSAKAN</td><td class="separator">:</td><td>{{ strtoupper($report->tingkat_kerusakan) }}</td></tr>
+            <tr><td class="label">DESKRIPSI KENDALA</td><td class="separator">:</td><td>{{ ucfirst(strtolower($report->deskripsi_kerusakan)) }}</td></tr>
         </table>
     </div>
 
     <div class="section">
-        <div class="section-title">III. REALISASI PENANGANAN</div>
+        <div class="section-title">III. TINDAKAN PERBAIKAN</div>
         <table class="grid">
-            <tr><td class="label">TEKNISI PELAKSANA</td><td class="separator">:</td><td>{{ $report->teknisi->nama_lengkap ?? 'N/A' }}</td></tr>
+            <tr><td class="label">TEKNISI PELAKSANA</td><td class="separator">:</td><td>{{ strtoupper($report->teknisi->nama_lengkap ?? 'N/A') }}</td></tr>
             <tr><td class="label">WAKTU SELESAI</td><td class="separator">:</td><td>{{ $report->tgl_selesai ? $report->tgl_selesai->format('d F Y, H:i') : '-' }} WIB</td></tr>
-            <tr><td class="label">TINDAKAN / PROSES</td><td class="separator">:</td><td>{{ $report->catatan_teknisi ?? '-' }}</td></tr>
-            <tr><td class="label">PENANGANAN TEKNIS</td><td class="separator">:</td><td>{{ $report->suku_cadang ?? 'TIDAK ADA' }}</td></tr>
+            <tr><td class="label">TINDAKAN PERBAIKAN</td><td class="separator">:</td><td>{{ ucfirst(strtolower($report->catatan_teknisi ?? '-')) }}</td></tr>
+            <tr><td class="label">METODE PERBAIKAN</td><td class="separator">:</td><td>{{ strtoupper($report->metode_perbaikan ?? 'TIDAK ADA') }}</td></tr>
         </table>
     </div>
 

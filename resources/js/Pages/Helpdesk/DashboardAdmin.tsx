@@ -30,7 +30,7 @@ interface CaseData {
     teknisi: string | null;
     tanggalPenanganan: string | null;
     tindakan: string | null;
-    sukuCadang: string | null;
+    metodePerbaikan: string | null;
     statusPerbaikan: 'MENUNGGU' | 'DIANALISA' | 'PERBAIKAN' | 'TUNTAS';
   };
 }
@@ -56,12 +56,7 @@ const DashboardAdmin = (props: any) => {
 
   // State for Add/Edit Modal
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
-  const [currentTime, setCurrentTime] = useState(new Date());
 
-  useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<any>(null);
@@ -559,9 +554,9 @@ const DashboardAdmin = (props: any) => {
                         <div className="text-xs leading-relaxed mb-3">
                           {c.perbaikan.tindakan || 'Belum ada tindakan.'}
                         </div>
-                        {c.perbaikan.sukuCadang && (
+                        {c.perbaikan.metodePerbaikan && (
                           <div className="text-[10px] text-green-600 dark:text-green-500 bg-green-900/10 px-2 py-1 border border-green-900/50 inline-block font-mono">
-                            SPAREPART: {c.perbaikan.sukuCadang}
+                            METODE PERBAIKAN: {c.perbaikan.metodePerbaikan}
                           </div>
                         )}
                       </td>
@@ -721,17 +716,6 @@ const DashboardAdmin = (props: any) => {
               <Menu className="w-6 h-6" />
             </button>
             
-            {/* TACTICAL CLOCK */}
-            <div className="hidden md:flex items-center gap-3 px-4 py-1.5 bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-sm font-mono shadow-inner">
-               <div className="flex flex-col items-center leading-none">
-                  <span className="text-[10px] text-olive font-bold tracking-tighter uppercase">Waktu Ops</span>
-                  <span className="text-xs text-gunmetal dark:text-gray-300 font-bold tracking-widest">WIB</span>
-               </div>
-               <div className="w-[2px] h-6 bg-gray-300 dark:bg-gray-800"></div>
-               <span className="text-xl font-bold text-gunmetal dark:text-white tracking-widest">
-                  {currentTime.toLocaleTimeString('id-ID', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-               </span>
-            </div>
           </div>
 
           <div className="flex items-center gap-0 border border-gray-300 dark:border-gray-700 rounded overflow-hidden shadow-lg bg-gray-100 dark:bg-gray-900 ml-auto">
