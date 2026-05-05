@@ -31,6 +31,7 @@ interface CaseData {
     tanggalPenanganan: string | null;
     tindakan: string | null;
     metodePerbaikan: string | null;
+    tanggalSelesai: string | null;
     statusPerbaikan: 'MENUNGGU' | 'DIANALISA' | 'PERBAIKAN' | 'TUNTAS';
   };
 }
