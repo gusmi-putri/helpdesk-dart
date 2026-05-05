@@ -96,6 +96,7 @@ const DashboardAdmin = (props: any) => {
   const [unitToDelete, setUnitToDelete] = useState<any>(null);
   const [isUnitHistoryModalOpen, setIsUnitHistoryModalOpen] = useState(false);
   const [selectedUnitForHistory, setSelectedUnitForHistory] = useState<any>(null);
+  const [unitSearch, setUnitSearch] = useState<string>('');
 
   // Handlers
   const handlePrintCasePDF = (caseData: any) => {
@@ -549,86 +550,134 @@ const DashboardAdmin = (props: any) => {
     );
   };
 
-  const renderUnitsTable = () => (
-    <div className="space-y-6 animate-in fade-in duration-500">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white/60 dark:bg-[#1a2024] p-4 border border-gray-300 dark:border-gray-600 shadow-xl relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-1 h-full bg-olive"></div>
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-olive/10 border border-olive/30 flex items-center justify-center">
-            <Package className="text-olive w-7 h-7" />
-          </div>
-          <div>
-            <h3 className="text-gunmetal dark:text-white font-tactical font-bold text-xl tracking-widest uppercase">DATA INVENTARIS UNIT DART</h3>
-            <p className="text-[10px] font-mono text-gray-500 tracking-widest uppercase">PENGELOLAAN ASET DAN STATUS OPERASIONAL PERANGKAT</p>
-          </div>
-        </div>
-        <div className="flex gap-3 w-full md:w-auto">
-          <button onClick={handleAddUnit} className="flex-1 md:flex-none bg-olive text-white px-5 py-2.5 font-tactical font-bold text-xs tracking-[0.2em] hover:bg-camogreen transition-all shadow-lg flex items-center justify-center gap-2">
-            <Package className="w-4 h-4" /> TAMBAH UNIT BARU
-          </button>
-        </div>
-      </div>
+  const renderUnitsTable = () => {
+    const unitStats = {
+      TOTAL: dbUnits.length,
+      SIAP: dbUnits.filter((u: any) => u.status_unit === 'Siap Ops').length,
+      RUSAK: dbUnits.filter((u: any) => u.status_unit === 'Rusak').length,
+      PERBAIKAN: dbUnits.filter((u: any) => u.status_unit === 'Perbaikan').length,
+    };
 
-      <div className="bg-white/60 dark:bg-black/60 border border-gray-300 dark:border-gray-700 shadow-xl overflow-hidden relative">
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-olive to-transparent"></div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left font-sans text-sm">
-            <thead className="bg-[#1a2024] text-gray-600 dark:text-gray-400 font-tactical tracking-widest border-b border-gray-300 dark:border-gray-700">
-              <tr>
-                <th className="p-4 w-48">NOMOR SERI</th>
-                <th className="p-4">NAMA UNIT</th>
-                <th className="p-4">JENIS DART</th>
-                <th className="p-4">ASAL SATUAN</th>
-                <th className="p-4 text-center">STATUS UNIT</th>
-                <th className="p-4 text-right">TINDAKAN</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-300 dark:divide-gray-800">
-              {dbUnits.length === 0 ? (
+    const filteredUnits = dbUnits.filter((u: any) => 
+      u.nomor_seri.toLowerCase().includes(unitSearch.toLowerCase()) ||
+      u.nama_dart.toLowerCase().includes(unitSearch.toLowerCase()) ||
+      u.asal_satuan.toLowerCase().includes(unitSearch.toLowerCase())
+    );
+
+    return (
+      <div className="space-y-6 animate-in fade-in duration-500">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="bg-white/40 dark:bg-black/40 border-l-4 border-olive p-4 shadow-md backdrop-blur-sm">
+            <p className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">Total Inventaris</p>
+            <p className="text-2xl font-tactical font-bold text-gunmetal dark:text-white">{unitStats.TOTAL} <span className="text-xs text-gray-500">UNIT</span></p>
+          </div>
+          <div className="bg-white/40 dark:bg-black/40 border-l-4 border-green-600 p-4 shadow-md backdrop-blur-sm">
+            <p className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">Siap Operasional</p>
+            <p className="text-2xl font-tactical font-bold text-green-600">{unitStats.SIAP} <span className="text-xs text-gray-500">READY</span></p>
+          </div>
+          <div className="bg-white/40 dark:bg-black/40 border-l-4 border-targetred p-4 shadow-md backdrop-blur-sm">
+            <p className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">Kondisi Rusak</p>
+            <p className="text-2xl font-tactical font-bold text-targetred">{unitStats.RUSAK} <span className="text-xs text-gray-500">FAIL</span></p>
+          </div>
+          <div className="bg-white/40 dark:bg-black/40 border-l-4 border-blue-500 p-4 shadow-md backdrop-blur-sm">
+            <p className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">Dalam Perbaikan</p>
+            <p className="text-2xl font-tactical font-bold text-blue-500">{unitStats.PERBAIKAN} <span className="text-xs text-gray-500">MAINT</span></p>
+          </div>
+        </div>
+
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white/60 dark:bg-[#1a2024] p-4 border border-gray-300 dark:border-gray-600 shadow-xl relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-1 h-full bg-olive"></div>
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-olive/10 border border-olive/30 flex items-center justify-center">
+              <Package className="text-olive w-7 h-7" />
+            </div>
+            <div>
+              <h3 className="text-gunmetal dark:text-white font-tactical font-bold text-xl tracking-widest uppercase">DATA INVENTARIS UNIT DART</h3>
+              <p className="text-[10px] font-mono text-gray-500 tracking-widest uppercase">PENGELOLAAN ASET DAN STATUS OPERASIONAL PERANGKAT</p>
+            </div>
+          </div>
+          
+          <div className="flex flex-1 gap-3 w-full md:w-auto md:max-w-md">
+            <div className="relative flex-1">
+               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+               <input 
+                type="text" 
+                placeholder="Cari Seri / Nama / Satuan..." 
+                value={unitSearch}
+                onChange={(e) => setUnitSearch(e.target.value)}
+                className="w-full bg-sand dark:bg-black border border-gray-300 dark:border-gray-700 pl-10 pr-4 py-2 text-xs font-mono focus:border-olive outline-none transition-all uppercase"
+               />
+            </div>
+            <button onClick={handleAddUnit} className="bg-olive text-white px-5 py-2.5 font-tactical font-bold text-xs tracking-[0.2em] hover:bg-camogreen transition-all shadow-lg flex items-center justify-center gap-2 shrink-0">
+              <Plus className="w-4 h-4" /> TAMBAH UNIT
+            </button>
+          </div>
+        </div>
+
+        <div className="bg-white/60 dark:bg-black/60 border border-gray-300 dark:border-gray-700 shadow-xl overflow-hidden relative">
+          <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-olive to-transparent"></div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left font-sans text-sm">
+              <thead className="bg-[#1a2024] text-gray-600 dark:text-gray-400 font-tactical tracking-widest border-b border-gray-300 dark:border-gray-700">
                 <tr>
-                  <td colSpan={6} className="p-10 text-center text-gray-500 italic font-mono uppercase tracking-widest">Tidak ada data unit yang terdaftar.</td>
+                  <th className="p-4 w-48">NOMOR SERI</th>
+                  <th className="p-4">NAMA UNIT</th>
+                  <th className="p-4">JENIS DART</th>
+                  <th className="p-4">ASAL SATUAN</th>
+                  <th className="p-4 text-center">STATUS UNIT</th>
+                  <th className="p-4 text-right">TINDAKAN</th>
                 </tr>
-              ) : (
-                dbUnits.map((unit: any) => (
-                  <tr key={unit.id} className="hover:bg-gray-200 dark:hover:bg-gray-800/60 transition-colors group">
-                    <td className="p-4 font-mono text-olive font-bold border-l-2 border-transparent group-hover:border-olive tracking-widest uppercase">{unit.nomor_seri}</td>
-                    <td className="p-4 text-gunmetal dark:text-white font-bold uppercase">{unit.nama_dart}</td>
-                    <td className="p-4">
-                      <span className="px-2 py-1 text-[10px] font-mono bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-gray-700 tracking-tighter">
-                        {unit.jenis_dart}
-                      </span>
-                    </td>
-                    <td className="p-4 text-gray-600 dark:text-gray-400 uppercase text-xs font-semibold">{unit.asal_satuan}</td>
-                    <td className="p-4 text-center">
-                      <span className={`px-3 py-1 text-[9px] font-tactical font-bold tracking-[0.2em] border
-                        ${unit.status_unit === 'Siap Ops' ? 'bg-green-900/20 text-green-500 border-green-800' :
-                          unit.status_unit === 'Rusak' ? 'bg-red-900/20 text-targetred border-red-800' :
-                            unit.status_unit === 'Perbaikan' ? 'bg-blue-900/20 text-blue-500 border-blue-800' :
-                              'bg-gray-300 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-400 dark:border-gray-600'}
-                      `}>
-                        {unit.status_unit.toUpperCase()}
-                      </span>
-                    </td>
-                    <td className="p-4 flex gap-2 justify-end">
-                      <button onClick={() => handleShowUnitHistory(unit)} className="p-2 bg-gray-300 dark:bg-gray-800 hover:bg-blue-600 hover:text-white text-gray-700 dark:text-gray-300 transition-colors border border-gray-400 dark:border-gray-600" title="Riwayat Perbaikan Unit">
-                        <Clock className="w-4 h-4" />
-                      </button>
-                      <button onClick={() => handleEditUnit(unit)} className="p-2 bg-gray-300 dark:bg-gray-800 hover:bg-olive hover:text-white text-gray-700 dark:text-gray-300 transition-colors border border-gray-400 dark:border-gray-600" title="Edit Unit">
-                        <Edit className="w-4 h-4" />
-                      </button>
-                      <button onClick={() => handleDeleteUnit(unit)} className="p-2 bg-gray-300 dark:bg-gray-800 hover:bg-targetred hover:text-white text-gray-700 dark:text-gray-300 transition-colors border border-gray-400 dark:border-gray-600" title="Hapus Unit">
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+              </thead>
+              <tbody className="divide-y divide-gray-300 dark:divide-gray-800">
+                {filteredUnits.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="p-10 text-center text-gray-500 italic font-mono uppercase tracking-widest">
+                      {unitSearch ? `Tidak ada unit yang cocok dengan "${unitSearch}"` : "Tidak ada data unit yang terdaftar."}
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  filteredUnits.map((unit: any) => (
+                    <tr key={unit.id} className="hover:bg-gray-200 dark:hover:bg-gray-800/60 transition-colors group">
+                      <td className="p-4 font-mono text-olive font-bold border-l-2 border-transparent group-hover:border-olive tracking-widest uppercase">{unit.nomor_seri}</td>
+                      <td className="p-4 text-gunmetal dark:text-white font-bold uppercase">{unit.nama_dart}</td>
+                      <td className="p-4">
+                        <span className="px-2 py-1 text-[10px] font-mono bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-gray-700 tracking-tighter">
+                          {unit.jenis_dart}
+                        </span>
+                      </td>
+                      <td className="p-4 text-gray-600 dark:text-gray-400 uppercase text-xs font-semibold">{unit.asal_satuan}</td>
+                      <td className="p-4 text-center">
+                        <span className={`px-3 py-1 text-[9px] font-tactical font-bold tracking-[0.2em] border
+                          ${unit.status_unit === 'Siap Ops' ? 'bg-green-900/20 text-green-500 border-green-800' :
+                            unit.status_unit === 'Rusak' ? 'bg-red-900/20 text-targetred border-red-800' :
+                              unit.status_unit === 'Perbaikan' ? 'bg-blue-900/20 text-blue-500 border-blue-800' :
+                                'bg-gray-300 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-400 dark:border-gray-600'}
+                        `}>
+                          {unit.status_unit.toUpperCase()}
+                        </span>
+                      </td>
+                      <td className="p-4 flex gap-2 justify-end">
+                        <button onClick={() => handleShowUnitHistory(unit)} className="p-2 bg-gray-300 dark:bg-gray-800 hover:bg-blue-600 hover:text-white text-gray-700 dark:text-gray-300 transition-colors border border-gray-400 dark:border-gray-600" title="Riwayat Perbaikan Unit">
+                          <Clock className="w-4 h-4" />
+                        </button>
+                        <button onClick={() => handleEditUnit(unit)} className="p-2 bg-gray-300 dark:bg-gray-800 hover:bg-olive hover:text-white text-gray-700 dark:text-gray-300 transition-colors border border-gray-400 dark:border-gray-600" title="Edit Unit">
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button onClick={() => handleDeleteUnit(unit)} className="p-2 bg-gray-300 dark:bg-gray-800 hover:bg-targetred hover:text-white text-gray-700 dark:text-gray-300 transition-colors border border-gray-400 dark:border-gray-600" title="Hapus Unit">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   const renderReportsDashboard = () => {
     const counts = {
