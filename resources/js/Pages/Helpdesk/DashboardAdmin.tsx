@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import {
   Users, Database, Search,
   Edit, Trash2, Shield, Settings, LogOut,
-  ChevronDown, ChevronRight, FileArchive, Wrench, Download, AlertTriangle, Radar,
+  ChevronDown, ChevronRight, FileArchive, Wrench, Download, AlertTriangle, Radar, Activity,
   Menu, CircleUser, Eye, Info
 } from 'lucide-react';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -55,7 +55,13 @@ const DashboardAdmin = (props: any) => {
   const logoutAction = useStore(state => state.logout);
 
   // State for Add/Edit Modal
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<any>(null);
@@ -714,6 +720,18 @@ const DashboardAdmin = (props: any) => {
             >
               <Menu className="w-6 h-6" />
             </button>
+            
+            {/* TACTICAL CLOCK */}
+            <div className="hidden md:flex items-center gap-3 px-4 py-1.5 bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-sm font-mono shadow-inner">
+               <div className="flex flex-col items-center leading-none">
+                  <span className="text-[10px] text-olive font-bold tracking-tighter uppercase">Waktu Ops</span>
+                  <span className="text-xs text-gunmetal dark:text-gray-300 font-bold tracking-widest">WIB</span>
+               </div>
+               <div className="w-[2px] h-6 bg-gray-300 dark:bg-gray-800"></div>
+               <span className="text-xl font-bold text-gunmetal dark:text-white tracking-widest">
+                  {currentTime.toLocaleTimeString('id-ID', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+               </span>
+            </div>
           </div>
 
           <div className="flex items-center gap-0 border border-gray-300 dark:border-gray-700 rounded overflow-hidden shadow-lg bg-gray-100 dark:bg-gray-900 ml-auto">

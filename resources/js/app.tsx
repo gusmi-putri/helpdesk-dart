@@ -8,7 +8,7 @@ import { useStore } from '@/store/useStore';
 
 // Listen for Inertia flash messages globally
 router.on('finish', (event) => {
-    const flash = event.detail.page.props.flash as any;
+    const flash = event.detail.page?.props?.flash as any;
     if (flash) {
         if (flash.success || flash.message) {
             useStore.getState().addNotification(flash.success || flash.message, 'success');
