@@ -56,8 +56,8 @@
     <div class="section">
         <div class="section-title">III. REALISASI PENANGANAN</div>
         <table class="grid">
-            <tr><td class="label">TEKNISI PELAKSANA</td><td class="separator">:</td><td>{{ $report->technician->nama_lengkap ?? 'N/A' }}</td></tr>
-            <tr><td class="label">WAKTU SELESAI</td><td class="separator">:</td><td>{{ $report->updated_at->format('d F Y, H:i') }} WIB</td></tr>
+            <tr><td class="label">TEKNISI PELAKSANA</td><td class="separator">:</td><td>{{ $report->teknisi->nama_lengkap ?? 'N/A' }}</td></tr>
+            <tr><td class="label">WAKTU SELESAI</td><td class="separator">:</td><td>{{ $report->tgl_selesai ? $report->tgl_selesai->format('d F Y, H:i') : '-' }} WIB</td></tr>
             <tr><td class="label">TINDAKAN PERBAIKAN</td><td class="separator">:</td><td>{{ $report->catatan_teknisi }}</td></tr>
             <tr><td class="label">SUKU CADANG DIGANTI</td><td class="separator">:</td><td>{{ $report->suku_cadang ?? 'TIDAK ADA' }}</td></tr>
         </table>
@@ -76,8 +76,8 @@
             <div class="sign-box">
                 <p>Teknisi,</p>
                 <div class="sign-label"></div>
-                <p class="sign-name">{{ $report->technician->nama_lengkap ?? '....................' }}</p>
-                <p>NRP. {{ $report->technician->nrp_nip ?? '....................' }}</p>
+                <p class="sign-name">{{ $report->teknisi->nama_lengkap ?? '....................' }}</p>
+                <p>NRP. {{ $report->teknisi->nrp_nip ?? '....................' }}</p>
             </div>
             <div class="sign-box">
                 <p>Mengetahui,</p>
