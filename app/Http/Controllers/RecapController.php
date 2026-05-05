@@ -28,9 +28,9 @@ class RecapController extends Controller
         }
 
         $reports = $query->orderBy('tanggal_lapor', 'desc')->get()->map(function($report) {
-            // Apply EYD formatting (simple capitalization and trimming)
-            $report->deskripsi_kerusakan = ucfirst(trim($report->deskripsi_kerusakan));
-            $report->catatan_teknisi = $report->catatan_teknisi ? ucfirst(trim($report->catatan_teknisi)) : null;
+            // Apply refined EYD formatting (lowercase first to handle full caps, then ucfirst)
+            $report->deskripsi_kerusakan = ucfirst(mb_strtolower(trim($report->deskripsi_kerusakan)));
+            $report->catatan_teknisi = $report->catatan_teknisi ? ucfirst(mb_strtolower(trim($report->catatan_teknisi))) : null;
             return $report;
         });
         

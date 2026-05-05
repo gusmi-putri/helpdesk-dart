@@ -19,8 +19,8 @@ class DashboardController extends Controller
         $report->case_id = 'LPR-' . str_pad($report->id, 5, '0', STR_PAD_LEFT);
 
         // EYD Formatting
-        $report->deskripsi_kerusakan = ucfirst(trim($report->deskripsi_kerusakan));
-        $report->catatan_teknisi = $report->catatan_teknisi ? ucfirst(trim($report->catatan_teknisi)) : null;
+        $report->deskripsi_kerusakan = ucfirst(mb_strtolower(trim($report->deskripsi_kerusakan)));
+        $report->catatan_teknisi = $report->catatan_teknisi ? ucfirst(mb_strtolower(trim($report->catatan_teknisi))) : null;
 
         $pdf = Pdf::loadView('pdf.bap_template', compact('report'));
         
