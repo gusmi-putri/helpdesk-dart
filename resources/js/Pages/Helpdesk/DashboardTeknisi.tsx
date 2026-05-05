@@ -309,17 +309,17 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
             >
               <Menu className="w-6 h-6" />
             </button>
-            
+
             {/* TACTICAL CLOCK */}
             <div className="hidden md:flex items-center gap-3 px-4 py-1.5 bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-sm font-mono shadow-inner">
-               <div className="flex flex-col items-center leading-none">
-                  <span className="text-[10px] text-olive font-bold tracking-tighter uppercase">Waktu Ops</span>
-                  <span className="text-xs text-gunmetal dark:text-gray-300 font-bold tracking-widest">WIB</span>
-               </div>
-               <div className="w-[2px] h-6 bg-gray-300 dark:bg-gray-800"></div>
-               <span className="text-xl font-bold text-gunmetal dark:text-white tracking-widest">
-                  {currentTime.toLocaleTimeString('id-ID', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-               </span>
+              <div className="flex flex-col items-center leading-none">
+                <span className="text-[10px] text-olive font-bold tracking-tighter uppercase">Waktu Ops</span>
+                <span className="text-xs text-gunmetal dark:text-gray-300 font-bold tracking-widest">WIB</span>
+              </div>
+              <div className="w-[2px] h-6 bg-gray-300 dark:bg-gray-800"></div>
+              <span className="text-xl font-bold text-gunmetal dark:text-white tracking-widest">
+                {currentTime.toLocaleTimeString('id-ID', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+              </span>
             </div>
           </div>
 
