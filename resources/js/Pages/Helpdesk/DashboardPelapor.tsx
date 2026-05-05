@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, History, AlertCircle, Clock, CheckCircle2, ChevronRight, Activity, Camera, LogOut, Shield, FilePlus, Menu, X as XIcon, CircleUser, Wrench, Upload, Phone, MapPin, Info, Trash2 } from 'lucide-react';
-import { useStore, type ReportStatus } from '@/store/useStore';
+import { useStore } from '@/store/useStore';
 import { router, useForm } from '@inertiajs/react';
 import SearchableSelect from '@/Components/SearchableSelect';
 
@@ -227,8 +227,8 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
           <Send size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
           {processing ? 'MENGIRIM LAPORAN...' : 'KIRIM LAPORAN PENGADUAN'}
         </button>
-        </form>
-      </div>
+      </form>
+    </div>
   );
 
   const renderHistory = () => (
