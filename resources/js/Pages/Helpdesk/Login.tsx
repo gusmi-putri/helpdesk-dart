@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from '@inertiajs/react';
 import { useStore } from '@/store/useStore';
+import { Eye, EyeOff } from 'lucide-react';
 
 interface LoginData {
   username: string;
@@ -17,6 +18,7 @@ const Login: React.FC = () => {
   });
 
   const [successMsg, setSuccessMsg] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,14 +99,23 @@ const Login: React.FC = () => {
             <label className="block text-gray-600 dark:text-gray-400 text-xs font-mono font-bold mb-2 tracking-widest uppercase">
               Password
             </label>
-            <input
-              type="password"
-              value={data.password}
-              onChange={(e) => setData('password', e.target.value)}
-              className={`w-full bg-white/60 dark:bg-black/60 border ${errors.auth ? 'border-targetred' : 'border-gray-300 dark:border-gray-700'} text-gunmetal dark:text-white px-4 py-3 focus:outline-none focus:border-camogreen focus:ring-1 focus:ring-camogreen transition-colors font-mono tracking-[0.2em]`}
-              placeholder="••••••••"
-              required
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={data.password}
+                onChange={(e) => setData('password', e.target.value)}
+                className={`w-full bg-white/60 dark:bg-black/60 border ${errors.auth ? 'border-targetred' : 'border-gray-300 dark:border-gray-700'} text-gunmetal dark:text-white px-4 py-3 focus:outline-none focus:border-camogreen focus:ring-1 focus:ring-camogreen transition-colors font-mono ${!showPassword ? 'tracking-[0.2em]' : ''}`}
+                placeholder="••••••••"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gunmetal dark:hover:text-white transition-colors"
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
+            </div>
             {errors.password && (
               <p className="mt-1 text-targetred text-[10px] font-mono uppercase italic">
                 {errors.password}
