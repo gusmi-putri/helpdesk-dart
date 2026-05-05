@@ -9,6 +9,14 @@ import { useStore } from '@/store/useStore';
 // Listen for Inertia flash messages globally
 router.on('success', (event: any) => {
     const flash = event.detail.page?.props?.flash;
+    const only = event.detail.visit.only;
+
+    // Jika ini adalah partial reload (misal: auto-polling) dan 'flash' tidak diminta,
+    // maka kita abaikan agar notifikasi tidak muncul berulang-ulang.
+    if (only && only.length > 0 && !only.includes('flash')) {
+        return;
+    }
+
     if (flash) {
         if (flash.success || flash.message) {
             useStore.getState().addNotification(flash.success || flash.message, 'success');

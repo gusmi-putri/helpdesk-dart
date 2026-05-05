@@ -52,6 +52,7 @@ class UserController extends Controller
             'asal_satuan' => $request->asal_satuan,
             'no_wa' => $request->no_wa,
             'spesialisasi' => $request->spesialisasi,
+            'is_approved' => true, // Manual add by admin is auto-approved
         ]);
 
         $admin = auth()->user();
@@ -100,6 +101,7 @@ class UserController extends Controller
 
         return redirect()->back()->with('message', 'User deleted successfully.');
     }
+
     public function toggleStatus(string $id)
     {
         $user = User::findOrFail($id);
@@ -111,5 +113,16 @@ class UserController extends Controller
         \App\Models\SystemLog::log('WARN', $admin->id, "Mengubah status personel {$user->nama_lengkap} menjadi {$statusStr}");
 
         return redirect()->back()->with('message', "Status personel berhasil diubah menjadi {$statusStr}.");
+    }
+
+    public function approve(string $id)
+    {
+        $user = User::findOrFail($id);
+        $user->update(['is_approved' => true]);
+
+        $admin = auth()->user();
+        \App\Models\SystemLog::log('SUCCESS', $admin->id, "Menyetujui pendaftaran personel baru: {$user->nama_lengkap}");
+
+        return redirect()->back()->with('message', 'Personel telah disetujui dan sekarang dapat login.');
     }
 }
