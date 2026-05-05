@@ -12,6 +12,12 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
   // Ambil state dan aksi dari global store
   const currentUser = useStore(state => state.currentUser);
   const logoutAction = useStore(state => state.logout);
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Temukan db_id user saat ini berdasarkan username di Zustand
   const dbUser = dbUsers.find((u: any) => u.username === currentUser?.username);
@@ -138,12 +144,14 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
           <SearchableSelect 
             label="Nomor Seri DART"
             placeholder="Ketik nomor seri atau nama unit DART..."
-            options={dbUnits.map((unit: any) => ({
-              id: unit.id,
-              label: unit.nomor_seri,
-              sublabel: unit.nama_dart,
-              tag: `${unit.jenis_dart} | ${unit.asal_satuan}`
-            }))}
+            options={dbUnits
+              .filter((unit: any) => unit.asal_satuan === authUser.asal_satuan)
+              .map((unit: any) => ({
+                id: unit.id,
+                label: unit.nomor_seri,
+                sublabel: unit.nama_dart,
+                tag: `${unit.jenis_dart} | ${unit.asal_satuan}`
+              }))}
             value={data.unit_id}
             onChange={(val) => setData('unit_id', val.toString())}
             error={errors.unit_id}
@@ -356,12 +364,26 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
 
         {/* Topbar */}
         <header className="h-16 border-b border-gray-300 dark:border-gray-800 bg-white/80 dark:bg-black/50 backdrop-blur-md flex items-center justify-between px-4 md:px-8 flex-shrink-0 z-10 relative">
-          <button
-            onClick={() => setIsMobileMenuOpen(true)}
-            className="md:hidden p-2 text-gray-600 dark:text-gray-400 hover:text-gunmetal dark:hover:text-white transition-colors"
-          >
-            <Menu className="w-6 h-6" />
-          </button>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="md:hidden p-2 text-gray-600 dark:text-gray-400 hover:text-gunmetal dark:hover:text-white transition-colors"
+            >
+              <Menu className="w-6 h-6" />
+            </button>
+
+            {/* TACTICAL CLOCK */}
+            <div className="hidden md:flex items-center gap-3 px-4 py-1.5 bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-sm font-mono shadow-inner">
+               <div className="flex flex-col items-center leading-none">
+                  <span className="text-[10px] text-olive font-bold tracking-tighter uppercase">Waktu Ops</span>
+                  <span className="text-xs text-gunmetal dark:text-gray-300 font-bold tracking-widest">WIB</span>
+               </div>
+               <div className="w-[2px] h-6 bg-gray-300 dark:bg-gray-800"></div>
+               <span className="text-xl font-bold text-gunmetal dark:text-white tracking-widest">
+                  {currentTime.toLocaleTimeString('id-ID', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+               </span>
+            </div>
+          </div>
 
           <div className="flex items-center gap-0 border border-gray-300 dark:border-gray-700 rounded shadow-sm bg-gray-100 dark:bg-gray-900 ml-auto">
             <div className="bg-white dark:bg-black px-4 py-1.5 text-right flex flex-col justify-center">
