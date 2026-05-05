@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, History, AlertCircle, Clock, CheckCircle2, ChevronRight, Activity, Camera, LogOut, Shield, FilePlus, Menu, X as XIcon, CircleUser, Wrench, Upload, Phone, MapPin, Info, Trash2 } from 'lucide-react';
+import { Send, History, AlertCircle, Clock, CheckCircle2, ChevronRight, Activity, Camera, LogOut, Shield, FilePlus, Menu, X as XIcon, CircleUser, Wrench, Upload, Phone, MapPin, Info, Trash2, Filter } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { router, useForm } from '@inertiajs/react';
 import SearchableSelect from '@/Components/SearchableSelect';
@@ -16,8 +16,48 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
   // Temukan db_id user saat ini berdasarkan username di Zustand
   const dbUser = dbUsers.find((u: any) => u.username === currentUser?.username);
 
-  // Ambil riwayat laporan milik user ini saja
-  const history = dbCases.filter((r: any) => r.kerusakan.pelapor_id === dbUser?.db_id);
+  // Filter & Sort State
+  const [filterTime, setFilterTime] = useState<'ALL' | 'TODAY' | 'WEEK'>('ALL');
+
+  // Ambil riwayat laporan milik user ini saja, lalu urutkan dari yang terbaru
+  const history = dbCases
+    .filter((r: any) => r.kerusakan.pelapor_id === dbUser?.db_id)
+    .sort((a: any, b: any) => {
+        // Karena tanggal formatnya "d F Y, H:i", kita perlu parse atau gunakan db_id (ID lebih besar biasanya lebih baru)
+        // Namun lebih aman gunakan db_id jika tanggal formatnya terlokalisasi
+        return b.db_id - a.db_id;
+    });
+
+  const filteredHistory = history.filter((item: any) => {
+    if (filterTime === 'ALL') return true;
+    
+    // Logic filter sederhana (karena format tanggal adalah string, idealnya kita kirim timestamp dari backend)
+    // Untuk saat ini kita asumsikan sorting db_id sudah cukup mewakili urutan kronologis.
+    // Jika ingin filter per hari/minggu, kita butuh parsing tanggal yang kuat.
+    // Mari kita implementasi filter berdasarkan status atau biarkan ALL dulu jika parsing sulit.
+    // Namun user minta: "perhari, minggu / bisa dipilih"
+    
+    // Kita coba parsing manual format "05 May 2026, 11:26"
+    const parseDate = (str: string) => {
+        try {
+            // Hilangkan koma dan ganti bulan jika perlu, tapi native Date biasanya bisa handle format ini
+            return new Date(str.replace(',', ''));
+        } catch(e) { return new Date(0); }
+    };
+
+    const itemDate = parseDate(item.kerusakan.tanggal);
+    const now = new Date();
+
+    if (filterTime === 'TODAY') {
+        return itemDate.toDateString() === now.toDateString();
+    }
+    if (filterTime === 'WEEK') {
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(now.getDate() - 7);
+        return itemDate >= oneWeekAgo;
+    }
+    return true;
+  });
 
   // Auto-polling untuk real-time sinkronisasi
   useEffect(() => {
@@ -88,7 +128,7 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
       <div className="glass-panel border-t-4 border-t-olive overflow-hidden">
         <div className="p-6 md:p-8">
           <h2 className="text-2xl md:text-3xl font-tactical font-bold text-gunmetal dark:text-white tracking-wider uppercase mb-3">
-            Form Pengaduan Kerusakan DART
+            PELAPORAN KERUSAKAN DART
           </h2>
           <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
             Tim teknis akan melakukan verifikasi data dan ketersediaan suku cadang setelah menerima laporan ini.
@@ -227,7 +267,7 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
           className="w-full bg-olive hover:bg-camogreen text-white font-tactical font-bold py-4 tracking-[0.3em] transition-all flex items-center justify-center gap-3 group relative overflow-hidden disabled:opacity-50 shadow-lg rounded-sm">
           <span className="absolute inset-0 bg-white/10 -translate-x-full group-hover:animate-[shimmer_2s_infinite]"></span>
           <Send size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-          {processing ? 'MENGIRIM LAPORAN...' : 'KIRIM LAPORAN PENGADUAN'}
+          {processing ? 'MENGIRIM LAPORAN...' : 'KIRIM LAPORAN KERUSAKAN'}
         </button>
       </form>
     </div>
@@ -235,23 +275,37 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
 
   const renderHistory = () => (
     <div className="max-w-4xl mx-auto animate-in fade-in duration-500">
-      <div className="mb-8 flex justify-between items-end">
+      <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
           <h2 className="text-2xl font-tactical font-bold text-gunmetal dark:text-white tracking-widest uppercase">Riwayat Laporan</h2>
-          <p className="text-gray-600 dark:text-gray-400 text-xs font-mono mt-1 tracking-widest uppercase">Log Pelaporan Unit Anda</p>
+          <p className="text-gray-600 dark:text-gray-400 text-xs font-mono mt-1 tracking-widest uppercase">Log Pelaporan Unit Anda (Terbaru di Atas)</p>
         </div>
-        <div className="bg-olive/10 border border-olive/30 px-4 py-2">
-          <span className="text-[10px] font-mono text-olive font-bold tracking-widest">TOTAL: {history.length} TIKET</span>
+        
+        <div className="flex items-center gap-3 w-full md:w-auto">
+          <div className="flex bg-white dark:bg-black/50 border border-gray-300 dark:border-gray-800 p-1 rounded-sm shadow-sm">
+            {(['ALL', 'TODAY', 'WEEK'] as const).map((t) => (
+              <button
+                key={t}
+                onClick={() => setFilterTime(t)}
+                className={`px-3 py-1.5 text-[9px] font-tactical font-bold tracking-widest transition-all ${filterTime === t ? 'bg-olive text-white shadow-md' : 'text-gray-500 hover:text-olive'}`}
+              >
+                {t === 'ALL' ? 'SEMUA' : t === 'TODAY' ? 'HARI INI' : 'MINGGU INI'}
+              </button>
+            ))}
+          </div>
+          <div className="bg-olive/10 border border-olive/30 px-4 py-2 hidden sm:block">
+            <span className="text-[10px] font-mono text-olive font-bold tracking-widest">TOTAL: {filteredHistory.length} TIKET</span>
+          </div>
         </div>
       </div>
 
       <div className="space-y-4 max-h-[700px] overflow-y-auto pr-2 custom-scrollbar">
-        {history.length === 0 ? (
+        {filteredHistory.length === 0 ? (
           <div className="p-8 text-center text-gray-600 font-mono bg-white/40 dark:bg-black/40 border border-gray-300 dark:border-gray-800">
-            ANDA BELUM PERNAH MENGAJUKAN LAPORAN APAPUN.
+            {filterTime === 'ALL' ? 'ANDA BELUM PERNAH MENGAJUKAN LAPORAN APAPUN.' : 'TIDAK ADA LAPORAN PADA PERIODE INI.'}
           </div>
         ) : (
-          history.map((item: any, index: number) => (
+          filteredHistory.map((item: any, index: number) => (
             <div
               key={index}
               onClick={() => setSelectedItemId(item.db_id)}
@@ -332,7 +386,7 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
               ${activeMenu === 'FORM' ? 'bg-gray-100 dark:bg-gray-900 text-gunmetal dark:text-white border-olive' : 'border-transparent text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-900/50'}
             `}
           >
-            <Send size={18} /> FORM PELAPORAN
+            <Send size={18} /> PELAPORAN KERUSAKAN
           </button>
 
           <button
@@ -409,8 +463,8 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
                       <p className="text-sm font-bold text-olive uppercase">{selectedItem.kerusakan.lokasi}</p>
                     </div>
                     <div>
-                      <p className="text-[9px] text-gray-500 font-mono uppercase tracking-widest">Waktu Transmisi</p>
-                      <p className="text-sm font-mono text-gray-700 dark:text-gray-300">{selectedItem.kerusakan.tanggal}</p>
+                      <p className="text-[9px] text-gray-500 font-mono uppercase tracking-widest">Waktu Selesai</p>
+                      <p className="text-sm font-mono text-gray-700 dark:text-gray-300">{selectedItem.perbaikan.tanggalSelesai || '-'}</p>
                     </div>
                   </div>
                 </div>
