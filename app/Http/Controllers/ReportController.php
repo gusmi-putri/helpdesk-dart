@@ -19,8 +19,8 @@ class ReportController extends Controller
             'tingkat_kerusakan' => 'required|in:Ringan,Sedang,Parah',
             'urgensi' => 'required|in:Sangat Mendesak,Bisa Menunggu,Pemeliharaan Rutin',
             'klasifikasi' => 'nullable|in:RINGAN,SEDANG,DARURAT',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'file_bukti.*' => 'nullable|file|mimes:jpg,jpeg,png,gif,mp4,mov,avi,webm|max:102400',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:20480',
+            'file_bukti.*' => 'nullable|file|mimes:jpg,jpeg,png,gif,mp4,mov,avi,webm|max:20480',
         ]);
 
         $fotoPath = null;
@@ -93,7 +93,7 @@ class ReportController extends Controller
         $request->validate([
             'catatan' => 'required|string',
             'metode' => 'required|in:Online,Offline',
-            'foto_selesai' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'foto_selesai' => 'nullable|image|mimes:jpeg,png,jpg|max:20480',
         ]);
 
         $fotoSelesai = $report->file_bukti_selesai;

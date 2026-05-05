@@ -200,11 +200,14 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
                     className="absolute inset-0 opacity-0 cursor-pointer"
                     onChange={(e) => setData('foto_selesai', e.target.files ? e.target.files[0] : null)}
                   />
-                  <div className="flex items-center justify-center gap-3">
-                    <Activity className="w-5 h-5 text-gray-400 group-hover:text-olive transition-colors" />
-                    <span className="text-xs font-mono text-gray-500 group-hover:text-olive uppercase">
-                      {data.foto_selesai ? `[DOKUMEN: ${data.foto_selesai.name}]` : 'UNGGAH FOTO BUKTI SELESAI PERBAIKAN'}
-                    </span>
+                  <div className="flex flex-col items-center justify-center gap-1">
+                    <div className="flex items-center gap-3">
+                      <Activity className="w-5 h-5 text-gray-400 group-hover:text-olive transition-colors" />
+                      <span className="text-xs font-mono text-gray-500 group-hover:text-olive uppercase">
+                        {data.foto_selesai ? `[DOKUMEN: ${data.foto_selesai.name}]` : 'UNGGAH FOTO BUKTI SELESAI PERBAIKAN'}
+                      </span>
+                    </div>
+                    <span className="text-[9px] font-mono text-gray-400 dark:text-gray-600 uppercase">Maksimal ukuran file: 20 MB</span>
                   </div>
                   {errors.foto_selesai && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.foto_selesai}</p>}
                 </div>
