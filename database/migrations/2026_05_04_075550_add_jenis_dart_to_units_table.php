@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('units', function (Blueprint $table) {
-            $table->enum('jenis_dart', ['DART STD', 'DART STK', 'SKE', 'MOVING TARGET'])
-                  ->default('DART STD')
-                  ->after('nama_dart');
-        });
+        if (!Schema::hasColumn('units', 'jenis_dart')) {
+            Schema::table('units', function (Blueprint $table) {
+                $table->enum('jenis_dart', ['DART STD', 'DART STK', 'SKE', 'MOVING TARGET'])
+                      ->default('DART STD')
+                      ->after('nama_dart');
+            });
+        }
     }
 
     public function down(): void

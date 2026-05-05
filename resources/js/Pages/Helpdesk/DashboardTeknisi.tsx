@@ -68,7 +68,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
           <h2 className="text-gunmetal dark:text-white font-tactical font-bold tracking-widest text-lg flex items-center gap-2">
             <Activity className="w-5 h-5 text-olive" /> DAFTAR KERUSAKAN DART
           </h2>
-          <span className="bg-olive text-gunmetal font-bold text-xs px-2 py-1 font-mono">{tasks.length} KERUSKAN</span>
+          <span className="bg-olive text-gunmetal font-bold text-xs px-2 py-1 font-mono">{tasks.length} KERUSAKAN</span>
         </div>
 
         <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
@@ -148,7 +148,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                 <div className="bg-white dark:bg-black/50 p-5 border border-gray-300 dark:border-gray-800 rounded-sm relative">
-                  <span className="absolute -top-3 left-4 bg-gray-50 dark:bg-[#1a2024] px-2 text-[10px] font-mono font-bold text-olive border-x border-gray-300 dark:border-gray-800 uppercase">Uraian Saksi / Pelapor</span>
+                  <span className="absolute -top-3 left-4 bg-gray-50 dark:bg-[#1a2024] px-2 text-[10px] font-mono font-bold text-olive border-x border-gray-300 dark:border-gray-800 uppercase">Deskripsi Kendala</span>
                   <p className="text-sm text-gunmetal dark:text-gray-300 font-sans leading-relaxed italic border-l-2 border-gray-300 dark:border-gray-700 pl-4 mt-2 uppercase">
                     {selectedTask.kerusakan.deskripsi}
                   </p>
@@ -184,8 +184,8 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
                     Catatan Eksekusi & Penggantian Sparepart
                   </label>
                   <textarea
-                    value={data.catatan} 
-                    onChange={(e) => setData('catatan', e.target.value)} 
+                    value={data.catatan}
+                    onChange={(e) => setData('catatan', e.target.value)}
                     required rows={5}
                     className={`w-full bg-sand dark:bg-gunmetal border ${errors.catatan ? 'border-red-500' : 'border-gray-400 dark:border-gray-700'} text-gunmetal dark:text-white p-4 focus:outline-none focus:border-olive transition-colors font-sans text-sm resize-y uppercase`}
                     placeholder="Contoh: Mengganti motor dart dengan nomor seri AX-901B. Melakukan penyesuaian kembali pada koneksi kabel..."
@@ -194,10 +194,10 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
                 </div>
 
                 <div className="border-2 border-dashed border-gray-300 dark:border-gray-800 p-4 text-center hover:border-olive transition-all group cursor-pointer relative">
-                  <input 
-                    type="file" 
+                  <input
+                    type="file"
                     accept="image/*"
-                    className="absolute inset-0 opacity-0 cursor-pointer" 
+                    className="absolute inset-0 opacity-0 cursor-pointer"
                     onChange={(e) => setData('foto_selesai', e.target.files ? e.target.files[0] : null)}
                   />
                   <div className="flex items-center justify-center gap-3">
@@ -216,7 +216,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
                     </label>
                     <div className="relative">
                       <select
-                        value={data.metode} 
+                        value={data.metode}
                         onChange={(e) => setData('metode', e.target.value)}
                         className="w-full bg-sand dark:bg-gunmetal border border-gray-400 dark:border-gray-700 text-gunmetal dark:text-white p-3.5 focus:outline-none focus:border-olive transition-colors font-tactical font-bold text-base tracking-widest appearance-none pr-10 uppercase"
                       >
@@ -228,7 +228,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
                   </div>
 
                   <button
-                    type="submit" 
+                    type="submit"
                     disabled={processing}
                     className="w-full bg-olive hover:bg-camogreen text-gunmetal dark:text-white font-tactical font-bold py-3.5 px-6 rounded-sm transition-all duration-300 uppercase tracking-widest flex justify-center items-center gap-2 shadow-lg disabled:opacity-50"
                   >
@@ -309,17 +309,17 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
             >
               <Menu className="w-6 h-6" />
             </button>
-            
+
             {/* TACTICAL CLOCK */}
             <div className="hidden md:flex items-center gap-3 px-4 py-1.5 bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-sm font-mono shadow-inner">
-               <div className="flex flex-col items-center leading-none">
-                  <span className="text-[10px] text-olive font-bold tracking-tighter uppercase">Waktu Ops</span>
-                  <span className="text-xs text-gunmetal dark:text-gray-300 font-bold tracking-widest">WIB</span>
-               </div>
-               <div className="w-[2px] h-6 bg-gray-300 dark:bg-gray-800"></div>
-               <span className="text-xl font-bold text-gunmetal dark:text-white tracking-widest">
-                  {currentTime.toLocaleTimeString('id-ID', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-               </span>
+              <div className="flex flex-col items-center leading-none">
+                <span className="text-[10px] text-olive font-bold tracking-tighter uppercase">Waktu Ops</span>
+                <span className="text-xs text-gunmetal dark:text-gray-300 font-bold tracking-widest">WIB</span>
+              </div>
+              <div className="w-[2px] h-6 bg-gray-300 dark:bg-gray-800"></div>
+              <span className="text-xl font-bold text-gunmetal dark:text-white tracking-widest">
+                {currentTime.toLocaleTimeString('id-ID', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+              </span>
             </div>
           </div>
 
