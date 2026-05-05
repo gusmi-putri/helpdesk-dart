@@ -70,7 +70,8 @@ class DashboardController extends Controller
                 'spesialisasi' => $u->spesialisasi,
                 'role' => $u->role ? $u->role->nama_role : 'No Role',
                 'role_id' => $u->role_id,
-                'status' => 'Aktif',
+                'is_active' => $u->is_active,
+                'status' => $u->is_active ? 'Aktif' : 'Nonaktif',
                 'lastLogin' => 'Baru saja'
             ];
         });
@@ -91,11 +92,14 @@ class DashboardController extends Controller
             ];
         });
 
+        $units = \App\Models\Unit::all();
+
         return Inertia::render('Helpdesk/DashboardAdmin', [
             'dbCases' => $cases,
             'dbUsers' => $users,
             'dbLogs' => $logs,
-            'dbRoles' => $roles
+            'dbRoles' => $roles,
+            'dbUnits' => $units
         ]);
     }
 

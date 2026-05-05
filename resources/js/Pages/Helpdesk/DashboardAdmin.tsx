@@ -4,14 +4,14 @@ import {
   Users, Database, Search,
   Edit, Trash2, Shield, Settings, LogOut,
   ChevronDown, ChevronRight, FileArchive, Wrench, Download, AlertTriangle, Radar,
-  Menu, CircleUser, Eye, Activity, Info
+  Menu, CircleUser, Eye, Activity, Info, Package
 } from 'lucide-react';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useStore } from '@/store/useStore';
 import { router, useForm } from '@inertiajs/react';
 
 type SubMenuReport = 'KERUSAKAN' | 'PERBAIKAN';
-type MenuTab = 'ANALYTICS' | 'USERS' | 'LOGS' | 'REPORTS' | 'SETTINGS';
+type MenuTab = 'ANALYTICS' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SETTINGS';
 
 // ==========================================
 // RELATIONAL DATABASE DATA INTERFACES
@@ -36,11 +36,12 @@ interface CaseData {
 }
 
 const DashboardAdmin = (props: any) => {
-  const { dbCases = [], dbUsers = [], dbLogs = [], dbRoles = [] } = props;
+  const { dbCases = [], dbUsers = [], dbLogs = [], dbRoles = [], dbUnits = [] } = props;
   const [activeMenu, setActiveMenu] = useState<MenuTab>('ANALYTICS');
   const [activeSubReport, setActiveSubReport] = useState<SubMenuReport>('KERUSAKAN');
   const [isReportsExpanded, setIsReportsExpanded] = useState<boolean>(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const [reportStatusFilter, setReportStatusFilter] = useState<'ALL' | 'PROSES' | 'SELESAI' | 'PENDING'>('ALL');
 
   // Auto-polling untuk real-time sinkronisasi
   useEffect(() => {
@@ -76,6 +77,20 @@ const DashboardAdmin = (props: any) => {
     no_wa: '',
     spesialisasi: ''
   });
+
+  const unitForm = useForm({
+    nomor_seri: '',
+    nama_dart: '',
+    jenis_dart: 'DART STD',
+    asal_satuan: '',
+    status_unit: 'Siap Ops',
+  });
+
+  const [isUnitModalOpen, setIsUnitModalOpen] = useState(false);
+  const [editingUnit, setEditingUnit] = useState<any>(null);
+  const [isUnitAddMode, setIsUnitAddMode] = useState(true);
+  const [isUnitDeleteModalOpen, setIsUnitDeleteModalOpen] = useState(false);
+  const [unitToDelete, setUnitToDelete] = useState<any>(null);
 
   // Handlers
   const handlePrintCasePDF = (caseData: any) => {
@@ -139,6 +154,66 @@ const DashboardAdmin = (props: any) => {
         onSuccess: () => {
           setIsDeleteModalOpen(false);
           setUserToDelete(null);
+        }
+      });
+    }
+  };
+
+  const handleToggleUserStatus = (user: any) => {
+    router.post(`/users/${user.db_id}/toggle-status`);
+  };
+
+  const handleAddUnit = () => {
+    setIsUnitAddMode(true);
+    setEditingUnit(null);
+    unitForm.reset();
+    unitForm.clearErrors();
+    setIsUnitModalOpen(true);
+  };
+
+  const handleEditUnit = (unit: any) => {
+    setIsUnitAddMode(false);
+    setEditingUnit(unit);
+    unitForm.clearErrors();
+    unitForm.setData({
+      nomor_seri: unit.nomor_seri,
+      nama_dart: unit.nama_dart,
+      jenis_dart: unit.jenis_dart,
+      asal_satuan: unit.asal_satuan,
+      status_unit: unit.status_unit,
+    });
+    setIsUnitModalOpen(true);
+  };
+
+  const handleDeleteUnit = (unit: any) => {
+    setUnitToDelete(unit);
+    setIsUnitDeleteModalOpen(true);
+  };
+
+  const handleConfirmDeleteUnit = () => {
+    if (unitToDelete) {
+      router.delete(`/units/${unitToDelete.db_id}`, {
+        onSuccess: () => {
+          setIsUnitDeleteModalOpen(false);
+          setUnitToDelete(null);
+        }
+      });
+    }
+  };
+
+  const handleUnitSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isUnitAddMode) {
+      unitForm.post('/units', {
+        onSuccess: () => {
+          setIsUnitModalOpen(false);
+          unitForm.reset();
+        }
+      });
+    } else {
+      unitForm.put(`/units/${editingUnit.db_id}`, {
+        onSuccess: () => {
+          setIsUnitModalOpen(false);
         }
       });
     }
@@ -320,10 +395,15 @@ const DashboardAdmin = (props: any) => {
                   </span>
                 </td>
                 <td className="p-4">
-                  <span className={`flex items-center gap-2 text-xs font-bold tracking-wider ${u.status === 'Aktif' ? 'text-green-500' : 'text-gray-500'}`}>
+                  <button 
+                    onClick={() => handleToggleUserStatus(u)}
+                    disabled={u.role === 'Admin'}
+                    className={`flex items-center gap-2 text-xs font-bold tracking-wider transition-all ${u.role !== 'Admin' ? 'hover:scale-105 cursor-pointer' : 'cursor-not-allowed opacity-80'} ${u.status === 'Aktif' ? 'text-green-500' : 'text-gray-500'}`}
+                    title={u.role === 'Admin' ? 'Status Admin tidak dapat diubah' : (u.status === 'Aktif' ? 'Klik untuk Nonaktifkan' : 'Klik untuk Aktifkan')}
+                  >
                     <span className={`w-2 h-2 rounded-full shadow-[0_0_5px_currentColor] ${u.status === 'Aktif' ? 'bg-green-500 animate-pulse' : 'bg-gray-600'}`}></span>
                     {u.status.toUpperCase()}
-                  </span>
+                  </button>
                 </td>
                 <td className="p-4 text-gray-600 dark:text-gray-400 text-xs font-mono">{u.lastLogin}</td>
                 <td className="p-4 flex gap-2 justify-end">
@@ -438,83 +518,179 @@ const DashboardAdmin = (props: any) => {
             </table>
           </div>
         </div>
-
-        {/* LOG DETAIL MODAL */}
-        {selectedLogPayload && (
-          <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
-            <div className="bg-sand dark:bg-gunmetal border-2 border-yellow-500 w-full max-w-lg shadow-[0_0_50px_rgba(234,179,8,0.3)]">
-              <div className="p-4 border-b border-yellow-500 bg-yellow-500/10 flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <Database className="w-5 h-5 text-yellow-500" />
-                  <h3 className="font-tactical font-bold text-yellow-500 tracking-widest uppercase">DETAIL AKTIVITAS SISTEM</h3>
-                </div>
-                <button onClick={() => setSelectedLogPayload(null)} className="text-gray-500 hover:text-targetred text-xl">✕</button>
-              </div>
-              <div className="p-6">
-                <div className="bg-black/40 border border-yellow-500/30 p-6 font-mono text-sm text-yellow-500/80 leading-relaxed shadow-inner">
-                  <span className="text-yellow-500 font-bold block mb-2 tracking-widest uppercase inline-block border-b border-yellow-500/50 pb-1 underline-offset-4">Event Payload:</span>
-                  <p className="whitespace-pre-wrap">{selectedLogPayload}</p>
-                </div>
-                <div className="mt-8 flex justify-end">
-                  <button
-                    onClick={() => setSelectedLogPayload(null)}
-                    className="bg-yellow-500 text-black px-8 py-2 font-tactical font-bold tracking-widest hover:bg-yellow-400 transition-colors shadow-lg"
-                  >
-                    DISMISS
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     );
   };
 
-  const renderReportsDashboard = () => (
+  const renderUnitsTable = () => (
     <div className="space-y-6 animate-in fade-in duration-500">
-      {/* Header Laporan */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white/60 dark:bg-[#1a2024] border border-gray-300 dark:border-gray-600 p-6 shadow-2xl backdrop-blur-md relative overflow-hidden">
-        <div className="absolute right-0 top-0 bottom-0 w-64 bg-gradient-to-l from-gray-200 dark:from-gunmetal to-transparent pointer-events-none"></div>
-        <div className="relative z-10">
-          <h2 className="text-2xl font-tactical font-bold text-gunmetal dark:text-white tracking-widest flex items-center gap-3">
-            <Radar className="text-olive w-8 h-8 animate-spin-slow" />
-            {activeSubReport === 'KERUSAKAN' ? 'LAPORAN KERUSAKAN' : 'LAPORAN PERBAIKAN'}
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400 font-mono text-xs mt-2 tracking-widest">
-            {activeSubReport === 'KERUSAKAN'
-              ? 'Kumpulan pelaporan dart/kerusakan yang disubmit oleh Pelapor.'
-              : 'Progres penanganan dan status teknisi pada masing-masing kasus.'}
-          </p>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white/60 dark:bg-[#1a2024] p-4 border border-gray-300 dark:border-gray-600 shadow-xl relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-1 h-full bg-olive"></div>
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 bg-olive/10 border border-olive/30 flex items-center justify-center">
+            <Package className="text-olive w-7 h-7" />
+          </div>
+          <div>
+            <h3 className="text-gunmetal dark:text-white font-tactical font-bold text-xl tracking-widest uppercase">DATA INVENTARIS UNIT DART</h3>
+            <p className="text-[10px] font-mono text-gray-500 tracking-widest uppercase">PENGELOLAAN ASET DAN STATUS OPERASIONAL PERANGKAT</p>
+          </div>
+        </div>
+        <div className="flex gap-3 w-full md:w-auto">
+          <button onClick={handleAddUnit} className="flex-1 md:flex-none bg-olive text-white px-5 py-2.5 font-tactical font-bold text-xs tracking-[0.2em] hover:bg-camogreen transition-all shadow-lg flex items-center justify-center gap-2">
+            <Package className="w-4 h-4" /> TAMBAH UNIT BARU
+          </button>
         </div>
       </div>
 
-      {/* Main Relational Table */}
       <div className="bg-white/60 dark:bg-black/60 border border-gray-300 dark:border-gray-700 shadow-xl overflow-hidden relative">
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-olive via-camogreen to-transparent"></div>
-
-        <div className="overflow-x-auto p-2">
-          <table className="w-full text-left font-sans text-sm break-words">
+        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-olive to-transparent"></div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left font-sans text-sm">
             <thead className="bg-[#1a2024] text-gray-600 dark:text-gray-400 font-tactical tracking-widest border-b border-gray-300 dark:border-gray-700">
               <tr>
-                <th className="p-4 w-40">KODE KASUS</th>
-                {activeSubReport === 'KERUSAKAN' ? (
-                  <>
-                    <th className="p-4">PELAPOR & WAKTU</th>
-                    <th className="p-4 w-1/3">DETAIL KERUSAKAN</th>
-                  </>
-                ) : (
-                  <>
-                    <th className="p-4">TEKNISI BERTUGAS</th>
-                    <th className="p-4 w-1/3">TINDAKAN & SPAREPART</th>
-                  </>
-                )}
-                <th className="p-4">STATUS KASUS</th>
-                <th className="p-4 text-center">UNDUH PDF</th>
+                <th className="p-4 w-48">NOMOR SERI</th>
+                <th className="p-4">NAMA UNIT</th>
+                <th className="p-4">JENIS DART</th>
+                <th className="p-4">ASAL SATUAN</th>
+                <th className="p-4 text-center">STATUS UNIT</th>
+                <th className="p-4 text-right">TINDAKAN</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-300 dark:divide-gray-800">
-              {dbCases.map((c: CaseData) => (
+              {dbUnits.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="p-10 text-center text-gray-500 italic font-mono uppercase tracking-widest">Tidak ada data unit yang terdaftar.</td>
+                </tr>
+              ) : (
+                dbUnits.map((unit: any) => (
+                  <tr key={unit.id} className="hover:bg-gray-200 dark:hover:bg-gray-800/60 transition-colors group">
+                    <td className="p-4 font-mono text-olive font-bold border-l-2 border-transparent group-hover:border-olive tracking-widest uppercase">{unit.nomor_seri}</td>
+                    <td className="p-4 text-gunmetal dark:text-white font-bold uppercase">{unit.nama_dart}</td>
+                    <td className="p-4">
+                      <span className="px-2 py-1 text-[10px] font-mono bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-gray-700 tracking-tighter">
+                        {unit.jenis_dart}
+                      </span>
+                    </td>
+                    <td className="p-4 text-gray-600 dark:text-gray-400 uppercase text-xs font-semibold">{unit.asal_satuan}</td>
+                    <td className="p-4 text-center">
+                      <span className={`px-3 py-1 text-[9px] font-tactical font-bold tracking-[0.2em] border
+                        ${unit.status_unit === 'Siap Ops' ? 'bg-green-900/20 text-green-500 border-green-800' :
+                          unit.status_unit === 'Rusak' ? 'bg-red-900/20 text-targetred border-red-800' :
+                            unit.status_unit === 'Perbaikan' ? 'bg-blue-900/20 text-blue-500 border-blue-800' :
+                              'bg-gray-300 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-400 dark:border-gray-600'}
+                      `}>
+                        {unit.status_unit.toUpperCase()}
+                      </span>
+                    </td>
+                    <td className="p-4 flex gap-2 justify-end">
+                      <button onClick={() => handleEditUnit(unit)} className="p-2 bg-gray-300 dark:bg-gray-800 hover:bg-olive hover:text-white text-gray-700 dark:text-gray-300 transition-colors border border-gray-400 dark:border-gray-600" title="Edit Unit">
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button onClick={() => handleDeleteUnit(unit)} className="p-2 bg-gray-300 dark:bg-gray-800 hover:bg-targetred hover:text-white text-gray-700 dark:text-gray-300 transition-colors border border-gray-400 dark:border-gray-600" title="Hapus Unit">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderReportsDashboard = () => {
+    const counts = {
+        PENDING: dbCases.filter((c: any) => c.status === 'PENDING').length,
+        PROSES: dbCases.filter((c: any) => c.status === 'PROSES').length,
+        SELESAI: dbCases.filter((c: any) => c.status === 'SELESAI').length,
+    };
+
+    const filteredCases = dbCases.filter((c: any) => {
+        if (reportStatusFilter === 'ALL') return true;
+        return c.status === reportStatusFilter;
+    });
+
+    return (
+      <div className="space-y-6 animate-in fade-in duration-500">
+        {/* Summary Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className={`p-4 border-l-4 bg-white/40 dark:bg-black/40 shadow-md ${reportStatusFilter === 'PENDING' ? 'border-targetred' : 'border-gray-300 dark:border-gray-800'}`}>
+                <div className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">Laporan Baru (Pending)</div>
+                <div className="text-2xl font-tactical font-bold text-targetred">{counts.PENDING}</div>
+            </div>
+            <div className={`p-4 border-l-4 bg-white/40 dark:bg-black/40 shadow-md ${reportStatusFilter === 'PROSES' ? 'border-blue-500' : 'border-gray-300 dark:border-gray-800'}`}>
+                <div className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">Sedang Diproses</div>
+                <div className="text-2xl font-tactical font-bold text-blue-500">{counts.PROSES}</div>
+            </div>
+            <div className={`p-4 border-l-4 bg-white/40 dark:bg-black/40 shadow-md ${reportStatusFilter === 'SELESAI' ? 'border-green-500' : 'border-gray-300 dark:border-gray-800'}`}>
+                <div className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">Telah Selesai</div>
+                <div className="text-2xl font-tactical font-bold text-green-500">{counts.SELESAI}</div>
+            </div>
+        </div>
+
+        {/* Header Laporan */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white/60 dark:bg-[#1a2024] border border-gray-300 dark:border-gray-600 p-6 shadow-2xl backdrop-blur-md relative overflow-hidden">
+          <div className="absolute right-0 top-0 bottom-0 w-64 bg-gradient-to-l from-gray-200 dark:from-gunmetal to-transparent pointer-events-none"></div>
+          <div className="relative z-10">
+            <h2 className="text-2xl font-tactical font-bold text-gunmetal dark:text-white tracking-widest flex items-center gap-3">
+              <Radar className="text-olive w-8 h-8 animate-spin-slow" />
+              {activeSubReport === 'KERUSAKAN' ? 'LAPORAN KERUSAKAN' : 'LAPORAN PERBAIKAN'}
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 font-mono text-xs mt-2 tracking-widest">
+              {activeSubReport === 'KERUSAKAN'
+                ? 'Kumpulan pelaporan dart/kerusakan yang disubmit oleh Pelapor.'
+                : 'Progres penanganan dan status teknisi pada masing-masing kasus.'}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 bg-gray-100 dark:bg-black p-1 border border-gray-300 dark:border-gray-800 relative z-10">
+            {(['ALL', 'PENDING', 'PROSES', 'SELESAI'] as const).map(status => (
+                <button
+                    key={status}
+                    onClick={() => setReportStatusFilter(status)}
+                    className={`px-3 py-1.5 text-[9px] font-tactical font-bold transition-all ${reportStatusFilter === status ? 'bg-olive text-white shadow-lg' : 'text-gray-500 hover:text-white hover:bg-gray-800'}`}
+                >
+                    {status === 'ALL' ? 'SEMUA' : status}
+                </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Main Relational Table */}
+        <div className="bg-white/60 dark:bg-black/60 border border-gray-300 dark:border-gray-700 shadow-xl overflow-hidden relative">
+          <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-olive via-camogreen to-transparent"></div>
+
+          <div className="overflow-x-auto p-2">
+            <table className="w-full text-left font-sans text-sm break-words">
+              <thead className="bg-[#1a2024] text-gray-600 dark:text-gray-400 font-tactical tracking-widest border-b border-gray-300 dark:border-gray-700">
+                <tr>
+                  <th className="p-4 w-40">KODE KASUS</th>
+                  {activeSubReport === 'KERUSAKAN' ? (
+                    <>
+                      <th className="p-4">PELAPOR & WAKTU</th>
+                      <th className="p-4 w-1/3">DETAIL KERUSAKAN</th>
+                    </>
+                  ) : (
+                    <>
+                      <th className="p-4">TEKNISI BERTUGAS</th>
+                      <th className="p-4 w-1/3">TINDAKAN & SPAREPART</th>
+                    </>
+                  )}
+                  <th className="p-4">STATUS KASUS</th>
+                  <th className="p-4 text-center">UNDUH PDF</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-300 dark:divide-gray-800">
+                {filteredCases.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="p-10 text-center text-gray-500 italic font-mono tracking-widest uppercase">
+                        Tidak ada laporan dengan status {reportStatusFilter === 'ALL' ? 'apapun' : reportStatusFilter}.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredCases.map((c: CaseData) => (
                 <tr key={c.caseId} className="hover:bg-gray-200 dark:hover:bg-gray-800/60 transition-colors group text-gunmetal dark:text-gray-200">
                   <td className="p-4 font-mono text-olive font-bold border-l-2 border-transparent group-hover:border-olive">
                     {c.caseId}
@@ -583,13 +759,14 @@ const DashboardAdmin = (props: any) => {
                     </button>
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              )))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
   );
+};
 
 
   // ==========================================
@@ -650,6 +827,16 @@ const DashboardAdmin = (props: any) => {
               `}
             >
               <Database className="w-5 h-5" /> LOG & AKTIVITAS SISTEM
+            </button>
+
+            {/* Manajemen Unit */}
+            <button
+              onClick={() => handleMenuClick('UNITS')}
+              className={`w-full flex items-center gap-3 px-6 py-3.5 font-tactical text-sm tracking-wider transition-all border-l-2
+                ${activeMenu === 'UNITS' ? 'bg-gray-200 dark:bg-gray-800/80 text-gunmetal dark:text-white border-olive shadow-[inset_0_0_20px_rgba(75,83,32,0.05)]' : 'border-transparent text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'}
+              `}
+            >
+              <Package className="w-5 h-5" /> DATA UNIT DART
             </button>
 
             {/* Manajemen Laporan w/ Nested Sidebar Items */}
@@ -736,6 +923,7 @@ const DashboardAdmin = (props: any) => {
             {activeMenu === 'REPORTS' && renderReportsDashboard()}
             {activeMenu === 'USERS' && renderUsersTable()}
             {activeMenu === 'LOGS' && renderLogsTable()}
+            {activeMenu === 'UNITS' && renderUnitsTable()}
           </div>
         </div>
       </main>
@@ -963,6 +1151,128 @@ const DashboardAdmin = (props: any) => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL ADD/EDIT UNIT */}
+      {isUnitModalOpen && (
+        <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
+          <div className="bg-sand dark:bg-gunmetal border-2 border-olive w-full max-w-xl shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className="p-4 border-b border-olive bg-olive/10 flex justify-between items-center">
+              <h3 className="font-tactical font-bold text-olive tracking-widest uppercase flex items-center gap-2">
+                <Package size={18} /> {isUnitAddMode ? 'TAMBAH UNIT DART BARU' : `EDIT UNIT: ${editingUnit?.nomor_seri}`}
+              </h3>
+              <button onClick={() => setIsUnitModalOpen(false)} className="text-gray-500 hover:text-targetred text-xl">✕</button>
+            </div>
+            <form onSubmit={handleUnitSubmit} className="p-6 space-y-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                  <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Nomor Seri Unit</label>
+                  <input
+                    type="text"
+                    value={unitForm.data.nomor_seri}
+                    onChange={(e) => unitForm.setData('nomor_seri', e.target.value.toUpperCase())}
+                    className={`w-full bg-white dark:bg-black border ${unitForm.errors.nomor_seri ? 'border-red-500' : 'border-gray-400 dark:border-gray-700'} p-2 text-sm font-mono focus:border-olive outline-none`}
+                    required
+                    placeholder="MISAL: DART-001"
+                  />
+                  {unitForm.errors.nomor_seri && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{unitForm.errors.nomor_seri}</p>}
+                </div>
+                <div>
+                  <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Nama Unit DART</label>
+                  <input
+                    type="text"
+                    value={unitForm.data.nama_dart}
+                    onChange={(e) => unitForm.setData('nama_dart', e.target.value)}
+                    className={`w-full bg-white dark:bg-black border ${unitForm.errors.nama_dart ? 'border-red-500' : 'border-gray-400 dark:border-gray-700'} p-2 text-sm font-mono focus:border-olive outline-none`}
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Jenis DART</label>
+                  <select
+                    value={unitForm.data.jenis_dart}
+                    onChange={(e) => unitForm.setData('jenis_dart', e.target.value)}
+                    className="w-full bg-white dark:bg-black border border-gray-400 dark:border-gray-700 p-2 text-sm font-mono focus:border-olive outline-none"
+                    required
+                  >
+                    <option value="DART STD">DART STD</option>
+                    <option value="DART STK">DART STK</option>
+                    <option value="SKE">SKE</option>
+                    <option value="MOVING TARGET">MOVING TARGET</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Status Operasional</label>
+                  <select
+                    value={unitForm.data.status_unit}
+                    onChange={(e) => unitForm.setData('status_unit', e.target.value)}
+                    className="w-full bg-white dark:bg-black border border-gray-400 dark:border-gray-700 p-2 text-sm font-mono focus:border-olive outline-none"
+                    required
+                  >
+                    <option value="Siap Ops">SIAP OPS</option>
+                    <option value="Rusak">RUSAK</option>
+                    <option value="Perbaikan">PERBAIKAN</option>
+                    <option value="Nonaktif">NONAKTIF</option>
+                  </select>
+                </div>
+                <div className="col-span-2">
+                  <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Asal Satuan / Lokasi</label>
+                  <input
+                    type="text"
+                    value={unitForm.data.asal_satuan}
+                    onChange={(e) => unitForm.setData('asal_satuan', e.target.value)}
+                    className={`w-full bg-white dark:bg-black border ${unitForm.errors.asal_satuan ? 'border-red-500' : 'border-gray-400 dark:border-gray-700'} p-2 text-sm font-mono focus:border-olive outline-none`}
+                    required
+                    placeholder="MISAL: PUSKOMLEKAD"
+                  />
+                </div>
+              </div>
+              <div className="pt-4 flex gap-2">
+                <button
+                  type="submit"
+                  disabled={unitForm.processing}
+                  className="flex-1 bg-olive text-white py-3 font-tactical font-bold tracking-widest hover:bg-camogreen transition-colors disabled:opacity-50"
+                >
+                  {unitForm.processing ? 'MEMPROSES...' : (isUnitAddMode ? 'TAMBAHKAN UNIT' : 'SIMPAN PERUBAHAN')}
+                </button>
+                <button type="button" onClick={() => setIsUnitModalOpen(false)} className="flex-1 bg-transparent border border-gray-500 text-gray-500 py-3 font-tactical font-bold tracking-widest hover:bg-gray-500/10 transition-colors">
+                  BATAL
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL DELETE UNIT */}
+      {isUnitDeleteModalOpen && (
+        <div className="fixed inset-0 z-[130] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+          <div className="bg-sand dark:bg-gunmetal border-2 border-targetred w-full max-w-md shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            <div className="p-4 border-b border-targetred bg-red-900/20 flex items-center gap-3">
+              <AlertTriangle className="text-targetred w-6 h-6" />
+              <h3 className="font-tactical font-bold text-targetred tracking-widest uppercase">KONFIRMASI PENGHAPUSAN UNIT</h3>
+            </div>
+            <div className="p-6">
+              <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mb-6 font-mono">
+                APAKAH ANDA YAKIN INGIN MENGHAPUS UNIT <span className="text-targetred font-bold underline">[{unitToDelete?.nomor_seri}]</span> DARI SISTEM? TINDAKAN INI TIDAK DAPAT DIBATALKAN.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={handleConfirmDeleteUnit}
+                  className="flex-1 bg-targetred text-white py-3 font-tactical font-bold tracking-widest hover:bg-red-700 transition-colors"
+                >
+                  YA, HAPUS UNIT
+                </button>
+                <button
+                  onClick={() => setIsUnitDeleteModalOpen(false)}
+                  className="flex-1 bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 py-3 font-tactical font-bold tracking-widest hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors"
+                >
+                  BATAL
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

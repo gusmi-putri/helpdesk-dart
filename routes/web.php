@@ -24,6 +24,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/staf', [DashboardController::class, 'staf'])->middleware('role:Staf');
     Route::get('/teknisi', [DashboardController::class, 'teknisi'])->middleware('role:Teknisi');
     Route::resource('users', \App\Http\Controllers\UserController::class)->middleware('role:Admin');
+    Route::post('/users/{id}/toggle-status', [\App\Http\Controllers\UserController::class, 'toggleStatus'])->middleware('role:Admin')->name('users.toggle-status');
+    Route::resource('units', \App\Http\Controllers\UnitController::class)->middleware('role:Admin');
 });
 
 // Reports Actions

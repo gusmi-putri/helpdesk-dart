@@ -20,6 +20,13 @@ class LoginController extends Controller
 
             $user = Auth::user();
             
+            if (!$user->is_active) {
+                Auth::logout();
+                return back()->withErrors([
+                    'auth' => 'Akun Anda telah dinonaktifkan oleh Admin. Silakan hubungi pusat bantuan.',
+                ]);
+            }
+
             if (!$user->role) {
                 Auth::logout();
                 return back()->withErrors([

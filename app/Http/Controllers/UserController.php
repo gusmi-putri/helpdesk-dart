@@ -100,4 +100,16 @@ class UserController extends Controller
 
         return redirect()->back()->with('message', 'User deleted successfully.');
     }
+    public function toggleStatus(string $id)
+    {
+        $user = User::findOrFail($id);
+        $user->is_active = !$user->is_active;
+        $user->save();
+
+        $statusStr = $user->is_active ? 'AKTIF' : 'NONAKTIF';
+        $admin = auth()->user();
+        \App\Models\SystemLog::log('WARN', $admin->id, "Mengubah status personel {$user->nama_lengkap} menjadi {$statusStr}");
+
+        return redirect()->back()->with('message', "Status personel berhasil diubah menjadi {$statusStr}.");
+    }
 }
