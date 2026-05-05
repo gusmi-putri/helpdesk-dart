@@ -68,9 +68,10 @@ class DashboardController extends Controller
                 'no_wa' => $u->no_wa,
                 'asal_satuan' => $u->asal_satuan,
                 'spesialisasi' => $u->spesialisasi,
+                'is_approved' => $u->is_approved,
                 'role' => $u->role ? $u->role->nama_role : 'No Role',
                 'role_id' => $u->role_id,
-                'status' => 'Aktif',
+                'status' => $u->is_approved ? 'Aktif' : 'Menunggu',
                 'lastLogin' => 'Baru saja'
             ];
         });

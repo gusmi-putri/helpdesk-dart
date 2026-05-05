@@ -100,4 +100,14 @@ class UserController extends Controller
 
         return redirect()->back()->with('message', 'User deleted successfully.');
     }
+    public function approve(string $id)
+    {
+        $user = User::findOrFail($id);
+        $user->update(['is_approved' => true]);
+
+        $admin = auth()->user();
+        \App\Models\SystemLog::log('SUCCESS', $admin->id, "Menyetujui pendaftaran personel baru: {$user->nama_lengkap}");
+
+        return redirect()->back()->with('message', 'Personel telah disetujui dan sekarang dapat login.');
+    }
 }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useForm } from '@inertiajs/react';
+import { useForm, Link } from '@inertiajs/react';
 import { useStore } from '@/store/useStore';
 import { Eye, EyeOff } from 'lucide-react';
 
@@ -134,6 +134,14 @@ const Login: React.FC = () => {
               {processing ? 'LOGIN...' : 'LOGIN'}
             </span>
           </button>
+          <div className="mt-4 text-center">
+            <p className="text-gray-600 dark:text-gray-400 text-[10px] font-mono uppercase">
+              Belum punya akun?{' '}
+              <Link href="/register" className="text-targetred hover:text-red-500 font-bold transition-colors">
+                Daftar Akun Baru
+              </Link>
+            </p>
+          </div>
         </form>
 
         <div className="mt-8 pt-6 border-t border-gray-300 dark:border-gray-800 text-center">

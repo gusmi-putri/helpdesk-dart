@@ -20,6 +20,13 @@ class LoginController extends Controller
 
             $user = Auth::user();
             
+            if (!$user->is_approved) {
+                Auth::logout();
+                return back()->withErrors([
+                    'auth' => 'Akun Anda sedang menunggu persetujuan Admin. Mohon bersabar.',
+                ]);
+            }
+
             if (!$user->role) {
                 Auth::logout();
                 return back()->withErrors([
