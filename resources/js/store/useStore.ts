@@ -81,6 +81,10 @@ export const useStore = create<AppState>()(
     }),
     {
       name: 'helpdesk-dart-storage-v3',
+      partialize: (state) => ({ 
+        currentUser: state.currentUser, 
+        theme: state.theme 
+      }),
     }
   )
 );
