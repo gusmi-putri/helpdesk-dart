@@ -686,17 +686,17 @@ const DashboardAdmin = (props: any) => {
                   <th className="p-4 w-40">KODE KASUS</th>
                   {activeSubReport === 'KERUSAKAN' ? (
                     <>
-                      <th className="p-4">PELAPOR & WAKTU</th>
+                      <th className="p-4">PELAPOR & WAKTU LAPOR</th>
                       <th className="p-4 w-1/3">DETAIL KERUSAKAN</th>
                     </>
                   ) : (
                     <>
-                      <th className="p-4">TEKNISI BERTUGAS</th>
-                      <th className="p-4 w-1/3">TINDAKAN & SPAREPART</th>
+                      <th className="p-4">TEKNISI & WAKTU PENANGANAN</th>
+                      <th className="p-4 w-1/3">TINDAKAN & WAKTU SELESAI</th>
                     </>
                   )}
                   <th className="p-4">STATUS KASUS</th>
-                  <th className="p-4 text-center">UNDUH PDF</th>
+                  <th className="p-4 text-center">PDF</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-300 dark:divide-gray-800">
@@ -747,11 +747,18 @@ const DashboardAdmin = (props: any) => {
                         <div className="text-xs leading-relaxed mb-3">
                           {c.perbaikan.tindakan || 'Belum ada tindakan.'}
                         </div>
-                        {c.perbaikan.metodePerbaikan && (
-                          <div className="text-[10px] text-green-600 dark:text-green-500 bg-green-900/10 px-2 py-1 border border-green-900/50 inline-block font-mono">
-                            METODE PERBAIKAN: {c.perbaikan.metodePerbaikan}
-                          </div>
-                        )}
+                        <div className="flex flex-col gap-2">
+                          {c.perbaikan.metodePerbaikan && (
+                            <div className="text-[10px] text-green-600 dark:text-green-500 bg-green-900/10 px-2 py-1 border border-green-900/50 inline-block font-mono w-fit">
+                              METODE: {c.perbaikan.metodePerbaikan}
+                            </div>
+                          )}
+                          {c.status === 'SELESAI' && c.perbaikan.tanggalSelesai && (
+                            <div className="text-[10px] text-blue-600 dark:text-blue-400 bg-blue-900/10 px-2 py-1 border border-blue-900/50 inline-block font-mono w-fit">
+                              TUNTAS PADA: {c.perbaikan.tanggalSelesai}
+                            </div>
+                          )}
+                        </div>
                       </td>
                     </>
                   )}
