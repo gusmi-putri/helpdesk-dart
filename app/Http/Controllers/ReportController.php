@@ -27,7 +27,7 @@ class ReportController extends Controller
         if ($request->hasFile('foto')) {
             $file = $request->file('foto');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('public/reports', $filename);
+            $file->storeAs('reports', $filename, 'public');
             $fotoPath = $filename;
         }
 
@@ -104,7 +104,7 @@ class ReportController extends Controller
         if ($request->hasFile('foto_selesai')) {
             $file = $request->file('foto_selesai');
             $filename = 'done_' . time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('public/reports', $filename);
+            $file->storeAs('reports', $filename, 'public');
             $fotoSelesai = $filename;
         }
 

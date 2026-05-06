@@ -55,7 +55,7 @@
                 <td class="val" style="color: #3b82f6;">{{ $stats['proses'] }}</td>
             </tr>
             <tr>
-                <td class="label">PENDING / BARU</td>
+                <td class="label">PENDING</td>
                 <td class="val" style="color: #c81e1e;">{{ $stats['pending'] }}</td>
             </tr>
         </table>

@@ -12,9 +12,22 @@ class RecapController extends Controller
     public function export(Request $request)
     {
         $period = $request->query('period', 'monthly');
+        $startDate = $request->query('start_date');
+        $endDate = $request->query('end_date');
+        $year = $request->query('year');
+
         $query = Report::with(['unit', 'pelapor', 'teknisi']);
 
-        if ($period === 'weekly') {
+        if ($startDate && $endDate) {
+            $query->whereBetween('tanggal_lapor', [
+                Carbon::parse($startDate)->startOfDay(),
+                Carbon::parse($endDate)->endOfDay()
+            ]);
+            $title = "REKAPITULASI PERIODE (" . Carbon::parse($startDate)->format('d/m/Y') . " - " . Carbon::parse($endDate)->format('d/m/Y') . ")";
+        } elseif ($year) {
+            $query->whereYear('tanggal_lapor', $year);
+            $title = "REKAPITULASI TAHUNAN (" . $year . ")";
+        } elseif ($period === 'weekly') {
             $query->where('tanggal_lapor', '>=', now()->subDays(7));
             $title = "REKAPITULASI MINGGUAN (" . now()->subDays(7)->format('d/m/Y') . " - " . now()->format('d/m/Y') . ")";
         } elseif ($period === 'yearly') {

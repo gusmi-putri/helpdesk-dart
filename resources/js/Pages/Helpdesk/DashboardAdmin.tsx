@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useStore } from '@/store/useStore';
-import { router, useForm } from '@inertiajs/react';
+import { router, useForm, usePage, Link } from '@inertiajs/react';
 
 type SubMenuReport = 'KERUSAKAN' | 'PERBAIKAN';
 type MenuTab = 'ANALYTICS' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SETTINGS' | 'APPROVAL';
@@ -97,8 +97,12 @@ const DashboardAdmin = (props: any) => {
   const [isUnitHistoryModalOpen, setIsUnitHistoryModalOpen] = useState(false);
   const [selectedUnitForHistory, setSelectedUnitForHistory] = useState<any>(null);
   const [unitSearch, setUnitSearch] = useState<string>('');
+  const [unitSortConfig, setUnitSortConfig] = useState<{key: string, direction: 'asc' | 'desc'} | null>(null);
   const [isRecapModalOpen, setIsRecapModalOpen] = useState(false);
-  const [recapPeriod, setRecapPeriod] = useState<'weekly' | 'monthly' | 'yearly'>('monthly');
+  const [recapPeriod, setRecapPeriod] = useState<'weekly' | 'monthly' | 'yearly' | 'custom' | 'year_specific'>('monthly');
+  const [recapStartDate, setRecapStartDate] = useState<string>('');
+  const [recapEndDate, setRecapEndDate] = useState<string>('');
+  const [recapYear, setRecapYear] = useState<string>(new Date().getFullYear().toString());
 
   // Handlers
   const handlePrintCasePDF = (caseData: any) => {
@@ -266,7 +270,13 @@ const DashboardAdmin = (props: any) => {
   };
 
   const handleExportRecap = () => {
-    window.open(`/admin/recap/export?period=${recapPeriod}`, '_blank');
+    let url = `/admin/recap/export?period=${recapPeriod}`;
+    if (recapPeriod === 'custom' && recapStartDate && recapEndDate) {
+      url += `&start_date=${recapStartDate}&end_date=${recapEndDate}`;
+    } else if (recapPeriod === 'year_specific' && recapYear) {
+      url += `&year=${recapYear}`;
+    }
+    window.open(url, '_blank');
     setIsRecapModalOpen(false);
   };
 
@@ -565,11 +575,25 @@ const DashboardAdmin = (props: any) => {
       PERBAIKAN: dbUnits.filter((u: any) => u.status_unit === 'Perbaikan').length,
     };
 
+    const handleUnitSort = (key: string) => {
+      let direction: 'asc' | 'desc' = 'asc';
+      if (unitSortConfig && unitSortConfig.key === key && unitSortConfig.direction === 'asc') {
+        direction = 'desc';
+      }
+      setUnitSortConfig({ key, direction });
+    };
+
     const filteredUnits = dbUnits.filter((u: any) => 
       u.nomor_seri.toLowerCase().includes(unitSearch.toLowerCase()) ||
       u.nama_dart.toLowerCase().includes(unitSearch.toLowerCase()) ||
       u.asal_satuan.toLowerCase().includes(unitSearch.toLowerCase())
-    );
+    ).sort((a: any, b: any) => {
+      if (!unitSortConfig) return 0;
+      const { key, direction } = unitSortConfig;
+      if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
+      if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
+      return 0;
+    });
 
     return (
       <div className="space-y-6 animate-in fade-in duration-500">
@@ -628,11 +652,21 @@ const DashboardAdmin = (props: any) => {
             <table className="w-full text-left font-sans text-sm">
               <thead className="bg-[#1a2024] text-gray-600 dark:text-gray-400 font-tactical tracking-widest border-b border-gray-300 dark:border-gray-700">
                 <tr>
-                  <th className="p-4 w-48">NOMOR SERI</th>
-                  <th className="p-4">NAMA UNIT</th>
-                  <th className="p-4">JENIS DART</th>
-                  <th className="p-4">ASAL SATUAN</th>
-                  <th className="p-4 text-center">STATUS UNIT</th>
+                  <th className="p-4 w-48 cursor-pointer hover:text-olive" onClick={() => handleUnitSort('nomor_seri')}>
+                    NOMOR SERI {unitSortConfig?.key === 'nomor_seri' && (unitSortConfig.direction === 'asc' ? '↑' : '↓')}
+                  </th>
+                  <th className="p-4 cursor-pointer hover:text-olive" onClick={() => handleUnitSort('nama_dart')}>
+                    NAMA UNIT {unitSortConfig?.key === 'nama_dart' && (unitSortConfig.direction === 'asc' ? '↑' : '↓')}
+                  </th>
+                  <th className="p-4 cursor-pointer hover:text-olive" onClick={() => handleUnitSort('jenis_dart')}>
+                    JENIS DART {unitSortConfig?.key === 'jenis_dart' && (unitSortConfig.direction === 'asc' ? '↑' : '↓')}
+                  </th>
+                  <th className="p-4 cursor-pointer hover:text-olive" onClick={() => handleUnitSort('asal_satuan')}>
+                    ASAL SATUAN {unitSortConfig?.key === 'asal_satuan' && (unitSortConfig.direction === 'asc' ? '↑' : '↓')}
+                  </th>
+                  <th className="p-4 text-center cursor-pointer hover:text-olive" onClick={() => handleUnitSort('status_unit')}>
+                    STATUS UNIT {unitSortConfig?.key === 'status_unit' && (unitSortConfig.direction === 'asc' ? '↑' : '↓')}
+                  </th>
                   <th className="p-4 text-right">TINDAKAN</th>
                 </tr>
               </thead>
@@ -1035,7 +1069,7 @@ const DashboardAdmin = (props: any) => {
   const renderRecapModal = () => {
     return (
       <div className="fixed inset-0 z-[150] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
-        <div className="bg-sand dark:bg-gunmetal border-2 border-targetred w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-200">
+        <div className="bg-sand dark:bg-gunmetal border-2 border-targetred w-full max-w-lg shadow-2xl animate-in zoom-in-95 duration-200">
           <div className="p-4 border-b border-targetred bg-targetred/10 flex justify-between items-center">
             <h3 className="font-tactical font-bold text-targetred tracking-widest uppercase flex items-center gap-2">
               <FileArchive className="w-5 h-5" /> EKSPOR REKAPITULASI
@@ -1048,30 +1082,90 @@ const DashboardAdmin = (props: any) => {
               Pilih periode laporan untuk diekspor ke format PDF (Landscape). Laporan ini mencakup seluruh data unit, teknisi, dan status penyelesaian.
             </p>
             
-            <div className="grid grid-cols-1 gap-3">
-              {(['weekly', 'monthly', 'yearly'] as const).map(period => (
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                {(['weekly', 'monthly', 'yearly'] as const).map(period => (
+                  <button
+                    key={period}
+                    onClick={() => setRecapPeriod(period)}
+                    className={`p-3 border-2 transition-all flex flex-col items-center justify-center gap-1
+                      ${recapPeriod === period 
+                        ? 'border-targetred bg-targetred/10 text-targetred shadow-[0_0_10px_rgba(200,30,30,0.2)]' 
+                        : 'border-gray-300 dark:border-gray-800 text-gray-500 hover:border-gray-400'}
+                    `}
+                  >
+                    <p className="text-[10px] font-tactical font-bold uppercase tracking-widest">
+                      {period === 'weekly' ? 'Mingguan' : period === 'monthly' ? 'Bulanan' : 'Tahunan'}
+                    </p>
+                    <p className="text-[8px] font-mono italic">Berdasarkan Tgl Ini</p>
+                  </button>
+                ))}
+              </div>
+
+              <div className="flex gap-2">
                 <button
-                  key={period}
-                  onClick={() => setRecapPeriod(period)}
-                  className={`w-full p-4 border-2 flex items-center justify-between transition-all group
-                    ${recapPeriod === period 
-                      ? 'border-targetred bg-targetred/10 text-gunmetal dark:text-white shadow-[0_0_15px_rgba(200,30,30,0.2)]' 
-                      : 'border-gray-300 dark:border-gray-800 hover:border-gray-400 dark:hover:border-gray-600 text-gray-500'}
+                  onClick={() => setRecapPeriod('custom')}
+                  className={`flex-1 p-3 border-2 transition-all flex flex-col items-center justify-center gap-1
+                    ${recapPeriod === 'custom' 
+                      ? 'border-targetred bg-targetred/10 text-targetred shadow-[0_0_10px_rgba(200,30,30,0.2)]' 
+                      : 'border-gray-300 dark:border-gray-800 text-gray-500 hover:border-gray-400'}
                   `}
                 >
-                  <div className="text-left">
-                    <p className="text-sm font-tactical font-bold uppercase tracking-widest">
-                      {period === 'weekly' ? 'Rekap Mingguan' : period === 'monthly' ? 'Rekap Bulanan' : 'Rekap Tahunan'}
-                    </p>
-                    <p className="text-[9px] font-mono mt-1 italic">
-                      {period === 'weekly' ? '7 Hari Terakhir' : period === 'monthly' ? 'Bulan Berjalan' : 'Tahun Berjalan'}
-                    </p>
-                  </div>
-                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${recapPeriod === period ? 'border-targetred bg-targetred' : 'border-gray-400'}`}>
-                    {recapPeriod === period && <div className="w-2 h-2 bg-white rounded-full"></div>}
-                  </div>
+                  <p className="text-[10px] font-tactical font-bold uppercase tracking-widest">Rentang Khusus</p>
+                  <p className="text-[8px] font-mono italic">Mulai - Selesai</p>
                 </button>
-              ))}
+                <button
+                  onClick={() => setRecapPeriod('year_specific')}
+                  className={`flex-1 p-3 border-2 transition-all flex flex-col items-center justify-center gap-1
+                    ${recapPeriod === 'year_specific' 
+                      ? 'border-targetred bg-targetred/10 text-targetred shadow-[0_0_10px_rgba(200,30,30,0.2)]' 
+                      : 'border-gray-300 dark:border-gray-800 text-gray-500 hover:border-gray-400'}
+                  `}
+                >
+                  <p className="text-[10px] font-tactical font-bold uppercase tracking-widest">Tahun Tertentu</p>
+                  <p className="text-[8px] font-mono italic">Pilih Tahun</p>
+                </button>
+              </div>
+
+              {/* Conditional Input for Custom Range */}
+              {recapPeriod === 'custom' && (
+                <div className="grid grid-cols-2 gap-3 p-4 bg-gray-100 dark:bg-black/30 border border-targetred/30 animate-in slide-in-from-top-2">
+                  <div>
+                    <label className="block text-[9px] font-mono text-gray-500 uppercase mb-1">Mulai Tanggal</label>
+                    <input 
+                      type="date" 
+                      value={recapStartDate}
+                      onChange={(e) => setRecapStartDate(e.target.value)}
+                      className="w-full bg-white dark:bg-gunmetal border border-gray-300 dark:border-gray-700 p-2 text-xs font-mono outline-none focus:border-targetred"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[9px] font-mono text-gray-500 uppercase mb-1">Sampai Tanggal</label>
+                    <input 
+                      type="date" 
+                      value={recapEndDate}
+                      onChange={(e) => setRecapEndDate(e.target.value)}
+                      className="w-full bg-white dark:bg-gunmetal border border-gray-300 dark:border-gray-700 p-2 text-xs font-mono outline-none focus:border-targetred"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Conditional Input for Year Specific */}
+              {recapPeriod === 'year_specific' && (
+                <div className="p-4 bg-gray-100 dark:bg-black/30 border border-targetred/30 animate-in slide-in-from-top-2">
+                  <label className="block text-[9px] font-mono text-gray-500 uppercase mb-1">Pilih Tahun</label>
+                  <select 
+                    value={recapYear}
+                    onChange={(e) => setRecapYear(e.target.value)}
+                    className="w-full bg-white dark:bg-gunmetal border border-gray-300 dark:border-gray-700 p-2 text-xs font-mono outline-none focus:border-targetred"
+                  >
+                    {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i).map(year => (
+                      <option key={year} value={year}>{year}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
             </div>
             
             <div className="mt-8 grid grid-cols-2 gap-3">

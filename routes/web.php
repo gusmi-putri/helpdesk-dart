@@ -39,4 +39,7 @@ Route::post('/reports/{id}/handle', [ReportController::class, 'handle'])->name('
 // Route complete is for Technician finishing task
 Route::post('/reports/{id}/complete', [ReportController::class, 'complete'])->name('reports.complete');
 Route::get('/reports/{id}/pdf', [DashboardController::class, 'exportPdf'])->name('reports.pdf');
+
+// Export Routes
 Route::get('/admin/recap/export', [\App\Http\Controllers\RecapController::class, 'export'])->middleware(['auth', 'role:Admin'])->name('admin.recap.export');
+Route::get('/staf/recap/export', [\App\Http\Controllers\RecapController::class, 'export'])->middleware(['auth', 'role:Staf'])->name('staf.recap.export');
