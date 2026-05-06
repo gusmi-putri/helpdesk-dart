@@ -1,6 +1,6 @@
-
 import { motion } from 'framer-motion';
 import { Crosshair } from 'lucide-react';
+import { Link } from '@inertiajs/react';
 import bgHero from '../../img_1.jpeg';
 
 const TracerBullet = ({ delay, top, duration, repeatDelay, angle = 0, origin = 'left' }: { delay: number; top: string; duration: number, repeatDelay: number, angle?: number, origin?: 'left' | 'right' }) => {
@@ -74,9 +74,9 @@ const Hero = () => {
           transition={{ duration: 1, delay: 0.8 }}
           className="text-lg md:text-xl text-gray-600 dark:text-gray-400 font-tactical mb-8 max-w-2xl mx-auto border-l-4 border-olive pl-4 text-left"
         >
-          <span className="typewriter-text text-camogreen font-bold">STATUS: OPERASIONAL //</span>
+          <span className="typewriter-text text-camogreen font-bold">BENGPUSKOMLEKAD</span>
           <br />
-          Pusat komando pelaporan terpadu. Laporkan situasi keamanan, kerusakan indikasi, dan gangguan operasional dengan aman dan real-time.
+          Pusat Layanan Perbaikan DART: Penanganan Cepat untuk Jamin Kesiapan, Keamanan, dan Kelancaran Latihan Menembak.
         </motion.p>
 
         <motion.div
@@ -85,11 +85,11 @@ const Hero = () => {
           transition={{ duration: 0.5, delay: 1.2 }}
           className="flex justify-center gap-4"
         >
-          <a href="#kontak" className="px-8 py-4 bg-targetred hover:bg-red-700 text-gunmetal dark:text-white font-tactical font-bold text-lg tracking-widest uppercase transition-all tactical-border border-targetred hover:border-red-500 shadow-[0_0_15px_rgba(255,36,0,0.4)] hover:shadow-[0_0_25px_rgba(255,36,0,0.6)]">
+          <Link href="/login" className="px-8 py-4 bg-targetred hover:bg-red-700 text-gunmetal dark:text-white font-tactical font-bold text-lg tracking-widest uppercase transition-all tactical-border border-targetred hover:border-red-500 shadow-[0_0_15px_rgba(255,36,0,0.4)] hover:shadow-[0_0_25px_rgba(255,36,0,0.6)]">
             Lapor Sekarang
-          </a>
-          <a href="#intel" className="px-8 py-4 bg-transparent border-2 border-olive hover:bg-olive/20 text-gunmetal dark:text-white font-tactical font-bold text-lg tracking-widest uppercase transition-all">
-            Data Intelijen
+          </Link>
+          <a href="#PANDUAN" className="px-8 py-4 bg-transparent border-2 border-olive hover:bg-olive/20 text-gunmetal dark:text-white font-tactical font-bold text-lg tracking-widest uppercase transition-all">
+            Panduan Laporan
           </a>
         </motion.div>
       </div>

@@ -21,7 +21,14 @@ const Navbar = () => {
       }
       // Beri jeda sedikit agar halaman beranda termuat
       setTimeout(() => {
-        const element = document.getElementById(item === 'BERANDA' ? 'hero' : item.toLowerCase());
+        let targetId = item === 'BERANDA' ? 'hero' : item.toLowerCase();
+        let element = document.getElementById(targetId);
+
+        // Fallback jika ID menggunakan huruf besar (seperti PANDUAN)
+        if (!element && item !== 'BERANDA') {
+          element = document.getElementById(item);
+        }
+
         if (element) {
           element.scrollIntoView({ behavior: 'smooth' });
         } else if (item === 'BERANDA') {
@@ -44,7 +51,7 @@ const Navbar = () => {
           </div>
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-8">
-              {['BERANDA', 'INTEL', 'ASET', 'KONTAK', 'DASHBOARD'].map((item) => (
+              {['BERANDA', 'PANDUAN', 'ASET', 'KONTAK', 'DASHBOARD'].map((item) => (
                 <button
                   key={item}
                   onClick={() => handleNavClick(item)}
@@ -84,7 +91,7 @@ const Navbar = () => {
           className="md:hidden bg-sand dark:bg-gunmetal border-b border-olive"
         >
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {['BERANDA', 'INTEL', 'ASET', 'KONTAK', 'DASHBOARD'].map((item) => (
+            {['BERANDA', 'PANDUAN', 'ASET', 'KONTAK', 'DASHBOARD'].map((item) => (
               <button
                 key={item}
                 onClick={() => handleNavClick(item)}
