@@ -18,6 +18,10 @@ return new class extends Migration
             $table->foreignId('staff_id')->nullable()->constrained('users'); // Staf Komando
             $table->foreignId('teknisi_id')->nullable()->constrained('users'); // Teknisi
             $table->timestamp('tanggal_lapor');
+            $table->string('lokasi_laporan')->nullable();
+            $table->string('klasifikasi')->nullable();
+            $table->string('tingkat_kerusakan')->nullable();
+            $table->string('urgensi')->nullable();
             $table->text('deskripsi_kerusakan');
             $table->string('file_bukti')->nullable();
             $table->string('file_bukti_selesai')->nullable();
@@ -26,6 +30,7 @@ return new class extends Migration
             $table->timestamp('tgl_ditunjuk')->nullable();
             $table->timestamp('tgl_selesai')->nullable();
             $table->text('catatan_teknisi')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
