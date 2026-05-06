@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Report;
 use App\Models\User;
+use App\Models\Unit;
 use App\Models\SystemLog;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -169,9 +170,22 @@ class DashboardController extends Controller
             ];
         });
 
+        $units = Unit::all()->map(function($u) {
+            return [
+                'db_id' => $u->id,
+                'nomor_seri' => $u->nomor_seri,
+                'nama_dart' => $u->nama_dart,
+                'jenis_dart' => $u->jenis_dart,
+                'asal_satuan' => $u->asal_satuan,
+                'status_unit' => $u->status_unit,
+                'last_maintenance' => $u->updated_at->format('d/m/Y'),
+            ];
+        });
+
         return Inertia::render('Helpdesk/DashboardStaf', [
             'dbCases' => $cases,
-            'dbUsers' => $technicians
+            'dbUsers' => $technicians,
+            'dbUnits' => $units
         ]);
     }
 }
