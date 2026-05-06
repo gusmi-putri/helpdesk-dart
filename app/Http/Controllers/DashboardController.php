@@ -54,6 +54,7 @@ class DashboardController extends Controller
                     'tanggalSelesai' => $report->tgl_selesai ? $report->tgl_selesai->format('d F Y, H:i') : null,
                     'tindakan' => $report->catatan_teknisi,
                     'metodePerbaikan' => $report->metode_perbaikan, 
+                    'foto_bukti_selesai' => $report->file_bukti_selesai ? asset('storage/reports/' . $report->file_bukti_selesai) : null,
                     'statusPerbaikan' => $report->status_laporan === 'Selesai' ? 'TUNTAS' : ($report->status_laporan === 'Proses' ? 'DIKERJAKAN' : 'MENUNGGU'),
                 ]
             ];
