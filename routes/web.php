@@ -27,13 +27,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/staf', [DashboardController::class, 'staf'])->middleware('role:Staf');
     Route::get('/teknisi', [DashboardController::class, 'teknisi'])->middleware('role:Teknisi');
     Route::resource('users', \App\Http\Controllers\UserController::class)->middleware('role:Admin');
+    Route::post('/users/{id}/toggle-status', [\App\Http\Controllers\UserController::class, 'toggleStatus'])->middleware('role:Admin')->name('users.toggle-status');
     Route::post('/users/{id}/approve', [\App\Http\Controllers\UserController::class, 'approve'])->middleware('role:Admin')->name('users.approve');
+    Route::resource('units', \App\Http\Controllers\UnitController::class)->middleware('role:Admin');
 });
 
 // Reports Actions
 Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
+// Route handle is for Staf assigning technician
 Route::post('/reports/{id}/handle', [ReportController::class, 'handle'])->name('reports.handle');
+// Route complete is for Technician finishing task
 Route::post('/reports/{id}/complete', [ReportController::class, 'complete'])->name('reports.complete');
 Route::get('/reports/{id}/pdf', [DashboardController::class, 'exportPdf'])->name('reports.pdf');
-
-
+Route::get('/admin/recap/export', [\App\Http\Controllers\RecapController::class, 'export'])->middleware(['auth', 'role:Admin'])->name('admin.recap.export');

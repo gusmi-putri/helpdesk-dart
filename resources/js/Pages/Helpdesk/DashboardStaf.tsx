@@ -233,7 +233,7 @@ const DashboardStaf = (props: any) => {
                     <div className="font-bold text-sm mb-1 uppercase">{report.kerusakan.barangRusak}</div>
                     <div className="text-gray-700 dark:text-gray-400 text-xs font-mono w-full max-w-sm uppercase">
                       Masuk: {report.kerusakan.tanggal} <br />
-                      Selesai: <span className="text-gunmetal dark:text-white font-bold">{report.perbaikan.tanggalPenanganan || '-'}</span>
+                      Selesai: <span className="text-gunmetal dark:text-white font-bold">{report.perbaikan.tanggalSelesai || '-'}</span>
                     </div>
                   </td>
                   <td className="p-4">
@@ -416,7 +416,7 @@ const DashboardStaf = (props: any) => {
                       <p className="text-sm font-bold text-olive uppercase">{selectedReport.kerusakan.lokasi}</p>
                     </div>
                     <div>
-                      <p className="text-[9px] text-gray-500 font-mono uppercase tracking-widest">Waktu Transmisi</p>
+                      <p className="text-[9px] text-gray-500 font-mono uppercase tracking-widest">Waktu Lapor</p>
                       <p className="text-sm font-mono text-gray-700 dark:text-gray-300">{selectedReport.kerusakan.tanggal}</p>
                     </div>
                   </div>
@@ -441,9 +441,14 @@ const DashboardStaf = (props: any) => {
                       <p className="text-sm font-bold text-gunmetal dark:text-white flex items-center gap-2">
                         <Wrench size={14} className="text-olive" /> {selectedReport.perbaikan.teknisi ? selectedReport.perbaikan.teknisi.toUpperCase() : 'BELUM ADA PENUGASAN'}
                       </p>
-                      {selectedReport.perbaikan.tanggalPenanganan && (
-                        <p className="text-[10px] text-gray-500 font-mono mt-1 uppercase tracking-tighter">
-                          Instruksi: {selectedReport.perbaikan.tanggalPenanganan}
+                      {selectedReport.status === 'SELESAI' && selectedReport.perbaikan.tanggalSelesai && (
+                        <p className="text-[10px] text-green-600 dark:text-green-400 font-mono mt-1 uppercase tracking-tighter">
+                          Tuntas: {selectedReport.perbaikan.tanggalSelesai}
+                        </p>
+                      )}
+                      {selectedReport.status === 'PROSES' && selectedReport.perbaikan.tanggalPenanganan && (
+                        <p className="text-[10px] text-blue-500 font-mono mt-1 uppercase tracking-tighter">
+                          Ditangani: {selectedReport.perbaikan.tanggalPenanganan}
                         </p>
                       )}
                     </div>

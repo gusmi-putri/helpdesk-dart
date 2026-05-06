@@ -52,6 +52,7 @@ class UserController extends Controller
             'asal_satuan' => $request->asal_satuan,
             'no_wa' => $request->no_wa,
             'spesialisasi' => $request->spesialisasi,
+            'is_approved' => true, // Manual add by admin is auto-approved
         ]);
 
         $admin = auth()->user();
@@ -100,6 +101,20 @@ class UserController extends Controller
 
         return redirect()->back()->with('message', 'User deleted successfully.');
     }
+
+    public function toggleStatus(string $id)
+    {
+        $user = User::findOrFail($id);
+        $user->is_active = !$user->is_active;
+        $user->save();
+
+        $statusStr = $user->is_active ? 'AKTIF' : 'NONAKTIF';
+        $admin = auth()->user();
+        \App\Models\SystemLog::log('WARN', $admin->id, "Mengubah status personel {$user->nama_lengkap} menjadi {$statusStr}");
+
+        return redirect()->back()->with('message', "Status personel berhasil diubah menjadi {$statusStr}.");
+    }
+
     public function approve(string $id)
     {
         $user = User::findOrFail($id);

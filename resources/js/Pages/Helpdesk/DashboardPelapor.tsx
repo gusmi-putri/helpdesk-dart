@@ -336,7 +336,12 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
                   <div className="text-[10px] text-gray-500 flex items-center gap-1 font-mono">
                     <Activity size={12} className="text-olive" /> {item.kerusakan.lokasi}
                   </div>
-                  {item.perbaikan.teknisi && (
+                  {item.status === 'SELESAI' && item.perbaikan.tanggalSelesai && (
+                    <div className="text-[10px] text-green-600 font-bold font-mono flex items-center gap-1">
+                      <CheckCircle2 size={12} /> SELESAI: {item.perbaikan.tanggalSelesai}
+                    </div>
+                  )}
+                  {item.perbaikan.teknisi && item.status !== 'SELESAI' && (
                     <div className="text-[10px] text-olive font-bold font-mono flex items-center gap-1">
                       [TEKNISI: {item.perbaikan.teknisi.toUpperCase()}]
                     </div>

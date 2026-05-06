@@ -27,6 +27,8 @@ return new class extends Migration
             $table->string('no_wa', 20)->nullable();
             $table->string('spesialisasi', 100)->nullable();
             $table->foreignId('role_id')->constrained('roles');
+            $table->boolean('is_approved')->default(false);
+            $table->boolean('is_active')->default(true);
             $table->rememberToken();
             $table->timestamps();
         });

@@ -54,6 +54,8 @@ class ReportController extends Controller
             'status_laporan' => 'Pending'
         ]);
 
+        Unit::find($request->unit_id)->syncStatus();
+
         \App\Models\SystemLog::log('WARN', $request->user()->id, "Mengirimkan laporan kerusakan baru di lokasi: {$request->user()->asal_satuan}");
 
         return redirect()->back()->with('message', 'Laporan berhasil ditransmisikan ke Pusat Komando!');
@@ -81,6 +83,8 @@ class ReportController extends Controller
             'teknisi_id' => $teknisi->id,
             'tgl_ditunjuk' => now()
         ]);
+
+        $report->unit->syncStatus();
 
         \App\Models\SystemLog::log('INFO', $request->user()->id, "Menugaskan teknisi {$teknisi->nama_lengkap} untuk menangani kasus: LPR-" . str_pad($report->id, 5, '0', STR_PAD_LEFT));
 
@@ -112,6 +116,7 @@ class ReportController extends Controller
         
         if ($report->save()) {
             \App\Models\SystemLog::log('SUCCESS', $request->user()->id, "Menyelesaikan penanganan laporan LPR-" . str_pad($report->id, 5, '0', STR_PAD_LEFT) . " dengan metode {$request->metode}");
+            $report->unit->syncStatus();
             return redirect()->back()->with('message', 'Laporan perbaikan telah difinalisasi!');
         }
 

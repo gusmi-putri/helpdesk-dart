@@ -18,6 +18,10 @@ class DashboardController extends Controller
         // Tambahkan atribut case_id secara manual untuk template
         $report->case_id = 'LPR-' . str_pad($report->id, 5, '0', STR_PAD_LEFT);
 
+        // EYD Formatting
+        $report->deskripsi_kerusakan = ucfirst(mb_strtolower(trim($report->deskripsi_kerusakan)));
+        $report->catatan_teknisi = $report->catatan_teknisi ? ucfirst(mb_strtolower(trim($report->catatan_teknisi))) : null;
+
         $pdf = Pdf::loadView('pdf.bap_template', compact('report'));
         
         return $pdf->download('BAP_' . $report->case_id . '.pdf');
@@ -28,6 +32,7 @@ class DashboardController extends Controller
             return [
                 'caseId' => 'LPR-' . str_pad($report->id, 5, '0', STR_PAD_LEFT),
                 'db_id' => $report->id,
+                'unit_id' => $report->unit_id,
                 'status' => strtoupper($report->status_laporan),
                 'kerusakan' => [
                     'tanggal' => $report->tanggal_lapor ? $report->tanggal_lapor->format('d F Y, H:i') : '-',
@@ -71,7 +76,8 @@ class DashboardController extends Controller
                 'is_approved' => $u->is_approved,
                 'role' => $u->role ? $u->role->nama_role : 'No Role',
                 'role_id' => $u->role_id,
-                'status' => $u->is_approved ? 'Aktif' : 'Menunggu',
+                'is_active' => $u->is_active,
+                'status' => !$u->is_approved ? 'Menunggu' : ($u->is_active ? 'Aktif' : 'Nonaktif'),
                 'lastLogin' => 'Baru saja'
             ];
         });
@@ -92,11 +98,14 @@ class DashboardController extends Controller
             ];
         });
 
+        $units = \App\Models\Unit::all();
+
         return Inertia::render('Helpdesk/DashboardAdmin', [
             'dbCases' => $cases,
             'dbUsers' => $users,
             'dbLogs' => $logs,
-            'dbRoles' => $roles
+            'dbRoles' => $roles,
+            'dbUnits' => $units
         ]);
     }
 
