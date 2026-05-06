@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { UserCog, AlertTriangle, CheckCircle, Clock, LogOut, ShieldAlert, Users, Database, Shield, Activity, Menu, X, CircleUser, Eye, Camera, Wrench } from 'lucide-react';
+import { UserCog, AlertTriangle, CheckCircle, Clock, LogOut, ShieldAlert, Users, Database, Shield, Activity, Menu, X, CircleUser, Eye, Camera, Wrench, FileArchive, Download, Search } from 'lucide-react';
 import { useStore } from '@/store/useStore';
-import { router, usePage } from '@inertiajs/react';
+import { router, usePage, Link } from '@inertiajs/react';
 
 const DashboardStaf = (props: any) => {
-  const { dbCases = [], dbUsers = [], dbRoles = [] } = props;
-  const [activeMenu, setActiveMenu] = useState<'MASUK' | 'SELESAI'>('MASUK');
+  const { dbCases = [], dbUsers = [], dbRoles = [], dbUnits = [] } = props;
+  const [activeMenu, setActiveMenu] = useState<'MASUK' | 'SELESAI' | 'INVENTARIS'>('MASUK');
   const [assigningReportId, setAssigningReportId] = useState<number | null>(null);
   const [viewingProof, setViewingProof] = useState<any[] | null>(null);
   const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const [isRecapModalOpen, setIsRecapModalOpen] = useState(false);
+  const [recapPeriod, setRecapPeriod] = useState<'weekly' | 'monthly' | 'yearly' | 'custom' | 'year_specific'>('monthly');
+  const [recapStartDate, setRecapStartDate] = useState<string>('');
+  const [recapEndDate, setRecapEndDate] = useState<string>('');
+  const [recapYear, setRecapYear] = useState<string>(new Date().getFullYear().toString());
 
   const selectedReport = dbCases.find((c: any) => c.db_id === selectedReportId);
 
@@ -18,10 +23,16 @@ const DashboardStaf = (props: any) => {
   const logoutAction = useStore(state => state.logout);
   const addNotification = useStore(state => state.addNotification);
 
+  // States for Inventory
+  const [unitSearch, setUnitSearch] = useState('');
+  const [filterJenis, setFilterJenis] = useState('ALL');
+  const [filterSatuan, setFilterSatuan] = useState('ALL');
+  const [sortConfig, setSortConfig] = useState<{key: string, direction: 'asc' | 'desc'} | null>(null);
+
   // Auto-polling untuk real-time sinkronisasi
   useEffect(() => {
     const interval = setInterval(() => {
-      router.reload({ only: ['dbCases', 'dbUsers'] });
+      router.reload({ only: ['dbCases', 'dbUsers', 'dbUnits'] });
     }, 3000);
     return () => clearInterval(interval);
   }, []);
@@ -41,6 +52,17 @@ const DashboardStaf = (props: any) => {
   const handleLogout = () => {
     logoutAction();
     router.visit('/login');
+  };
+
+  const handleExportRecap = () => {
+    let url = `/staf/recap/export?period=${recapPeriod}`;
+    if (recapPeriod === 'custom' && recapStartDate && recapEndDate) {
+      url += `&start_date=${recapStartDate}&end_date=${recapEndDate}`;
+    } else if (recapPeriod === 'year_specific' && recapYear) {
+      url += `&year=${recapYear}`;
+    }
+    window.open(url, '_blank');
+    setIsRecapModalOpen(false);
   };
 
   const incomingReports = dbCases.filter((r: any) => r.status === 'PENDING' || r.status === 'PROSES');
@@ -236,6 +258,104 @@ const DashboardStaf = (props: any) => {
     </div>
   );
 
+  const renderInventaris = () => {
+    const jenisOptions = ['ALL', ...new Set(dbUnits.map((u: any) => u.jenis_dart))];
+    const satuanOptions = ['ALL', ...new Set(dbUnits.map((u: any) => u.asal_satuan))];
+
+    const handleSort = (key: string) => {
+      let direction: 'asc' | 'desc' = 'asc';
+      if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+        direction = 'desc';
+      }
+      setSortConfig({ key, direction });
+    };
+
+    const filteredUnits = dbUnits.filter((u: any) => {
+      const matchesSearch = u.nama_dart.toLowerCase().includes(unitSearch.toLowerCase()) || 
+                           u.nomor_seri.toLowerCase().includes(unitSearch.toLowerCase());
+      const matchesJenis = filterJenis === 'ALL' || u.jenis_dart === filterJenis;
+      const matchesSatuan = filterSatuan === 'ALL' || u.asal_satuan === filterSatuan;
+      return matchesSearch && matchesJenis && matchesSatuan;
+    }).sort((a: any, b: any) => {
+      if (!sortConfig) return 0;
+      const { key, direction } = sortConfig;
+      if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
+      if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    return (
+      <div className="animate-in fade-in space-y-6 mt-6">
+        <div className="bg-white/60 dark:bg-[#1a2024] border border-gray-300 dark:border-gray-700 p-4 shadow-xl">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="md:col-span-1">
+              <label className="block text-[10px] font-mono font-bold text-gray-500 mb-1 uppercase">CARI PERANGKAT</label>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input 
+                  type="text" 
+                  placeholder="SN / NAMA..." 
+                  value={unitSearch}
+                  onChange={(e) => setUnitSearch(e.target.value)}
+                  className="w-full bg-sand dark:bg-black border border-gray-300 dark:border-gray-700 pl-10 pr-4 py-2 text-xs font-mono focus:border-olive outline-none uppercase"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-[10px] font-mono font-bold text-gray-500 mb-1 uppercase">JENIS</label>
+              <select value={filterJenis} onChange={(e) => setFilterJenis(e.target.value)} className="w-full bg-sand dark:bg-black border border-gray-300 dark:border-gray-700 px-4 py-2 text-xs font-mono focus:border-olive outline-none uppercase">
+                {jenisOptions.map((o: any) => <option key={o} value={o}>{o === 'ALL' ? 'SEMUA' : o}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="block text-[10px] font-mono font-bold text-gray-500 mb-1 uppercase">SATUAN</label>
+              <select value={filterSatuan} onChange={(e) => setFilterSatuan(e.target.value)} className="w-full bg-sand dark:bg-black border border-gray-300 dark:border-gray-700 px-4 py-2 text-xs font-mono focus:border-olive outline-none uppercase">
+                {satuanOptions.map((o: any) => <option key={o} value={o}>{o === 'ALL' ? 'SEMUA' : o}</option>)}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white/60 dark:bg-black/60 border border-gray-300 dark:border-gray-700 rounded-sm overflow-hidden shadow-xl">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left font-sans text-xs">
+              <thead className="bg-[#1a2024] text-gray-400 font-tactical tracking-widest border-b border-gray-300 dark:border-gray-700">
+                <tr>
+                  <th className="p-4 cursor-pointer hover:text-olive" onClick={() => handleSort('nomor_seri')}>SN</th>
+                  <th className="p-4 cursor-pointer hover:text-olive" onClick={() => handleSort('nama_dart')}>UNIT</th>
+                  <th className="p-4 cursor-pointer hover:text-olive" onClick={() => handleSort('jenis_dart')}>JENIS</th>
+                  <th className="p-4 cursor-pointer hover:text-olive" onClick={() => handleSort('asal_satuan')}>SATUAN</th>
+                  <th className="p-4 cursor-pointer hover:text-olive" onClick={() => handleSort('status_unit')}>STATUS</th>
+                  <th className="p-4">CEK</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-300 dark:divide-gray-800 text-gunmetal dark:text-white">
+                {filteredUnits.map((u: any) => (
+                  <tr key={u.db_id} className="hover:bg-gray-200 dark:hover:bg-gray-800/30 transition-colors group">
+                    <td className="p-4 font-mono font-bold text-olive">{u.nomor_seri}</td>
+                    <td className="p-4 font-bold uppercase">{u.nama_dart}</td>
+                    <td className="p-4 uppercase">{u.jenis_dart}</td>
+                    <td className="p-4 uppercase">{u.asal_satuan}</td>
+                    <td className="p-4">
+                      <span className={`px-2 py-0.5 border text-[9px] font-bold tracking-widest
+                        ${u.status_unit === 'Siap Ops' ? 'bg-green-900/20 text-green-500 border-green-800' : 
+                          u.status_unit === 'Rusak' ? 'bg-red-900/20 text-targetred border-red-800' : 
+                          'bg-blue-900/20 text-blue-500 border-blue-800'}
+                      `}>
+                        {u.status_unit.toUpperCase()}
+                      </span>
+                    </td>
+                    <td className="p-4 font-mono text-[10px] text-gray-500">{u.last_maintenance}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-sand dark:bg-gunmetal flex font-sans selection:bg-olive selection:text-gunmetal relative text-gunmetal dark:text-gray-200">
       {/* MOBILE OVERLAY */}
@@ -276,6 +396,15 @@ const DashboardStaf = (props: any) => {
           >
             <CheckCircle className="w-5 h-5" /> LAPORAN PERBAIKAN SELESAI
           </button>
+
+          <button
+            onClick={() => { setActiveMenu('INVENTARIS'); setIsMobileMenuOpen(false); }}
+            className={`w-full flex items-center gap-3 px-6 py-3.5 font-tactical text-sm tracking-wider transition-all border-l-2
+              ${activeMenu === 'INVENTARIS' ? 'bg-gray-200 dark:bg-gray-800/80 text-gunmetal dark:text-white border-olive' : 'border-transparent text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-900'}
+            `}
+          >
+            <Database className="w-5 h-5" /> INVENTARIS UNIT DART
+          </button>
         </nav>
 
         <div className="p-4 border-t border-gray-300 dark:border-gray-800 bg-gray-100 dark:bg-[#111]">
@@ -298,7 +427,6 @@ const DashboardStaf = (props: any) => {
             >
               <Menu className="w-6 h-6" />
             </button>
-
           </div>
 
           <div className="flex items-center gap-0 border border-gray-300 dark:border-gray-700 rounded shadow-sm bg-gray-100 dark:bg-gray-900 ml-auto">
@@ -315,19 +443,31 @@ const DashboardStaf = (props: any) => {
         {/* Scrollable Content Container */}
         <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar z-10">
           <div className="max-w-[1400px] mx-auto">
-            {/* Dynamic Heading based on active menu */}
             <div className="mb-6 flex justify-between items-end border-b border-gray-300 dark:border-gray-700 pb-4">
               <div>
                 <h2 className="text-2xl font-tactical font-bold text-gunmetal dark:text-white tracking-widest uppercase">
-                  {activeMenu === 'MASUK' ? 'MODUL PENUGASAN TEKNISI' : 'ARSIP DOKUMEN PENYELESAIAN'}
+                  {activeMenu === 'MASUK' ? 'MODUL PENUGASAN TEKNISI' : 
+                   activeMenu === 'SELESAI' ? 'ARSIP DOKUMEN PENYELESAIAN' : 
+                   'DATABASE INVENTARIS PERANGKAT'}
                 </h2>
                 <p className="text-xs font-mono text-gray-600 dark:text-gray-400 mt-1 uppercase tracking-widest">
-                  Sistem Manajemen Pelaporan Kerusakan Dart.
+                   {activeMenu === 'INVENTARIS' ? 'STATUS KESIAPAN ALUTSISTA DART.' : 'Sistem Manajemen Pelaporan Kerusakan Dart.'}
                 </p>
               </div>
+
+              {activeMenu !== 'INVENTARIS' && (
+                <button 
+                  onClick={() => setIsRecapModalOpen(true)}
+                  className="bg-targetred text-white px-5 py-2 font-tactical font-bold text-xs tracking-widest hover:bg-red-700 transition-all flex items-center gap-2 shadow-lg"
+                >
+                  <FileArchive className="w-4 h-4" /> EKSPOR REKAP
+                </button>
+              )}
             </div>
 
-            {activeMenu === 'MASUK' ? renderMasuk() : renderSelesai()}
+            {activeMenu === 'MASUK' ? renderMasuk() : 
+             activeMenu === 'SELESAI' ? renderSelesai() : 
+             renderInventaris()}
           </div>
         </div>
       </main>
@@ -523,6 +663,133 @@ const DashboardStaf = (props: any) => {
       )}
 
       {/* REMOVED LOCAL NOTIFICATION RENDERER */}
+
+      {/* EXPORT MODAL */}
+      {isRecapModalOpen && (
+        <div className="fixed inset-0 z-[150] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+          <div className="bg-sand dark:bg-gunmetal border-2 border-targetred w-full max-w-lg shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className="p-4 border-b border-targetred bg-targetred/10 flex justify-between items-center">
+              <h3 className="font-tactical font-bold text-targetred tracking-widest uppercase flex items-center gap-2">
+                <FileArchive className="w-5 h-5" /> EKSPOR REKAPITULASI
+              </h3>
+              <button onClick={() => setIsRecapModalOpen(false)} className="text-gray-500 hover:text-targetred text-xl">✕</button>
+            </div>
+            
+            <div className="p-6">
+              <p className="text-xs font-mono text-gray-600 dark:text-gray-400 mb-6 uppercase tracking-tight">
+                Pilih periode laporan untuk diekspor ke format PDF (Landscape). Laporan ini mencakup seluruh data unit, teknisi, dan status penyelesaian.
+              </p>
+              
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  {(['weekly', 'monthly', 'yearly'] as const).map(period => (
+                    <button
+                      key={period}
+                      onClick={() => setRecapPeriod(period)}
+                      className={`p-3 border-2 transition-all flex flex-col items-center justify-center gap-1
+                        ${recapPeriod === period 
+                          ? 'border-targetred bg-targetred/10 text-targetred shadow-[0_0_10px_rgba(200,30,30,0.2)]' 
+                          : 'border-gray-300 dark:border-gray-800 text-gray-500 hover:border-gray-400'}
+                      `}
+                    >
+                      <p className="text-[10px] font-tactical font-bold uppercase tracking-widest">
+                        {period === 'weekly' ? 'Mingguan' : period === 'monthly' ? 'Bulanan' : 'Tahunan'}
+                      </p>
+                      <p className="text-[8px] font-mono italic">Berdasarkan Tgl Ini</p>
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setRecapPeriod('custom')}
+                    className={`flex-1 p-3 border-2 transition-all flex flex-col items-center justify-center gap-1
+                      ${recapPeriod === 'custom' 
+                        ? 'border-targetred bg-targetred/10 text-targetred shadow-[0_0_10px_rgba(200,30,30,0.2)]' 
+                        : 'border-gray-300 dark:border-gray-800 text-gray-500 hover:border-gray-400'}
+                    `}
+                  >
+                    <p className="text-[10px] font-tactical font-bold uppercase tracking-widest">Rentang Khusus</p>
+                    <p className="text-[8px] font-mono italic">Mulai - Selesai</p>
+                  </button>
+                  <button
+                    onClick={() => setRecapPeriod('year_specific')}
+                    className={`flex-1 p-3 border-2 transition-all flex flex-col items-center justify-center gap-1
+                      ${recapPeriod === 'year_specific' 
+                        ? 'border-targetred bg-targetred/10 text-targetred shadow-[0_0_10px_rgba(200,30,30,0.2)]' 
+                        : 'border-gray-300 dark:border-gray-800 text-gray-500 hover:border-gray-400'}
+                    `}
+                  >
+                    <p className="text-[10px] font-tactical font-bold uppercase tracking-widest">Tahun Tertentu</p>
+                    <p className="text-[8px] font-mono italic">Pilih Tahun</p>
+                  </button>
+                </div>
+
+                {/* Conditional Input for Custom Range */}
+                {recapPeriod === 'custom' && (
+                  <div className="grid grid-cols-2 gap-3 p-4 bg-gray-100 dark:bg-black/30 border border-targetred/30 animate-in slide-in-from-top-2">
+                    <div>
+                      <label className="block text-[9px] font-mono text-gray-500 uppercase mb-1">Mulai Tanggal</label>
+                      <input 
+                        type="date" 
+                        value={recapStartDate}
+                        onChange={(e) => setRecapStartDate(e.target.value)}
+                        className="w-full bg-white dark:bg-gunmetal border border-gray-300 dark:border-gray-700 p-2 text-xs font-mono outline-none focus:border-targetred"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[9px] font-mono text-gray-500 uppercase mb-1">Sampai Tanggal</label>
+                      <input 
+                        type="date" 
+                        value={recapEndDate}
+                        onChange={(e) => setRecapEndDate(e.target.value)}
+                        className="w-full bg-white dark:bg-gunmetal border border-gray-300 dark:border-gray-700 p-2 text-xs font-mono outline-none focus:border-targetred"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Conditional Input for Year Specific */}
+                {recapPeriod === 'year_specific' && (
+                  <div className="p-4 bg-gray-100 dark:bg-black/30 border border-targetred/30 animate-in slide-in-from-top-2">
+                    <label className="block text-[9px] font-mono text-gray-500 uppercase mb-1">Pilih Tahun</label>
+                    <select 
+                      value={recapYear}
+                      onChange={(e) => setRecapYear(e.target.value)}
+                      className="w-full bg-white dark:bg-gunmetal border border-gray-300 dark:border-gray-700 p-2 text-xs font-mono outline-none focus:border-targetred"
+                    >
+                      {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i).map(year => (
+                        <option key={year} value={year}>{year}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+              </div>
+              
+              <div className="mt-8 grid grid-cols-2 gap-3">
+                <button
+                  onClick={handleExportRecap}
+                  className="bg-targetred text-white py-3 font-tactical font-bold tracking-widest hover:bg-red-700 transition-all flex items-center justify-center gap-2 shadow-lg"
+                >
+                  <Download className="w-4 h-4" /> EKSPOR PDF
+                </button>
+                <button
+                  onClick={() => setIsRecapModalOpen(false)}
+                  className="bg-transparent border border-gray-500 text-gray-500 py-3 font-tactical font-bold tracking-widest hover:bg-gray-500/10 transition-all"
+                >
+                  BATAL
+                </button>
+              </div>
+            </div>
+            
+            <div className="p-3 bg-black/20 text-center">
+              <p className="text-[8px] font-mono text-gray-500 uppercase tracking-widest">
+                Generated by Command Center Security Module
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
