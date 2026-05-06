@@ -154,17 +154,17 @@ class DashboardController extends Controller
     {
         $cases = $this->formatReports(Report::query());
         
-        // Hanya ambil teknisi yang tidak sedang memegang laporan status 'Proses'
+        // Ambil semua teknisi untuk ditugaskan
         $technicians = User::whereHas('role', function($q) {
             $q->where('nama_role', 'Teknisi');
-        })->whereDoesntHave('reportsDitangani', function($q) {
-            $q->where('status_laporan', 'Proses');
-        })->get()->map(function($u) {
+        })->with('reportsDitangani')->get()->map(function($u) {
             return [
                 'id' => $u->id,
                 'name' => $u->nama_lengkap,
                 'username' => $u->username,
-                'spesialisasi' => $u->spesialisasi
+                'spesialisasi' => $u->spesialisasi,
+                'tasksReceived' => $u->reportsDitangani->count(),
+                'tasksInProgress' => $u->reportsDitangani->where('status_laporan', 'Proses')->count()
             ];
         });
 

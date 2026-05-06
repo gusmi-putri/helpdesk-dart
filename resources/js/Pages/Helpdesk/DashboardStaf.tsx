@@ -86,7 +86,7 @@ const DashboardStaf = (props: any) => {
               {incomingReports.map((report: any) => (
                 <tr key={report.db_id} className="hover:bg-gray-200 dark:hover:bg-gray-800/30 transition-colors text-gunmetal dark:text-white">
                   <td className="p-4">
-                    <button 
+                    <button
                       onClick={() => setSelectedReportId(report.db_id)}
                       className="font-mono font-bold text-sm bg-white dark:bg-black px-2 py-1 border border-gray-300 dark:border-gray-700 block text-center w-fit hover:border-olive hover:text-olive transition-colors group/tid"
                     >
@@ -105,10 +105,9 @@ const DashboardStaf = (props: any) => {
                   </td>
                   <td className="p-4">
                     <div className="flex flex-col gap-1">
-                      <span className={`text-[9px] font-bold px-2 py-0.5 w-fit border ${
-                        report.kerusakan.urgensi === 'Sangat Mendesak' ? 'bg-red-900/20 text-red-500 border-red-800' : 
+                      <span className={`text-[9px] font-bold px-2 py-0.5 w-fit border ${report.kerusakan.urgensi === 'Sangat Mendesak' ? 'bg-red-900/20 text-red-500 border-red-800' :
                         'bg-blue-900/20 text-blue-500 border-blue-800'
-                      }`}>
+                        }`}>
                         {report.kerusakan.urgensi?.toUpperCase() || 'NORMAL'}
                       </span>
                       <span className="text-xs font-bold text-gunmetal dark:text-gray-300">
@@ -130,49 +129,22 @@ const DashboardStaf = (props: any) => {
                   <td className="p-4 text-center">
                     {report.status === 'PENDING' ? (
                       <div className="relative inline-block w-full">
-                        {assigningReportId === report.db_id ? (
-                          <div className="bg-white dark:bg-[#1a2024] border border-olive p-2 rounded-sm absolute right-0 top-0 w-64 z-20 shadow-2xl text-left">
-                            <h4 className="text-gray-600 dark:text-gray-400 text-xs font-tactical mb-2 uppercase">PILIH PERSONEL TEKNISI:</h4>
-                            <div className="space-y-1">
-                              {dbUsers.map((tek: any) => (
-                                <button
-                                  key={tek.id}
-                                  onClick={() => handleAssignTechnician(report.db_id, tek.id)}
-                                  className="w-full text-left px-3 py-2 text-xs text-gunmetal dark:text-white bg-gray-100 hover:bg-olive dark:bg-black dark:hover:bg-olive hover:text-gunmetal font-bold transition-colors flex justify-between items-center group"
-                                >
-                                  <div className="flex flex-col">
-                                    <span>{tek.name}</span>
-                                    <span className="text-[8px] text-olive font-mono">{tek.spesialisasi || 'GENERALIST'}</span>
-                                  </div>
-                                  <span className="font-mono text-[10px] text-gray-500 group-hover:text-gunmetal">{tek.username}</span>
-                                </button>
-                              ))}
-                            </div>
+                        <div className="flex flex-col gap-2">
+                          <button
+                            onClick={() => setAssigningReportId(report.db_id)}
+                            className="w-full bg-olive hover:bg-camogreen text-white px-3 py-2 text-[10px] font-tactical font-bold tracking-[0.2em] transition-all flex items-center justify-center gap-2 border border-olive shadow-[0_0_15px_rgba(75,83,32,0.2)]"
+                          >
+                            <ShieldAlert className="w-3.5 h-3.5" /> TUGASKAN PERSONEL
+                          </button>
+                          {report.kerusakan.fileBukti && report.kerusakan.fileBukti.length > 0 && (
                             <button
-                              onClick={() => setAssigningReportId(null)}
-                              className="mt-2 w-full text-[10px] text-gray-600 hover:text-targetred py-1 border border-transparent hover:border-targetred/30 transition-colors font-tactical tracking-widest uppercase"
+                              onClick={() => setViewingProof(report.kerusakan.fileBukti)}
+                              className="w-full bg-gray-200 dark:bg-black hover:bg-gray-300 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 px-3 py-1.5 text-[10px] font-mono font-bold tracking-widest transition-colors flex items-center justify-center gap-2 border border-gray-300 dark:border-gray-700"
                             >
-                              [ BATALKAN ]
+                              <Eye className="w-3 h-3 text-olive" /> LIHAT BUKTI KENDALA
                             </button>
-                          </div>
-                        ) : (
-                          <div className="flex flex-col gap-2">
-                            <button
-                              onClick={() => setAssigningReportId(report.db_id)}
-                              className="w-full bg-olive hover:bg-camogreen text-white px-3 py-2 text-[10px] font-tactical font-bold tracking-[0.2em] transition-all flex items-center justify-center gap-2 border border-olive shadow-[0_0_15px_rgba(75,83,32,0.2)]"
-                            >
-                              <ShieldAlert className="w-3.5 h-3.5" /> TUGASKAN PERSONEL
-                            </button>
-                            {report.kerusakan.fileBukti && report.kerusakan.fileBukti.length > 0 && (
-                              <button
-                                onClick={() => setViewingProof(report.kerusakan.fileBukti)}
-                                className="w-full bg-gray-200 dark:bg-black hover:bg-gray-300 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 px-3 py-1.5 text-[10px] font-mono font-bold tracking-widest transition-colors flex items-center justify-center gap-2 border border-gray-300 dark:border-gray-700"
-                              >
-                                <Eye className="w-3 h-3 text-olive" /> LIHAT BUKTI KENDALA
-                              </button>
-                            )}
-                          </div>
-                        )}
+                          )}
+                        </div>
                       </div>
                     ) : (
                       <div className="text-gray-600 dark:text-gray-400 text-[10px] font-mono border border-gray-300 dark:border-gray-800 p-2 bg-gray-100 dark:bg-[#111]">
@@ -219,7 +191,7 @@ const DashboardStaf = (props: any) => {
               {completedReports.map((report: any) => (
                 <tr key={report.db_id} className="hover:bg-gray-200 dark:hover:bg-gray-800/30 transition-colors">
                   <td className="p-4">
-                    <button 
+                    <button
                       onClick={() => setSelectedReportId(report.db_id)}
                       className="font-mono text-gray-600 dark:text-gray-400 text-sm bg-white dark:bg-black px-2 py-1 border border-gray-300 dark:border-gray-700 block w-fit hover:border-olive hover:text-olive transition-colors"
                     >
@@ -293,7 +265,7 @@ const DashboardStaf = (props: any) => {
               ${activeMenu === 'MASUK' ? 'bg-gray-200 dark:bg-gray-800/80 text-gunmetal dark:text-white border-olive' : 'border-transparent text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-900'}
             `}
           >
-            <AlertTriangle className="w-5 h-5" /> PENUGASAN (ANTREAN)
+            <AlertTriangle className="w-5 h-5" /> LAPORAN KERUSAKAN MASUK
           </button>
 
           <button
@@ -302,7 +274,7 @@ const DashboardStaf = (props: any) => {
               ${activeMenu === 'SELESAI' ? 'bg-gray-200 dark:bg-gray-800/80 text-gunmetal dark:text-white border-olive' : 'border-transparent text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-900'}
             `}
           >
-            <CheckCircle className="w-5 h-5" /> REKAP ARSIP SELESAI
+            <CheckCircle className="w-5 h-5" /> LAPORAN PERBAIKAN SELESAI
           </button>
         </nav>
 
@@ -486,6 +458,63 @@ const DashboardStaf = (props: any) => {
                   className="bg-olive text-white px-8 py-2 font-tactical font-bold tracking-widest hover:bg-camogreen transition-colors"
                 >
                   TUTUP
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL PENUGASAN PERSONEL TEKNISI */}
+      {assigningReportId && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+          <div className="bg-white dark:bg-gunmetal border-2 border-olive w-full max-w-2xl shadow-2xl animate-in zoom-in-95">
+            <div className="p-4 border-b border-olive bg-olive/10 flex justify-between items-center">
+              <h3 className="font-tactical font-bold text-olive tracking-widest uppercase flex items-center gap-2">
+                <Users className="w-5 h-5" /> PILIH PERSONEL TEKNISI
+              </h3>
+              <button onClick={() => setAssigningReportId(null)} className="text-gray-500 hover:text-targetred transition-colors font-bold text-xl">✕</button>
+            </div>
+            <div className="p-6">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 font-mono">PILIH PERSONEL YANG AKAN DITUGASKAN UNTUK LAPORAN INI.</p>
+
+              <div className="space-y-3 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
+                {dbUsers.map((tek: any) => (
+                  <div key={tek.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-gray-100 dark:bg-black border border-gray-300 dark:border-gray-700 hover:border-olive dark:hover:border-olive transition-colors group">
+                    <div className="flex flex-col mb-3 sm:mb-0">
+                      <span className="font-bold text-gunmetal dark:text-white text-lg">{tek.name}</span>
+                      <span className="text-xs text-olive font-mono uppercase tracking-widest mt-1">{tek.spesialisasi || 'GENERALIST'} | {tek.username}</span>
+                      <div className="flex items-center gap-4 mt-2">
+                        <span className="text-[10px] font-mono bg-gray-200 dark:bg-gray-800 px-2 py-1 text-gray-700 dark:text-gray-300">
+                          TOTAL DITERIMA: <span className="font-bold">{tek.tasksReceived || 0}</span>
+                        </span>
+                        <span className="text-[10px] font-mono bg-blue-100 dark:bg-blue-900/30 px-2 py-1 text-blue-700 dark:text-blue-400">
+                          SEDANG DIKERJAKAN: <span className="font-bold">{tek.tasksInProgress || 0}</span>
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handleAssignTechnician(assigningReportId, tek.id)}
+                      className="bg-olive hover:bg-camogreen text-white px-6 py-2 text-xs font-tactical font-bold tracking-widest transition-colors flex items-center justify-center gap-2"
+                    >
+                      <ShieldAlert className="w-4 h-4" /> TUGASKAN
+                    </button>
+                  </div>
+                ))}
+
+                {dbUsers.length === 0 && (
+                  <div className="p-8 text-center text-gray-500 font-mono">
+                    TIDAK ADA DATA TEKNISI TERSEDIA.
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-6 flex justify-end pt-4 border-t border-gray-300 dark:border-gray-800">
+                <button
+                  onClick={() => setAssigningReportId(null)}
+                  className="bg-gunmetal dark:bg-gray-800 text-white px-8 py-2 font-tactical font-bold tracking-widest hover:bg-gray-700 transition-colors border border-gray-600"
+                >
+                  BATAL
                 </button>
               </div>
             </div>
