@@ -12,6 +12,8 @@ Route::get('/', function () {
     return Inertia::render('Helpdesk/Landing');
 });
 
+Route::post('/feedback', [\App\Http\Controllers\FeedbackController::class, 'store'])->name('feedback.store');
+
 Route::get('/login', function () {
     return Inertia::render('Helpdesk/Login');
 })->name('login');

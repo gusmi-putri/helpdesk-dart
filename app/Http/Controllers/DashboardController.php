@@ -101,13 +101,25 @@ class DashboardController extends Controller
         });
 
         $units = \App\Models\Unit::all();
+        $feedbacks = \App\Models\Feedback::orderBy('created_at', 'desc')->get()->map(function($f) {
+            return [
+                'id' => $f->id,
+                'nama_pengirim' => $f->nama_pengirim,
+                'rating' => $f->rating,
+                'kategori' => $f->kategori,
+                'pesan' => $f->pesan,
+                'status_baca' => $f->status_baca,
+                'tanggal' => $f->created_at->format('d M Y, H:i')
+            ];
+        });
 
         return Inertia::render('Helpdesk/DashboardAdmin', [
             'dbCases' => $cases,
             'dbUsers' => $users,
             'dbLogs' => $logs,
             'dbRoles' => $roles,
-            'dbUnits' => $units
+            'dbUnits' => $units,
+            'dbFeedbacks' => $feedbacks
         ]);
     }
 
