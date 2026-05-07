@@ -60,7 +60,7 @@ const Register: React.FC = () => {
         <div className="mb-8 p-4 bg-olive/10 border-l-4 border-olive flex items-center gap-4">
           <ShieldCheck className="w-8 h-8 text-olive shrink-0" />
           <p className="text-xs text-gunmetal dark:text-gray-300 font-mono leading-relaxed">
-            Pendaftaran ini hanya untuk akun **PELAPOR**. Akun baru akan melalui proses verifikasi dan persetujuan Admin sebelum dapat digunakan untuk login.
+            Pendaftaran ini hanya untuk akun PELAPOR. Akun baru akan melalui proses verifikasi dan persetujuan Admin sebelum dapat digunakan untuk login.
           </p>
         </div>
 
@@ -69,14 +69,14 @@ const Register: React.FC = () => {
             {/* Username */}
             <div>
               <label className="block text-gray-600 dark:text-gray-400 text-[10px] font-mono font-bold mb-2 tracking-widest uppercase">
-                Username / ID Akses
+                Username
               </label>
               <input
                 type="text"
                 value={data.username}
                 onChange={(e) => setData('username', e.target.value)}
                 className={`w-full bg-white/40 dark:bg-black/40 border ${errors.username ? 'border-targetred' : 'border-gray-300 dark:border-gray-700'} text-gunmetal dark:text-white px-4 py-2.5 focus:outline-none focus:border-olive transition-colors font-mono text-sm`}
-                placeholder="ID UNIK..."
+                placeholder="USERNAME UNIK..."
                 required
               />
               {errors.username && <p className="mt-1 text-targetred text-[9px] font-mono uppercase italic">{errors.username}</p>}
@@ -93,7 +93,7 @@ const Register: React.FC = () => {
                   value={data.password}
                   onChange={(e) => setData('password', e.target.value)}
                   className={`w-full bg-white/40 dark:bg-black/40 border ${errors.password ? 'border-targetred' : 'border-gray-300 dark:border-gray-700'} text-gunmetal dark:text-white px-4 py-2.5 focus:outline-none focus:border-olive transition-colors font-mono text-sm ${!showPassword ? 'tracking-widest' : ''}`}
-                  placeholder="••••••••"
+                  placeholder="MASUKKAN PASSWORD"
                   required
                 />
                 <button
