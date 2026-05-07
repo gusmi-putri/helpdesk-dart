@@ -13,7 +13,7 @@ const Features = () => {
     <section id="aset" className="py-24 bg-sand dark:bg-gunmetal relative overflow-hidden">
       {/* Background Camo / Tech pattern placeholder */}
       <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'radial-gradient(#c3b091 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
-      
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
           initial={{ opacity: 0, x: -50 }}
