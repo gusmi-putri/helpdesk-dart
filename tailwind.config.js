@@ -8,12 +8,16 @@ export default {
   theme: {
     extend: {
       colors: {
-        gunmetal: '#1E293B', // softer, elegant dark slate instead of muddy gray
-        sand: '#F5F0E6',     // Light mode background (Tactical Document)
-        olive: '#68a309ff',    // much brighter tactical green, high readability
-        khaki: '#FDE68A',    // clearer bright sand
-        targetred: '#e12323ff', // balanced red with good visibility
-        camogreen: '#0c8237ff', // bright soft green for accents
+        gunmetal: '#1E293B', // Dark mode background
+        sand: '#F5F0E6',     // Light mode background
+        olive: '#68a309ff',    // Primary action color
+        khaki: '#FDE68A',    // Highlights
+        targetred: '#6D1020', // New corporate red
+        camogreen: '#0c8237ff', // Accents
+        // Functional text/border colors (replacing gray)
+        'soft-gunmetal': '#334155', // For light mode secondary text (Slate-700 equivalent but bluer)
+        'soft-sand': '#E2E8F0',     // For dark mode secondary text
+        'deep-red': '#4A0B16',
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],

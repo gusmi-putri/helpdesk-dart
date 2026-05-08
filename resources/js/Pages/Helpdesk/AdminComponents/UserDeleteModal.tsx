@@ -1,0 +1,45 @@
+import React from 'react';
+import { AlertTriangle } from 'lucide-react';
+
+interface UserDeleteModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  user: any;
+}
+
+const UserDeleteModal: React.FC<UserDeleteModalProps> = ({ isOpen, onClose, onConfirm, user }) => {
+  if (!isOpen || !user) return null;
+
+  return (
+    <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+      <div className="bg-sand dark:bg-gunmetal border-2 border-targetred w-full max-w-sm shadow-[0_0_50px_rgba(200,30,30,0.4)] animate-in zoom-in-95 duration-200">
+        <div className="p-4 border-b border-targetred bg-targetred/10 flex items-center gap-3">
+          <AlertTriangle className="w-6 h-6 text-targetred animate-pulse" />
+          <h3 className="font-tactical font-bold text-targetred tracking-widest uppercase">KONFIRMASI PENGHAPUSAN</h3>
+        </div>
+        <div className="p-6">
+          <p className="text-sm font-mono text-gray-700 dark:text-gray-300 leading-relaxed uppercase">
+            PERINGATAN: Anda akan menghapus akses personil <span className="text-targetred font-bold underline">{user.name}</span> dari basis data sistem utama. Tindakan ini tidak dapat dibatalkan.
+          </p>
+          <div className="mt-8 grid grid-cols-2 gap-3">
+            <button
+              onClick={onConfirm}
+              className="bg-targetred text-white py-2 font-tactical font-bold tracking-widest hover:bg-red-700 transition-all shadow-[0_0_15px_rgba(200,30,30,0.3)]"
+            >
+              HAPUS AKSES
+            </button>
+            <button
+              onClick={onClose}
+              className="bg-transparent border border-gray-500 text-gray-500 py-2 font-tactical font-bold tracking-widest hover:bg-gray-500/10 transition-all"
+            >
+              BATAL
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default UserDeleteModal;

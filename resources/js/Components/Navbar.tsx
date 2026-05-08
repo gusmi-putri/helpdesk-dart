@@ -51,14 +51,14 @@ const Navbar = () => {
           </div>
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-8">
-              {['BERANDA', 'PANDUAN', 'FEEDBACK', 'TENTANG KAMI', 'DASHBOARD'].map((item) => (
+              {['BERANDA', 'PANDUAN', 'FEEDBACK', 'TENTANG KAMI', 'MASUK PANEL'].map((item) => (
                 <button
                   key={item}
-                  onClick={() => handleNavClick(item)}
+                  onClick={() => handleNavClick(item === 'MASUK PANEL' ? 'DASHBOARD' : item)}
                   className={`px-3 py-2 text-sm font-tactical font-bold tracking-wider transition-all border-b-2 
-                    ${(item === 'DASHBOARD' && url === '/login')
+                    ${((item === 'MASUK PANEL' || item === 'DASHBOARD') && url === '/login')
                       ? 'text-targetred border-targetred'
-                      : 'text-gray-700 dark:text-gray-300 hover:text-targetred hover:border-targetred border-transparent'
+                      : 'text-soft-gunmetal dark:text-soft-sand hover:text-targetred hover:border-targetred border-transparent'
                     }
                   `}
                 >
@@ -67,8 +67,8 @@ const Navbar = () => {
               ))}
               <button
                 onClick={toggleTheme}
-                className="text-gray-700 dark:text-gray-300 hover:text-targetred transition-colors ml-4"
-                title="Toggle Theme"
+                className="text-soft-gunmetal dark:text-soft-sand hover:text-targetred transition-colors ml-4"
+                title="Ganti Tema"
               >
                 {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
@@ -77,7 +77,7 @@ const Navbar = () => {
           <div className="md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-gray-600 dark:text-gray-400 hover:text-gunmetal dark:text-white ml-4"
+              className="text-soft-gunmetal dark:text-soft-sand hover:text-gunmetal dark:hover:text-white ml-4"
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -91,14 +91,14 @@ const Navbar = () => {
           className="md:hidden bg-sand dark:bg-gunmetal border-b border-olive"
         >
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {['BERANDA', 'PANDUAN', 'FEEDBACK', 'TENTANG KAMI', 'DASHBOARD'].map((item) => (
+            {['BERANDA', 'PANDUAN', 'FEEDBACK', 'TENTANG KAMI', 'MASUK PANEL'].map((item) => (
               <button
                 key={item}
-                onClick={() => handleNavClick(item)}
+                onClick={() => handleNavClick(item === 'MASUK PANEL' ? 'DASHBOARD' : item)}
                 className={`w-full text-left block px-3 py-2 text-base font-tactical font-bold tracking-wider transition-colors
-                  ${(item === 'DASHBOARD' && url === '/login')
-                    ? 'text-targetred bg-white/40 dark:bg-white/40 dark:bg-black/40'
-                    : 'text-gray-700 dark:text-gray-300 hover:text-targetred hover:bg-white dark:bg-black/20'
+                  ${((item === 'MASUK PANEL' || item === 'DASHBOARD') && url === '/login')
+                    ? 'text-targetred bg-sand/50 dark:bg-black/40'
+                    : 'text-soft-gunmetal dark:text-soft-sand hover:text-targetred hover:bg-sand/30 dark:hover:bg-black/20'
                   }
                 `}
               >
@@ -107,10 +107,10 @@ const Navbar = () => {
             ))}
             <button
               onClick={() => { toggleTheme(); setIsOpen(false); }}
-              className="w-full text-left flex items-center gap-2 px-3 py-2 text-base font-tactical font-bold tracking-wider text-gray-700 dark:text-gray-300 hover:text-targetred transition-colors"
+              className="w-full text-left flex items-center gap-2 px-3 py-2 text-base font-tactical font-bold tracking-wider text-soft-gunmetal dark:text-soft-sand hover:text-targetred transition-colors"
             >
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-              {theme === 'dark' ? 'LIGHT MODE' : 'DARK MODE'}
+              {theme === 'dark' ? 'MODE TERANG' : 'MODE GELAP'}
             </button>
           </div>
         </motion.div>

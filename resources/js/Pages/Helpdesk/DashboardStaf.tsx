@@ -1,35 +1,50 @@
 import React, { useState, useEffect } from 'react';
-import { UserCog, AlertTriangle, CheckCircle, Clock, LogOut, ShieldAlert, Users, Database, Shield, Activity, Menu, X, CircleUser, Eye, Camera, Wrench, FileArchive, Download, Search } from 'lucide-react';
+import { FileArchive } from 'lucide-react';
 import { useStore } from '@/store/useStore';
-import { router, usePage, Link } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
+
+// Sub-components
+import StafSidebar from './StafComponents/StafSidebar';
+import StafTopbar from './StafComponents/StafTopbar';
+import IncomingReportsTable from './StafComponents/IncomingReportsTable';
+import CompletedReportsTable from './StafComponents/CompletedReportsTable';
+import InventorySection from './StafComponents/InventorySection';
+import ProofModal from './StafComponents/ProofModal';
+import ReportDetailModal from './StafComponents/ReportDetailModal';
+import AssignTechnicianModal from './StafComponents/AssignTechnicianModal';
+import StafRecapModal from './StafComponents/StafRecapModal';
+
+type MenuTab = 'MASUK' | 'SELESAI' | 'INVENTARIS';
 
 const DashboardStaf = (props: any) => {
-  const { dbCases = [], dbUsers = [], dbRoles = [], dbUnits = [] } = props;
-  const [activeMenu, setActiveMenu] = useState<'MASUK' | 'SELESAI' | 'INVENTARIS'>('MASUK');
+  const { dbCases = [], dbUsers = [], dbUnits = [] } = props;
+  const [activeMenu, setActiveMenu] = useState<MenuTab>('MASUK');
   const [assigningReportId, setAssigningReportId] = useState<number | null>(null);
   const [viewingProof, setViewingProof] = useState<any[] | null>(null);
   const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [isRecapModalOpen, setIsRecapModalOpen] = useState(false);
+  
+  // Recap States
   const [recapPeriod, setRecapPeriod] = useState<'weekly' | 'monthly' | 'yearly' | 'custom' | 'year_specific'>('monthly');
   const [recapStartDate, setRecapStartDate] = useState<string>('');
   const [recapEndDate, setRecapEndDate] = useState<string>('');
   const [recapYear, setRecapYear] = useState<string>(new Date().getFullYear().toString());
 
-  const selectedReport = dbCases.find((c: any) => c.db_id === selectedReportId);
+  // Inventory States
+  const [unitSearch, setUnitSearch] = useState('');
+  const [filterJenis, setFilterJenis] = useState('ALL');
+  const [filterSatuan, setFilterSatuan] = useState('ALL');
+  const [sortConfig, setSortConfig] = useState<{key: string, direction: 'asc' | 'desc'} | null>(null);
 
   const { auth } = usePage().props as any;
   const currentUser = auth.user;
   const logoutAction = useStore(state => state.logout);
   const addNotification = useStore(state => state.addNotification);
 
-  // States for Inventory
-  const [unitSearch, setUnitSearch] = useState('');
-  const [filterJenis, setFilterJenis] = useState('ALL');
-  const [filterSatuan, setFilterSatuan] = useState('ALL');
-  const [sortConfig, setSortConfig] = useState<{key: string, direction: 'asc' | 'desc'} | null>(null);
+  const selectedReport = dbCases.find((c: any) => c.db_id === selectedReportId);
 
-  // Auto-polling untuk real-time sinkronisasi
+  // Auto-polling
   useEffect(() => {
     const interval = setInterval(() => {
       router.reload({ only: ['dbCases', 'dbUsers', 'dbUnits'] });
@@ -41,10 +56,10 @@ const DashboardStaf = (props: any) => {
     router.post(`/reports/${reportId}/handle`, { teknisi_id: idTeknisi }, {
       onSuccess: () => {
         setAssigningReportId(null);
-        addNotification('PERSONEL BERHASIL DITUGASKAN KE TITIK LAPORAN.');
+        addNotification('Teknisi berhasil ditugaskan untuk menangani laporan.');
       },
       onError: () => {
-        addNotification('GAGAL MENGHUBUNGI PERSONEL. CEK JARINGAN.', 'error');
+        addNotification('Gagal menugaskan teknisi. Silakan periksa kembali koneksi Anda.', 'error');
       }
     });
   };
@@ -68,389 +83,37 @@ const DashboardStaf = (props: any) => {
   const incomingReports = dbCases.filter((r: any) => r.status === 'PENDING' || r.status === 'PROSES');
   const completedReports = dbCases.filter((r: any) => r.status === 'SELESAI');
 
-  const renderMasuk = () => (
-    <div className="animate-in fade-in space-y-6 mt-6">
-      <div className="flex gap-4">
-        <div className="bg-white/60 dark:bg-black/60 border border-targetred p-4 flex-1 shadow-md">
-          <span className="text-gray-600 dark:text-gray-400 font-tactical text-xs tracking-wider block mb-1 uppercase">ANTREAN PENDING</span>
-          <span className="text-targetred font-mono text-3xl font-bold">{incomingReports.filter((r: any) => r.status === 'PENDING').length}</span>
-        </div>
-        <div className="bg-white/60 dark:bg-black/60 border border-blue-600 p-4 flex-1 shadow-md">
-          <span className="text-gray-600 dark:text-gray-400 font-tactical text-xs tracking-wider block mb-1 uppercase">SEDANG DIPROSES</span>
-          <span className="text-blue-500 font-mono text-3xl font-bold">{incomingReports.filter((r: any) => r.status === 'PROSES').length}</span>
-        </div>
-      </div>
-
-      <div className="bg-white/60 dark:bg-black/60 border border-gray-300 dark:border-gray-700 rounded-sm overflow-hidden shadow-xl">
-        <div className="p-4 border-b border-gray-300 dark:border-gray-700 bg-[#1a2024] flex items-center justify-between text-white">
-          <h3 className="font-tactical tracking-widest text-sm flex items-center gap-2"><AlertTriangle className="w-4 h-4 text-yellow-500" /> LAPORAN DALAM PENANGANAN STAFF</h3>
-        </div>
-        <div className="overflow-x-auto p-2">
-          <table className="w-full text-left font-sans">
-            <thead className="bg-[#1a2024] text-gray-600 dark:text-gray-400 border-b border-gray-300 dark:border-gray-700 font-tactical tracking-widest text-xs">
-              <tr>
-                <th className="p-4">ID LAPORAN</th>
-                <th className="p-4">PELAPOR & WAKTU</th>
-                <th className="p-4">UNIT & LOKASI</th>
-                <th className="p-4">URGENSI / KERUSAKAN</th>
-                <th className="p-4">STATUS</th>
-                <th className="p-4 text-center">AKSI DISPATCH</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-300 dark:divide-gray-800">
-              {incomingReports.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="p-8 text-center text-gray-600 dark:text-gray-500 font-mono">
-                    TIDAK ADA ANTRIAN LAPORAN.
-                  </td>
-                </tr>
-              )}
-              {incomingReports.map((report: any) => (
-                <tr key={report.db_id} className="hover:bg-gray-200 dark:hover:bg-gray-800/30 transition-colors text-gunmetal dark:text-white">
-                  <td className="p-4">
-                    <button
-                      onClick={() => setSelectedReportId(report.db_id)}
-                      className="font-mono font-bold text-sm bg-white dark:bg-black px-2 py-1 border border-gray-300 dark:border-gray-700 block text-center w-fit hover:border-olive hover:text-olive transition-colors group/tid"
-                    >
-                      {report.caseId}
-                    </button>
-                  </td>
-                  <td className="p-4">
-                    <div className="font-bold text-sm">{report.kerusakan.pelapor}</div>
-                    <div className="text-gray-600 dark:text-gray-400 text-xs font-mono mt-1 flex items-center gap-1">
-                      <Clock className="w-3 h-3" /> {report.kerusakan.tanggal}
-                    </div>
-                  </td>
-                  <td className="p-4">
-                    <div className="font-bold mb-1">{report.unit?.nama_dart || report.kerusakan.barangRusak || 'UNIT TIDAK DIKENAL'}</div>
-                    <div className="text-gray-700 dark:text-gray-400 text-[10px] font-mono">LOK: {report.kerusakan.lokasi}</div>
-                  </td>
-                  <td className="p-4">
-                    <div className="flex flex-col gap-1">
-                      <span className={`text-[9px] font-bold px-2 py-0.5 w-fit border ${report.kerusakan.urgensi === 'Sangat Mendesak' ? 'bg-red-900/20 text-red-500 border-red-800' :
-                        'bg-blue-900/20 text-blue-500 border-blue-800'
-                        }`}>
-                        {report.kerusakan.urgensi?.toUpperCase() || 'NORMAL'}
-                      </span>
-                      <span className="text-xs font-bold text-gunmetal dark:text-gray-300">
-                        {report.kerusakan.tingkatKerusakan || report.kerusakan.barangRusak}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="p-4">
-                    {report.status === 'PENDING' ? (
-                      <span className="bg-red-900/20 text-targetred border border-targetred text-[10px] px-2 py-1 font-mono tracking-widest flex items-center gap-1 w-fit shadow-inner">
-                        <span className="w-1.5 h-1.5 rounded-full bg-targetred animate-pulse block"></span> PENDING (UNASSIGNED)
-                      </span>
-                    ) : (
-                      <span className="bg-blue-900/20 text-blue-500 border border-blue-800 text-[10px] font-bold px-2 py-1 font-mono tracking-widest w-fit flex items-center gap-1">
-                        <Activity className="w-3 h-3" /> DIPROSES TEKNISI
-                      </span>
-                    )}
-                  </td>
-                  <td className="p-4 text-center">
-                    {report.status === 'PENDING' ? (
-                      <div className="relative inline-block w-full">
-                        <div className="flex flex-col gap-2">
-                          <button
-                            onClick={() => setAssigningReportId(report.db_id)}
-                            className="w-full bg-olive hover:bg-camogreen text-white px-3 py-2 text-[10px] font-tactical font-bold tracking-[0.2em] transition-all flex items-center justify-center gap-2 border border-olive shadow-[0_0_15px_rgba(75,83,32,0.2)]"
-                          >
-                            <ShieldAlert className="w-3.5 h-3.5" /> TUGASKAN PERSONEL
-                          </button>
-                          {report.kerusakan.fileBukti && report.kerusakan.fileBukti.length > 0 && (
-                            <button
-                              onClick={() => setViewingProof(report.kerusakan.fileBukti)}
-                              className="w-full bg-gray-200 dark:bg-black hover:bg-gray-300 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 px-3 py-1.5 text-[10px] font-mono font-bold tracking-widest transition-colors flex items-center justify-center gap-2 border border-gray-300 dark:border-gray-700"
-                            >
-                              <Eye className="w-3 h-3 text-olive" /> LIHAT BUKTI KENDALA
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="text-gray-600 dark:text-gray-400 text-[10px] font-mono border border-gray-300 dark:border-gray-800 p-2 bg-gray-100 dark:bg-[#111]">
-                        [ TEKNISI DITUGASKAN ] <br />
-                        <span className="text-blue-600 dark:text-blue-400 font-bold block mt-1 text-xs uppercase">
-                          {report.perbaikan.teknisi}
-                        </span>
-                      </div>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderSelesai = () => (
-    <div className="animate-in fade-in space-y-6 mt-6">
-      <div className="bg-white/60 dark:bg-black/60 border border-gray-300 dark:border-gray-700 rounded-sm overflow-hidden shadow-xl">
-        <div className="p-4 border-b border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-[#1a2024] flex items-center justify-between text-gunmetal dark:text-white">
-          <h3 className="font-tactical tracking-widest text-sm flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-500" /> ARSIP PENYELESAIAN (SELESAI) </h3>
-        </div>
-        <div className="overflow-x-auto p-2">
-          <table className="w-full text-left font-sans">
-            <thead className="bg-[#1a2024] text-gray-600 dark:text-gray-400 border-b border-gray-300 dark:border-gray-700 font-tactical tracking-widest text-xs">
-              <tr>
-                <th className="p-4 w-32">ID LAPORAN</th>
-                <th className="p-4">DETAIL KERUSAKAN</th>
-                <th className="p-4">PELAKSANA (TEKNISI)</th>
-                <th className="p-4">CATATAN PERBAIKAN</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-300 dark:divide-gray-800 text-gunmetal dark:text-white">
-              {completedReports.length === 0 && (
-                <tr>
-                  <td colSpan={4} className="p-8 text-center text-gray-600 dark:text-gray-500 font-mono">
-                    BELUM ADA DATA ARSIP PERBAIKAN.
-                  </td>
-                </tr>
-              )}
-              {completedReports.map((report: any) => (
-                <tr key={report.db_id} className="hover:bg-gray-200 dark:hover:bg-gray-800/30 transition-colors">
-                  <td className="p-4">
-                    <button
-                      onClick={() => setSelectedReportId(report.db_id)}
-                      className="font-mono text-gray-600 dark:text-gray-400 text-sm bg-white dark:bg-black px-2 py-1 border border-gray-300 dark:border-gray-700 block w-fit hover:border-olive hover:text-olive transition-colors"
-                    >
-                      {report.caseId}
-                    </button>
-                    <div className="mt-2 text-green-600 dark:text-green-500 text-[10px] font-mono font-bold flex items-center gap-1">
-                      <CheckCircle className="w-3 h-3" /> BERHASIL CLEAR
-                    </div>
-                  </td>
-                  <td className="p-4">
-                    <div className="font-bold text-sm mb-1 uppercase">{report.kerusakan.barangRusak}</div>
-                    <div className="text-gray-700 dark:text-gray-400 text-xs font-mono w-full max-w-sm uppercase">
-                      Masuk: {report.kerusakan.tanggal} <br />
-                      Selesai: <span className="text-gunmetal dark:text-white font-bold">{report.perbaikan.tanggalSelesai || '-'}</span>
-                    </div>
-                  </td>
-                  <td className="p-4">
-                    <div className="text-sm font-bold uppercase">
-                      {report.perbaikan.teknisi}
-                    </div>
-                    <div className="text-gray-600 dark:text-gray-500 text-[10px] font-mono mt-1 uppercase">
-                      KODE OP: {report.db_id}
-                    </div>
-                  </td>
-                  <td className="p-4">
-                    <div className="bg-white dark:bg-black/50 p-4 border-l-4 border-green-700 text-sm text-gray-800 dark:text-gray-300 relative shadow-inner">
-                      <span className="absolute top-1 left-2 text-xl text-gray-400 dark:text-gray-600 font-serif">"</span>
-                      <span className="pl-4 block italic font-serif leading-relaxed uppercase mb-3">{report.perbaikan.tindakan}</span>
-                      {report.perbaikan.metodePerbaikan && (
-                        <div className="ml-4 text-[10px] text-green-600 dark:text-green-500 bg-green-900/10 px-2 py-1 border border-green-900/50 inline-block font-mono uppercase">
-                          METODE: {report.perbaikan.metodePerbaikan}
-                        </div>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderInventaris = () => {
-    const jenisOptions = ['ALL', ...new Set(dbUnits.map((u: any) => u.jenis_dart))];
-    const satuanOptions = ['ALL', ...new Set(dbUnits.map((u: any) => u.asal_satuan))];
-
-    const handleSort = (key: string) => {
-      let direction: 'asc' | 'desc' = 'asc';
-      if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
-        direction = 'desc';
-      }
-      setSortConfig({ key, direction });
-    };
-
-    const filteredUnits = dbUnits.filter((u: any) => {
-      const matchesSearch = u.nama_dart.toLowerCase().includes(unitSearch.toLowerCase()) || 
-                           u.nomor_seri.toLowerCase().includes(unitSearch.toLowerCase());
-      const matchesJenis = filterJenis === 'ALL' || u.jenis_dart === filterJenis;
-      const matchesSatuan = filterSatuan === 'ALL' || u.asal_satuan === filterSatuan;
-      return matchesSearch && matchesJenis && matchesSatuan;
-    }).sort((a: any, b: any) => {
-      if (!sortConfig) return 0;
-      const { key, direction } = sortConfig;
-      if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
-      if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
-      return 0;
-    });
-
-    return (
-      <div className="animate-in fade-in space-y-6 mt-6">
-        <div className="bg-white/60 dark:bg-[#1a2024] border border-gray-300 dark:border-gray-700 p-4 shadow-xl">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="md:col-span-1">
-              <label className="block text-[10px] font-mono font-bold text-gray-500 mb-1 uppercase">CARI PERANGKAT</label>
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input 
-                  type="text" 
-                  placeholder="SN / NAMA..." 
-                  value={unitSearch}
-                  onChange={(e) => setUnitSearch(e.target.value)}
-                  className="w-full bg-sand dark:bg-black border border-gray-300 dark:border-gray-700 pl-10 pr-4 py-2 text-xs font-mono focus:border-olive outline-none uppercase"
-                />
-              </div>
-            </div>
-            <div>
-              <label className="block text-[10px] font-mono font-bold text-gray-500 mb-1 uppercase">JENIS</label>
-              <select value={filterJenis} onChange={(e) => setFilterJenis(e.target.value)} className="w-full bg-sand dark:bg-black border border-gray-300 dark:border-gray-700 px-4 py-2 text-xs font-mono focus:border-olive outline-none uppercase">
-                {jenisOptions.map((o: any) => <option key={o} value={o}>{o === 'ALL' ? 'SEMUA' : o}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="block text-[10px] font-mono font-bold text-gray-500 mb-1 uppercase">SATUAN</label>
-              <select value={filterSatuan} onChange={(e) => setFilterSatuan(e.target.value)} className="w-full bg-sand dark:bg-black border border-gray-300 dark:border-gray-700 px-4 py-2 text-xs font-mono focus:border-olive outline-none uppercase">
-                {satuanOptions.map((o: any) => <option key={o} value={o}>{o === 'ALL' ? 'SEMUA' : o}</option>)}
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white/60 dark:bg-black/60 border border-gray-300 dark:border-gray-700 rounded-sm overflow-hidden shadow-xl">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left font-sans text-xs">
-              <thead className="bg-[#1a2024] text-gray-400 font-tactical tracking-widest border-b border-gray-300 dark:border-gray-700">
-                <tr>
-                  <th className="p-4 cursor-pointer hover:text-olive" onClick={() => handleSort('nomor_seri')}>SN</th>
-                  <th className="p-4 cursor-pointer hover:text-olive" onClick={() => handleSort('nama_dart')}>UNIT</th>
-                  <th className="p-4 cursor-pointer hover:text-olive" onClick={() => handleSort('jenis_dart')}>JENIS</th>
-                  <th className="p-4 cursor-pointer hover:text-olive" onClick={() => handleSort('asal_satuan')}>SATUAN</th>
-                  <th className="p-4 cursor-pointer hover:text-olive" onClick={() => handleSort('status_unit')}>STATUS</th>
-                  <th className="p-4">CEK</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-300 dark:divide-gray-800 text-gunmetal dark:text-white">
-                {filteredUnits.map((u: any) => (
-                  <tr key={u.db_id} className="hover:bg-gray-200 dark:hover:bg-gray-800/30 transition-colors group">
-                    <td className="p-4 font-mono font-bold text-olive">{u.nomor_seri}</td>
-                    <td className="p-4 font-bold uppercase">{u.nama_dart}</td>
-                    <td className="p-4 uppercase">{u.jenis_dart}</td>
-                    <td className="p-4 uppercase">{u.asal_satuan}</td>
-                    <td className="p-4">
-                      <span className={`px-2 py-0.5 border text-[9px] font-bold tracking-widest
-                        ${u.status_unit === 'Siap Ops' ? 'bg-green-900/20 text-green-500 border-green-800' : 
-                          u.status_unit === 'Rusak' ? 'bg-red-900/20 text-targetred border-red-800' : 
-                          'bg-blue-900/20 text-blue-500 border-blue-800'}
-                      `}>
-                        {u.status_unit.toUpperCase()}
-                      </span>
-                    </td>
-                    <td className="p-4 font-mono text-[10px] text-gray-500">{u.last_maintenance}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   return (
-    <div className="min-h-screen bg-sand dark:bg-gunmetal flex font-sans selection:bg-olive selection:text-gunmetal relative text-gunmetal dark:text-gray-200">
-      {/* MOBILE OVERLAY */}
-      {isMobileMenuOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm"
-          onClick={() => setIsMobileMenuOpen(false)}
-        />
-      )}
-
-      {/* MAN SIDEBAR - TACTICAL */}
-      <aside className={`fixed inset-y-0 left-0 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 w-72 bg-white dark:bg-black border-r border-gray-300 dark:border-gray-800 z-50 flex-shrink-0 flex flex-col shadow-2xl`}>
-        <div className="p-6 border-b border-gray-300 dark:border-gray-800 flex items-center gap-4 bg-gray-100 dark:bg-[#111]">
-          <div className="relative">
-            <img src="/logo.png" alt="DART Logo" className="w-12 h-14 object-contain" />
-          </div>
-          <div>
-            <h1 className="font-stencil text-2xl tracking-widest text-gunmetal dark:text-white leading-none">HELPDESK-DART</h1>
-          </div>
-        </div>
-
-        <nav className="flex-1 py-6 space-y-1">
-
-          <button
-            onClick={() => { setActiveMenu('MASUK'); setIsMobileMenuOpen(false); }}
-            className={`w-full flex items-center gap-3 px-6 py-3.5 font-tactical text-sm tracking-wider transition-all border-l-2
-              ${activeMenu === 'MASUK' ? 'bg-gray-200 dark:bg-gray-800/80 text-gunmetal dark:text-white border-olive' : 'border-transparent text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-900'}
-            `}
-          >
-            <AlertTriangle className="w-5 h-5" /> LAPORAN KERUSAKAN MASUK
-          </button>
-
-          <button
-            onClick={() => { setActiveMenu('SELESAI'); setIsMobileMenuOpen(false); }}
-            className={`w-full flex items-center gap-3 px-6 py-3.5 font-tactical text-sm tracking-wider transition-all border-l-2
-              ${activeMenu === 'SELESAI' ? 'bg-gray-200 dark:bg-gray-800/80 text-gunmetal dark:text-white border-olive' : 'border-transparent text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-900'}
-            `}
-          >
-            <CheckCircle className="w-5 h-5" /> LAPORAN PERBAIKAN SELESAI
-          </button>
-
-          <button
-            onClick={() => { setActiveMenu('INVENTARIS'); setIsMobileMenuOpen(false); }}
-            className={`w-full flex items-center gap-3 px-6 py-3.5 font-tactical text-sm tracking-wider transition-all border-l-2
-              ${activeMenu === 'INVENTARIS' ? 'bg-gray-200 dark:bg-gray-800/80 text-gunmetal dark:text-white border-olive' : 'border-transparent text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-900'}
-            `}
-          >
-            <Database className="w-5 h-5" /> INVENTARIS UNIT DART
-          </button>
-        </nav>
-
-        <div className="p-4 border-t border-gray-300 dark:border-gray-800 bg-gray-100 dark:bg-[#111]">
-          <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-500 hover:text-targetred hover:bg-red-900/20 font-tactical text-sm tracking-wider transition-all rounded-sm border border-transparent hover:border-targetred/30">
-            <LogOut className="w-5 h-5" /> LOGOUT
-          </button>
-        </div>
-      </aside>
+    <div className="min-h-screen bg-sand dark:bg-gunmetal flex font-sans selection:bg-olive selection:text-sand relative text-gunmetal dark:text-soft-sand">
+      
+      <StafSidebar 
+        isMobileMenuOpen={isMobileMenuOpen}
+        setIsMobileMenuOpen={setIsMobileMenuOpen}
+        activeMenu={activeMenu}
+        setActiveMenu={setActiveMenu}
+        handleLogout={handleLogout}
+      />
 
       {/* MAIN CONTENT AREA */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-paper.png')] opacity-[0.05] pointer-events-none"></div>
 
-        {/* Topbar */}
-        <header className="h-16 border-b border-gray-300 dark:border-gray-800 bg-white/80 dark:bg-black/50 backdrop-blur-md flex items-center justify-between px-4 md:px-8 flex-shrink-0 z-10 relative">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => setIsMobileMenuOpen(true)}
-              className="md:hidden p-2 text-gray-600 dark:text-gray-400 hover:text-gunmetal dark:hover:text-white transition-colors"
-            >
-              <Menu className="w-6 h-6" />
-            </button>
-          </div>
-
-          <div className="flex items-center gap-0 border border-gray-300 dark:border-gray-700 rounded shadow-sm bg-gray-100 dark:bg-gray-900 ml-auto">
-            <div className="bg-white dark:bg-black px-4 py-1.5 text-right flex flex-col justify-center">
-              <span className="block text-xs font-bold text-gunmetal dark:text-white uppercase font-sans tracking-wider">{currentUser?.name || 'Staf Admin'}</span>
-              <span className="block text-[9px] font-mono tracking-widest text-targetred">{currentUser?.id || 'STAF LOGISTIK'}</span>
-            </div>
-            <div className="w-10 h-full bg-sand dark:bg-gunmetal border-l border-gray-300 dark:border-gray-700 flex items-center justify-center p-2">
-              <CircleUser className="w-6 h-6 text-gray-500 dark:text-gray-400" />
-            </div>
-          </div>
-        </header>
+        <StafTopbar 
+          setIsMobileMenuOpen={setIsMobileMenuOpen}
+          currentUser={currentUser}
+        />
 
         {/* Scrollable Content Container */}
         <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar z-10">
           <div className="max-w-[1400px] mx-auto">
-            <div className="mb-6 flex justify-between items-end border-b border-gray-300 dark:border-gray-700 pb-4">
+            <div className="mb-6 flex justify-between items-end border-b border-soft-gunmetal/10 dark:border-soft-sand/5 pb-4">
               <div>
                 <h2 className="text-2xl font-tactical font-bold text-gunmetal dark:text-white tracking-widest uppercase">
                   {activeMenu === 'MASUK' ? 'MODUL PENUGASAN TEKNISI' : 
                    activeMenu === 'SELESAI' ? 'ARSIP DOKUMEN PENYELESAIAN' : 
                    'DATABASE INVENTARIS PERANGKAT'}
                 </h2>
-                <p className="text-xs font-mono text-gray-600 dark:text-gray-400 mt-1 uppercase tracking-widest">
+                <p className="text-xs font-mono text-soft-gunmetal/60 dark:text-soft-sand/40 mt-1 uppercase tracking-widest">
                    {activeMenu === 'INVENTARIS' ? 'STATUS KESIAPAN ALUTSISTA DART.' : 'Sistem Manajemen Pelaporan Kerusakan Dart.'}
                 </p>
               </div>
@@ -458,338 +121,80 @@ const DashboardStaf = (props: any) => {
               {activeMenu !== 'INVENTARIS' && (
                 <button 
                   onClick={() => setIsRecapModalOpen(true)}
-                  className="bg-targetred text-white px-5 py-2 font-tactical font-bold text-xs tracking-widest hover:bg-red-700 transition-all flex items-center gap-2 shadow-lg"
+                  className="bg-targetred text-sand px-5 py-2 font-tactical font-bold text-xs tracking-widest hover:bg-deep-red transition-all flex items-center gap-2 shadow-lg"
                 >
-                  <FileArchive className="w-4 h-4" /> EKSPOR REKAP
+                  <FileArchive className="w-4 h-4" /> CETAK REKAPITULASI
                 </button>
               )}
             </div>
 
-            {activeMenu === 'MASUK' ? renderMasuk() : 
-             activeMenu === 'SELESAI' ? renderSelesai() : 
-             renderInventaris()}
+            {activeMenu === 'MASUK' && (
+              <IncomingReportsTable 
+                reports={incomingReports}
+                onSelectReport={setSelectedReportId}
+                onAssignTechnician={setAssigningReportId}
+                onViewProof={setViewingProof}
+              />
+            )}
+
+            {activeMenu === 'SELESAI' && (
+              <CompletedReportsTable 
+                reports={completedReports}
+                onSelectReport={setSelectedReportId}
+              />
+            )}
+
+            {activeMenu === 'INVENTARIS' && (
+              <InventorySection 
+                dbUnits={dbUnits}
+                unitSearch={unitSearch}
+                setUnitSearch={setUnitSearch}
+                filterJenis={filterJenis}
+                setFilterJenis={setFilterJenis}
+                filterSatuan={filterSatuan}
+                setFilterSatuan={setFilterSatuan}
+                sortConfig={sortConfig}
+                setSortConfig={setSortConfig}
+              />
+            )}
           </div>
         </div>
       </main>
 
-      {/* PROOF VIEWER MODAL */}
-      {viewingProof && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
-          <div className="bg-white dark:bg-gunmetal border-2 border-olive w-full max-w-2xl shadow-2xl animate-in zoom-in-95">
-            <div className="p-4 border-b border-olive bg-olive/10 flex justify-between items-center">
-              <h3 className="font-tactical font-bold text-olive tracking-widest uppercase flex items-center gap-2">
-                <Camera className="w-5 h-5" /> LAMPIRAN BUKTI KENDALA
-              </h3>
-              <button onClick={() => setViewingProof(null)} className="text-gray-500 hover:text-targetred transition-colors font-bold text-xl">✕</button>
-            </div>
-            <div className="p-6">
-              <div className="grid grid-cols-2 gap-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
-                {viewingProof.map((url, i) => (
-                  <div key={i} className="border border-gray-300 dark:border-gray-800 rounded-sm overflow-hidden bg-black flex items-center justify-center h-48">
-                    <img src={url} alt={`Bukti ${i}`} className="max-w-full max-h-full object-contain" />
-                  </div>
-                ))}
-              </div>
-              <div className="mt-8 flex justify-end">
-                <button
-                  onClick={() => setViewingProof(null)}
-                  className="bg-gunmetal dark:bg-black text-white px-8 py-2 font-tactical font-bold tracking-widest hover:bg-gray-800 transition-colors border border-gray-600"
-                >
-                  TUTUP
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Modals */}
+      <ProofModal 
+        isOpen={!!viewingProof}
+        onClose={() => setViewingProof(null)}
+        viewingProof={viewingProof}
+      />
 
-      {/* MODAL DETAIL TIKET */}
-      {selectedReportId && selectedReport && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
-          <div className="bg-sand dark:bg-gunmetal border-2 border-olive w-full max-w-2xl shadow-2xl animate-in zoom-in-95 duration-200">
-            <div className="p-4 border-b border-olive bg-olive/10 flex justify-between items-center">
-              <h3 className="font-tactical font-bold text-olive tracking-widest uppercase flex items-center gap-2">
-                <Activity size={18} /> RINCIAN TIKET: {selectedReport.caseId}
-              </h3>
-              <button onClick={() => setSelectedReportId(null)} className="text-gray-500 hover:text-targetred text-xl">✕</button>
-            </div>
-            <div className="p-8 space-y-8 overflow-y-auto max-h-[80vh] custom-scrollbar">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Bagian Pelaporan */}
-                <div className="space-y-4">
-                  <h4 className="text-[10px] font-mono font-bold text-gray-500 tracking-[0.2em] border-b border-gray-300 dark:border-gray-800 pb-2 uppercase">DATA PELAPORAN</h4>
-                  <div className="space-y-3">
-                    <div>
-                      <p className="text-[9px] text-gray-500 font-mono uppercase tracking-widest">Barang Rusak</p>
-                      <p className="text-sm font-bold text-gunmetal dark:text-white uppercase">{selectedReport.kerusakan.barangRusak}</p>
-                    </div>
-                    <div>
-                      <p className="text-[9px] text-gray-500 font-mono uppercase tracking-widest">Lokasi Kejadian</p>
-                      <p className="text-sm font-bold text-olive uppercase">{selectedReport.kerusakan.lokasi}</p>
-                    </div>
-                    <div>
-                      <p className="text-[9px] text-gray-500 font-mono uppercase tracking-widest">Waktu Lapor</p>
-                      <p className="text-sm font-mono text-gray-700 dark:text-gray-300">{selectedReport.kerusakan.tanggal}</p>
-                    </div>
-                  </div>
-                </div>
+      <ReportDetailModal 
+        isOpen={!!selectedReportId}
+        onClose={() => setSelectedReportId(null)}
+        report={selectedReport}
+      />
 
-                {/* Bagian Status & Penanganan */}
-                <div className="space-y-4">
-                  <h4 className="text-[10px] font-mono font-bold text-gray-500 tracking-[0.2em] border-b border-gray-300 dark:border-gray-800 pb-2 uppercase">STATUS SISTEM</h4>
-                  <div className="space-y-3">
-                    <div>
-                      <p className="text-[9px] text-gray-500 font-mono uppercase tracking-widest">Status Perbaikan</p>
-                      <span className={`inline-block px-3 py-1 text-[10px] font-tactical font-bold tracking-widest border mt-1
-                        ${selectedReport.status === 'SELESAI' ? 'bg-green-900/20 text-green-500 border-green-800' :
-                          selectedReport.status === 'PROSES' ? 'bg-blue-900/20 text-blue-500 border-blue-800' :
-                            'bg-yellow-900/20 text-yellow-500 border-yellow-800'}
-                      `}>
-                        {selectedReport.perbaikan.statusPerbaikan || selectedReport.status}
-                      </span>
-                    </div>
-                    <div>
-                      <p className="text-[9px] text-gray-500 font-mono uppercase tracking-widest">Teknisi Penanggung Jawab</p>
-                      <p className="text-sm font-bold text-gunmetal dark:text-white flex items-center gap-2">
-                        <Wrench size={14} className="text-olive" /> {selectedReport.perbaikan.teknisi ? selectedReport.perbaikan.teknisi.toUpperCase() : 'BELUM ADA PENUGASAN'}
-                      </p>
-                      {selectedReport.status === 'SELESAI' && selectedReport.perbaikan.tanggalSelesai && (
-                        <p className="text-[10px] text-green-600 dark:text-green-400 font-mono mt-1 uppercase tracking-tighter">
-                          Tuntas: {selectedReport.perbaikan.tanggalSelesai}
-                        </p>
-                      )}
-                      {selectedReport.status === 'PROSES' && selectedReport.perbaikan.tanggalPenanganan && (
-                        <p className="text-[10px] text-blue-500 font-mono mt-1 uppercase tracking-tighter">
-                          Ditangani: {selectedReport.perbaikan.tanggalPenanganan}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
+      <AssignTechnicianModal 
+        isOpen={!!assigningReportId}
+        onClose={() => setAssigningReportId(null)}
+        technicians={dbUsers}
+        onAssign={(techId) => assigningReportId && handleAssignTechnician(assigningReportId, techId)}
+      />
 
-              {/* Deskripsi & Catatan */}
-              <div className="space-y-4">
-                <div className="bg-sand/30 dark:bg-black/30 p-4 border border-gray-300 dark:border-gray-800">
-                  <p className="text-[9px] text-gray-500 font-mono uppercase tracking-widest mb-2">DESKRIPSI KRONOLOGI:</p>
-                  <p className="text-xs text-gray-700 dark:text-gray-400 font-mono leading-relaxed italic">
-                    "{selectedReport.kerusakan.deskripsi}"
-                  </p>
-                </div>
+      <StafRecapModal 
+        isOpen={isRecapModalOpen}
+        onClose={() => setIsRecapModalOpen(false)}
+        recapPeriod={recapPeriod}
+        setRecapPeriod={setRecapPeriod}
+        recapStartDate={recapStartDate}
+        setRecapStartDate={setRecapStartDate}
+        recapEndDate={recapEndDate}
+        setRecapEndDate={setRecapEndDate}
+        recapYear={recapYear}
+        setRecapYear={setRecapYear}
+        onExport={handleExportRecap}
+      />
 
-                {selectedReport.perbaikan.tindakan && (
-                  <div className="bg-olive/5 p-4 border border-olive/30">
-                    <p className="text-[9px] text-olive font-mono uppercase tracking-widest mb-2">TINDAKAN PERBAIKAN (TEKNISI):</p>
-                    <p className="text-xs text-gunmetal dark:text-gray-200 font-mono leading-relaxed">
-                      {selectedReport.perbaikan.tindakan}
-                    </p>
-                    {selectedReport.perbaikan.metodePerbaikan && (
-                      <div className="mt-3 pt-3 border-t border-olive/20">
-                        <span className="text-[9px] font-bold text-olive tracking-tighter uppercase">METODE PERBAIKAN: {selectedReport.perbaikan.metodePerbaikan}</span>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              <div className="mt-8 flex justify-end">
-                <button
-                  onClick={() => setSelectedReportId(null)}
-                  className="bg-olive text-white px-8 py-2 font-tactical font-bold tracking-widest hover:bg-camogreen transition-colors"
-                >
-                  TUTUP
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* MODAL PENUGASAN PERSONEL TEKNISI */}
-      {assigningReportId && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
-          <div className="bg-white dark:bg-gunmetal border-2 border-olive w-full max-w-2xl shadow-2xl animate-in zoom-in-95">
-            <div className="p-4 border-b border-olive bg-olive/10 flex justify-between items-center">
-              <h3 className="font-tactical font-bold text-olive tracking-widest uppercase flex items-center gap-2">
-                <Users className="w-5 h-5" /> PILIH PERSONEL TEKNISI
-              </h3>
-              <button onClick={() => setAssigningReportId(null)} className="text-gray-500 hover:text-targetred transition-colors font-bold text-xl">✕</button>
-            </div>
-            <div className="p-6">
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 font-mono">PILIH PERSONEL YANG AKAN DITUGASKAN UNTUK LAPORAN INI.</p>
-
-              <div className="space-y-3 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
-                {dbUsers.map((tek: any) => (
-                  <div key={tek.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-gray-100 dark:bg-black border border-gray-300 dark:border-gray-700 hover:border-olive dark:hover:border-olive transition-colors group">
-                    <div className="flex flex-col mb-3 sm:mb-0">
-                      <span className="font-bold text-gunmetal dark:text-white text-lg">{tek.name}</span>
-                      <span className="text-xs text-olive font-mono uppercase tracking-widest mt-1">{tek.spesialisasi || 'GENERALIST'} | {tek.username}</span>
-                      <div className="flex items-center gap-4 mt-2">
-                        <span className="text-[10px] font-mono bg-gray-200 dark:bg-gray-800 px-2 py-1 text-gray-700 dark:text-gray-300">
-                          TOTAL DITERIMA: <span className="font-bold">{tek.tasksReceived || 0}</span>
-                        </span>
-                        <span className="text-[10px] font-mono bg-blue-100 dark:bg-blue-900/30 px-2 py-1 text-blue-700 dark:text-blue-400">
-                          SEDANG DIKERJAKAN: <span className="font-bold">{tek.tasksInProgress || 0}</span>
-                        </span>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => handleAssignTechnician(assigningReportId, tek.id)}
-                      className="bg-olive hover:bg-camogreen text-white px-6 py-2 text-xs font-tactical font-bold tracking-widest transition-colors flex items-center justify-center gap-2"
-                    >
-                      <ShieldAlert className="w-4 h-4" /> TUGASKAN
-                    </button>
-                  </div>
-                ))}
-
-                {dbUsers.length === 0 && (
-                  <div className="p-8 text-center text-gray-500 font-mono">
-                    TIDAK ADA DATA TEKNISI TERSEDIA.
-                  </div>
-                )}
-              </div>
-
-              <div className="mt-6 flex justify-end pt-4 border-t border-gray-300 dark:border-gray-800">
-                <button
-                  onClick={() => setAssigningReportId(null)}
-                  className="bg-gunmetal dark:bg-gray-800 text-white px-8 py-2 font-tactical font-bold tracking-widest hover:bg-gray-700 transition-colors border border-gray-600"
-                >
-                  BATAL
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* REMOVED LOCAL NOTIFICATION RENDERER */}
-
-      {/* EXPORT MODAL */}
-      {isRecapModalOpen && (
-        <div className="fixed inset-0 z-[150] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
-          <div className="bg-sand dark:bg-gunmetal border-2 border-targetred w-full max-w-lg shadow-2xl animate-in zoom-in-95 duration-200">
-            <div className="p-4 border-b border-targetred bg-targetred/10 flex justify-between items-center">
-              <h3 className="font-tactical font-bold text-targetred tracking-widest uppercase flex items-center gap-2">
-                <FileArchive className="w-5 h-5" /> EKSPOR REKAPITULASI
-              </h3>
-              <button onClick={() => setIsRecapModalOpen(false)} className="text-gray-500 hover:text-targetred text-xl">✕</button>
-            </div>
-            
-            <div className="p-6">
-              <p className="text-xs font-mono text-gray-600 dark:text-gray-400 mb-6 uppercase tracking-tight">
-                Pilih periode laporan untuk diekspor ke format PDF (Landscape). Laporan ini mencakup seluruh data unit, teknisi, dan status penyelesaian.
-              </p>
-              
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                  {(['weekly', 'monthly', 'yearly'] as const).map(period => (
-                    <button
-                      key={period}
-                      onClick={() => setRecapPeriod(period)}
-                      className={`p-3 border-2 transition-all flex flex-col items-center justify-center gap-1
-                        ${recapPeriod === period 
-                          ? 'border-targetred bg-targetred/10 text-targetred shadow-[0_0_10px_rgba(200,30,30,0.2)]' 
-                          : 'border-gray-300 dark:border-gray-800 text-gray-500 hover:border-gray-400'}
-                      `}
-                    >
-                      <p className="text-[10px] font-tactical font-bold uppercase tracking-widest">
-                        {period === 'weekly' ? 'Mingguan' : period === 'monthly' ? 'Bulanan' : 'Tahunan'}
-                      </p>
-                      <p className="text-[8px] font-mono italic">Berdasarkan Tgl Ini</p>
-                    </button>
-                  ))}
-                </div>
-
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setRecapPeriod('custom')}
-                    className={`flex-1 p-3 border-2 transition-all flex flex-col items-center justify-center gap-1
-                      ${recapPeriod === 'custom' 
-                        ? 'border-targetred bg-targetred/10 text-targetred shadow-[0_0_10px_rgba(200,30,30,0.2)]' 
-                        : 'border-gray-300 dark:border-gray-800 text-gray-500 hover:border-gray-400'}
-                    `}
-                  >
-                    <p className="text-[10px] font-tactical font-bold uppercase tracking-widest">Rentang Khusus</p>
-                    <p className="text-[8px] font-mono italic">Mulai - Selesai</p>
-                  </button>
-                  <button
-                    onClick={() => setRecapPeriod('year_specific')}
-                    className={`flex-1 p-3 border-2 transition-all flex flex-col items-center justify-center gap-1
-                      ${recapPeriod === 'year_specific' 
-                        ? 'border-targetred bg-targetred/10 text-targetred shadow-[0_0_10px_rgba(200,30,30,0.2)]' 
-                        : 'border-gray-300 dark:border-gray-800 text-gray-500 hover:border-gray-400'}
-                    `}
-                  >
-                    <p className="text-[10px] font-tactical font-bold uppercase tracking-widest">Tahun Tertentu</p>
-                    <p className="text-[8px] font-mono italic">Pilih Tahun</p>
-                  </button>
-                </div>
-
-                {/* Conditional Input for Custom Range */}
-                {recapPeriod === 'custom' && (
-                  <div className="grid grid-cols-2 gap-3 p-4 bg-gray-100 dark:bg-black/30 border border-targetred/30 animate-in slide-in-from-top-2">
-                    <div>
-                      <label className="block text-[9px] font-mono text-gray-500 uppercase mb-1">Mulai Tanggal</label>
-                      <input 
-                        type="date" 
-                        value={recapStartDate}
-                        onChange={(e) => setRecapStartDate(e.target.value)}
-                        className="w-full bg-white dark:bg-gunmetal border border-gray-300 dark:border-gray-700 p-2 text-xs font-mono outline-none focus:border-targetred"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[9px] font-mono text-gray-500 uppercase mb-1">Sampai Tanggal</label>
-                      <input 
-                        type="date" 
-                        value={recapEndDate}
-                        onChange={(e) => setRecapEndDate(e.target.value)}
-                        className="w-full bg-white dark:bg-gunmetal border border-gray-300 dark:border-gray-700 p-2 text-xs font-mono outline-none focus:border-targetred"
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {/* Conditional Input for Year Specific */}
-                {recapPeriod === 'year_specific' && (
-                  <div className="p-4 bg-gray-100 dark:bg-black/30 border border-targetred/30 animate-in slide-in-from-top-2">
-                    <label className="block text-[9px] font-mono text-gray-500 uppercase mb-1">Pilih Tahun</label>
-                    <select 
-                      value={recapYear}
-                      onChange={(e) => setRecapYear(e.target.value)}
-                      className="w-full bg-white dark:bg-gunmetal border border-gray-300 dark:border-gray-700 p-2 text-xs font-mono outline-none focus:border-targetred"
-                    >
-                      {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i).map(year => (
-                        <option key={year} value={year}>{year}</option>
-                      ))}
-                    </select>
-                  </div>
-                )}
-              </div>
-              
-              <div className="mt-8 grid grid-cols-2 gap-3">
-                <button
-                  onClick={handleExportRecap}
-                  className="bg-targetred text-white py-3 font-tactical font-bold tracking-widest hover:bg-red-700 transition-all flex items-center justify-center gap-2 shadow-lg"
-                >
-                  <Download className="w-4 h-4" /> EKSPOR PDF
-                </button>
-                <button
-                  onClick={() => setIsRecapModalOpen(false)}
-                  className="bg-transparent border border-gray-500 text-gray-500 py-3 font-tactical font-bold tracking-widest hover:bg-gray-500/10 transition-all"
-                >
-                  BATAL
-                </button>
-              </div>
-            </div>
-            
-            <div className="p-3 bg-black/20 text-center">
-              <p className="text-[8px] font-mono text-gray-500 uppercase tracking-widest">
-                Generated by Command Center Security Module
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
