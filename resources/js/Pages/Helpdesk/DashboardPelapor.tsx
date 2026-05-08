@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useStore } from '@/store/useStore';
 import { router, useForm } from '@inertiajs/react';
+import LogoutConfirmModal from '@/Components/LogoutConfirmModal';
 
 // Sub-components
 import PelaporSidebar from './PelaporComponents/PelaporSidebar';
@@ -16,6 +17,7 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [selectedItemId, setSelectedItemId] = useState<number | string | null>(null);
   const [filterTime, setFilterTime] = useState<'ALL' | 'TODAY' | 'WEEK'>('ALL');
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   
   const addNotification = useStore(state => state.addNotification);
   const currentUser = useStore(state => state.currentUser);
@@ -96,6 +98,10 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
   };
 
   const handleLogout = () => {
+    setIsLogoutModalOpen(true);
+  };
+
+  const confirmLogout = () => {
     logoutAction();
     router.visit('/login');
   };
@@ -150,6 +156,12 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
         isOpen={!!selectedItemId}
         onClose={() => setSelectedItemId(null)}
         report={selectedItem}
+      />
+
+      <LogoutConfirmModal 
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={confirmLogout}
       />
 
     </div>

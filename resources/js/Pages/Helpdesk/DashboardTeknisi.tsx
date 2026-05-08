@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useStore } from '@/store/useStore';
 import { router, useForm } from '@inertiajs/react';
+import LogoutConfirmModal from '@/Components/LogoutConfirmModal';
 
 // Sub-components
 import TeknisiSidebar from './TeknisiComponents/TeknisiSidebar';
@@ -21,6 +22,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   // Filter tasks
   const activeTasks = dbCases.filter((r: any) => r.status === 'PROSES' || r.status === 'PENDING');
@@ -72,6 +74,10 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
   };
 
   const handleLogout = () => {
+    setIsLogoutModalOpen(true);
+  };
+
+  const confirmLogout = () => {
     logoutAction();
     router.visit('/login');
   };
@@ -141,6 +147,12 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
           </div>
         </div>
       </main>
+
+      <LogoutConfirmModal 
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={confirmLogout}
+      />
     </div>
   );
 };

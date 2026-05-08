@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FileArchive } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { router, usePage } from '@inertiajs/react';
+import LogoutConfirmModal from '@/Components/LogoutConfirmModal';
 
 // Sub-components
 import StafSidebar from './StafComponents/StafSidebar';
@@ -24,6 +25,7 @@ const DashboardStaf = (props: any) => {
   const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [isRecapModalOpen, setIsRecapModalOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   
   // Recap States
   const [recapPeriod, setRecapPeriod] = useState<'weekly' | 'monthly' | 'yearly' | 'custom' | 'year_specific'>('monthly');
@@ -65,6 +67,10 @@ const DashboardStaf = (props: any) => {
   };
 
   const handleLogout = () => {
+    setIsLogoutModalOpen(true);
+  };
+
+  const confirmLogout = () => {
     logoutAction();
     router.visit('/login');
   };
@@ -193,6 +199,12 @@ const DashboardStaf = (props: any) => {
         recapYear={recapYear}
         setRecapYear={setRecapYear}
         onExport={handleExportRecap}
+      />
+
+      <LogoutConfirmModal 
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={confirmLogout}
       />
 
     </div>

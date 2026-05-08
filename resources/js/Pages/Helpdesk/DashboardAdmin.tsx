@@ -17,6 +17,7 @@ import UnitModal from './AdminComponents/UnitModal';
 import UnitDeleteModal from './AdminComponents/UnitDeleteModal';
 import UnitHistoryModal from './AdminComponents/UnitHistoryModal';
 import RecapModal from './AdminComponents/RecapModal';
+import LogoutConfirmModal from '@/Components/LogoutConfirmModal';
 import { useStore } from '@/store/useStore';
 import { router, useForm, usePage, Link } from '@inertiajs/react';
 
@@ -88,6 +89,7 @@ const DashboardAdmin = (props: any) => {
   const [recapStartDate, setRecapStartDate] = useState<string>('');
   const [recapEndDate, setRecapEndDate] = useState<string>('');
   const [recapYear, setRecapYear] = useState<string>(new Date().getFullYear().toString());
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   // Handlers
   const handlePrintCasePDF = (caseData: any) => {
@@ -240,6 +242,10 @@ const DashboardAdmin = (props: any) => {
   };
 
   const handleLogout = () => {
+    setIsLogoutModalOpen(true);
+  };
+
+  const confirmLogout = () => {
     logoutAction();
     router.visit('/login');
   };
@@ -429,6 +435,12 @@ const DashboardAdmin = (props: any) => {
               onClose={() => setIsUnitDeleteModalOpen(false)}
               onConfirm={handleConfirmDeleteUnit}
               unit={unitToDelete}
+            />
+
+            <LogoutConfirmModal 
+              isOpen={isLogoutModalOpen}
+              onClose={() => setIsLogoutModalOpen(false)}
+              onConfirm={confirmLogout}
             />
           </div>
         </div>
