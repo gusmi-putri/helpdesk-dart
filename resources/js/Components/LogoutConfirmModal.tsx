@@ -19,7 +19,7 @@ const LogoutConfirmModal: React.FC<LogoutConfirmModalProps> = ({ isOpen, onClose
           </h3>
           <button onClick={onClose} className="text-soft-gunmetal hover:text-targetred transition-colors font-bold text-xl">✕</button>
         </div>
-        
+
         <div className="p-8 text-center">
           <div className="w-16 h-16 bg-targetred/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-targetred/30">
             <ShieldAlert className="w-8 h-8 text-targetred animate-pulse" />
@@ -45,12 +45,6 @@ const LogoutConfirmModal: React.FC<LogoutConfirmModalProps> = ({ isOpen, onClose
           >
             BATALKAN
           </button>
-        </div>
-
-        <div className="p-3 bg-black/20 text-center border-t border-targetred/10">
-          <p className="text-[8px] font-mono text-gray-500 uppercase tracking-[0.3em]">
-            DART SECURITY PROTOCOL ALPHA-1
-          </p>
         </div>
       </div>
     </div>
