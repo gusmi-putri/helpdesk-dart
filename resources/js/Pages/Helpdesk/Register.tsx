@@ -44,14 +44,14 @@ const Register: React.FC = () => {
       <div className="relative z-10 w-full max-w-2xl p-8 glass-panel border-t-4 border-t-olive rounded-sm bg-white/80 dark:bg-black/80 backdrop-blur-md shadow-2xl">
 
         <div className="flex justify-between items-start mb-8">
-          <Link href="/login" className="text-gray-500 hover:text-olive transition-colors flex items-center gap-2 text-xs font-mono font-bold uppercase">
+          <Link href="/login" className="text-soft-gunmetal/60 dark:text-soft-sand/40 hover:text-olive transition-colors flex items-center gap-2 text-xs font-mono font-bold uppercase">
             <ArrowLeft className="w-4 h-4" /> Kembali
           </Link>
           <div className="text-right">
             <h2 className="text-2xl font-tactical text-gunmetal dark:text-white font-bold tracking-widest mb-1">
               REGISTRASI PELAPOR
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 text-[10px] font-mono tracking-wider uppercase">
+            <p className="text-soft-gunmetal/60 dark:text-soft-sand/40 text-[10px] font-mono tracking-wider uppercase">
               SISTEM HELPDESK DART
             </p>
           </div>
@@ -59,8 +59,8 @@ const Register: React.FC = () => {
 
         <div className="mb-8 p-4 bg-olive/10 border-l-4 border-olive flex items-center gap-4">
           <ShieldCheck className="w-8 h-8 text-olive shrink-0" />
-          <p className="text-xs text-gunmetal dark:text-gray-300 font-mono leading-relaxed">
-            Pendaftaran ini hanya untuk akun PELAPOR. Akun baru akan melalui proses verifikasi dan persetujuan Admin sebelum dapat digunakan untuk login.
+          <p className="text-xs text-soft-gunmetal dark:text-soft-sand/80 font-mono leading-relaxed">
+            Pendaftaran ini khusus untuk akun <strong>PELAPOR</strong>. Akun baru akan melalui proses verifikasi dan persetujuan Admin sebelum dapat digunakan untuk masuk ke sistem.
           </p>
         </div>
 
@@ -68,15 +68,15 @@ const Register: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Username */}
             <div>
-              <label className="block text-gray-600 dark:text-gray-400 text-[10px] font-mono font-bold mb-2 tracking-widest uppercase">
+              <label className="block text-soft-gunmetal/60 dark:text-soft-sand/40 text-[10px] font-mono font-bold mb-2 tracking-widest uppercase">
                 Username
               </label>
               <input
                 type="text"
                 value={data.username}
                 onChange={(e) => setData('username', e.target.value)}
-                className={`w-full bg-white/40 dark:bg-black/40 border ${errors.username ? 'border-targetred' : 'border-gray-300 dark:border-gray-700'} text-gunmetal dark:text-white px-4 py-2.5 focus:outline-none focus:border-olive transition-colors font-mono text-sm`}
-                placeholder="USERNAME UNIK..."
+                className={`w-full bg-sand/20 dark:bg-black/40 border ${errors.username ? 'border-targetred' : 'border-soft-gunmetal/20 dark:border-soft-sand/10'} text-gunmetal dark:text-white px-4 py-2.5 focus:outline-none focus:border-olive transition-colors font-mono text-sm`}
+                placeholder="NAMA PENGGUNA..."
                 required
               />
               {errors.username && <p className="mt-1 text-targetred text-[9px] font-mono uppercase italic">{errors.username}</p>}
@@ -84,22 +84,22 @@ const Register: React.FC = () => {
 
             {/* Password */}
             <div>
-              <label className="block text-gray-600 dark:text-gray-400 text-[10px] font-mono font-bold mb-2 tracking-widest uppercase">
-                Password
+              <label className="block text-soft-gunmetal/60 dark:text-soft-sand/40 text-[10px] font-mono font-bold mb-2 tracking-widest uppercase">
+                Kata Sandi
               </label>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
                   value={data.password}
                   onChange={(e) => setData('password', e.target.value)}
-                  className={`w-full bg-white/40 dark:bg-black/40 border ${errors.password ? 'border-targetred' : 'border-gray-300 dark:border-gray-700'} text-gunmetal dark:text-white px-4 py-2.5 focus:outline-none focus:border-olive transition-colors font-mono text-sm ${!showPassword ? 'tracking-widest' : ''}`}
-                  placeholder="MASUKKAN PASSWORD"
+                  className={`w-full bg-sand/20 dark:bg-black/40 border ${errors.password ? 'border-targetred' : 'border-soft-gunmetal/20 dark:border-soft-sand/10'} text-gunmetal dark:text-white px-4 py-2.5 focus:outline-none focus:border-olive transition-colors font-mono text-sm ${!showPassword ? 'tracking-widest' : ''}`}
+                  placeholder="KATA SANDI..."
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-olive transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-soft-gunmetal/40 hover:text-olive transition-colors"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -109,15 +109,15 @@ const Register: React.FC = () => {
 
             {/* Nama Lengkap */}
             <div>
-              <label className="block text-gray-600 dark:text-gray-400 text-[10px] font-mono font-bold mb-2 tracking-widest uppercase">
+              <label className="block text-soft-gunmetal/60 dark:text-soft-sand/40 text-[10px] font-mono font-bold mb-2 tracking-widest uppercase">
                 Nama Lengkap
               </label>
               <input
                 type="text"
                 value={data.nama_lengkap}
                 onChange={(e) => setData('nama_lengkap', e.target.value)}
-                className={`w-full bg-white/40 dark:bg-black/40 border ${errors.nama_lengkap ? 'border-targetred' : 'border-gray-300 dark:border-gray-700'} text-gunmetal dark:text-white px-4 py-2.5 focus:outline-none focus:border-olive transition-colors font-mono text-sm`}
-                placeholder="NAMA LENGKAP..."
+                className={`w-full bg-sand/20 dark:bg-black/40 border ${errors.nama_lengkap ? 'border-targetred' : 'border-soft-gunmetal/20 dark:border-soft-sand/10'} text-gunmetal dark:text-white px-4 py-2.5 focus:outline-none focus:border-olive transition-colors font-mono text-sm`}
+                placeholder="NAMA SESUAI IDENTITAS..."
                 required
               />
               {errors.nama_lengkap && <p className="mt-1 text-targetred text-[9px] font-mono uppercase italic">{errors.nama_lengkap}</p>}
@@ -125,15 +125,15 @@ const Register: React.FC = () => {
 
             {/* NRP / NIP */}
             <div>
-              <label className="block text-gray-600 dark:text-gray-400 text-[10px] font-mono font-bold mb-2 tracking-widest uppercase">
-                NRP / NIP
+              <label className="block text-soft-gunmetal/60 dark:text-soft-sand/40 text-[10px] font-mono font-bold mb-2 tracking-widest uppercase">
+                Pangkat / NRP / NIP / Golongan
               </label>
               <input
                 type="text"
                 value={data.nrp_nip}
                 onChange={(e) => setData('nrp_nip', e.target.value)}
-                className={`w-full bg-white/40 dark:bg-black/40 border ${errors.nrp_nip ? 'border-targetred' : 'border-gray-300 dark:border-gray-700'} text-gunmetal dark:text-white px-4 py-2.5 focus:outline-none focus:border-olive transition-colors font-mono text-sm`}
-                placeholder="NOMOR IDENTITAS..."
+                className={`w-full bg-sand/20 dark:bg-black/40 border ${errors.nrp_nip ? 'border-targetred' : 'border-soft-gunmetal/20 dark:border-soft-sand/10'} text-gunmetal dark:text-white px-4 py-2.5 focus:outline-none focus:border-olive transition-colors font-mono text-sm`}
+                placeholder="NOMOR IDENTITAS PERSONEL..."
                 required
               />
               {errors.nrp_nip && <p className="mt-1 text-targetred text-[9px] font-mono uppercase italic">{errors.nrp_nip}</p>}
@@ -141,15 +141,15 @@ const Register: React.FC = () => {
 
             {/* Asal Satuan */}
             <div>
-              <label className="block text-gray-600 dark:text-gray-400 text-[10px] font-mono font-bold mb-2 tracking-widest uppercase">
-                Asal Satuan
+              <label className="block text-soft-gunmetal/60 dark:text-soft-sand/40 text-[10px] font-mono font-bold mb-2 tracking-widest uppercase">
+                Asal Satuan Kerja
               </label>
               <input
                 type="text"
                 value={data.asal_satuan}
                 onChange={(e) => setData('asal_satuan', e.target.value)}
-                className={`w-full bg-white/40 dark:bg-black/40 border ${errors.asal_satuan ? 'border-targetred' : 'border-gray-300 dark:border-gray-700'} text-gunmetal dark:text-white px-4 py-2.5 focus:outline-none focus:border-olive transition-colors font-mono text-sm`}
-                placeholder="UNIT / SATUAN..."
+                className={`w-full bg-sand/20 dark:bg-black/40 border ${errors.asal_satuan ? 'border-targetred' : 'border-soft-gunmetal/20 dark:border-soft-sand/10'} text-gunmetal dark:text-white px-4 py-2.5 focus:outline-none focus:border-olive transition-colors font-mono text-sm`}
+                placeholder="SATUAN / UNIT KERJA..."
                 required
               />
               {errors.asal_satuan && <p className="mt-1 text-targetred text-[9px] font-mono uppercase italic">{errors.asal_satuan}</p>}
@@ -157,15 +157,15 @@ const Register: React.FC = () => {
 
             {/* No WA */}
             <div>
-              <label className="block text-gray-600 dark:text-gray-400 text-[10px] font-mono font-bold mb-2 tracking-widest uppercase">
-                Nomor WhatsApp
+              <label className="block text-soft-gunmetal/60 dark:text-soft-sand/40 text-[10px] font-mono font-bold mb-2 tracking-widest uppercase">
+                Nomor WhatsApp (Aktif)
               </label>
               <input
                 type="text"
                 value={data.no_wa}
                 onChange={(e) => setData('no_wa', e.target.value)}
-                className={`w-full bg-white/40 dark:bg-black/40 border ${errors.no_wa ? 'border-targetred' : 'border-gray-300 dark:border-gray-700'} text-gunmetal dark:text-white px-4 py-2.5 focus:outline-none focus:border-olive transition-colors font-mono text-sm`}
-                placeholder="CONTOH: 08123456789..."
+                className={`w-full bg-sand/20 dark:bg-black/40 border ${errors.no_wa ? 'border-targetred' : 'border-soft-gunmetal/20 dark:border-soft-sand/10'} text-gunmetal dark:text-white px-4 py-2.5 focus:outline-none focus:border-olive transition-colors font-mono text-sm`}
+                placeholder="CONTOH: 0812XXXXXXXX..."
                 required
               />
               {errors.no_wa && <p className="mt-1 text-targetred text-[9px] font-mono uppercase italic">{errors.no_wa}</p>}
@@ -175,19 +175,19 @@ const Register: React.FC = () => {
           <button
             type="submit"
             disabled={processing}
-            className="w-full bg-olive hover:bg-camogreen text-white font-tactical font-bold py-4 px-6 rounded-sm transition-all duration-300 uppercase tracking-[0.3em] flex justify-center items-center group relative overflow-hidden shadow-lg mt-4"
+            className="w-full bg-olive hover:bg-camogreen text-sand font-tactical font-bold py-4 px-6 rounded-sm transition-all duration-300 uppercase tracking-[0.3em] flex justify-center items-center group relative overflow-hidden shadow-lg mt-4"
           >
             <span className="absolute inset-0 w-full h-full bg-white/10 -translate-x-full group-hover:animate-[shimmer_2s_infinite]" />
             <span className="relative flex items-center gap-3">
               <UserPlus className="w-5 h-5" />
-              {processing ? 'MEMPROSES...' : 'AJUKAN PENDAFTARAN'}
+              {processing ? 'MENGIRIM DATA...' : 'Daftar Sekarang'}
             </span>
           </button>
         </form>
 
-        <div className="mt-8 pt-6 border-t border-gray-300 dark:border-gray-800 text-center">
-          <p className="text-gray-600 dark:text-gray-500 text-[10px] font-mono uppercase">
-            PASTIKAN DATA YANG DIISI BENAR UNTUK MEMPERCEPAT PROSES VERIFIKASI ADMIN.
+        <div className="mt-8 pt-6 border-t border-soft-gunmetal/10 dark:border-soft-sand/5 text-center">
+          <p className="text-soft-gunmetal/40 dark:text-soft-sand/20 text-[10px] font-mono uppercase tracking-widest leading-relaxed">
+            Pastikan data yang diisi benar untuk mempercepat proses verifikasi oleh Admin.
           </p>
         </div>
       </div>

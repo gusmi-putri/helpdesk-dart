@@ -29,7 +29,7 @@ const Login: React.FC = () => {
         const user = (page.props.auth as any).user;
         if (user) {
           loginAction(user);
-          setSuccessMsg(`Akses Diberikan. Redirecting ke Dashboard ${user.role}...`);
+          setSuccessMsg(`Akses Diterima. Mengalihkan ke Halaman ${user.role}...`);
         }
       },
     });
@@ -51,11 +51,11 @@ const Login: React.FC = () => {
       <div className="relative z-10 w-full max-w-md p-8 glass-panel border-t-4 border-t-targetred rounded-sm">
 
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-tactical text-gunmetal dark:text-white font-bold tracking-widest mb-2 shadow-black drop-shadow-md">
-            LOGIN HELPDESK DART
+          <h2 className="text-3xl font-tactical text-gunmetal dark:text-white font-bold tracking-widest mb-2 drop-shadow-sm">
+            MASUK KE SISTEM
           </h2>
-          <p className="text-gray-600 dark:text-gray-400 text-sm font-mono tracking-wide">
-            MASUKKAN USERNAME DAN PASSWORD YANG BENAR
+          <p className="text-soft-gunmetal/60 dark:text-soft-sand/40 text-sm font-sans tracking-wide uppercase font-bold text-[10px]">
+            AKSES PUSAT KOMANDO HELPDESK-DART
           </p>
         </div>
 
@@ -69,7 +69,7 @@ const Login: React.FC = () => {
 
         {/* Notifikasi Sukses */}
         {successMsg && (
-          <div className="mb-6 p-3 bg-camogreen/30 border border-camogreen text-green-400 text-sm font-mono flex items-start">
+          <div className="mb-6 p-3 bg-camogreen/30 border border-camogreen text-camogreen text-sm font-mono flex items-start">
             <span className="mr-2">✅</span>
             <span>{successMsg}</span>
           </div>
@@ -77,15 +77,15 @@ const Login: React.FC = () => {
 
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
-            <label className="block text-gray-600 dark:text-gray-400 text-xs font-mono font-bold mb-2 tracking-widest uppercase">
-              Username
+            <label className="block text-soft-gunmetal/60 dark:text-soft-sand/40 text-[10px] font-mono font-bold mb-2 tracking-widest uppercase">
+              Nama Pengguna / NRP
             </label>
             <input
               type="text"
               value={data.username}
               onChange={(e) => setData('username', e.target.value)}
-              className={`w-full bg-white/60 dark:bg-black/60 border ${errors.auth ? 'border-targetred' : 'border-gray-300 dark:border-gray-700'} text-gunmetal dark:text-white px-4 py-3 focus:outline-none focus:border-camogreen focus:ring-1 focus:ring-camogreen transition-colors font-mono`}
-              placeholder="Masukkan ID..."
+              className={`w-full bg-sand/10 dark:bg-black/60 border ${errors.auth ? 'border-targetred' : 'border-soft-gunmetal/20 dark:border-soft-sand/10'} text-gunmetal dark:text-white px-4 py-3 focus:outline-none focus:border-olive transition-colors font-mono rounded-sm`}
+              placeholder="NAMA PENGGUNA..."
               required
             />
             {errors.username && (
@@ -96,22 +96,22 @@ const Login: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-gray-600 dark:text-gray-400 text-xs font-mono font-bold mb-2 tracking-widest uppercase">
-              Password
+            <label className="block text-soft-gunmetal/60 dark:text-soft-sand/40 text-[10px] font-mono font-bold mb-2 tracking-widest uppercase">
+              Kata Sandi
             </label>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
                 value={data.password}
                 onChange={(e) => setData('password', e.target.value)}
-                className={`w-full bg-white/60 dark:bg-black/60 border ${errors.auth ? 'border-targetred' : 'border-gray-300 dark:border-gray-700'} text-gunmetal dark:text-white px-4 py-3 focus:outline-none focus:border-camogreen focus:ring-1 focus:ring-camogreen transition-colors font-mono ${!showPassword ? 'tracking-[0.2em]' : ''}`}
-                placeholder="••••••••"
+                className={`w-full bg-sand/10 dark:bg-black/60 border ${errors.auth ? 'border-targetred' : 'border-soft-gunmetal/20 dark:border-soft-sand/10'} text-gunmetal dark:text-white px-4 py-3 focus:outline-none focus:border-olive transition-colors font-mono rounded-sm ${!showPassword ? 'tracking-[0.2em]' : ''}`}
+                placeholder="KATA SANDI..."
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gunmetal dark:hover:text-white transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-soft-gunmetal hover:text-gunmetal dark:hover:text-white transition-colors"
               >
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
@@ -126,27 +126,27 @@ const Login: React.FC = () => {
           <button
             type="submit"
             disabled={processing}
-            className="w-full bg-targetred hover:bg-red-700 text-gunmetal dark:text-white font-tactical font-bold py-3 px-4 rounded-sm transition-all duration-300 uppercase tracking-widest flex justify-center items-center group relative overflow-hidden"
+            className="w-full bg-targetred hover:bg-[#8B152A] text-sand font-tactical font-bold py-4 px-4 rounded-sm transition-all duration-300 uppercase tracking-widest flex justify-center items-center group relative overflow-hidden shadow-lg"
           >
             {/* Subtle sweep animation on hover */}
-            <span className="absolute inset-0 w-full h-full bg-white/20 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
+            <span className="absolute inset-0 w-full h-full bg-white/10 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
             <span className="relative">
-              {processing ? 'LOGIN...' : 'LOGIN'}
+              {processing ? 'MENGHUBUNGKAN...' : 'Masuk ke Sistem'}
             </span>
           </button>
-          <div className="mt-4 text-center">
-            <p className="text-gray-600 dark:text-gray-400 text-[10px] font-mono uppercase">
+          <div className="mt-6 text-center">
+            <p className="text-soft-gunmetal/60 dark:text-soft-sand/40 text-[10px] font-mono uppercase tracking-widest">
               Belum punya akun?{' '}
               <Link href="/register" className="text-targetred hover:text-red-500 font-bold transition-colors">
-                Daftar Akun Baru
+                Daftar di sini
               </Link>
             </p>
           </div>
         </form>
 
-        <div className="mt-8 pt-6 border-t border-gray-300 dark:border-gray-800 text-center">
-          <p className="text-gray-600 dark:text-gray-500 text-xs font-mono">
-            SISTEM PELAPORAN HELPDESK DART. <br />
+        <div className="mt-8 pt-6 border-t border-soft-gunmetal/10 dark:border-soft-sand/5 text-center">
+          <p className="text-soft-gunmetal/40 dark:text-soft-sand/20 text-[9px] font-mono uppercase tracking-widest">
+            Helpdesk-DART Operational Security System
           </p>
         </div>
       </div>

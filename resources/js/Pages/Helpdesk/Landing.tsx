@@ -14,13 +14,13 @@ export default function Landing() {
         <About />
         <Contact />
         <AboutUs />
-        <footer className="bg-white dark:bg-black py-8 border-t border-gray-300 dark:border-gray-800 text-center">
+        <footer className="bg-sand/30 dark:bg-black/60 py-8 border-t border-soft-gunmetal/10 dark:border-soft-sand/5 text-center">
           <div className="max-w-7xl mx-auto px-4">
-            <p className="text-gray-600 dark:text-gray-500 font-tactical tracking-widest text-sm">
-              &copy; {new Date().getFullYear()} HELPDESK DART COMMAND CENTER. ALL RIGHTS RESERVED.
+            <p className="text-soft-gunmetal/70 dark:text-soft-sand/50 font-tactical tracking-widest text-sm">
+              &copy; {new Date().getFullYear()} HELPDESK DART COMMAND CENTER. HAK CIPTA DILINDUNGI.
             </p>
-            <p className="text-gray-600 text-xs mt-2 font-mono">
-              SECURE CONNECTION ESTABLISHED. AES-256 ACTIVE.
+            <p className="text-soft-gunmetal/50 dark:text-soft-sand/30 text-[10px] mt-2 font-mono uppercase">
+              Koneksi Aman Terverifikasi. Sistem Terenkripsi.
             </p>
           </div>
         </footer>

@@ -30,7 +30,7 @@ const GlobalNotification = () => {
             
             <div className="flex-1">
               <div className="text-[10px] font-mono font-bold tracking-[0.2em] opacity-70 uppercase leading-none mb-1">
-                {n.type === 'success' ? 'SYSTEM NOTIFICATION' : n.type === 'error' ? 'ENCRYPTED ERROR' : 'SITREP UPDATE'}
+                {n.type === 'success' ? 'Notifikasi Sistem' : n.type === 'error' ? 'Galat Terdeteksi' : 'Pembaruan Status'}
               </div>
               <div className="text-sm font-tactical tracking-widest font-bold uppercase leading-tight">
                 {n.message}
