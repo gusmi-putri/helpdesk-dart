@@ -50,7 +50,7 @@ const DashboardStaf = (props: any) => {
   useEffect(() => {
     const interval = setInterval(() => {
       router.reload({ only: ['dbCases', 'dbUsers', 'dbUnits'] });
-    }, 3000);
+    }, 15000);
     return () => clearInterval(interval);
   }, []);
 
@@ -98,6 +98,7 @@ const DashboardStaf = (props: any) => {
         activeMenu={activeMenu}
         setActiveMenu={setActiveMenu}
         handleLogout={handleLogout}
+        pendingCount={incomingReports.filter((r: any) => r.status === 'PENDING').length}
       />
 
       {/* MAIN CONTENT AREA */}

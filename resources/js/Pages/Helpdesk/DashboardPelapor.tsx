@@ -67,7 +67,7 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
   useEffect(() => {
     const interval = setInterval(() => {
       router.reload({ only: ['dbCases', 'dbUnits', 'dbUsers'] });
-    }, 3000);
+    }, 15000);
     return () => clearInterval(interval);
   }, []);
 

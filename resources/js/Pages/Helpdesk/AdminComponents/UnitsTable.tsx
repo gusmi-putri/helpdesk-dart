@@ -1,6 +1,6 @@
 import React from 'react';
-import { Package, Search, Plus, Filter, ArrowUp, ArrowDown, History, Edit, Trash2, Upload } from 'lucide-react';
-import { router } from '@inertiajs/react';
+import { Package, Search, Plus, Filter, ArrowUp, ArrowDown, History, Edit, Trash2, Upload, CheckCircle, AlertTriangle, X, Download } from 'lucide-react';
+import { router, usePage } from '@inertiajs/react';
 
 interface UnitsTableProps {
   dbUnits: any[];
@@ -27,6 +27,21 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
 }) => {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = React.useState(false);
+  const [importResult, setImportResult] = React.useState<any>(null);
+
+  // Read flash data from Inertia
+  const { flash } = usePage().props as any;
+
+  React.useEffect(() => {
+    if (flash?.import_result) {
+      try {
+        const result = JSON.parse(flash.import_result);
+        setImportResult(result);
+      } catch (e) {
+        // ignore parse error
+      }
+    }
+  }, [flash?.import_result]);
 
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -40,6 +55,18 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
         }
       });
     }
+  };
+
+  const handleDownloadTemplate = () => {
+    const csvContent = "nomor_seri,nama_dart,jenis_dart,asal_satuan,status_unit\nCONTOH-001,NAMA UNIT DART,DART STD,NAMA SATUAN,Siap Ops";
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'template_unit_dart.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const unitStats = {
@@ -102,6 +129,12 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
               ref={fileInputRef}
               onChange={handleImport}
             />
+            <button
+              onClick={handleDownloadTemplate}
+              className="bg-sand/50 dark:bg-gunmetal hover:bg-sand dark:hover:bg-gunmetal/80 text-soft-gunmetal dark:text-soft-sand px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-soft-gunmetal/20 dark:border-soft-sand/10 shadow uppercase"
+            >
+              <Download className="w-4 h-4" /> TEMPLATE
+            </button>
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={isUploading}
@@ -187,6 +220,60 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
           </table>
         </div>
       </div>
+      {/* Import Result Modal */}
+      {importResult && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50" onClick={() => setImportResult(null)}>
+          <div className="bg-white dark:bg-gunmetal border border-soft-gunmetal/20 dark:border-soft-sand/10 shadow-2xl max-w-md w-full mx-4 rounded-sm overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            <div className={`p-4 flex items-center justify-between ${importResult.success ? 'bg-camogreen/10 border-b border-camogreen/20' : 'bg-targetred/10 border-b border-targetred/20'}`}>
+              <h3 className="font-tactical font-bold tracking-widest text-sm flex items-center gap-2 text-gunmetal dark:text-white uppercase">
+                {importResult.success ? <CheckCircle className="w-5 h-5 text-camogreen" /> : <AlertTriangle className="w-5 h-5 text-targetred" />}
+                HASIL IMPORT DATA
+              </h3>
+              <button onClick={() => setImportResult(null)} className="text-soft-gunmetal/60 dark:text-soft-sand/40 hover:text-targetred transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-6">
+              {importResult.success ? (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-3 gap-3 text-center">
+                    <div className="bg-sand/30 dark:bg-black/40 p-3 border border-soft-gunmetal/10 dark:border-soft-sand/5">
+                      <p className="text-[9px] font-mono font-bold text-soft-gunmetal/60 dark:text-soft-sand/40 uppercase tracking-widest mb-1">TOTAL BARIS</p>
+                      <p className="text-xl font-tactical font-bold text-gunmetal dark:text-white">{importResult.total}</p>
+                    </div>
+                    <div className="bg-sand/30 dark:bg-black/40 p-3 border border-camogreen/30">
+                      <p className="text-[9px] font-mono font-bold text-camogreen uppercase tracking-widest mb-1">BERHASIL</p>
+                      <p className="text-xl font-tactical font-bold text-camogreen">{importResult.imported}</p>
+                    </div>
+                    <div className="bg-sand/30 dark:bg-black/40 p-3 border border-yellow-500/30">
+                      <p className="text-[9px] font-mono font-bold text-yellow-500 uppercase tracking-widest mb-1">DILEWATI</p>
+                      <p className="text-xl font-tactical font-bold text-yellow-500">{importResult.skipped}</p>
+                    </div>
+                  </div>
+                  {importResult.skipped > 0 && (
+                    <p className="text-[10px] font-mono text-yellow-600 dark:text-yellow-400 bg-yellow-500/10 p-2 border border-yellow-500/20">
+                      ⚠ {importResult.skipped} baris dilewati karena Nomor Seri sudah terdaftar di sistem.
+                    </p>
+                  )}
+                  <p className="text-[10px] font-mono text-soft-gunmetal/60 dark:text-soft-sand/40 text-center uppercase">
+                    Data inventaris telah diperbarui secara otomatis.
+                  </p>
+                </div>
+              ) : (
+                <p className="text-sm text-targetred font-mono">{importResult.message || 'Terjadi kesalahan saat memproses file.'}</p>
+              )}
+            </div>
+            <div className="p-4 border-t border-soft-gunmetal/10 dark:border-soft-sand/5 flex justify-end">
+              <button
+                onClick={() => setImportResult(null)}
+                className="bg-olive hover:bg-camogreen text-white px-6 py-2 text-xs font-tactical font-bold tracking-widest transition-colors"
+              >
+                TUTUP
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

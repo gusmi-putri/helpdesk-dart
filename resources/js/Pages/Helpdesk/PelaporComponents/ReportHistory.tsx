@@ -14,8 +14,30 @@ const ReportHistory: React.FC<ReportHistoryProps> = ({
   setFilterTime,
   onSelectItem
 }) => {
+  const stats = {
+    total: history.length,
+    pending: history.filter((r: any) => r.status === 'PENDING').length,
+    proses: history.filter((r: any) => r.status === 'PROSES').length,
+    selesai: history.filter((r: any) => r.status === 'SELESAI').length,
+  };
+
   return (
     <div className="max-w-4xl mx-auto animate-in fade-in duration-500">
+      {/* Stats Summary Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+        {[
+          { label: 'TOTAL LAPORAN', value: stats.total, color: 'border-olive', text: 'text-olive' },
+          { label: 'MENUNGGU', value: stats.pending, color: 'border-yellow-500', text: 'text-yellow-500' },
+          { label: 'DALAM PROSES', value: stats.proses, color: 'border-blue-500', text: 'text-blue-500' },
+          { label: 'SELESAI', value: stats.selesai, color: 'border-camogreen', text: 'text-camogreen' },
+        ].map((s, i) => (
+          <div key={i} className={`bg-sand/30 dark:bg-black/40 border-l-4 ${s.color} p-3 shadow-md`}>
+            <p className="text-[9px] font-mono font-bold text-soft-gunmetal/60 dark:text-soft-sand/40 tracking-widest uppercase mb-0.5">{s.label}</p>
+            <p className={`text-xl font-tactical font-bold ${s.text}`}>{s.value}</p>
+          </div>
+        ))}
+      </div>
+
       <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
           <h2 className="text-2xl font-tactical font-bold text-gunmetal dark:text-white tracking-widest uppercase">Riwayat Laporan</h2>

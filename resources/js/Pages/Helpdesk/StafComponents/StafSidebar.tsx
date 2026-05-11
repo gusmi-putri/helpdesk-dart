@@ -7,6 +7,7 @@ interface StafSidebarProps {
   activeMenu: 'MASUK' | 'SELESAI' | 'INVENTARIS';
   setActiveMenu: (menu: 'MASUK' | 'SELESAI' | 'INVENTARIS') => void;
   handleLogout: () => void;
+  pendingCount?: number;
 }
 
 const StafSidebar: React.FC<StafSidebarProps> = ({
@@ -14,7 +15,8 @@ const StafSidebar: React.FC<StafSidebarProps> = ({
   setIsMobileMenuOpen,
   activeMenu,
   setActiveMenu,
-  handleLogout
+  handleLogout,
+  pendingCount = 0
 }) => {
   return (
     <aside className={`fixed inset-y-0 left-0 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 w-72 bg-white dark:bg-black border-r border-soft-gunmetal/10 dark:border-soft-sand/5 z-50 flex-shrink-0 flex flex-col shadow-2xl`}>
@@ -30,11 +32,18 @@ const StafSidebar: React.FC<StafSidebarProps> = ({
       <nav className="flex-1 py-6 space-y-1">
         <button
           onClick={() => { setActiveMenu('MASUK'); setIsMobileMenuOpen(false); }}
-          className={`w-full flex items-center gap-3 px-6 py-3.5 font-tactical text-sm tracking-wider transition-all border-l-4
+          className={`w-full flex items-center justify-between px-6 py-3.5 font-tactical text-sm tracking-wider transition-all border-l-4
             ${activeMenu === 'MASUK' ? 'bg-sand dark:bg-gunmetal/40 text-targetred border-targetred shadow-inner' : 'border-transparent text-soft-gunmetal/60 dark:text-soft-sand/40 hover:bg-sand/30 dark:hover:bg-gunmetal/20'}
           `}
         >
-          <AlertTriangle className="w-5 h-5" /> LAPORAN KERUSAKAN MASUK
+          <div className="flex items-center gap-3">
+            <AlertTriangle className="w-5 h-5" /> LAPORAN MASUK
+          </div>
+          {pendingCount > 0 && (
+            <span className="bg-targetred text-sand text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse">
+              {pendingCount}
+            </span>
+          )}
         </button>
 
         <button

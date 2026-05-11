@@ -18,6 +18,20 @@ const UsersTable: React.FC<UsersTableProps> = ({
   handleEditUser,
   handleDeleteUser
 }) => {
+  const [userSearch, setUserSearch] = React.useState('');
+
+  const filteredUsers = dbUsers.filter((u: any) => u.is_approved).filter((u: any) => {
+    if (!userSearch) return true;
+    const q = userSearch.toLowerCase();
+    return (
+      (u.name || '').toLowerCase().includes(q) ||
+      (u.nrp_nip || '').toLowerCase().includes(q) ||
+      (u.role || '').toLowerCase().includes(q) ||
+      (u.email || '').toLowerCase().includes(q) ||
+      (u.id || '').toLowerCase().includes(q)
+    );
+  });
+
   return (
     <div className="bg-sand/30 dark:bg-black/40 border border-soft-gunmetal/10 dark:border-soft-sand/5 shadow-xl overflow-hidden animate-in fade-in relative">
       <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-olive via-camogreen to-transparent"></div>
@@ -26,16 +40,22 @@ const UsersTable: React.FC<UsersTableProps> = ({
           <Users className="text-olive w-6 h-6" /> MANAJEMEN PERSONEL
         </h3>
         <div className="flex items-center gap-4">
+          <div className="relative">
+            <Search className="w-4 h-4 absolute left-3 top-2.5 text-soft-gunmetal/60 dark:text-soft-sand/40" />
+            <input
+              type="text"
+              placeholder="CARI NAMA / NRP / HAK AKSES..."
+              value={userSearch}
+              onChange={(e) => setUserSearch(e.target.value)}
+              className="bg-sand/50 dark:bg-gunmetal border border-soft-gunmetal/20 dark:border-soft-sand/10 pl-9 pr-4 py-2 text-sm font-mono text-gunmetal dark:text-white focus:outline-none focus:border-olive transition-colors w-64 uppercase"
+            />
+          </div>
           <button
             onClick={handleAddUser}
             className="bg-targetred hover:bg-[#8B152A] text-sand px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-targetred shadow-lg"
           >
             <Plus className="w-4 h-4" /> TAMBAH USER
           </button>
-          <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-2.5 text-soft-gunmetal/60 dark:text-soft-sand/40" />
-            <input type="text" placeholder="Cari nama atau ID..." className="bg-sand/50 dark:bg-gunmetal border border-soft-gunmetal/20 dark:border-soft-sand/10 pl-9 pr-4 py-2 text-sm font-mono text-gunmetal dark:text-white focus:outline-none focus:border-olive transition-colors w-64" />
-          </div>
         </div>
       </div>
       <div className="overflow-x-auto">
@@ -52,7 +72,13 @@ const UsersTable: React.FC<UsersTableProps> = ({
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-800">
-            {dbUsers.filter((u: any) => u.is_approved).map((u: any) => (
+            {filteredUsers.length === 0 ? (
+              <tr>
+                <td colSpan={7} className="p-8 text-center text-soft-gunmetal/40 dark:text-soft-sand/20 font-mono uppercase tracking-widest">
+                  {userSearch ? 'Tidak ditemukan personel yang cocok.' : 'Belum ada data personel.'}
+                </td>
+              </tr>
+            ) : filteredUsers.map((u: any) => (
               <tr key={u.id} className="hover:bg-gray-200 dark:hover:bg-gray-800/80 transition-colors group">
                 <td className="p-4 font-mono text-gray-700 dark:text-gray-300 border-l-2 border-transparent group-hover:border-olive">{u.id}</td>
                 <td className="p-4 font-mono text-xs text-gray-600 dark:text-gray-400">{u.nrp_nip || '-'}</td>
