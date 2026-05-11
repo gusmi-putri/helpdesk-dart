@@ -1,14 +1,16 @@
 import React from 'react';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, Image, CheckSquare } from 'lucide-react';
 
 interface CompletedReportsTableProps {
   reports: any[];
   onSelectReport: (id: number) => void;
+  onViewProof: (proof: any[]) => void;
 }
 
 const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
   reports,
-  onSelectReport
+  onSelectReport,
+  onViewProof
 }) => {
   return (
     <div className="animate-in fade-in space-y-6 mt-6">
@@ -24,12 +26,13 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                 <th className="p-4">DETAIL KERUSAKAN</th>
                 <th className="p-4">TEKNISI PELAKSANA</th>
                 <th className="p-4">CATATAN PERBAIKAN</th>
+                <th className="p-4 text-center">DOKUMENTASI</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-soft-gunmetal/10 dark:divide-soft-sand/5 text-gunmetal dark:text-white">
               {reports.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="p-8 text-center text-soft-gunmetal/40 dark:text-soft-sand/20 font-mono uppercase tracking-widest">
+                  <td colSpan={5} className="p-8 text-center text-soft-gunmetal/40 dark:text-soft-sand/20 font-mono uppercase tracking-widest">
                     Belum ada data arsip perbaikan.
                   </td>
                 </tr>
@@ -70,6 +73,29 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                         <div className="ml-4 text-[10px] text-camogreen bg-camogreen/10 px-2 py-1 border border-camogreen/30 inline-block font-mono uppercase">
                           METODE: {report.perbaikan.metodePerbaikan}
                         </div>
+                      )}
+                    </div>
+                  </td>
+                  <td className="p-4 text-center">
+                    <div className="flex flex-col gap-2 items-center justify-center">
+                      {report.kerusakan.fileBukti && report.kerusakan.fileBukti.length > 0 && (
+                        <button
+                          onClick={() => onViewProof(report.kerusakan.fileBukti)}
+                          className="w-full max-w-[140px] bg-sand/30 dark:bg-black/40 hover:bg-sand/50 dark:hover:bg-black text-soft-gunmetal dark:text-soft-sand px-2 py-1.5 text-[10px] font-mono font-bold tracking-widest transition-colors flex items-center justify-center gap-1.5 border border-soft-gunmetal/20 dark:border-soft-sand/10"
+                        >
+                          <Image className="w-3 h-3 text-red-500" /> BUKTI RUSAK
+                        </button>
+                      )}
+                      {report.perbaikan.foto_bukti_selesai && (
+                        <button
+                          onClick={() => onViewProof([report.perbaikan.foto_bukti_selesai])}
+                          className="w-full max-w-[140px] bg-sand/30 dark:bg-black/40 hover:bg-sand/50 dark:hover:bg-black text-soft-gunmetal dark:text-soft-sand px-2 py-1.5 text-[10px] font-mono font-bold tracking-widest transition-colors flex items-center justify-center gap-1.5 border border-soft-gunmetal/20 dark:border-soft-sand/10"
+                        >
+                          <CheckSquare className="w-3 h-3 text-camogreen" /> HASIL PERBAIKAN
+                        </button>
+                      )}
+                      {(!report.kerusakan.fileBukti || report.kerusakan.fileBukti.length === 0) && !report.perbaikan.foto_bukti_selesai && (
+                        <span className="text-[10px] font-mono text-soft-gunmetal/40 dark:text-soft-sand/30">TIDAK ADA FOTO</span>
                       )}
                     </div>
                   </td>

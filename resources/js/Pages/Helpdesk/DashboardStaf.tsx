@@ -147,6 +147,7 @@ const DashboardStaf = (props: any) => {
               <CompletedReportsTable 
                 reports={completedReports}
                 onSelectReport={setSelectedReportId}
+                onViewProof={setViewingProof}
               />
             )}
 
