@@ -83,7 +83,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
   };
 
   return (
-    <div className="min-h-screen bg-sand dark:bg-gunmetal flex font-sans selection:bg-olive selection:text-sand relative text-gunmetal dark:text-soft-sand">
+    <div className="min-h-screen bg-slate-50 dark:bg-gunmetal flex font-sans selection:bg-olive selection:text-sand relative text-gunmetal dark:text-slate-300">
       
       <TeknisiSidebar 
         isMobileMenuOpen={isMobileMenuOpen}
@@ -105,11 +105,11 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
         {/* Scrollable Content Container */}
         <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar z-10">
           <div className="max-w-[1400px] mx-auto">
-            <div className="mb-4 border-b border-soft-gunmetal/10 dark:border-soft-sand/5 pb-4">
-              <h2 className="text-2xl font-tactical font-bold text-gunmetal dark:text-white tracking-widest uppercase">
+            <div className="mb-4 border-b border-slate-200 dark:border-slate-700 pb-4">
+              <h2 className="text-2xl font-tactical font-bold text-slate-800 dark:text-white tracking-widest uppercase">
                 PORTAL PERBAIKAN DART
               </h2>
-              <p className="text-xs font-mono text-soft-gunmetal/60 dark:text-soft-sand/40 mt-1 uppercase tracking-widest">
+              <p className="text-xs font-mono text-slate-500 dark:text-slate-300 mt-1 uppercase tracking-widest">
                 Pusat Instruksi & Penyerahan Laporan Perbaikan Unit DART
               </p>
             </div>

@@ -26,7 +26,7 @@ const TracerBullet = ({ delay, top, duration, repeatDelay, angle = 0, origin = '
 
 const Hero = () => {
   return (
-    <section id="beranda" className="relative h-screen flex items-center justify-center overflow-hidden bg-sand dark:bg-gunmetal">
+    <section id="beranda" className="relative h-screen flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-gunmetal">
       {/* Background Overlay */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-olive/40 via-gunmetal to-gunmetal z-10 pointer-events-none"></div>
@@ -63,7 +63,7 @@ const Hero = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-5xl md:text-7xl font-stencil font-bold text-gunmetal dark:text-white mb-4 tracking-wider uppercase"
+          className="text-5xl md:text-7xl font-stencil font-bold text-slate-800 dark:text-white mb-4 tracking-wider uppercase"
         >
           SISTEM PELAPORAN <br /> <span className="text-targetred">HELPDESK DART</span>
         </motion.h1>
@@ -72,7 +72,7 @@ const Hero = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.8 }}
-          className="text-lg md:text-xl text-soft-gunmetal/80 dark:text-soft-sand/70 font-tactical mb-8 max-w-2xl mx-auto border-l-4 border-olive pl-4 text-left"
+          className="text-lg md:text-xl text-slate-600/80 dark:text-slate-300/70 font-tactical mb-8 max-w-2xl mx-auto border-l-4 border-olive pl-4 text-left"
         >
           <span className="typewriter-text text-camogreen font-bold">BENGPUSKOMLEKAD</span>
           <br />

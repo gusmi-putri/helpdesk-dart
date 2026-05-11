@@ -14,13 +14,13 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
 }) => {
   return (
     <div className="animate-in fade-in space-y-6 mt-6">
-      <div className="bg-white/60 dark:bg-black/60 border border-soft-gunmetal/20 dark:border-soft-sand/10 rounded-sm overflow-hidden shadow-xl">
-        <div className="p-4 border-b border-soft-gunmetal/10 dark:border-soft-sand/5 bg-sand/20 dark:bg-black/40 flex items-center justify-between text-gunmetal dark:text-white">
+      <div className="bg-white/60 dark:bg-navy/70 border border-slate-300 dark:border-slate-600 rounded-sm overflow-hidden shadow-xl">
+        <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-navy/80 flex items-center justify-between text-slate-800 dark:text-white">
           <h3 className="font-tactical tracking-widest text-sm flex items-center gap-2"><CheckCircle className="w-4 h-4 text-camogreen" /> ARSIP PERBAIKAN SELESAI </h3>
         </div>
         <div className="overflow-x-auto p-2">
           <table className="w-full text-left font-sans">
-            <thead className="bg-gunmetal text-soft-sand/60 border-b border-soft-sand/10 font-tactical tracking-widest text-xs">
+            <thead className="bg-gunmetal text-slate-300/60 border-b border-slate-600 font-tactical tracking-widest text-xs">
               <tr>
                 <th className="p-4 w-32">ID TIKET</th>
                 <th className="p-4">DETAIL KERUSAKAN</th>
@@ -29,20 +29,20 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                 <th className="p-4 text-center">DOKUMENTASI</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-soft-gunmetal/10 dark:divide-soft-sand/5 text-gunmetal dark:text-white">
+            <tbody className="divide-y divide-soft-gunmetal/10 dark:divide-soft-sand/5 text-slate-800 dark:text-white">
               {reports.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="p-8 text-center text-soft-gunmetal/40 dark:text-soft-sand/20 font-mono uppercase tracking-widest">
+                  <td colSpan={5} className="p-8 text-center text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest">
                     Belum ada data arsip perbaikan.
                   </td>
                 </tr>
               )}
               {reports.map((report: any) => (
-                <tr key={report.db_id} className="hover:bg-gray-200 dark:hover:bg-gray-800/30 transition-colors">
+                <tr key={report.db_id} className="hover:bg-gray-200 dark:hover:bg-slate-700/30 transition-colors">
                   <td className="p-4">
                     <button
                       onClick={() => onSelectReport(report.db_id)}
-                      className="font-mono text-soft-gunmetal/70 dark:text-soft-sand/60 text-sm bg-white dark:bg-black px-2 py-1 border border-soft-gunmetal/20 dark:border-soft-sand/10 block w-fit hover:border-olive hover:text-olive transition-colors"
+                      className="font-mono text-slate-600 dark:text-slate-300 text-sm bg-white dark:bg-navy px-2 py-1 border border-slate-300 dark:border-slate-600 block w-fit hover:border-olive hover:text-olive transition-colors"
                     >
                       {report.caseId}
                     </button>
@@ -52,22 +52,22 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                   </td>
                   <td className="p-4">
                     <div className="font-bold text-sm mb-1 uppercase">{report.kerusakan.barangRusak}</div>
-                    <div className="text-soft-gunmetal/70 dark:text-soft-sand/60 text-xs font-mono w-full max-w-sm uppercase">
+                    <div className="text-slate-600 dark:text-slate-300 text-xs font-mono w-full max-w-sm uppercase">
                       Masuk: {report.kerusakan.tanggal} <br />
-                      Selesai: <span className="text-gunmetal dark:text-white font-bold">{report.perbaikan.tanggalSelesai || '-'}</span>
+                      Selesai: <span className="text-slate-800 dark:text-white font-bold">{report.perbaikan.tanggalSelesai || '-'}</span>
                     </div>
                   </td>
                   <td className="p-4">
                     <div className="text-sm font-bold uppercase">
                       {report.perbaikan.teknisi}
                     </div>
-                    <div className="text-soft-gunmetal/50 dark:text-soft-sand/30 text-[10px] font-mono mt-1 uppercase">
+                    <div className="text-slate-500 dark:text-slate-400 text-[10px] font-mono mt-1 uppercase">
                       KODE OP: {report.db_id}
                     </div>
                   </td>
                   <td className="p-4">
-                    <div className="bg-white/40 dark:bg-black/30 p-4 border-l-4 border-camogreen text-sm text-gunmetal dark:text-soft-sand relative shadow-inner">
-                      <span className="absolute top-1 left-2 text-xl text-soft-gunmetal/20 dark:text-soft-sand/10 font-serif">"</span>
+                    <div className="bg-white/40 dark:bg-navy/30 p-4 border-l-4 border-camogreen text-sm text-gunmetal dark:text-slate-300 relative shadow-inner">
+                      <span className="absolute top-1 left-2 text-xl text-slate-600/20 dark:text-slate-300/10 font-serif">"</span>
                       <span className="pl-4 block italic font-serif leading-relaxed uppercase mb-3">{report.perbaikan.tindakan}</span>
                       {report.perbaikan.metodePerbaikan && (
                         <div className="ml-4 text-[10px] text-camogreen bg-camogreen/10 px-2 py-1 border border-camogreen/30 inline-block font-mono uppercase">
@@ -81,7 +81,7 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                       {report.kerusakan.fileBukti && report.kerusakan.fileBukti.length > 0 && (
                         <button
                           onClick={() => onViewProof(report.kerusakan.fileBukti)}
-                          className="w-full max-w-[140px] bg-sand/30 dark:bg-black/40 hover:bg-sand/50 dark:hover:bg-black text-soft-gunmetal dark:text-soft-sand px-2 py-1.5 text-[10px] font-mono font-bold tracking-widest transition-colors flex items-center justify-center gap-1.5 border border-soft-gunmetal/20 dark:border-soft-sand/10"
+                          className="w-full max-w-[140px] bg-white dark:bg-navy/80 hover:bg-slate-50 dark:hover:bg-black text-slate-600 dark:text-slate-300 px-2 py-1.5 text-[10px] font-mono font-bold tracking-widest transition-colors flex items-center justify-center gap-1.5 border border-slate-300 dark:border-slate-600"
                         >
                           <Image className="w-3 h-3 text-red-500" /> BUKTI RUSAK
                         </button>
@@ -89,13 +89,13 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                       {report.perbaikan.foto_bukti_selesai && (
                         <button
                           onClick={() => onViewProof([report.perbaikan.foto_bukti_selesai])}
-                          className="w-full max-w-[140px] bg-sand/30 dark:bg-black/40 hover:bg-sand/50 dark:hover:bg-black text-soft-gunmetal dark:text-soft-sand px-2 py-1.5 text-[10px] font-mono font-bold tracking-widest transition-colors flex items-center justify-center gap-1.5 border border-soft-gunmetal/20 dark:border-soft-sand/10"
+                          className="w-full max-w-[140px] bg-white dark:bg-navy/80 hover:bg-slate-50 dark:hover:bg-black text-slate-600 dark:text-slate-300 px-2 py-1.5 text-[10px] font-mono font-bold tracking-widest transition-colors flex items-center justify-center gap-1.5 border border-slate-300 dark:border-slate-600"
                         >
                           <CheckSquare className="w-3 h-3 text-camogreen" /> HASIL PERBAIKAN
                         </button>
                       )}
                       {(!report.kerusakan.fileBukti || report.kerusakan.fileBukti.length === 0) && !report.perbaikan.foto_bukti_selesai && (
-                        <span className="text-[10px] font-mono text-soft-gunmetal/40 dark:text-soft-sand/30">TIDAK ADA FOTO</span>
+                        <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400">TIDAK ADA FOTO</span>
                       )}
                     </div>
                   </td>

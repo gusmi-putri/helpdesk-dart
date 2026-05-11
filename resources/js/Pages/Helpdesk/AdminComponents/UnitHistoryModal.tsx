@@ -16,42 +16,42 @@ const UnitHistoryModal: React.FC<UnitHistoryModalProps> = ({ isOpen, onClose, un
 
   return (
     <div className="fixed inset-0 z-[140] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-      <div className="bg-sand dark:bg-gunmetal border-2 border-blue-600 w-full max-w-4xl shadow-2xl animate-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
+      <div className="bg-slate-50 dark:bg-gunmetal border-2 border-blue-600 w-full max-w-4xl shadow-2xl animate-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
         <div className="p-4 border-b border-blue-600 bg-blue-900/10 flex justify-between items-center">
           <h3 className="font-tactical font-bold text-blue-500 tracking-widest uppercase flex items-center gap-2">
             <Clock className="w-5 h-5" /> RIWAYAT PERBAIKAN: {unit.nomor_seri}
           </h3>
-          <button onClick={onClose} className="text-gray-500 hover:text-targetred text-xl">✕</button>
+          <button onClick={onClose} className="text-slate-500 hover:text-targetred text-xl">✕</button>
         </div>
 
         <div className="p-6 overflow-y-auto custom-scrollbar flex-1">
           <div className="mb-6 grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="p-3 bg-white/40 dark:bg-black/40 border border-gray-300 dark:border-gray-800">
-              <p className="text-[9px] font-mono text-gray-500 uppercase tracking-widest">Nama Unit</p>
+            <div className="p-3 bg-white/40 dark:bg-navy/80 border border-slate-200 dark:border-slate-700/50">
+              <p className="text-[9px] font-mono text-slate-500 uppercase tracking-widest">Nama Unit</p>
               <p className="text-sm font-bold uppercase">{unit.nama_dart}</p>
             </div>
-            <div className="p-3 bg-white/40 dark:bg-black/40 border border-gray-300 dark:border-gray-800">
-              <p className="text-[9px] font-mono text-gray-500 uppercase tracking-widest">Jenis DART</p>
+            <div className="p-3 bg-white/40 dark:bg-navy/80 border border-slate-200 dark:border-slate-700/50">
+              <p className="text-[9px] font-mono text-slate-500 uppercase tracking-widest">Jenis DART</p>
               <p className="text-sm font-bold uppercase">{unit.jenis_dart}</p>
             </div>
-            <div className="p-3 bg-white/40 dark:bg-black/40 border border-gray-300 dark:border-gray-800">
-              <p className="text-[9px] font-mono text-gray-500 uppercase tracking-widest">Lokasi</p>
+            <div className="p-3 bg-white/40 dark:bg-navy/80 border border-slate-200 dark:border-slate-700/50">
+              <p className="text-[9px] font-mono text-slate-500 uppercase tracking-widest">Lokasi</p>
               <p className="text-sm font-bold uppercase">{unit.asal_satuan}</p>
             </div>
-            <div className="p-3 bg-white/40 dark:bg-black/40 border border-gray-300 dark:border-gray-800">
-              <p className="text-[9px] font-mono text-gray-500 uppercase tracking-widest">Total Kasus</p>
+            <div className="p-3 bg-white/40 dark:bg-navy/80 border border-slate-200 dark:border-slate-700/50">
+              <p className="text-[9px] font-mono text-slate-500 uppercase tracking-widest">Total Kasus</p>
               <p className="text-sm font-bold uppercase text-blue-500">{unitHistory.length} ENTRI</p>
             </div>
           </div>
 
           <div className="space-y-4">
             {unitHistory.length === 0 ? (
-              <div className="p-10 text-center text-gray-500 italic font-mono uppercase tracking-widest border border-dashed border-gray-400 dark:border-gray-700">
+              <div className="p-10 text-center text-slate-500 italic font-mono uppercase tracking-widest border border-dashed border-gray-400 dark:border-slate-600">
                 Unit ini belum memiliki catatan kerusakan/perbaikan di sistem.
               </div>
             ) : (
               unitHistory.map((entry: any) => (
-                <div key={entry.caseId} className="border border-gray-300 dark:border-gray-800 bg-white/20 dark:bg-black/20 p-4 relative group">
+                <div key={entry.caseId} className="border border-slate-200 dark:border-slate-700/50 bg-white/20 dark:bg-navy/80 p-4 relative group">
                   <div className="absolute top-0 left-0 w-1 h-full bg-blue-600 opacity-50"></div>
                   <div className="flex justify-between items-start mb-3">
                     <div>
@@ -71,23 +71,23 @@ const UnitHistoryModal: React.FC<UnitHistoryModalProps> = ({ isOpen, onClose, un
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                     <div className="space-y-2">
-                      <p className="text-[9px] font-mono text-gray-500 uppercase flex items-center gap-1">
+                      <p className="text-[9px] font-mono text-slate-500 uppercase flex items-center gap-1">
                         <AlertTriangle className="w-3 h-3" /> Detail Kerusakan
                       </p>
-                      <p className="text-xs text-gray-700 dark:text-gray-300 leading-relaxed italic">
+                      <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed italic">
                         "{entry.kerusakan.deskripsi}"
                       </p>
-                      <p className="text-[10px] font-mono text-gray-500 mt-2">
+                      <p className="text-[10px] font-mono text-slate-500 mt-2">
                         Dilaporkan oleh: {entry.kerusakan.pelapor} pada {entry.kerusakan.tanggal}
                       </p>
                     </div>
-                    <div className="space-y-2 border-l border-gray-300 dark:border-gray-800 pl-4">
-                      <p className="text-[9px] font-mono text-gray-500 uppercase flex items-center gap-1">
+                    <div className="space-y-2 border-l border-slate-200 dark:border-slate-700/50 pl-4">
+                      <p className="text-[9px] font-mono text-slate-500 uppercase flex items-center gap-1">
                         <Wrench className="w-3 h-3" /> Penanganan Teknisi
                       </p>
                       {entry.perbaikan.tindakan ? (
                         <>
-                          <p className="text-xs text-gunmetal dark:text-gray-200">
+                          <p className="text-xs text-slate-800 dark:text-slate-200">
                             {entry.perbaikan.tindakan}
                           </p>
                           <div className="flex flex-wrap gap-2 mt-2">
@@ -104,7 +104,7 @@ const UnitHistoryModal: React.FC<UnitHistoryModalProps> = ({ isOpen, onClose, un
                           </div>
                         </>
                       ) : (
-                        <p className="text-xs text-gray-500 italic">Belum ada catatan penanganan teknis.</p>
+                        <p className="text-xs text-slate-500 italic">Belum ada catatan penanganan teknis.</p>
                       )}
                     </div>
                   </div>

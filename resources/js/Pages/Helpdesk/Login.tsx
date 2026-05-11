@@ -36,7 +36,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-sand dark:bg-gunmetal relative overflow-hidden font-sans w-full">
+    <div className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-slate-50 dark:bg-gunmetal relative overflow-hidden font-sans w-full">
 
       {/* Background Ornaments (Radar/Grid illusion) */}
       <div className="absolute inset-0 pointer-events-none opacity-20">
@@ -51,10 +51,10 @@ const Login: React.FC = () => {
       <div className="relative z-10 w-full max-w-md p-8 glass-panel border-t-4 border-t-targetred rounded-sm">
 
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-tactical text-gunmetal dark:text-white font-bold tracking-widest mb-2 drop-shadow-sm">
+          <h2 className="text-3xl font-tactical text-slate-800 dark:text-white font-bold tracking-widest mb-2 drop-shadow-sm">
             MASUK KE SISTEM
           </h2>
-          <p className="text-soft-gunmetal/60 dark:text-soft-sand/40 text-sm font-sans tracking-wide uppercase font-bold text-[10px]">
+          <p className="text-slate-500 dark:text-slate-400 text-sm font-sans tracking-wide uppercase font-bold text-[10px]">
             AKSES PUSAT KOMANDO HELPDESK-DART
           </p>
         </div>
@@ -77,14 +77,14 @@ const Login: React.FC = () => {
 
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
-            <label className="block text-soft-gunmetal/60 dark:text-soft-sand/40 text-[10px] font-mono font-bold mb-2 tracking-widest uppercase">
+            <label className="block text-slate-600 dark:text-slate-300 text-[10px] font-mono font-bold mb-2 tracking-widest uppercase">
               Nama Pengguna
             </label>
             <input
               type="text"
               value={data.username}
               onChange={(e) => setData('username', e.target.value)}
-              className={`w-full bg-sand/10 dark:bg-black/60 border ${errors.auth ? 'border-targetred' : 'border-soft-gunmetal/20 dark:border-soft-sand/10'} text-gunmetal dark:text-white px-4 py-3 focus:outline-none focus:border-olive transition-colors font-mono rounded-sm`}
+              className={`w-full bg-slate-50/50 dark:bg-navy/70 border ${errors.auth ? 'border-targetred' : 'border-slate-300 dark:border-slate-600'} text-slate-800 dark:text-white px-4 py-3 focus:outline-none focus:border-olive transition-colors font-mono rounded-sm`}
               placeholder="NAMA PENGGUNA..."
               required
             />
@@ -96,7 +96,7 @@ const Login: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-soft-gunmetal/60 dark:text-soft-sand/40 text-[10px] font-mono font-bold mb-2 tracking-widest uppercase">
+            <label className="block text-slate-600 dark:text-slate-300 text-[10px] font-mono font-bold mb-2 tracking-widest uppercase">
               Kata Sandi
             </label>
             <div className="relative">
@@ -104,14 +104,14 @@ const Login: React.FC = () => {
                 type={showPassword ? "text" : "password"}
                 value={data.password}
                 onChange={(e) => setData('password', e.target.value)}
-                className={`w-full bg-sand/10 dark:bg-black/60 border ${errors.auth ? 'border-targetred' : 'border-soft-gunmetal/20 dark:border-soft-sand/10'} text-gunmetal dark:text-white px-4 py-3 focus:outline-none focus:border-olive transition-colors font-mono rounded-sm ${!showPassword ? 'tracking-[0.2em]' : ''}`}
+                className={`w-full bg-slate-50/50 dark:bg-navy/70 border ${errors.auth ? 'border-targetred' : 'border-slate-300 dark:border-slate-600'} text-slate-800 dark:text-white px-4 py-3 focus:outline-none focus:border-olive transition-colors font-mono rounded-sm ${!showPassword ? 'tracking-[0.2em]' : ''}`}
                 placeholder="KATA SANDI..."
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gunmetal/60 dark:text-soft-sand/60 hover:text-gunmetal dark:hover:text-white transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors"
               >
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
@@ -135,7 +135,7 @@ const Login: React.FC = () => {
             </span>
           </button>
           <div className="mt-6 text-center">
-            <p className="text-soft-gunmetal/60 dark:text-soft-sand/40 text-[10px] font-mono uppercase tracking-widest">
+            <p className="text-slate-500 dark:text-slate-400 text-[10px] font-mono uppercase tracking-widest">
               Belum punya akun?{' '}
               <Link href="/register" className="text-targetred hover:text-red-500 font-bold transition-colors">
                 Daftar di sini
@@ -144,8 +144,8 @@ const Login: React.FC = () => {
           </div>
         </form>
 
-        <div className="mt-8 pt-6 border-t border-soft-gunmetal/10 dark:border-soft-sand/5 text-center">
-          <p className="text-soft-gunmetal/40 dark:text-soft-sand/20 text-[9px] font-mono uppercase tracking-widest">
+        <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700 text-center">
+          <p className="text-slate-400 dark:text-slate-500 text-[9px] font-mono uppercase tracking-widest">
             Helpdesk-DART Operational Security System
           </p>
         </div>

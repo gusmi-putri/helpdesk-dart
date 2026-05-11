@@ -27,22 +27,22 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="bg-sand dark:bg-gunmetal border-2 border-olive w-full max-w-md shadow-[0_0_50px_rgba(75,83,32,0.3)] animate-in zoom-in-95 duration-200">
+      <div className="bg-slate-50 dark:bg-gunmetal border-2 border-olive w-full max-w-md shadow-[0_0_50px_rgba(75,83,32,0.3)] animate-in zoom-in-95 duration-200">
         <div className="p-4 border-b border-olive bg-olive/10 flex justify-between items-center">
           <h3 className="font-tactical font-bold text-olive tracking-widest uppercase">
             {isAddMode ? 'TAMBAH PERSONEL BARU' : 'PENGATURAN PERSONEL'}
           </h3>
-          <button onClick={onClose} className="text-gray-500 hover:text-targetred">✕</button>
+          <button onClick={onClose} className="text-slate-500 hover:text-targetred">✕</button>
         </div>
         <form onSubmit={onSubmit} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto custom-scrollbar">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">NRP / NIP</label>
+              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">NRP / NIP</label>
               <input
                 type="text"
                 value={data.nrp_nip}
                 onChange={(e) => setData('nrp_nip', e.target.value)}
-                className={`w-full bg-white dark:bg-black border ${errors.nrp_nip ? 'border-red-500' : 'border-gray-400 dark:border-gray-700'} p-2 text-sm font-mono focus:border-olive outline-none uppercase`}
+                className={`w-full bg-white dark:bg-navy border ${errors.nrp_nip ? 'border-red-500' : 'border-gray-400 dark:border-slate-600'} p-2 text-sm font-mono focus:border-olive outline-none uppercase`}
                 placeholder="MASUKKAN NRP/NIP"
                 required
                 minLength={8}
@@ -53,24 +53,24 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
             {isAddMode ? (
               <>
                 <div>
-                  <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Username</label>
+                  <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Username</label>
                   <input
                     type="text"
                     value={data.username}
                     onChange={(e) => setData('username', e.target.value)}
-                    className={`w-full bg-white dark:bg-black border ${errors.username ? 'border-red-500' : 'border-gray-400 dark:border-gray-700'} p-2 text-sm font-mono focus:border-olive outline-none uppercase`}
+                    className={`w-full bg-white dark:bg-navy border ${errors.username ? 'border-red-500' : 'border-gray-400 dark:border-slate-600'} p-2 text-sm font-mono focus:border-olive outline-none uppercase`}
                     required
                     autoComplete="off"
                   />
                   {errors.username && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.username}</p>}
                 </div>
                 <div>
-                  <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Password</label>
+                  <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Password</label>
                   <input
                     type="password"
                     value={data.password}
                     onChange={(e) => setData('password', e.target.value)}
-                    className={`w-full bg-white dark:bg-black border ${errors.password ? 'border-red-500' : 'border-gray-400 dark:border-gray-700'} p-2 text-sm font-mono focus:border-olive outline-none`}
+                    className={`w-full bg-white dark:bg-navy border ${errors.password ? 'border-red-500' : 'border-gray-400 dark:border-slate-600'} p-2 text-sm font-mono focus:border-olive outline-none`}
                     required={isAddMode}
                     autoComplete="new-password"
                     minLength={8}
@@ -79,28 +79,28 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
                 </div>
               </>
             ) : (
-              <div className="bg-gray-100 dark:bg-gray-900/50 p-2 border border-gray-300 dark:border-gray-800 flex flex-col justify-center">
-                <label className="block text-[9px] font-mono text-gray-500 uppercase tracking-widest">Username (Locked)</label>
-                <p className="text-xs font-mono font-bold text-gray-600 dark:text-gray-400">{data.username}</p>
+              <div className="bg-gray-100 dark:bg-gray-900/50 p-2 border border-slate-200 dark:border-slate-700/50 flex flex-col justify-center">
+                <label className="block text-[9px] font-mono text-slate-500 uppercase tracking-widest">Username (Locked)</label>
+                <p className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400">{data.username}</p>
               </div>
             )}
             <div className="col-span-2">
-              <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Nama Lengkap</label>
+              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Nama Lengkap</label>
               <input
                 type="text"
                 value={data.nama_lengkap}
                 onChange={(e) => setData('nama_lengkap', e.target.value)}
-                className={`w-full bg-white dark:bg-black border ${errors.nama_lengkap ? 'border-red-500' : 'border-gray-400 dark:border-gray-700'} p-2 text-sm font-mono focus:border-olive outline-none`}
+                className={`w-full bg-white dark:bg-navy border ${errors.nama_lengkap ? 'border-red-500' : 'border-gray-400 dark:border-slate-600'} p-2 text-sm font-mono focus:border-olive outline-none`}
                 required
               />
               {errors.nama_lengkap && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.nama_lengkap}</p>}
             </div>
             <div>
-              <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Hak Akses (Role)</label>
+              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Hak Akses (Role)</label>
               <select
                 value={data.role_id}
                 onChange={(e) => setData('role_id', e.target.value)}
-                className={`w-full bg-white dark:bg-black border ${errors.role_id ? 'border-red-500' : 'border-gray-400 dark:border-gray-700'} p-2 text-sm font-mono focus:border-olive outline-none`}
+                className={`w-full bg-white dark:bg-navy border ${errors.role_id ? 'border-red-500' : 'border-gray-400 dark:border-slate-600'} p-2 text-sm font-mono focus:border-olive outline-none`}
                 required
               >
                 <option value="">PILIH ROLE</option>
@@ -111,26 +111,26 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
               {errors.role_id && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.role_id}</p>}
             </div>
             <div>
-              <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">No. WhatsApp</label>
+              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">No. WhatsApp</label>
               <input
                 type="text"
                 value={data.no_wa}
                 onChange={(e) => setData('no_wa', e.target.value)}
-                className="w-full bg-white dark:bg-black border border-gray-400 dark:border-gray-700 p-2 text-sm font-mono focus:border-olive outline-none"
+                className="w-full bg-white dark:bg-navy border border-gray-400 dark:border-slate-600 p-2 text-sm font-mono focus:border-olive outline-none"
                 placeholder="08..."
               />
             </div>
             <div>
-              <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">Asal Satuan</label>
+              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Asal Satuan</label>
               <input
                 type="text"
                 value={data.asal_satuan}
                 onChange={(e) => setData('asal_satuan', e.target.value)}
-                className="w-full bg-white dark:bg-black border border-gray-400 dark:border-gray-700 p-2 text-sm font-mono focus:border-olive outline-none"
+                className="w-full bg-white dark:bg-navy border border-gray-400 dark:border-slate-600 p-2 text-sm font-mono focus:border-olive outline-none"
               />
             </div>
             <div>
-              <label className="block text-[10px] font-mono text-gray-600 dark:text-gray-400 mb-1 tracking-widest uppercase">
+              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">
                 Spesialisasi {dbRoles?.find((r: any) => r.id == data.role_id)?.name !== 'Teknisi' && '(KHUSUS TEKNISI)'}
               </label>
               <input
@@ -138,7 +138,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
                 value={data.spesialisasi}
                 onChange={(e) => setData('spesialisasi', e.target.value)}
                 disabled={dbRoles?.find((r: any) => r.id == data.role_id)?.name !== 'Teknisi'}
-                className={`w-full bg-white dark:bg-black border border-gray-400 dark:border-gray-700 p-2 text-sm font-mono focus:border-olive outline-none ${dbRoles?.find((r: any) => r.id == data.role_id)?.name !== 'Teknisi' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`w-full bg-white dark:bg-navy border border-gray-400 dark:border-slate-600 p-2 text-sm font-mono focus:border-olive outline-none ${dbRoles?.find((r: any) => r.id == data.role_id)?.name !== 'Teknisi' ? 'opacity-50 cursor-not-allowed' : ''}`}
                 placeholder={dbRoles?.find((r: any) => r.id == data.role_id)?.name !== 'Teknisi' ? 'NON-TEKNISI' : 'MISAL: JARINGAN / HARDWARE'}
               />
             </div>
@@ -151,7 +151,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
             >
               {processing ? 'MEMPROSES...' : (isAddMode ? 'DAFTARKAN PERSONEL' : 'SIMPAN PERUBAHAN')}
             </button>
-            <button type="button" onClick={onClose} className="flex-1 bg-transparent border border-gray-500 text-gray-500 py-2 font-tactical font-bold tracking-widest hover:bg-gray-500/10 transition-colors">
+            <button type="button" onClick={onClose} className="flex-1 bg-transparent border border-gray-500 text-slate-500 py-2 font-tactical font-bold tracking-widest hover:bg-gray-500/10 transition-colors">
               BATAL
             </button>
           </div>

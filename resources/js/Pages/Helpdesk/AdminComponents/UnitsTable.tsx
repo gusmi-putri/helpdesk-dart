@@ -98,28 +98,28 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
           { label: 'RUSAK / KENDALA', value: unitStats.RUSAK, color: 'border-targetred', text: 'text-targetred' },
           { label: 'DALAM PERBAIKAN', value: unitStats.PERBAIKAN, color: 'border-blue-500', text: 'text-blue-500' },
         ].map((s, i) => (
-          <div key={i} className={`bg-sand/30 dark:bg-black/40 border-l-4 ${s.color} p-4 shadow-md`}>
-            <p className="text-[9px] font-mono font-bold text-soft-gunmetal/60 dark:text-soft-sand/40 tracking-widest uppercase mb-1">{s.label}</p>
+          <div key={i} className={`bg-white dark:bg-navy/80 border-l-4 ${s.color} p-4 shadow-md`}>
+            <p className="text-[9px] font-mono font-bold text-slate-500 dark:text-slate-300 tracking-widest uppercase mb-1">{s.label}</p>
             <p className={`text-2xl font-tactical font-bold ${s.text}`}>{s.value}</p>
           </div>
         ))}
       </div>
 
-      <div className="bg-sand/30 dark:bg-black/40 border border-soft-gunmetal/10 dark:border-soft-sand/5 shadow-2xl overflow-hidden relative">
+      <div className="bg-white dark:bg-navy/80 border border-slate-200 dark:border-slate-700 shadow-2xl overflow-hidden relative">
         <div className="absolute top-0 left-0 w-full h-[2px] bg-olive"></div>
-        <div className="p-5 border-b border-soft-gunmetal/10 dark:border-soft-sand/5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-sand/20 dark:bg-black/20">
-          <h3 className="text-gunmetal dark:text-white font-tactical font-bold text-lg tracking-widest flex items-center gap-3 uppercase">
+        <div className="p-5 border-b border-slate-200 dark:border-slate-700 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-50 dark:bg-navy/80">
+          <h3 className="text-slate-800 dark:text-white font-tactical font-bold text-lg tracking-widest flex items-center gap-3 uppercase">
             <Package className="text-olive w-6 h-6" /> DATA INVENTARIS UNIT
           </h3>
           <div className="flex items-center gap-4">
             <div className="relative">
-              <Search className="w-4 h-4 absolute left-3 top-2.5 text-soft-gunmetal/60 dark:text-soft-sand/40" />
+              <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-500 dark:text-slate-300" />
               <input
                 type="text"
                 placeholder="CARI SERI / NAMA / LOKASI..."
                 value={unitSearch}
                 onChange={(e) => setUnitSearch(e.target.value)}
-                className="bg-sand/50 dark:bg-gunmetal border border-soft-gunmetal/20 dark:border-soft-sand/10 pl-9 pr-4 py-2 text-sm font-mono text-gunmetal dark:text-white focus:outline-none focus:border-olive transition-colors w-64 uppercase"
+                className="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 pl-9 pr-4 py-2 text-sm font-mono text-slate-800 dark:text-white focus:outline-none focus:border-olive transition-colors w-64 uppercase"
               />
             </div>
             <input 
@@ -131,7 +131,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
             />
             <button
               onClick={handleDownloadTemplate}
-              className="bg-sand/50 dark:bg-gunmetal hover:bg-sand dark:hover:bg-gunmetal/80 text-soft-gunmetal dark:text-soft-sand px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-soft-gunmetal/20 dark:border-soft-sand/10 shadow uppercase"
+              className="bg-slate-50 dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-gunmetal/80 text-slate-600 dark:text-slate-300 px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-slate-300 dark:border-slate-600 shadow uppercase"
             >
               <Download className="w-4 h-4" /> TEMPLATE
             </button>
@@ -153,7 +153,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
 
         <div className="overflow-x-auto">
           <table className="w-full text-left font-sans text-sm">
-            <thead className="bg-[#1a2024] text-gray-400 font-tactical tracking-widest border-b border-gray-700">
+            <thead className="bg-slate-100 dark:bg-slate-800/80 text-slate-400 font-tactical tracking-widest border-b border-slate-200 dark:border-slate-700">
               <tr>
                 {[
                   { label: 'NOMOR SERI', key: 'nomor_seri' },
@@ -180,18 +180,18 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
                 <th className="p-4 text-right">OPSI</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-800">
+            <tbody className="divide-y divide-slate-200 dark:divide-slate-700/50">
               {filteredUnits.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="p-10 text-center text-soft-gunmetal/40 dark:text-soft-sand/20 font-mono italic uppercase tracking-widest">Tidak ada unit yang ditemukan.</td>
+                  <td colSpan={7} className="p-10 text-center text-slate-500 dark:text-slate-400 font-mono italic uppercase tracking-widest">Tidak ada unit yang ditemukan.</td>
                 </tr>
               ) : (
                 filteredUnits.map((u: any) => (
-                  <tr key={u.db_id} className="hover:bg-gray-200 dark:hover:bg-gray-800/80 transition-colors group">
+                  <tr key={u.db_id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
                     <td className="p-4 font-mono font-bold text-olive border-l-2 border-transparent group-hover:border-olive">{u.nomor_seri}</td>
-                    <td className="p-4 text-gunmetal dark:text-white font-bold uppercase">{u.nama_dart}</td>
-                    <td className="p-4 font-mono text-xs text-soft-gunmetal/60 dark:text-soft-sand/40 uppercase">{u.jenis_dart}</td>
-                    <td className="p-4 text-gunmetal dark:text-soft-sand uppercase">{u.asal_satuan}</td>
+                    <td className="p-4 text-slate-800 dark:text-white font-bold uppercase">{u.nama_dart}</td>
+                    <td className="p-4 font-mono text-xs text-slate-500 dark:text-slate-300 uppercase">{u.jenis_dart}</td>
+                    <td className="p-4 text-gunmetal dark:text-slate-300 uppercase">{u.asal_satuan}</td>
                     <td className="p-4">
                       <span className={`px-2 py-0.5 border text-[9px] font-bold tracking-widest uppercase
                         ${u.status_unit === 'Siap Ops' ? 'bg-camogreen/10 text-camogreen border-camogreen/30' :
@@ -201,15 +201,15 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
                         {u.status_unit}
                       </span>
                     </td>
-                    <td className="p-4 font-mono text-[10px] text-soft-gunmetal/40 dark:text-soft-sand/20">{u.last_maintenance}</td>
+                    <td className="p-4 font-mono text-[10px] text-slate-500 dark:text-slate-400">{u.last_maintenance}</td>
                     <td className="p-4 flex gap-2 justify-end">
-                      <button onClick={() => handleShowUnitHistory(u)} className="p-2 bg-gray-300 dark:bg-gray-800 hover:bg-blue-600 hover:text-white text-gray-700 dark:text-gray-300 transition-colors border border-gray-400 dark:border-gray-600" title="Riwayat">
+                      <button onClick={() => handleShowUnitHistory(u)} className="p-2 bg-slate-100 dark:bg-slate-700 hover:bg-blue-600 hover:text-white text-slate-600 dark:text-slate-300 transition-colors border border-slate-300 dark:border-slate-600" title="Riwayat">
                         <History className="w-4 h-4" />
                       </button>
-                      <button onClick={() => handleEditUnit(u)} className="p-2 bg-gray-300 dark:bg-gray-800 hover:bg-olive hover:text-gunmetal dark:hover:text-white text-gray-700 dark:text-gray-300 transition-colors border border-gray-400 dark:border-gray-600" title="Edit">
+                      <button onClick={() => handleEditUnit(u)} className="p-2 bg-slate-100 dark:bg-slate-700 hover:bg-olive hover:text-gunmetal dark:hover:text-white text-slate-600 dark:text-slate-300 transition-colors border border-slate-300 dark:border-slate-600" title="Edit">
                         <Edit className="w-4 h-4" />
                       </button>
-                      <button onClick={() => handleDeleteUnit(u)} className="p-2 bg-gray-300 dark:bg-gray-800 hover:bg-targetred hover:text-white text-gray-700 dark:text-gray-300 transition-colors border border-gray-400 dark:border-gray-600" title="Hapus">
+                      <button onClick={() => handleDeleteUnit(u)} className="p-2 bg-slate-100 dark:bg-slate-700 hover:bg-targetred hover:text-white text-slate-600 dark:text-slate-300 transition-colors border border-slate-300 dark:border-slate-600" title="Hapus">
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </td>
@@ -223,13 +223,13 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
       {/* Import Result Modal */}
       {importResult && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50" onClick={() => setImportResult(null)}>
-          <div className="bg-white dark:bg-gunmetal border border-soft-gunmetal/20 dark:border-soft-sand/10 shadow-2xl max-w-md w-full mx-4 rounded-sm overflow-hidden" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white dark:bg-gunmetal border border-slate-300 dark:border-slate-600 shadow-2xl max-w-md w-full mx-4 rounded-sm overflow-hidden" onClick={(e) => e.stopPropagation()}>
             <div className={`p-4 flex items-center justify-between ${importResult.success ? 'bg-camogreen/10 border-b border-camogreen/20' : 'bg-targetred/10 border-b border-targetred/20'}`}>
-              <h3 className="font-tactical font-bold tracking-widest text-sm flex items-center gap-2 text-gunmetal dark:text-white uppercase">
+              <h3 className="font-tactical font-bold tracking-widest text-sm flex items-center gap-2 text-slate-800 dark:text-white uppercase">
                 {importResult.success ? <CheckCircle className="w-5 h-5 text-camogreen" /> : <AlertTriangle className="w-5 h-5 text-targetred" />}
                 HASIL IMPORT DATA
               </h3>
-              <button onClick={() => setImportResult(null)} className="text-soft-gunmetal/60 dark:text-soft-sand/40 hover:text-targetred transition-colors">
+              <button onClick={() => setImportResult(null)} className="text-slate-500 dark:text-slate-300 hover:text-targetred transition-colors">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -237,15 +237,15 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
               {importResult.success ? (
                 <div className="space-y-4">
                   <div className="grid grid-cols-3 gap-3 text-center">
-                    <div className="bg-sand/30 dark:bg-black/40 p-3 border border-soft-gunmetal/10 dark:border-soft-sand/5">
-                      <p className="text-[9px] font-mono font-bold text-soft-gunmetal/60 dark:text-soft-sand/40 uppercase tracking-widest mb-1">TOTAL BARIS</p>
-                      <p className="text-xl font-tactical font-bold text-gunmetal dark:text-white">{importResult.total}</p>
+                    <div className="bg-white dark:bg-navy/80 p-3 border border-slate-200 dark:border-slate-700">
+                      <p className="text-[9px] font-mono font-bold text-slate-500 dark:text-slate-300 uppercase tracking-widest mb-1">TOTAL BARIS</p>
+                      <p className="text-xl font-tactical font-bold text-slate-800 dark:text-white">{importResult.total}</p>
                     </div>
-                    <div className="bg-sand/30 dark:bg-black/40 p-3 border border-camogreen/30">
+                    <div className="bg-white dark:bg-navy/80 p-3 border border-camogreen/30">
                       <p className="text-[9px] font-mono font-bold text-camogreen uppercase tracking-widest mb-1">BERHASIL</p>
                       <p className="text-xl font-tactical font-bold text-camogreen">{importResult.imported}</p>
                     </div>
-                    <div className="bg-sand/30 dark:bg-black/40 p-3 border border-yellow-500/30">
+                    <div className="bg-white dark:bg-navy/80 p-3 border border-yellow-500/30">
                       <p className="text-[9px] font-mono font-bold text-yellow-500 uppercase tracking-widest mb-1">DILEWATI</p>
                       <p className="text-xl font-tactical font-bold text-yellow-500">{importResult.skipped}</p>
                     </div>
@@ -255,7 +255,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
                       ⚠ {importResult.skipped} baris dilewati karena Nomor Seri sudah terdaftar di sistem.
                     </p>
                   )}
-                  <p className="text-[10px] font-mono text-soft-gunmetal/60 dark:text-soft-sand/40 text-center uppercase">
+                  <p className="text-[10px] font-mono text-slate-500 dark:text-slate-300 text-center uppercase">
                     Data inventaris telah diperbarui secara otomatis.
                   </p>
                 </div>
@@ -263,7 +263,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
                 <p className="text-sm text-targetred font-mono">{importResult.message || 'Terjadi kesalahan saat memproses file.'}</p>
               )}
             </div>
-            <div className="p-4 border-t border-soft-gunmetal/10 dark:border-soft-sand/5 flex justify-end">
+            <div className="p-4 border-t border-slate-200 dark:border-slate-700 flex justify-end">
               <button
                 onClick={() => setImportResult(null)}
                 className="bg-olive hover:bg-camogreen text-white px-6 py-2 text-xs font-tactical font-bold tracking-widest transition-colors"

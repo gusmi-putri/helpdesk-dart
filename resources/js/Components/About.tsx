@@ -14,7 +14,7 @@ const About = () => {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-5xl font-stencil text-white mb-4 uppercase">PANDUAN PELAPORAN</h2>
-          <p className="text-soft-sand/60 font-mono text-sm tracking-widest uppercase">Ikuti langkah-langkah di bawah ini untuk melaporkan kerusakan perangkat.</p>
+          <p className="text-slate-300/60 font-mono text-sm tracking-widest uppercase">Ikuti langkah-langkah di bawah ini untuk melaporkan kerusakan perangkat.</p>
           <div className="w-24 h-1 bg-targetred mx-auto mt-4"></div>
         </motion.div>
 
@@ -48,13 +48,13 @@ const About = () => {
               className="glass-panel p-8 tactical-border group"
             >
               <div className="flex justify-between items-start mb-6">
-                <div className="bg-sand/30 dark:bg-black/40 p-4 rounded-sm border border-soft-gunmetal/10 dark:border-soft-sand/5 group-hover:border-olive transition-all">
+                <div className="bg-white dark:bg-navy/80 p-4 rounded-sm border border-slate-200 dark:border-slate-700 group-hover:border-olive transition-all">
                   {item.icon}
                 </div>
-                <span className="font-stencil text-2xl text-soft-gunmetal/20 dark:text-soft-sand/10 group-hover:text-olive transition-colors">{item.step}</span>
+                <span className="font-stencil text-2xl text-slate-600/20 dark:text-slate-300/10 group-hover:text-olive transition-colors">{item.step}</span>
               </div>
-              <h3 className="text-xl font-tactical font-bold text-gunmetal dark:text-white mb-3 tracking-wider">{item.title}</h3>
-              <p className="text-soft-gunmetal/70 dark:text-soft-sand/60 leading-relaxed font-sans text-sm">{item.desc}</p>
+              <h3 className="text-xl font-tactical font-bold text-slate-800 dark:text-white mb-3 tracking-wider">{item.title}</h3>
+              <p className="text-slate-600 dark:text-slate-300 leading-relaxed font-sans text-sm">{item.desc}</p>
             </motion.div>
           ))}
         </div>

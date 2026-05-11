@@ -107,7 +107,7 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
   };
 
   return (
-    <div className="min-h-screen bg-sand dark:bg-gunmetal flex font-sans selection:bg-olive selection:text-gunmetal relative text-gunmetal dark:text-gray-200">
+    <div className="min-h-screen bg-slate-50 dark:bg-gunmetal flex font-sans selection:bg-olive selection:text-gunmetal relative text-slate-800 dark:text-slate-200">
       
       <PelaporSidebar 
         isMobileMenuOpen={isMobileMenuOpen}

@@ -43,25 +43,25 @@ const AnalyticsSection: React.FC<AnalyticsSectionProps> = ({ dbCases }) => {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
-      <h2 className="text-2xl font-tactical font-bold text-gunmetal dark:text-white tracking-widest flex items-center gap-3 mb-6">
+      <h2 className="text-2xl font-tactical font-bold text-slate-800 dark:text-white tracking-widest flex items-center gap-3 mb-6">
         <Activity className="text-olive w-6 h-6" /> RINGKASAN OPERASIONAL
       </h2>
 
       {/* Stats Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-sand/30 dark:bg-black/40 border border-soft-gunmetal/10 dark:border-soft-sand/5 p-6 flex flex-col items-center justify-center relative overflow-hidden shadow-lg">
+        <div className="bg-white dark:bg-navy/80 border border-slate-200 dark:border-slate-700 p-6 flex flex-col items-center justify-center relative overflow-hidden shadow-lg">
           <div className="absolute top-0 left-0 w-full h-1 bg-targetred"></div>
-          <span className="text-[10px] font-mono text-soft-gunmetal/60 dark:text-soft-sand/40 uppercase tracking-widest mb-2">Laporan Baru</span>
+          <span className="text-[10px] font-mono text-slate-500 dark:text-slate-300 uppercase tracking-widest mb-2">Laporan Baru</span>
           <span className="text-4xl font-tactical font-bold text-targetred">{statusCounts.PENDING}</span>
         </div>
-        <div className="bg-sand/30 dark:bg-black/40 border border-soft-gunmetal/10 dark:border-soft-sand/5 p-6 flex flex-col items-center justify-center relative overflow-hidden shadow-lg">
+        <div className="bg-white dark:bg-navy/80 border border-slate-200 dark:border-slate-700 p-6 flex flex-col items-center justify-center relative overflow-hidden shadow-lg">
           <div className="absolute top-0 left-0 w-full h-1 bg-blue-500"></div>
-          <span className="text-[10px] font-mono text-soft-gunmetal/60 dark:text-soft-sand/40 uppercase tracking-widest mb-2">Sedang Diproses</span>
+          <span className="text-[10px] font-mono text-slate-500 dark:text-slate-300 uppercase tracking-widest mb-2">Sedang Diproses</span>
           <span className="text-4xl font-tactical font-bold text-blue-500">{statusCounts.PROSES}</span>
         </div>
-        <div className="bg-sand/30 dark:bg-black/40 border border-soft-gunmetal/10 dark:border-soft-sand/5 p-6 flex flex-col items-center justify-center relative overflow-hidden shadow-lg">
+        <div className="bg-white dark:bg-navy/80 border border-slate-200 dark:border-slate-700 p-6 flex flex-col items-center justify-center relative overflow-hidden shadow-lg">
           <div className="absolute top-0 left-0 w-full h-1 bg-camogreen"></div>
-          <span className="text-[10px] font-mono text-soft-gunmetal/60 dark:text-soft-sand/40 uppercase tracking-widest mb-2">Telah Selesai</span>
+          <span className="text-[10px] font-mono text-slate-500 dark:text-slate-300 uppercase tracking-widest mb-2">Telah Selesai</span>
           <span className="text-4xl font-tactical font-bold text-camogreen">{statusCounts.SELESAI}</span>
         </div>
       </div>
@@ -69,8 +69,8 @@ const AnalyticsSection: React.FC<AnalyticsSectionProps> = ({ dbCases }) => {
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Status Chart */}
-        <div className="bg-sand/30 dark:bg-black/40 border border-soft-gunmetal/10 dark:border-soft-sand/5 p-6 shadow-lg">
-          <h3 className="text-xs font-tactical font-bold text-gunmetal dark:text-soft-sand tracking-widest mb-6 uppercase border-b border-soft-gunmetal/10 dark:border-soft-sand/5 pb-2">Status Penanganan Laporan</h3>
+        <div className="bg-white dark:bg-navy/80 border border-slate-200 dark:border-slate-700 p-6 shadow-lg">
+          <h3 className="text-xs font-tactical font-bold text-gunmetal dark:text-slate-300 tracking-widest mb-6 uppercase border-b border-slate-200 dark:border-slate-700 pb-2">Status Penanganan Laporan</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -95,8 +95,8 @@ const AnalyticsSection: React.FC<AnalyticsSectionProps> = ({ dbCases }) => {
         </div>
 
         {/* Urgency Chart */}
-        <div className="bg-sand/30 dark:bg-black/40 border border-soft-gunmetal/10 dark:border-soft-sand/5 p-6 shadow-lg">
-          <h3 className="text-xs font-tactical font-bold text-gunmetal dark:text-soft-sand tracking-widest mb-6 uppercase border-b border-soft-gunmetal/10 dark:border-soft-sand/5 pb-2">Klasifikasi Urgensi</h3>
+        <div className="bg-white dark:bg-navy/80 border border-slate-200 dark:border-slate-700 p-6 shadow-lg">
+          <h3 className="text-xs font-tactical font-bold text-gunmetal dark:text-slate-300 tracking-widest mb-6 uppercase border-b border-slate-200 dark:border-slate-700 pb-2">Klasifikasi Urgensi</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={urgencyData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>

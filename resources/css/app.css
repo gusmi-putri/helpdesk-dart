@@ -5,12 +5,16 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-gunmetal: #1E293B;
-  --color-sand: #F5F0E6;
-  --color-olive: #68a309ff;
-  --color-khaki: #FDE68A;
-  --color-targetred: #e12323ff;
-  --color-camogreen: #0c8237ff;
+  /* === MODERN VIBRANT PALETTE === */
+  --color-gunmetal: #0F172A;
+  --color-navy: #1E293B;
+  --color-sand: #F8FAFC;
+  --color-olive: #10B981;
+  --color-camogreen: #059669;
+  --color-targetred: #EF4444;
+  --color-khaki: #FBBF24;
+  --color-soft-gunmetal: #64748B;
+  --color-soft-sand: #94A3B8;
 
   --font-sans: "Inter", sans-serif;
   --font-tactical: "Rajdhani", sans-serif;
@@ -19,25 +23,34 @@
 
 @layer base {
   body {
-    @apply bg-sand text-gunmetal dark:bg-gunmetal dark:text-gray-200 font-sans cursor-crosshair selection:bg-camogreen selection:text-white;
+    @apply bg-sand text-slate-800 dark:bg-gunmetal dark:text-slate-100 font-sans selection:bg-olive/30 selection:text-emerald-900 dark:selection:text-white;
   }
 }
 
 @layer utilities {
-  .cursor-crosshair {
-    cursor: crosshair;
-  }
-
   .glass-panel {
-    @apply bg-white/60 dark:bg-black/40 backdrop-blur-md border border-gray-300 dark:border-gray-700/50 shadow-xl;
+    @apply bg-white/90 dark:bg-navy/90 backdrop-blur-xl border border-slate-200 dark:border-slate-700/50 shadow-lg;
   }
 
   .tactical-border {
     @apply border-2 border-olive hover:border-camogreen transition-colors duration-300;
   }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #475569;
+    border-radius: 3px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #10B981;
+  }
 }
 
-/* Typewriter animation */
 .typewriter-text {
   display: inline-block;
   overflow: hidden;
@@ -46,23 +59,15 @@
 }
 
 @keyframes typing {
-  from {
-    max-width: 0
-  }
-
-  to {
-    max-width: 100%
-  }
+  from { max-width: 0 }
+  to { max-width: 100% }
 }
 
 @keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: #10B981; }
+}
 
-  from,
-  to {
-    border-color: transparent
-  }
-
-  50% {
-    border-color: #A3E635; /* new olive color */
-  }
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
 }

@@ -22,27 +22,27 @@ const CompletionForm: React.FC<CompletionFormProps> = ({
 }) => {
   return (
     <>
-      <h3 className="text-gunmetal dark:text-white font-tactical font-bold text-lg mb-6 flex items-center gap-2 tracking-widest uppercase border-b border-olive/20 pb-2">
+      <h3 className="text-slate-800 dark:text-white font-tactical font-bold text-lg mb-6 flex items-center gap-2 tracking-widest uppercase border-b border-olive/20 pb-2">
         <FileText className="w-5 h-5 text-olive" />
         FORMULIR LAPORAN PENYELESAIAN
       </h3>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label className="block text-soft-gunmetal dark:text-soft-sand text-xs font-mono font-bold mb-2 tracking-widest uppercase">
+          <label className="block text-slate-600 dark:text-slate-300 text-xs font-mono font-bold mb-2 tracking-widest uppercase">
             Catatan Perbaikan & Tindakan yang Diambil
           </label>
           <textarea
             value={data.catatan}
             onChange={(e) => setData('catatan', e.target.value)}
             required rows={5}
-            className={`w-full bg-sand/30 dark:bg-black/20 border ${errors.catatan ? 'border-targetred' : 'border-soft-gunmetal/20 dark:border-soft-sand/10'} text-gunmetal dark:text-white p-4 focus:outline-none focus:border-olive transition-colors font-sans text-sm resize-y`}
+            className={`w-full bg-white dark:bg-navy/80 border ${errors.catatan ? 'border-targetred' : 'border-slate-300 dark:border-slate-600'} text-slate-800 dark:text-white p-4 focus:outline-none focus:border-olive transition-colors font-sans text-sm resize-y`}
             placeholder="Jelaskan tindakan perbaikan yang telah dilakukan secara detail..."
           />
           {errors.catatan && <p className="text-[9px] text-targetred mt-1 font-mono uppercase">{errors.catatan}</p>}
         </div>
 
-        <div className="border-2 border-dashed border-soft-gunmetal/20 dark:border-soft-sand/10 p-4 text-center hover:border-olive transition-all group cursor-pointer relative bg-sand/20 dark:bg-black/10">
+        <div className="border-2 border-dashed border-slate-300 dark:border-slate-600 p-4 text-center hover:border-olive transition-all group cursor-pointer relative bg-slate-50 dark:bg-navy/10">
           <input
             type="file"
             accept="image/*"
@@ -70,12 +70,12 @@ const CompletionForm: React.FC<CompletionFormProps> = ({
             ) : (
               <div className="flex flex-col items-center gap-1">
                 <div className="flex items-center gap-3">
-                  <Activity className="w-5 h-5 text-soft-gunmetal/40 group-hover:text-olive transition-colors" />
-                  <span className="text-xs font-mono text-soft-gunmetal/60 dark:text-soft-sand/40 group-hover:text-olive uppercase font-bold">
+                  <Activity className="w-5 h-5 text-slate-500 group-hover:text-olive transition-colors" />
+                  <span className="text-xs font-mono text-slate-500 dark:text-slate-300 group-hover:text-olive uppercase font-bold">
                     UNGGAH FOTO BUKTI SELESAI
                   </span>
                 </div>
-                <span className="text-[9px] font-mono text-soft-gunmetal/40 dark:text-soft-sand/20 uppercase">Klik atau tarik file ke area ini</span>
+                <span className="text-[9px] font-mono text-slate-500 dark:text-slate-400 uppercase">Klik atau tarik file ke area ini</span>
               </div>
             )}
           </div>
@@ -83,7 +83,7 @@ const CompletionForm: React.FC<CompletionFormProps> = ({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
           <div>
-            <label className="block text-soft-gunmetal dark:text-soft-sand text-xs font-mono font-bold mb-2 tracking-widest uppercase">
+            <label className="block text-slate-600 dark:text-slate-300 text-xs font-mono font-bold mb-2 tracking-widest uppercase">
               Metode Penanganan Akhir
             </label>
             <div className="relative">
@@ -91,13 +91,13 @@ const CompletionForm: React.FC<CompletionFormProps> = ({
                 value={data.metode}
                 onChange={(e) => setData('metode', e.target.value)}
                 required
-                className={`w-full bg-sand/30 dark:bg-gunmetal/50 border ${!data.metode ? 'border-targetred' : 'border-soft-gunmetal/20 dark:border-soft-sand/10'} text-gunmetal dark:text-white p-3.5 focus:outline-none focus:border-olive transition-colors font-tactical font-bold text-base tracking-widest appearance-none pr-10 uppercase`}
+                className={`w-full bg-white dark:bg-gunmetal/50 border ${!data.metode ? 'border-targetred' : 'border-slate-300 dark:border-slate-600'} text-slate-800 dark:text-white p-3.5 focus:outline-none focus:border-olive transition-colors font-tactical font-bold text-base tracking-widest appearance-none pr-10 uppercase`}
               >
                 <option value="" disabled>--- PILIH METODE PENANGANAN ---</option>
                 <option value="Offline">PENANGANAN LANGSUNG (OFFLINE)</option>
                 <option value="Online">PENANGANAN JARAK JAUH (ONLINE)</option>
               </select>
-              <ChevronRight className="absolute right-4 top-4 w-5 h-5 text-soft-gunmetal/40 rotate-90 pointer-events-none" />
+              <ChevronRight className="absolute right-4 top-4 w-5 h-5 text-slate-500 rotate-90 pointer-events-none" />
             </div>
           </div>
 

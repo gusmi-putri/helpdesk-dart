@@ -8,23 +8,23 @@ interface PelaporTopbarProps {
 
 const PelaporTopbar: React.FC<PelaporTopbarProps> = ({ setIsMobileMenuOpen, currentUser }) => {
   return (
-    <header className="h-16 border-b border-soft-gunmetal/10 dark:border-soft-sand/5 bg-sand/80 dark:bg-black/50 backdrop-blur-md flex items-center justify-between px-4 md:px-8 flex-shrink-0 z-10 relative">
+    <header className="h-16 border-b border-slate-200 dark:border-slate-700 bg-sand/80 dark:bg-navy/60 backdrop-blur-md flex items-center justify-between px-4 md:px-8 flex-shrink-0 z-10 relative">
       <div className="flex items-center gap-4">
         <button
           onClick={() => setIsMobileMenuOpen(true)}
-          className="md:hidden p-2 text-soft-gunmetal/60 dark:text-soft-sand/40 hover:text-gunmetal dark:hover:text-white transition-colors"
+          className="md:hidden p-2 text-slate-500 dark:text-slate-300 hover:text-gunmetal dark:hover:text-white transition-colors"
         >
           <Menu className="w-6 h-6" />
         </button>
       </div>
 
-      <div className="flex items-center gap-0 border border-soft-gunmetal/10 dark:border-soft-sand/10 rounded shadow-sm bg-sand/50 dark:bg-black/20 ml-auto">
-        <div className="bg-sand/80 dark:bg-black/40 px-4 py-1.5 text-right flex flex-col justify-center">
-          <span className="block text-xs font-bold text-gunmetal dark:text-white uppercase font-sans tracking-wider">{currentUser?.name || 'Pelapor Anonim'}</span>
+      <div className="flex items-center gap-0 border border-slate-200 dark:border-slate-600 rounded shadow-sm bg-slate-50 dark:bg-navy/80 ml-auto">
+        <div className="bg-sand/80 dark:bg-navy/80 px-4 py-1.5 text-right flex flex-col justify-center">
+          <span className="block text-xs font-bold text-slate-800 dark:text-white uppercase font-sans tracking-wider">{currentUser?.name || 'Pelapor Anonim'}</span>
           <span className="block text-[9px] font-mono tracking-widest text-targetred">{currentUser?.id || 'PELAPOR'}</span>
         </div>
-        <div className="w-10 h-full bg-sand/50 dark:bg-black/60 border-l border-soft-gunmetal/10 dark:border-soft-sand/10 flex items-center justify-center p-2">
-          <CircleUser className="w-6 h-6 text-soft-gunmetal/40 dark:text-soft-sand/30" />
+        <div className="w-10 h-full bg-slate-50 dark:bg-navy/70 border-l border-slate-200 dark:border-slate-600 flex items-center justify-center p-2">
+          <CircleUser className="w-6 h-6 text-slate-500 dark:text-slate-400" />
         </div>
       </div>
     </header>

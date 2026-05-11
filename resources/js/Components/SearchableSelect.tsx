@@ -49,34 +49,34 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
 
   return (
     <div className="relative" ref={containerRef} style={{ zIndex: isOpen ? 100 : 1 }}>
-      {label && <label className="block text-sm font-semibold text-soft-gunmetal dark:text-soft-sand mb-2 uppercase">{label} <span className="text-targetred">*</span></label>}
+      {label && <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-2 uppercase">{label} <span className="text-targetred">*</span></label>}
       
       {/* Trigger Area */}
       <div 
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full bg-sand/10 dark:bg-black/50 border ${error ? 'border-targetred' : isOpen ? 'border-olive ring-1 ring-olive' : 'border-soft-gunmetal/20 dark:border-soft-sand/10'} px-4 py-3 text-sm flex items-center justify-between cursor-pointer transition-all rounded-sm hover:border-olive group relative z-10`}
+        className={`w-full bg-slate-50/50 dark:bg-navy/60 border ${error ? 'border-targetred' : isOpen ? 'border-olive ring-1 ring-olive' : 'border-slate-300 dark:border-slate-600'} px-4 py-3 text-sm flex items-center justify-between cursor-pointer transition-all rounded-sm hover:border-olive group relative z-10`}
       >
-        <span className={`truncate ${selectedOption ? 'text-gunmetal dark:text-white font-medium' : 'text-soft-gunmetal/40 dark:text-soft-sand/30'}`}>
+        <span className={`truncate ${selectedOption ? 'text-slate-800 dark:text-white font-medium' : 'text-slate-500 dark:text-slate-400'}`}>
           {selectedOption ? `${selectedOption.label} — ${selectedOption.sublabel} (${selectedOption.tag})` : placeholder}
         </span>
-        <ChevronDown size={18} className={`text-soft-gunmetal/40 dark:text-soft-sand/30 transition-transform flex-shrink-0 ${isOpen ? 'rotate-180 text-olive' : ''}`} />
+        <ChevronDown size={18} className={`text-slate-500 dark:text-slate-400 transition-transform flex-shrink-0 ${isOpen ? 'rotate-180 text-olive' : ''}`} />
       </div>
 
       {/* Dropdown Area - Kembali ke Absolute agar sinkron dengan container */}
       {isOpen && (
-        <div className="absolute left-0 right-0 top-full mt-1 bg-sand dark:bg-gunmetal border border-soft-gunmetal/10 dark:border-soft-sand/5 shadow-2xl rounded-sm overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-[100]">
-          <div className="p-2 border-b border-soft-gunmetal/10 dark:border-soft-sand/5 bg-sand/30 dark:bg-black/20 flex items-center gap-2">
-            <Search size={14} className="text-soft-gunmetal/40 dark:text-soft-sand/30" />
+        <div className="absolute left-0 right-0 top-full mt-1 bg-slate-50 dark:bg-gunmetal border border-slate-200 dark:border-slate-700 shadow-2xl rounded-sm overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-[100]">
+          <div className="p-2 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-navy/80 flex items-center gap-2">
+            <Search size={14} className="text-slate-500 dark:text-slate-400" />
             <input 
               autoFocus
               type="text" 
               placeholder="Cari seri atau nama unit..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-transparent border-none focus:ring-0 text-sm font-mono p-1 text-gunmetal dark:text-white"
+              className="w-full bg-transparent border-none focus:ring-0 text-sm font-mono p-1 text-slate-800 dark:text-white"
             />
             {searchQuery && (
-              <button onClick={() => setSearchQuery('')} className="text-soft-gunmetal/40 hover:text-targetred">
+              <button onClick={() => setSearchQuery('')} className="text-slate-500 hover:text-targetred">
                 <X size={14} />
               </button>
             )}
@@ -92,7 +92,7 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
                     setIsOpen(false);
                     setSearchQuery('');
                   }}
-                  className={`px-4 py-3 hover:bg-olive hover:text-sand cursor-pointer transition-colors flex flex-col border-b border-soft-gunmetal/5 dark:border-soft-sand/5 last:border-none ${value.toString() === opt.id.toString() ? 'bg-olive/10 border-l-4 border-l-olive' : ''}`}
+                  className={`px-4 py-3 hover:bg-olive hover:text-sand cursor-pointer transition-colors flex flex-col border-b border-soft-gunmetal/5 dark:border-slate-700 last:border-none ${value.toString() === opt.id.toString() ? 'bg-olive/10 border-l-4 border-l-olive' : ''}`}
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-bold font-mono text-xs tracking-wider uppercase">{opt.label}</span>
@@ -102,12 +102,12 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
                 </div>
               ))
             ) : (
-              <div className="p-4 text-center text-xs text-soft-gunmetal/40 dark:text-soft-sand/30 font-mono italic">
+              <div className="p-4 text-center text-xs text-slate-500 dark:text-slate-400 font-mono italic">
                 Data tidak ditemukan...
               </div>
             )}
             {options.length > 50 && searchQuery === '' && (
-              <div className="p-2 text-center text-[9px] text-soft-gunmetal/30 dark:text-soft-sand/20 font-mono border-t border-soft-gunmetal/5 dark:border-soft-sand/5 uppercase tracking-widest">
+              <div className="p-2 text-center text-[9px] text-slate-600/30 dark:text-slate-400 font-mono border-t border-soft-gunmetal/5 dark:border-slate-700 uppercase tracking-widest">
                 Menampilkan 50 dari {options.length} unit. Gunakan fitur cari.
               </div>
             )}
