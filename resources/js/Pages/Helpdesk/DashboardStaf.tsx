@@ -98,6 +98,7 @@ const DashboardStaf = (props: any) => {
         activeMenu={activeMenu}
         setActiveMenu={setActiveMenu}
         handleLogout={handleLogout}
+        pendingCount={incomingReports.filter((r: any) => r.status === 'PENDING').length}
       />
 
       {/* MAIN CONTENT AREA */}

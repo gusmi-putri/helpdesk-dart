@@ -1,5 +1,5 @@
 import React from 'react';
-import { Phone, MapPin, AlertCircle, CircleUser, Upload, Camera, Trash2, Send } from 'lucide-react';
+import { Phone, MapPin, AlertCircle, CircleUser, Upload, Camera, Trash2, Send, ShieldCheck, X } from 'lucide-react';
 import SearchableSelect from '@/Components/SearchableSelect';
 
 interface ReportFormProps {
@@ -29,6 +29,21 @@ const ReportForm: React.FC<ReportFormProps> = ({
   handleFileSelect,
   removeFile
 }) => {
+  const [isConfirmOpen, setIsConfirmOpen] = React.useState(false);
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsConfirmOpen(true);
+  };
+
+  const confirmSubmit = () => {
+    setIsConfirmOpen(false);
+    const syntheticEvent = { preventDefault: () => {} } as React.FormEvent;
+    handleSubmit(syntheticEvent);
+  };
+
+  const selectedUnit = dbUnits.find((u: any) => u.id?.toString() === data.unit_id?.toString());
+
   return (
     <div className="max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6">
       <div className="glass-panel border-t-4 border-t-olive overflow-hidden bg-white dark:bg-black/40 shadow-xl border border-soft-gunmetal/10 dark:border-soft-sand/5">
@@ -53,7 +68,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleFormSubmit} className="space-y-6">
         <div className="glass-panel p-6 border-l-4 border-l-olive space-y-5 bg-white dark:bg-black/40 shadow-xl border border-soft-gunmetal/10 dark:border-soft-sand/5">
           <h3 className="text-xs font-tactical font-bold text-olive tracking-[0.2em] uppercase flex items-center gap-2"><CircleUser size={16} /> DATA PELAPOR</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -173,6 +188,48 @@ const ReportForm: React.FC<ReportFormProps> = ({
           {processing ? 'MENGIRIM LAPORAN...' : 'Kirim Laporan Sekarang'}
         </button>
       </form>
+
+      {/* Confirmation Modal */}
+      {isConfirmOpen && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50" onClick={() => setIsConfirmOpen(false)}>
+          <div className="bg-white dark:bg-gunmetal border border-olive/30 shadow-2xl max-w-lg w-full mx-4 rounded-sm overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            <div className="p-4 bg-olive/10 border-b border-olive/20 flex items-center justify-between">
+              <h3 className="font-tactical font-bold tracking-widest text-sm flex items-center gap-2 text-gunmetal dark:text-white uppercase">
+                <ShieldCheck className="w-5 h-5 text-olive" /> KONFIRMASI PENGIRIMAN
+              </h3>
+              <button onClick={() => setIsConfirmOpen(false)} className="text-soft-gunmetal/60 dark:text-soft-sand/40 hover:text-targetred transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-6 space-y-4">
+              <p className="text-sm text-gunmetal dark:text-soft-sand">
+                Apakah Anda yakin semua data laporan sudah benar dan lengkap? Laporan yang telah dikirim tidak dapat diubah kembali.
+              </p>
+              <div className="bg-sand/30 dark:bg-black/40 p-3 border border-olive/20 text-xs font-mono space-y-1">
+                <p className="text-soft-gunmetal/60 dark:text-soft-sand/40">UNIT: <span className="text-gunmetal dark:text-white font-bold">{selectedUnit?.nama_dart || selectedUnit?.nomor_seri || '-'}</span></p>
+                <p className="text-soft-gunmetal/60 dark:text-soft-sand/40">TINGKAT: <span className="text-gunmetal dark:text-white font-bold uppercase">{data.tingkat_kerusakan || '-'}</span></p>
+                <p className="text-soft-gunmetal/60 dark:text-soft-sand/40">URGENSI: <span className="text-gunmetal dark:text-white font-bold uppercase">{data.urgensi || '-'}</span></p>
+                <p className="text-soft-gunmetal/60 dark:text-soft-sand/40">BUKTI: <span className="text-gunmetal dark:text-white font-bold">{data.file_bukti?.length || 0} file</span></p>
+              </div>
+            </div>
+            <div className="p-4 border-t border-soft-gunmetal/10 dark:border-soft-sand/5 flex justify-end gap-3">
+              <button
+                onClick={() => setIsConfirmOpen(false)}
+                className="px-5 py-2 text-xs font-tactical font-bold tracking-widest border border-soft-gunmetal/20 dark:border-soft-sand/10 text-soft-gunmetal dark:text-soft-sand hover:bg-sand/30 dark:hover:bg-black/40 transition-colors uppercase"
+              >
+                PERIKSA ULANG
+              </button>
+              <button
+                onClick={confirmSubmit}
+                disabled={processing}
+                className="bg-olive hover:bg-camogreen text-white px-6 py-2 text-xs font-tactical font-bold tracking-widest transition-colors flex items-center gap-2 uppercase"
+              >
+                <Send className="w-4 h-4" /> YA, KIRIM LAPORAN
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
