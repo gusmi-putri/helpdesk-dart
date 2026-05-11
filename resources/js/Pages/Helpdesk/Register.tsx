@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useForm, Link } from '@inertiajs/react';
-import { Eye, EyeOff, UserPlus, ShieldCheck, ArrowLeft } from 'lucide-react';
+import { Eye, EyeOff, UserPlus, ShieldCheck, ArrowLeft, User, Mail, Lock, IdCard, MapPin, Phone, Info } from 'lucide-react';
 
 interface RegisterData {
   username: string;
+  email: string;
   password: string;
   nama_lengkap: string;
   nrp_nip: string;
@@ -14,6 +15,7 @@ interface RegisterData {
 const Register: React.FC = () => {
   const { data, setData, post, processing, errors } = useForm<RegisterData>({
     username: '',
+    email: '',
     password: '',
     nama_lengkap: '',
     nrp_nip: '',
@@ -22,6 +24,44 @@ const Register: React.FC = () => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [waWarning, setWaWarning] = useState('');
+
+  // Strict numeric input handler
+  const handleNumericInput = (field: keyof RegisterData, value: string) => {
+    const numericValue = value.replace(/\D/g, '');
+    setData(field, numericValue);
+  };
+
+  // Strict uppercase input handler for unit name
+  const handleUppercaseInput = (field: keyof RegisterData, value: string) => {
+    setData(field, value.toUpperCase());
+  };
+
+  // WhatsApp number handler — must start with 62
+  const handleWaInput = (value: string) => {
+    const numericValue = value.replace(/\D/g, '');
+
+    // Auto-prefix: if user types 0 at start, convert 08 -> 628
+    let finalValue = numericValue;
+    if (numericValue.startsWith('0')) {
+      finalValue = '62' + numericValue.slice(1);
+    }
+
+    setData('no_wa', finalValue);
+
+    // Live validation
+    if (finalValue.length === 0) {
+      setWaWarning('');
+    } else if (!finalValue.startsWith('62')) {
+      setWaWarning('Nomor harus diawali dengan 62. Contoh: 6281234567890');
+    } else if (finalValue.length < 10) {
+      setWaWarning('Nomor terlalu pendek, minimal 10 digit.');
+    } else if (finalValue.length > 15) {
+      setWaWarning('Nomor terlalu panjang, maksimal 15 digit.');
+    } else {
+      setWaWarning('');
+    }
+  };
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,168 +69,284 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-sand dark:bg-gunmetal relative overflow-hidden font-sans w-full py-12 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-sand dark:bg-gunmetal relative overflow-hidden font-sans w-full py-12 px-4 selection:bg-olive selection:text-white">
 
-      {/* Background Ornaments (Radar/Grid illusion) */}
+      {/* Background Tactical Elements */}
       <div className="absolute inset-0 pointer-events-none opacity-20">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] border border-olive rounded-full" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-olive rounded-full" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-olive rounded-full" />
-        <div className="absolute top-0 bottom-0 left-1/2 w-px bg-olive" />
-        <div className="absolute left-0 right-0 top-1/2 h-px bg-olive" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[1200px] border-[0.5px] border-olive/30 rounded-full animate-pulse" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] border-[0.5px] border-olive/20 rounded-full" />
+        <div className="absolute top-0 bottom-0 left-1/2 w-[0.5px] bg-gradient-to-b from-transparent via-olive/40 to-transparent" />
+        <div className="absolute left-0 right-0 top-1/2 h-[0.5px] bg-gradient-to-r from-transparent via-olive/40 to-transparent" />
       </div>
 
-      {/* Register Card Panel */}
-      <div className="relative z-10 w-full max-w-2xl p-8 glass-panel border-t-4 border-t-olive rounded-sm bg-white/80 dark:bg-black/80 backdrop-blur-md shadow-2xl">
+      {/* Main Register Container */}
+      <div className="relative z-10 w-full max-w-2xl bg-white/95 dark:bg-black/90 backdrop-blur-xl border-x border-b border-olive/20 shadow-2xl rounded-sm overflow-hidden">
 
-        <div className="flex justify-between items-start mb-8">
-          <Link href="/login" className="text-soft-gunmetal/60 dark:text-soft-sand/40 hover:text-olive transition-colors flex items-center gap-2 text-xs font-mono font-bold uppercase">
-            <ArrowLeft className="w-4 h-4" /> Kembali
-          </Link>
-          <div className="text-right">
-            <h2 className="text-2xl font-tactical text-gunmetal dark:text-white font-bold tracking-widest mb-1">
-              REGISTRASI PELAPOR
-            </h2>
-            <p className="text-soft-gunmetal/60 dark:text-soft-sand/40 text-[10px] font-mono tracking-wider uppercase">
-              SISTEM HELPDESK DART
+        {/* Top Accent Bar */}
+        <div className="h-1.5 w-full bg-gradient-to-r from-olive via-camogreen to-olive" />
+
+        <div className="p-8">
+          {/* Header */}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 pb-6 border-b border-olive/10">
+            <div>
+              <h2 className="text-3xl font-tactical text-gunmetal dark:text-white font-black tracking-tighter flex items-center gap-3">
+                <span className="p-2 bg-olive text-white rounded-sm"><UserPlus className="w-6 h-6" /></span>
+                REGISTRASI PELAPOR
+              </h2>
+              <p className="text-soft-gunmetal/60 dark:text-soft-sand/40 text-[11px] font-mono tracking-[0.2em] uppercase mt-1">
+                SISTEM HELPDESK DART
+              </p>
+            </div>
+            <Link href="/login" className="flex items-center gap-2 px-4 py-2 border border-soft-gunmetal/20 dark:border-soft-sand/10 hover:bg-olive hover:text-white transition-all duration-300 text-[10px] font-mono font-bold uppercase tracking-widest text-soft-gunmetal dark:text-soft-sand/60">
+              <ArrowLeft className="w-3.5 h-3.5" /> Kembali ke Login
+            </Link>
+          </div>
+
+          {/* Info Banner */}
+          <div className="mb-8 p-4 bg-olive/5 border border-olive/20 flex items-start gap-4">
+            <div className="mt-1 p-1 bg-olive/10 rounded-full">
+              <ShieldCheck className="w-4 h-4 text-olive" />
+            </div>
+            <p className="text-[11px] text-white:text-soft-sand/80 font-mono leading-relaxed">
+              Pendaftaran ini khusus untuk akun <strong>PELAPOR</strong>. Akun baru akan diperiksa dan disetujui oleh Admin terlebih dahulu sebelum dapat digunakan.
             </p>
           </div>
-        </div>
 
-        <div className="mb-8 p-4 bg-olive/10 border-l-4 border-olive flex items-center gap-4">
-          <ShieldCheck className="w-8 h-8 text-olive shrink-0" />
-          <p className="text-xs text-soft-gunmetal dark:text-soft-sand/80 font-mono leading-relaxed">
-            Pendaftaran ini khusus untuk akun <strong>PELAPOR</strong>. Akun baru akan melalui proses verifikasi dan persetujuan Admin sebelum dapat digunakan untuk masuk ke sistem.
-          </p>
-        </div>
+          <form onSubmit={handleRegister} className="space-y-10">
 
-        <form onSubmit={handleRegister} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Username */}
-            <div>
-              <label className="block text-soft-gunmetal/60 dark:text-soft-sand/40 text-[10px] font-mono font-bold mb-2 tracking-widest uppercase">
-                Username
-              </label>
-              <input
-                type="text"
-                value={data.username}
-                onChange={(e) => setData('username', e.target.value)}
-                className={`w-full bg-sand/20 dark:bg-black/40 border ${errors.username ? 'border-targetred' : 'border-soft-gunmetal/20 dark:border-soft-sand/10'} text-gunmetal dark:text-white px-4 py-2.5 focus:outline-none focus:border-olive transition-colors font-mono text-sm`}
-                placeholder="NAMA PENGGUNA..."
-                required
-              />
-              {errors.username && <p className="mt-1 text-targetred text-[9px] font-mono uppercase italic">{errors.username}</p>}
-            </div>
-
-            {/* Password */}
-            <div>
-              <label className="block text-soft-gunmetal/60 dark:text-soft-sand/40 text-[10px] font-mono font-bold mb-2 tracking-widest uppercase">
-                Kata Sandi
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={data.password}
-                  onChange={(e) => setData('password', e.target.value)}
-                  className={`w-full bg-sand/20 dark:bg-black/40 border ${errors.password ? 'border-targetred' : 'border-soft-gunmetal/20 dark:border-soft-sand/10'} text-gunmetal dark:text-white px-4 py-2.5 focus:outline-none focus:border-olive transition-colors font-mono text-sm ${!showPassword ? 'tracking-widest' : ''}`}
-                  placeholder="KATA SANDI..."
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-soft-gunmetal/40 hover:text-olive transition-colors"
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
+            {/* Section 1: Kredensial Akses */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="h-px flex-1 bg-olive/20"></span>
+                <h3 className="text-[10px] font-mono font-black text-olive dark:text-camogreen uppercase tracking-[0.4em]">I. DATA AKUN</h3>
+                <span className="h-px flex-1 bg-olive/20"></span>
               </div>
-              {errors.password && <p className="mt-1 text-targetred text-[9px] font-mono uppercase italic">{errors.password}</p>}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Username */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-mono font-bold text-soft-gunmetal dark:text-soft-sand/80 uppercase flex items-center gap-2">
+                    <User className="w-3 h-3" /> Nama Pengguna
+                  </label>
+                  <div className="group relative">
+                    <input
+                      type="text"
+                      value={data.username}
+                      onChange={(e) => setData('username', e.target.value)}
+                      className={`w-full bg-soft-sand/30 dark:bg-gunmetal/50 border ${errors.username ? 'border-targetred' : 'border-olive/40 dark:border-olive/60'} group-hover:border-camogreen focus:border-camogreen text-gunmetal dark:text-white px-4 py-3 focus:outline-none transition-all font-mono text-sm rounded-sm`}
+                      placeholder="Masukkan nama pengguna..."
+                      required
+                    />
+                    <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-olive group-focus-within:w-full transition-all duration-300" />
+                  </div>
+                  <div className="flex justify-between items-center px-1">
+                    <span className="text-[9px] text-soft-gunmetal/50 dark:text-soft-sand/50 font-mono italic">Minimal 4 karakter, harus berbeda dari yang lain.</span>
+                    {errors.username && <span className="text-[9px] text-targetred font-mono uppercase font-bold">{errors.username}</span>}
+                  </div>
+                </div>
+
+                {/* Email */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-mono font-bold text-soft-gunmetal dark:text-soft-sand/80 uppercase flex items-center gap-2">
+                    <Mail className="w-3 h-3" /> Alamat Email
+                  </label>
+                  <div className="group relative">
+                    <input
+                      type="email"
+                      value={data.email}
+                      onChange={(e) => setData('email', e.target.value)}
+                      className={`w-full bg-soft-sand/30 dark:bg-gunmetal/50 border ${errors.email ? 'border-targetred' : 'border-olive/40 dark:border-olive/60'} group-hover:border-camogreen focus:border-camogreen text-gunmetal dark:text-white px-4 py-3 focus:outline-none transition-all font-mono text-sm rounded-sm`}
+                      placeholder="contoh@email.com"
+                      required
+                    />
+                    <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-olive group-focus-within:w-full transition-all duration-300" />
+                  </div>
+                  <div className="flex justify-between items-center px-1">
+                    <span className="text-[9px] text-soft-gunmetal/50 dark:text-soft-sand/50 font-mono italic">Gunakan email yang aktif.</span>
+                    {errors.email && <span className="text-[9px] text-targetred font-mono uppercase font-bold">{errors.email}</span>}
+                  </div>
+                </div>
+
+                {/* Password */}
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-[10px] font-mono font-bold text-soft-gunmetal dark:text-soft-sand/80 uppercase flex items-center gap-2">
+                    <Lock className="w-3 h-3" /> Kata Sandi
+                  </label>
+                  <div className="group relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      value={data.password}
+                      onChange={(e) => setData('password', e.target.value)}
+                      className={`w-full bg-soft-sand/30 dark:bg-gunmetal/50 border ${errors.password ? 'border-targetred' : 'border-olive/40 dark:border-olive/60'} group-hover:border-camogreen focus:border-camogreen text-gunmetal dark:text-white px-4 py-3 pr-12 focus:outline-none transition-all font-mono text-sm rounded-sm ${!showPassword ? 'tracking-[0.3em]' : ''}`}
+                      placeholder="••••••••••••"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-olive/60 hover:text-olive transition-colors"
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                    <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-olive group-focus-within:w-full transition-all duration-300" />
+                  </div>
+                  <div className="flex justify-between items-center px-1">
+                    <span className="text-[9px] text-soft-gunmetal/50 dark:text-soft-sand/50 font-mono italic flex items-center gap-1">
+                      <Info className="w-2.5 h-2.5" /> Minimal 8 karakter, harus ada huruf dan angka.
+                    </span>
+                    {errors.password && <span className="text-[9px] text-targetred font-mono uppercase font-bold">{errors.password}</span>}
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {/* Nama Lengkap */}
-            <div>
-              <label className="block text-soft-gunmetal/60 dark:text-soft-sand/40 text-[10px] font-mono font-bold mb-2 tracking-widest uppercase">
-                Nama Lengkap
-              </label>
-              <input
-                type="text"
-                value={data.nama_lengkap}
-                onChange={(e) => setData('nama_lengkap', e.target.value)}
-                className={`w-full bg-sand/20 dark:bg-black/40 border ${errors.nama_lengkap ? 'border-targetred' : 'border-soft-gunmetal/20 dark:border-soft-sand/10'} text-gunmetal dark:text-white px-4 py-2.5 focus:outline-none focus:border-olive transition-colors font-mono text-sm`}
-                placeholder="NAMA SESUAI IDENTITAS..."
-                required
-              />
-              {errors.nama_lengkap && <p className="mt-1 text-targetred text-[9px] font-mono uppercase italic">{errors.nama_lengkap}</p>}
+            {/* Section 2: Identitas Personel */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="h-px flex-1 bg-olive/20"></span>
+                <h3 className="text-[10px] font-mono font-black text-olive dark:text-camogreen uppercase tracking-[0.4em]">II. DATA DIRI</h3>
+                <span className="h-px flex-1 bg-olive/20"></span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Nama Lengkap */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-mono font-bold text-soft-gunmetal dark:text-soft-sand/80 uppercase flex items-center gap-2">
+                    <User className="w-3 h-3" /> Nama Lengkap
+                  </label>
+                  <div className="group relative">
+                    <input
+                      type="text"
+                      value={data.nama_lengkap}
+                      onChange={(e) => setData('nama_lengkap', e.target.value)}
+                      className={`w-full bg-soft-sand/30 dark:bg-gunmetal/50 border ${errors.nama_lengkap ? 'border-targetred' : 'border-olive/40 dark:border-olive/60'} group-hover:border-camogreen focus:border-camogreen text-gunmetal dark:text-white px-4 py-3 focus:outline-none transition-all font-mono text-sm rounded-sm`}
+                      placeholder="Masukkan nama lengkap..."
+                      required
+                    />
+                  </div>
+                  {errors.nama_lengkap && <p className="text-[9px] text-targetred font-mono uppercase italic">{errors.nama_lengkap}</p>}
+                </div>
+
+                {/* NRP / NIP */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-mono font-bold text-soft-gunmetal dark:text-soft-sand/80 uppercase flex items-center gap-2">
+                    <IdCard className="w-3 h-3" /> NRP / NIP
+                  </label>
+                  <div className="group relative">
+                    <input
+                      type="text"
+                      value={data.nrp_nip}
+                      onChange={(e) => handleNumericInput('nrp_nip', e.target.value)}
+                      maxLength={20}
+                      className={`w-full bg-soft-sand/30 dark:bg-gunmetal/50 border ${errors.nrp_nip ? 'border-targetred' : 'border-olive/40 dark:border-olive/60'} group-hover:border-camogreen focus:border-camogreen text-gunmetal dark:text-white px-4 py-3 focus:outline-none transition-all font-mono text-sm rounded-sm`}
+                      placeholder="Contoh: 21030145"
+                      required
+                    />
+                  </div>
+                  <div className="flex justify-between items-center px-1">
+                    <span className="text-[9px] text-soft-gunmetal/50 dark:text-soft-sand/50 font-mono italic">Isi dengan angka saja, 8-20 digit.</span>
+                    {errors.nrp_nip && <span className="text-[9px] text-targetred font-mono uppercase font-bold">{errors.nrp_nip}</span>}
+                  </div>
+                </div>
+
+                {/* Asal Satuan */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-mono font-bold text-soft-gunmetal dark:text-soft-sand/80 uppercase flex items-center gap-2">
+                    <MapPin className="w-3 h-3" /> Asal Satuan Kerja
+                  </label>
+                  <div className="group relative">
+                    <input
+                      type="text"
+                      value={data.asal_satuan}
+                      onChange={(e) => handleUppercaseInput('asal_satuan', e.target.value)}
+                      className={`w-full bg-soft-sand/30 dark:bg-gunmetal/50 border ${errors.asal_satuan ? 'border-targetred' : 'border-olive/40 dark:border-olive/60'} group-hover:border-camogreen focus:border-camogreen text-gunmetal dark:text-white px-4 py-3 focus:outline-none transition-all font-mono text-sm rounded-sm`}
+                      placeholder="CONTOH: SATUAN KERJA A"
+                      required
+                    />
+                  </div>
+                  {errors.asal_satuan && <p className="text-[9px] text-targetred font-mono uppercase italic">{errors.asal_satuan}</p>}
+                </div>
+
+                {/* No WA */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-mono font-bold text-soft-gunmetal dark:text-soft-sand/80 uppercase flex items-center gap-2">
+                    <Phone className="w-3 h-3" /> Nomor WhatsApp
+                  </label>
+                  <div className="group relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-olive/70 dark:text-camogreen/70 font-mono text-sm font-bold pointer-events-none">+</span>
+                    <input
+                      type="text"
+                      value={data.no_wa}
+                      onChange={(e) => handleWaInput(e.target.value)}
+                      maxLength={15}
+                      className={`w-full bg-soft-sand/30 dark:bg-gunmetal/50 border ${errors.no_wa || waWarning ? 'border-yellow-500 dark:border-yellow-400' : 'border-olive/40 dark:border-olive/60'} group-hover:border-camogreen focus:border-camogreen text-gunmetal dark:text-white pl-8 pr-4 py-3 focus:outline-none transition-all font-mono text-sm rounded-sm`}
+                      placeholder="6281234567890"
+                      required
+                    />
+                  </div>
+                  {waWarning && (
+                    <p className="text-[9px] text-yellow-600 dark:text-yellow-400 font-mono font-bold flex items-center gap-1 px-1">
+                      <Info className="w-3 h-3 shrink-0" /> {waWarning}
+                    </p>
+                  )}
+                  <div className="flex justify-between items-center px-1">
+                    <span className="text-[9px] text-soft-gunmetal/50 dark:text-soft-sand/50 font-mono italic">Awali dengan 62, angka saja. Contoh: 6281234567890</span>
+                    {errors.no_wa && <span className="text-[9px] text-targetred font-mono uppercase font-bold">{errors.no_wa}</span>}
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {/* NRP / NIP */}
-            <div>
-              <label className="block text-soft-gunmetal/60 dark:text-soft-sand/40 text-[10px] font-mono font-bold mb-2 tracking-widest uppercase">
-                Pangkat / NRP / NIP / Golongan
-              </label>
-              <input
-                type="text"
-                value={data.nrp_nip}
-                onChange={(e) => setData('nrp_nip', e.target.value)}
-                className={`w-full bg-sand/20 dark:bg-black/40 border ${errors.nrp_nip ? 'border-targetred' : 'border-soft-gunmetal/20 dark:border-soft-sand/10'} text-gunmetal dark:text-white px-4 py-2.5 focus:outline-none focus:border-olive transition-colors font-mono text-sm`}
-                placeholder="NOMOR IDENTITAS PERSONEL..."
-                required
-              />
-              {errors.nrp_nip && <p className="mt-1 text-targetred text-[9px] font-mono uppercase italic">{errors.nrp_nip}</p>}
+            {/* Submit Button */}
+            <div className="pt-4">
+              <button
+                type="submit"
+                disabled={processing}
+                className="w-full bg-olive hover:bg-camogreen text-white font-tactical font-black py-5 px-6 rounded-sm transition-all duration-500 uppercase tracking-[0.5em] flex justify-center items-center group relative overflow-hidden shadow-[0_0_20px_rgba(75,83,32,0.3)] hover:shadow-[0_0_30px_rgba(75,83,32,0.5)]"
+              >
+                <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite]" />
+                <span className="relative flex items-center gap-4 text-lg">
+                  {processing ? (
+                    <>
+                      <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      MENGIRIM DATA...
+                    </>
+                  ) : (
+                    <>
+                      <UserPlus className="w-6 h-6" />
+                      DAFTAR SEKARANG
+                    </>
+                  )}
+                </span>
+              </button>
+              <p className="text-center mt-6 text-[10px] font-mono text-soft-gunmetal/50 dark:text-soft-sand/50 uppercase tracking-widest">
+                Sudah punya akun?{' '}
+                <Link href="/login" className="text-olive hover:text-camogreen font-black underline underline-offset-4">Masuk di sini</Link>
+              </p>
             </div>
+          </form>
 
-            {/* Asal Satuan */}
-            <div>
-              <label className="block text-soft-gunmetal/60 dark:text-soft-sand/40 text-[10px] font-mono font-bold mb-2 tracking-widest uppercase">
-                Asal Satuan Kerja
-              </label>
-              <input
-                type="text"
-                value={data.asal_satuan}
-                onChange={(e) => setData('asal_satuan', e.target.value)}
-                className={`w-full bg-sand/20 dark:bg-black/40 border ${errors.asal_satuan ? 'border-targetred' : 'border-soft-gunmetal/20 dark:border-soft-sand/10'} text-gunmetal dark:text-white px-4 py-2.5 focus:outline-none focus:border-olive transition-colors font-mono text-sm`}
-                placeholder="SATUAN / UNIT KERJA..."
-                required
-              />
-              {errors.asal_satuan && <p className="mt-1 text-targetred text-[9px] font-mono uppercase italic">{errors.asal_satuan}</p>}
-            </div>
-
-            {/* No WA */}
-            <div>
-              <label className="block text-soft-gunmetal/60 dark:text-soft-sand/40 text-[10px] font-mono font-bold mb-2 tracking-widest uppercase">
-                Nomor WhatsApp (Aktif)
-              </label>
-              <input
-                type="text"
-                value={data.no_wa}
-                onChange={(e) => setData('no_wa', e.target.value)}
-                className={`w-full bg-sand/20 dark:bg-black/40 border ${errors.no_wa ? 'border-targetred' : 'border-soft-gunmetal/20 dark:border-soft-sand/10'} text-gunmetal dark:text-white px-4 py-2.5 focus:outline-none focus:border-olive transition-colors font-mono text-sm`}
-                placeholder="CONTOH: 0812XXXXXXXX..."
-                required
-              />
-              {errors.no_wa && <p className="mt-1 text-targetred text-[9px] font-mono uppercase italic">{errors.no_wa}</p>}
+          {/* Footer Branding */}
+          <div className="mt-12 pt-6 border-t border-olive/10 text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-olive/5 border border-olive/10 rounded-full">
+              <ShieldCheck className="w-3 h-3 text-olive" />
+              <span className="text-[9px] font-mono text-soft-gunmetal/60 dark:text-soft-sand/50 uppercase tracking-widest">
+                Pastikan data yang diisi benar untuk mempercepat proses persetujuan.
+              </span>
             </div>
           </div>
-
-          <button
-            type="submit"
-            disabled={processing}
-            className="w-full bg-olive hover:bg-camogreen text-sand font-tactical font-bold py-4 px-6 rounded-sm transition-all duration-300 uppercase tracking-[0.3em] flex justify-center items-center group relative overflow-hidden shadow-lg mt-4"
-          >
-            <span className="absolute inset-0 w-full h-full bg-white/10 -translate-x-full group-hover:animate-[shimmer_2s_infinite]" />
-            <span className="relative flex items-center gap-3">
-              <UserPlus className="w-5 h-5" />
-              {processing ? 'MENGIRIM DATA...' : 'Daftar Sekarang'}
-            </span>
-          </button>
-        </form>
-
-        <div className="mt-8 pt-6 border-t border-soft-gunmetal/10 dark:border-soft-sand/5 text-center">
-          <p className="text-soft-gunmetal/40 dark:text-soft-sand/20 text-[10px] font-mono uppercase tracking-widest leading-relaxed">
-            Pastikan data yang diisi benar untuk mempercepat proses verifikasi oleh Admin.
-          </p>
         </div>
       </div>
+
+      <style dangerouslySetInnerHTML={{
+        __html: `
+        @keyframes shimmer {
+          100% { transform: translateX(100%); }
+        }
+      `}} />
     </div>
   );
 };

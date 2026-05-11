@@ -45,6 +45,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
               <th className="p-4">ID PERSONEL</th>
               <th className="p-4">NRP / NIP</th>
               <th className="p-4">NAMA LENGKAP</th>
+              <th className="p-4">EMAIL</th>
               <th className="p-4">HAK AKSES</th>
               <th className="p-4">STATUS AKTIF</th>
               <th className="p-4 text-right">TINDAKAN</th>
@@ -56,6 +57,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
                 <td className="p-4 font-mono text-gray-700 dark:text-gray-300 border-l-2 border-transparent group-hover:border-olive">{u.id}</td>
                 <td className="p-4 font-mono text-xs text-gray-600 dark:text-gray-400">{u.nrp_nip || '-'}</td>
                 <td className="p-4 text-gunmetal dark:text-white font-bold">{u.name}</td>
+                <td className="p-4 font-mono text-xs text-gray-600 dark:text-gray-400 lowercase">{u.email}</td>
                 <td className="p-4">
                   <span className={`px-3 py-1 text-[10px] font-mono font-bold tracking-widest border
                     ${u.role === 'Admin' ? 'bg-red-900/30 text-targetred border-red-800' :

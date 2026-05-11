@@ -46,6 +46,10 @@ const UserDetailModal: React.FC<UserDetailModalProps> = ({ isOpen, onClose, user
               <label className="block text-[10px] font-mono text-gray-500 dark:text-gray-500 mb-1 tracking-widest uppercase">No. WhatsApp</label>
               <p className="text-sm font-mono font-bold text-gunmetal dark:text-white">{user.no_wa || '-'}</p>
             </div>
+            <div className="col-span-2">
+              <label className="block text-[10px] font-mono text-gray-500 dark:text-gray-500 mb-1 tracking-widest uppercase">Email</label>
+              <p className="text-sm font-mono font-bold text-gunmetal dark:text-white lowercase">{user.email || '-'}</p>
+            </div>
             <div>
               <label className="block text-[10px] font-mono text-gray-500 dark:text-gray-500 mb-1 tracking-widest uppercase">Asal Satuan</label>
               <p className="text-sm font-mono font-bold text-gunmetal dark:text-white uppercase">{user.asal_satuan || '-'}</p>
