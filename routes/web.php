@@ -31,6 +31,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('users', \App\Http\Controllers\UserController::class)->middleware('role:Admin');
     Route::post('/users/{id}/toggle-status', [\App\Http\Controllers\UserController::class, 'toggleStatus'])->middleware('role:Admin')->name('users.toggle-status');
     Route::post('/users/{id}/approve', [\App\Http\Controllers\UserController::class, 'approve'])->middleware('role:Admin')->name('users.approve');
+    Route::post('units/import', [\App\Http\Controllers\UnitController::class, 'import'])->middleware('role:Admin')->name('units.import');
     Route::resource('units', \App\Http\Controllers\UnitController::class)->middleware('role:Admin');
 });
 

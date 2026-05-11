@@ -102,7 +102,17 @@ class DashboardController extends Controller
             ];
         });
 
-        $units = \App\Models\Unit::all();
+        $units = \App\Models\Unit::all()->map(function($u) {
+            return [
+                'db_id' => $u->id,
+                'nomor_seri' => $u->nomor_seri,
+                'nama_dart' => $u->nama_dart,
+                'jenis_dart' => $u->jenis_dart,
+                'asal_satuan' => $u->asal_satuan,
+                'status_unit' => $u->status_unit,
+                'last_maintenance' => $u->updated_at->format('d M Y')
+            ];
+        });
         $feedbacks = \App\Models\Feedback::orderBy('created_at', 'desc')->get()->map(function($f) {
             return [
                 'id' => $f->id,

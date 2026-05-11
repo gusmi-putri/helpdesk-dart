@@ -1,5 +1,6 @@
 import React from 'react';
-import { Package, Search, Plus, Filter, ArrowUp, ArrowDown, History, Edit, Trash2 } from 'lucide-react';
+import { Package, Search, Plus, Filter, ArrowUp, ArrowDown, History, Edit, Trash2, Upload } from 'lucide-react';
+import { router } from '@inertiajs/react';
 
 interface UnitsTableProps {
   dbUnits: any[];
@@ -24,6 +25,23 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
   handleEditUnit,
   handleDeleteUnit
 }) => {
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = React.useState(false);
+
+  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setIsUploading(true);
+      const formData = new FormData();
+      formData.append('file', e.target.files[0]);
+      router.post('/units/import', formData, {
+        onFinish: () => {
+          setIsUploading(false);
+          if (fileInputRef.current) fileInputRef.current.value = '';
+        }
+      });
+    }
+  };
+
   const unitStats = {
     TOTAL: dbUnits.length,
     SIAP: dbUnits.filter((u: any) => u.status_unit === 'Siap Ops').length,
@@ -77,6 +95,20 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
                 className="bg-sand/50 dark:bg-gunmetal border border-soft-gunmetal/20 dark:border-soft-sand/10 pl-9 pr-4 py-2 text-sm font-mono text-gunmetal dark:text-white focus:outline-none focus:border-olive transition-colors w-64 uppercase"
               />
             </div>
+            <input 
+              type="file" 
+              accept=".csv,.txt" 
+              className="hidden" 
+              ref={fileInputRef}
+              onChange={handleImport}
+            />
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isUploading}
+              className={`bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-blue-600 shadow-lg uppercase ${isUploading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              <Upload className={`w-4 h-4 ${isUploading ? 'animate-bounce' : ''}`} /> {isUploading ? 'MENGUNGGAH...' : 'IMPORT CSV'}
+            </button>
             <button
               onClick={handleAddUnit}
               className="bg-olive hover:bg-camogreen text-sand px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-olive shadow-lg uppercase"

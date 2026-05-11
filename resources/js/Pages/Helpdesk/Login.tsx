@@ -78,7 +78,7 @@ const Login: React.FC = () => {
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
             <label className="block text-soft-gunmetal/60 dark:text-soft-sand/40 text-[10px] font-mono font-bold mb-2 tracking-widest uppercase">
-              Nama Pengguna / NRP
+              Nama Pengguna
             </label>
             <input
               type="text"
