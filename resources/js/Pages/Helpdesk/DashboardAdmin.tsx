@@ -17,6 +17,7 @@ import UnitModal from './AdminComponents/UnitModal';
 import UnitDeleteModal from './AdminComponents/UnitDeleteModal';
 import UnitHistoryModal from './AdminComponents/UnitHistoryModal';
 import RecapModal from './AdminComponents/RecapModal';
+import RejectConfirmModal from './AdminComponents/RejectConfirmModal';
 import LogoutConfirmModal from '@/Components/LogoutConfirmModal';
 import { useStore } from '@/store/useStore';
 import { router, useForm, usePage, Link } from '@inertiajs/react';
@@ -90,6 +91,8 @@ const DashboardAdmin = (props: any) => {
   const [recapEndDate, setRecapEndDate] = useState<string>('');
   const [recapYear, setRecapYear] = useState<string>(new Date().getFullYear().toString());
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+  const [userToReject, setUserToReject] = useState<any>(null);
 
   // Handlers
   const handlePrintCasePDF = (caseData: any) => {
@@ -232,10 +235,16 @@ const DashboardAdmin = (props: any) => {
   };
 
   const handleRejectUser = (user: any) => {
-    if (confirm(`Apakah Anda yakin menolak dan menghapus pendaftaran ${user.name}?`)) {
-      router.delete(`/users/${user.db_id}`, {
+    setUserToReject(user);
+    setIsRejectModalOpen(true);
+  };
+
+  const confirmRejectUser = () => {
+    if (userToReject) {
+      router.delete(`/users/${userToReject.db_id}`, {
         onSuccess: () => {
-          // Notification logic
+          setIsRejectModalOpen(false);
+          setUserToReject(null);
         }
       });
     }
@@ -435,6 +444,13 @@ const DashboardAdmin = (props: any) => {
               onClose={() => setIsUnitDeleteModalOpen(false)}
               onConfirm={handleConfirmDeleteUnit}
               unit={unitToDelete}
+            />
+
+            <RejectConfirmModal 
+              isOpen={isRejectModalOpen}
+              onClose={() => { setIsRejectModalOpen(false); setUserToReject(null); }}
+              onConfirm={confirmRejectUser}
+              userName={userToReject?.name || ''}
             />
 
             <LogoutConfirmModal 
