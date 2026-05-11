@@ -71,6 +71,7 @@ class DashboardController extends Controller
                 'id' => 'USR-'.str_pad($u->id, 3, '0', STR_PAD_LEFT),
                 'name' => $u->nama_lengkap,
                 'username' => $u->username,
+                'email' => $u->email,
                 'nrp_nip' => $u->nrp_nip,
                 'no_wa' => $u->no_wa,
                 'asal_satuan' => $u->asal_satuan,
@@ -131,6 +132,7 @@ class DashboardController extends Controller
             return [
                 'db_id' => $u->id,
                 'username' => $u->username,
+                'email' => $u->email,
                 'name' => $u->nama_lengkap
             ];
         });

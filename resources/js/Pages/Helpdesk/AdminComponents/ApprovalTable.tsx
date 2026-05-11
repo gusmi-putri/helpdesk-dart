@@ -34,6 +34,7 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
               <th className="p-4">NAMA LENGKAP</th>
               <th className="p-4">SATUAN</th>
               <th className="p-4">WHATSAPP</th>
+              <th className="p-4">EMAIL</th>
               <th className="p-4 text-right">AKSI VERIFIKASI</th>
             </tr>
           </thead>
@@ -52,6 +53,7 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
                   <td className="p-4 text-gunmetal dark:text-white font-bold">{u.name}</td>
                   <td className="p-4 text-xs font-mono uppercase text-gray-600 dark:text-gray-400">{u.asal_satuan}</td>
                   <td className="p-4 text-xs font-mono text-gray-600 dark:text-gray-400">{u.no_wa}</td>
+                  <td className="p-4 text-xs font-mono text-gray-600 dark:text-gray-400">{u.email}</td>
                   <td className="p-4 flex gap-3 justify-end">
                     <button
                       onClick={() => handleApproveUser(u)}
