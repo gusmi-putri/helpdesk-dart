@@ -47,7 +47,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
   useEffect(() => {
     const interval = setInterval(() => {
       router.reload({ only: ['dbCases'] });
-    }, 3000);
+    }, 15000);
     return () => clearInterval(interval);
   }, []);
 

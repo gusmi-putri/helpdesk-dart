@@ -55,24 +55,36 @@ class UnitController extends Controller
     public function import(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:csv,txt|max:5120', // Max 5MB
+            'file' => 'required|mimes:csv,txt|max:5120',
+        ], [
+            'file.required' => 'Silakan pilih file CSV terlebih dahulu.',
+            'file.mimes' => 'Format file tidak didukung. Gunakan format CSV (.csv). Jika menggunakan Excel, simpan dengan "Save As > CSV".',
+            'file.max' => 'Ukuran file terlalu besar. Maksimal 5MB.',
         ]);
 
         $file = $request->file('file');
         $handle = fopen($file->getPathname(), "r");
 
+        if (!$handle) {
+            return redirect()->back()->with('import_result', json_encode([
+                'success' => false,
+                'message' => 'Gagal membaca file. Pastikan file tidak rusak.',
+            ]));
+        }
+
         $header = true;
         $imported = 0;
         $skipped = 0;
+        $totalRows = 0;
 
         while ($row = fgetcsv($handle, 1000, ",")) {
-            // Kita asumsikan baris pertama adalah header
             if ($header) {
                 $header = false;
                 continue;
             }
 
-            // Pastikan ada minimal 4 kolom yang terisi
+            $totalRows++;
+
             if (count($row) < 4) continue;
 
             $nomor_seri = trim($row[0]);
@@ -83,13 +95,11 @@ class UnitController extends Controller
 
             if (empty($nomor_seri)) continue;
 
-            // Aturan No 2: Jika nomor seri sama, lewati baris
             if (Unit::where('nomor_seri', $nomor_seri)->exists()) {
                 $skipped++;
                 continue;
             }
 
-            // Validasi tipe enum
             $validJenis = ['DART STD', 'DART STK', 'SKE', 'MOVING TARGET'];
             if (!in_array(strtoupper($jenis_dart), $validJenis)) {
                 $jenis_dart = 'DART STD';
@@ -98,7 +108,6 @@ class UnitController extends Controller
             }
 
             $validStatus = ['Siap Ops', 'Rusak', 'Perbaikan', 'Nonaktif'];
-            // Kapitalisasi awal kata agar cocok dengan Enum
             $status_unit = ucwords(strtolower($status_unit));
             if (!in_array($status_unit, $validStatus)) {
                 $status_unit = 'Siap Ops';
@@ -119,7 +128,11 @@ class UnitController extends Controller
 
         SystemLog::log('INFO', auth()->id(), "Import massal DART: {$imported} berhasil ditambahkan, {$skipped} duplikat dilewati.");
 
-        // Jika Anda menggunakan flash session Inertia, tambahkan ini. Jika tidak, ini akan cukup.
-        return redirect()->back();
+        return redirect()->back()->with('import_result', json_encode([
+            'success' => true,
+            'imported' => $imported,
+            'skipped' => $skipped,
+            'total' => $totalRows,
+        ]));
     }
 }
