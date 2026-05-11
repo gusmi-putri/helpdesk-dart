@@ -51,4 +51,75 @@ class UnitController extends Controller
 
         return redirect()->back()->with('message', 'Unit DART telah dihapus dari sistem.');
     }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:csv,txt|max:5120', // Max 5MB
+        ]);
+
+        $file = $request->file('file');
+        $handle = fopen($file->getPathname(), "r");
+
+        $header = true;
+        $imported = 0;
+        $skipped = 0;
+
+        while ($row = fgetcsv($handle, 1000, ",")) {
+            // Kita asumsikan baris pertama adalah header
+            if ($header) {
+                $header = false;
+                continue;
+            }
+
+            // Pastikan ada minimal 4 kolom yang terisi
+            if (count($row) < 4) continue;
+
+            $nomor_seri = trim($row[0]);
+            $nama_dart = trim($row[1]);
+            $jenis_dart = trim($row[2]);
+            $asal_satuan = trim($row[3]);
+            $status_unit = isset($row[4]) ? trim($row[4]) : 'Siap Ops';
+
+            if (empty($nomor_seri)) continue;
+
+            // Aturan No 2: Jika nomor seri sama, lewati baris
+            if (Unit::where('nomor_seri', $nomor_seri)->exists()) {
+                $skipped++;
+                continue;
+            }
+
+            // Validasi tipe enum
+            $validJenis = ['DART STD', 'DART STK', 'SKE', 'MOVING TARGET'];
+            if (!in_array(strtoupper($jenis_dart), $validJenis)) {
+                $jenis_dart = 'DART STD';
+            } else {
+                $jenis_dart = strtoupper($jenis_dart);
+            }
+
+            $validStatus = ['Siap Ops', 'Rusak', 'Perbaikan', 'Nonaktif'];
+            // Kapitalisasi awal kata agar cocok dengan Enum
+            $status_unit = ucwords(strtolower($status_unit));
+            if (!in_array($status_unit, $validStatus)) {
+                $status_unit = 'Siap Ops';
+            }
+
+            Unit::create([
+                'nomor_seri' => $nomor_seri,
+                'nama_dart' => strtoupper($nama_dart),
+                'jenis_dart' => $jenis_dart,
+                'asal_satuan' => strtoupper($asal_satuan),
+                'status_unit' => $status_unit
+            ]);
+
+            $imported++;
+        }
+
+        fclose($handle);
+
+        SystemLog::log('INFO', auth()->id(), "Import massal DART: {$imported} berhasil ditambahkan, {$skipped} duplikat dilewati.");
+
+        // Jika Anda menggunakan flash session Inertia, tambahkan ini. Jika tidak, ini akan cukup.
+        return redirect()->back();
+    }
 }
