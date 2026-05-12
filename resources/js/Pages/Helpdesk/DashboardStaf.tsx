@@ -26,7 +26,7 @@ const DashboardStaf = (props: any) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [isRecapModalOpen, setIsRecapModalOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-  
+
   // Recap States
   const [recapPeriod, setRecapPeriod] = useState<'weekly' | 'monthly' | 'yearly' | 'custom' | 'year_specific'>('monthly');
   const [recapStartDate, setRecapStartDate] = useState<string>('');
@@ -37,7 +37,7 @@ const DashboardStaf = (props: any) => {
   const [unitSearch, setUnitSearch] = useState('');
   const [filterJenis, setFilterJenis] = useState('ALL');
   const [filterSatuan, setFilterSatuan] = useState('ALL');
-  const [sortConfig, setSortConfig] = useState<{key: string, direction: 'asc' | 'desc'} | null>(null);
+  const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
 
   const { auth } = usePage().props as any;
   const currentUser = auth.user;
@@ -91,8 +91,8 @@ const DashboardStaf = (props: any) => {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-cighra-dark flex font-sans selection:bg-cighra-primary dark:selection:bg-cighra-gold dark:selection:text-slate-900 selection:text-white relative text-gunmetal dark:text-slate-300">
-      
-      <StafSidebar 
+
+      <StafSidebar
         isMobileMenuOpen={isMobileMenuOpen}
         setIsMobileMenuOpen={setIsMobileMenuOpen}
         activeMenu={activeMenu}
@@ -105,7 +105,7 @@ const DashboardStaf = (props: any) => {
       <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-paper.png')] opacity-[0.05] pointer-events-none"></div>
 
-        <StafTopbar 
+        <StafTopbar
           setIsMobileMenuOpen={setIsMobileMenuOpen}
           currentUser={currentUser}
         />
@@ -116,17 +116,17 @@ const DashboardStaf = (props: any) => {
             <div className="mb-6 flex justify-between items-end border-b border-slate-200 dark:border-slate-600 pb-4">
               <div>
                 <h2 className="text-2xl font-tactical font-bold text-slate-800 dark:text-white tracking-widest uppercase">
-                  {activeMenu === 'MASUK' ? 'MODUL PENUGASAN TEKNISI' : 
-                   activeMenu === 'SELESAI' ? 'ARSIP DOKUMEN PENYELESAIAN' : 
-                   'DATABASE INVENTARIS PERANGKAT'}
+                  {activeMenu === 'MASUK' ? 'MODUL PENUGASAN TEKNISI' :
+                    activeMenu === 'SELESAI' ? 'ARSIP DOKUMEN PENYELESAIAN' :
+                      'DATABASE INVENTARIS PERANGKAT'}
                 </h2>
                 <p className="text-xs font-mono text-slate-500 dark:text-slate-300 mt-1 uppercase tracking-widest">
-                   {activeMenu === 'INVENTARIS' ? 'STATUS KESIAPAN ALUTSISTA DART.' : 'Sistem Manajemen Pelaporan Kerusakan Dart.'}
+                  {activeMenu === 'INVENTARIS' ? 'STATUS KESIAPAN ALUTSISTA DART.' : 'Sistem Manajemen Pelaporan Kerusakan Dart.'}
                 </p>
               </div>
 
               {activeMenu !== 'INVENTARIS' && (
-                <button 
+                <button
                   onClick={() => setIsRecapModalOpen(true)}
                   className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white px-5 py-2 font-tactical font-bold text-xs tracking-widest hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 transition-all flex items-center gap-2 shadow-lg"
                 >
@@ -136,7 +136,7 @@ const DashboardStaf = (props: any) => {
             </div>
 
             {activeMenu === 'MASUK' && (
-              <IncomingReportsTable 
+              <IncomingReportsTable
                 reports={incomingReports}
                 onSelectReport={setSelectedReportId}
                 onAssignTechnician={setAssigningReportId}
@@ -145,7 +145,7 @@ const DashboardStaf = (props: any) => {
             )}
 
             {activeMenu === 'SELESAI' && (
-              <CompletedReportsTable 
+              <CompletedReportsTable
                 reports={completedReports}
                 onSelectReport={setSelectedReportId}
                 onViewProof={setViewingProof}
@@ -153,7 +153,7 @@ const DashboardStaf = (props: any) => {
             )}
 
             {activeMenu === 'INVENTARIS' && (
-              <InventorySection 
+              <InventorySection
                 dbUnits={dbUnits}
                 unitSearch={unitSearch}
                 setUnitSearch={setUnitSearch}
@@ -170,26 +170,26 @@ const DashboardStaf = (props: any) => {
       </main>
 
       {/* Modals */}
-      <ProofModal 
+      <ProofModal
         isOpen={!!viewingProof}
         onClose={() => setViewingProof(null)}
         viewingProof={viewingProof}
       />
 
-      <ReportDetailModal 
+      <ReportDetailModal
         isOpen={!!selectedReportId}
         onClose={() => setSelectedReportId(null)}
         report={selectedReport}
       />
 
-      <AssignTechnicianModal 
+      <AssignTechnicianModal
         isOpen={!!assigningReportId}
         onClose={() => setAssigningReportId(null)}
         technicians={dbUsers}
         onAssign={(techId) => assigningReportId && handleAssignTechnician(assigningReportId, techId)}
       />
 
-      <StafRecapModal 
+      <StafRecapModal
         isOpen={isRecapModalOpen}
         onClose={() => setIsRecapModalOpen(false)}
         recapPeriod={recapPeriod}
@@ -203,7 +203,7 @@ const DashboardStaf = (props: any) => {
         onExport={handleExportRecap}
       />
 
-      <LogoutConfirmModal 
+      <LogoutConfirmModal
         isOpen={isLogoutModalOpen}
         onClose={() => setIsLogoutModalOpen(false)}
         onConfirm={confirmLogout}

@@ -27,9 +27,9 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
   // Filter tasks
   const activeTasks = dbCases.filter((r: any) => r.status === 'PROSES' || r.status === 'PENDING');
   const historyTasks = dbCases.filter((r: any) => r.status === 'SELESAI');
-  
+
   const tasksToShow = activeTab === 'ACTIVE' ? activeTasks : historyTasks;
-  const filteredTasks = tasksToShow.filter((t: any) => 
+  const filteredTasks = tasksToShow.filter((t: any) =>
     t.kerusakan.barangRusak.toLowerCase().includes(searchQuery.toLowerCase()) ||
     t.caseId.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -54,7 +54,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
   const handleSubmitLaporan = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedTaskId) return;
-    
+
     if (!data.metode) {
       addNotification('PERINGATAN: METODE PERBAIKAN WAJIB DIPILIH.', 'error');
       return;
@@ -84,8 +84,8 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-cighra-dark flex font-sans selection:bg-cighra-primary dark:selection:bg-cighra-gold dark:selection:text-slate-900 selection:text-white relative text-gunmetal dark:text-slate-300">
-      
-      <TeknisiSidebar 
+
+      <TeknisiSidebar
         isMobileMenuOpen={isMobileMenuOpen}
         setIsMobileMenuOpen={setIsMobileMenuOpen}
         activeMenu="TUGAS"
@@ -97,7 +97,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
       <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-paper.png')] opacity-[0.05] pointer-events-none"></div>
 
-        <TeknisiTopbar 
+        <TeknisiTopbar
           setIsMobileMenuOpen={setIsMobileMenuOpen}
           currentUser={currentUser}
         />
@@ -113,9 +113,9 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
                 Pusat Instruksi & Penyerahan Laporan Perbaikan Unit DART
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 animate-in fade-in mt-6">
-              <TaskList 
+              <TaskList
                 tasks={filteredTasks}
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
@@ -127,12 +127,12 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
 
               <TaskDetailPanel selectedTask={selectedTask} activeTab={activeTab}>
                 {activeTab === 'HISTORY' && selectedTask ? (
-                  <CompletionSummary 
-                    selectedTask={selectedTask} 
-                    onBack={() => setSelectedTaskId(null)} 
+                  <CompletionSummary
+                    selectedTask={selectedTask}
+                    onBack={() => setSelectedTaskId(null)}
                   />
                 ) : (
-                  <CompletionForm 
+                  <CompletionForm
                     data={data}
                     setData={setData}
                     errors={errors}
@@ -148,7 +148,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
         </div>
       </main>
 
-      <LogoutConfirmModal 
+      <LogoutConfirmModal
         isOpen={isLogoutModalOpen}
         onClose={() => setIsLogoutModalOpen(false)}
         onConfirm={confirmLogout}

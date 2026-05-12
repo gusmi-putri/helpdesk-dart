@@ -1,9 +1,9 @@
 import React from 'react';
 import { Activity } from 'lucide-react';
-import { 
-  ResponsiveContainer, PieChart, Pie, Cell, 
-  Tooltip as RechartsTooltip, Legend, BarChart, 
-  CartesianGrid, XAxis, YAxis, Bar 
+import {
+  ResponsiveContainer, PieChart, Pie, Cell,
+  Tooltip as RechartsTooltip, Legend, BarChart,
+  CartesianGrid, XAxis, YAxis, Bar
 } from 'recharts';
 
 interface AnalyticsSectionProps {
@@ -24,7 +24,7 @@ const AnalyticsSection: React.FC<AnalyticsSectionProps> = ({ dbCases }) => {
     // Urgency
     const urgency = c.kerusakan.urgensi || 'NORMAL';
     urgencyCounts[urgency] = (urgencyCounts[urgency] || 0) + 1;
-    
+
     // Unit/Lokasi
     const lokasi = c.kerusakan.lokasi || 'Unknown';
     unitCounts[lokasi] = (unitCounts[lokasi] || 0) + 1;
