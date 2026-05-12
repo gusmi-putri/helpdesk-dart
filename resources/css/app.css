@@ -10,8 +10,10 @@
   --color-cighra-gold: #E6C21F;
   --color-cighra-accent: #E55722;
   --color-cighra-light: #B9DEFF;
-  --color-cighra-dark: #121E3B; /* Lighter, more comfortable Navy Background */
-  --color-cighra-darkcard: #1D2D50; /* Lighter blue for columns/cards than the background */
+  --color-cighra-dark: #121E3B;
+  /* Lighter, more comfortable Navy Background */
+  --color-cighra-darkcard: #1D2D50;
+  /* Lighter blue for columns/cards than the background */
 
   --font-sans: "Inter", sans-serif;
   --font-tactical: "Rajdhani", sans-serif;

@@ -72,7 +72,7 @@ const Hero = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.8 }}
-          className="text-lg md:text-xl text-slate-600 dark:text-slate-300 font-tactical mb-8 max-w-2xl mx-auto border-l-4 border-cighra-gold pl-4 text-left"
+          className="text-lg md:text-xl text-slate-800 dark:text-white font-tactical mb-8 max-w-2xl mx-auto border-l-4 border-cighra-gold pl-4 text-left drop-shadow-sm"
         >
           <span className="typewriter-text text-cighra-gold font-bold">BENGPUSKOMLEKAD</span>
           <br />
