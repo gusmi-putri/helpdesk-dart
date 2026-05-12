@@ -83,7 +83,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
   };
 
   return (
-    <div className="min-h-screen bg-cighra-light dark:bg-cighra-dark flex font-sans selection:bg-cighra-primary dark:selection:bg-cighra-gold dark:selection:text-slate-900 selection:text-white relative text-gunmetal dark:text-slate-300">
+    <div className="min-h-screen bg-slate-50 dark:bg-cighra-dark flex font-sans selection:bg-cighra-primary dark:selection:bg-cighra-gold dark:selection:text-slate-900 selection:text-white relative text-gunmetal dark:text-slate-300">
       
       <TeknisiSidebar 
         isMobileMenuOpen={isMobileMenuOpen}

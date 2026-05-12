@@ -106,10 +106,10 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
       </div>
 
       <div className="bg-white dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600 shadow-2xl overflow-hidden relative">
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900"></div>
-        <div className="p-5 border-b border-slate-200 dark:border-slate-600 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-cighra-light dark:bg-cighra-darkcard/80">
-          <h3 className="text-slate-800 dark:text-white font-tactical font-bold text-lg tracking-widest flex items-center gap-3 uppercase">
-            <Package className="text-cighra-primary dark:text-cighra-gold w-6 h-6" /> DATA INVENTARIS UNIT
+        <div className="absolute top-0 left-0 w-full h-[2px] bg-cighra-primary dark:bg-cighra-gold"></div>
+        <div className="p-5 border-b border-slate-200 dark:border-slate-600 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-800">
+          <h3 className="text-white font-tactical font-bold text-lg tracking-widest flex items-center gap-3 uppercase">
+            <Package className="text-cighra-gold w-6 h-6" /> DATA INVENTARIS UNIT
           </h3>
           <div className="flex items-center gap-4">
             <div className="relative">
@@ -119,7 +119,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
                 placeholder="CARI SERI / NAMA / LOKASI..."
                 value={unitSearch}
                 onChange={(e) => setUnitSearch(e.target.value)}
-                className="bg-cighra-light dark:bg-slate-800 border border-slate-300 dark:border-slate-600 pl-9 pr-4 py-2 text-sm font-mono text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:border-cighra-gold transition-colors w-64 uppercase"
+                className="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 pl-9 pr-4 py-2 text-sm font-mono text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:border-cighra-gold transition-colors w-64 uppercase"
               />
             </div>
             <input 
@@ -153,7 +153,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
 
         <div className="overflow-x-auto">
           <table className="w-full text-left font-sans text-sm">
-            <thead className="bg-slate-100 dark:bg-slate-800/80 text-slate-400 font-tactical tracking-widest border-b border-slate-200 dark:border-slate-600">
+            <thead className="bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-slate-700">
               <tr>
                 {[
                   { label: 'NOMOR SERI', key: 'nomor_seri' },
@@ -187,7 +187,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
                 </tr>
               ) : (
                 filteredUnits.map((u: any) => (
-                  <tr key={u.db_id} className="hover:bg-cighra-light dark:hover:bg-slate-800/50 transition-colors group">
+                  <tr key={u.db_id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group bg-white dark:bg-transparent">
                     <td className="p-4 font-mono font-bold text-cighra-primary dark:text-cighra-gold border-l-2 border-transparent group-hover:border-cighra-primary dark:border-cighra-gold">{u.nomor_seri}</td>
                     <td className="p-4 text-slate-800 dark:text-white font-bold uppercase">{u.nama_dart}</td>
                     <td className="p-4 font-mono text-xs text-slate-500 dark:text-slate-300 uppercase">{u.jenis_dart}</td>

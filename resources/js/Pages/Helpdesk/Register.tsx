@@ -97,7 +97,7 @@ const Register: React.FC = () => {
                 SISTEM HELPDESK DART
               </p>
             </div>
-            <Link href="/login" className="flex items-center gap-2 px-4 py-2 border border-slate-300 dark:border-slate-600 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 dark:text-slate-900 hover:text-white transition-all duration-300 text-[10px] font-mono font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">
+            <Link href="/login" className="flex items-center gap-2 px-4 py-2 border border-slate-300 dark:border-slate-600 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 transition-all duration-300 text-[10px] font-mono font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">
               <ArrowLeft className="w-3.5 h-3.5" /> Kembali ke Login
             </Link>
           </div>
