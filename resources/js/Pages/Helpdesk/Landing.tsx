@@ -7,14 +7,14 @@ import AboutUs from '@/Components/AboutUs';
 
 export default function Landing() {
   return (
-    <div className="bg-slate-50 dark:bg-gunmetal min-h-screen font-sans selection:bg-targetred selection:text-slate-800 dark:text-white flex flex-col">
+    <div className="bg-cighra-light dark:bg-cighra-dark min-h-screen font-sans selection:bg-cighra-primary selection:text-white flex flex-col">
       <main className="flex-grow">
         <Navbar />
         <Hero />
         <About />
         <Contact />
         <AboutUs />
-        <footer className="bg-white dark:bg-navy/70 py-8 border-t border-slate-200 dark:border-slate-700 text-center">
+        <footer className="bg-white dark:bg-cighra-darkcard/70 py-8 border-t border-slate-200 dark:border-slate-600 text-center">
           <div className="max-w-7xl mx-auto px-4">
             <p className="text-slate-600 dark:text-slate-300 font-tactical tracking-widest text-sm">
               &copy; {new Date().getFullYear()} HELPDESK DART COMMAND CENTER. HAK CIPTA DILINDUNGI.

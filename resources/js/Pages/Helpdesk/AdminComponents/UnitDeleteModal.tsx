@@ -13,19 +13,19 @@ const UnitDeleteModal: React.FC<UnitDeleteModalProps> = ({ isOpen, onClose, onCo
 
   return (
     <div className="fixed inset-0 z-[130] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-      <div className="bg-slate-50 dark:bg-gunmetal border-2 border-targetred w-full max-w-md shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-        <div className="p-4 border-b border-targetred bg-red-900/20 flex items-center gap-3">
-          <AlertTriangle className="text-targetred w-6 h-6" />
-          <h3 className="font-tactical font-bold text-targetred tracking-widest uppercase">KONFIRMASI PENGHAPUSAN UNIT</h3>
+      <div className="bg-cighra-light dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full max-w-md shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+        <div className="p-4 border-b border-cighra-primary dark:border-cighra-gold bg-red-900/20 flex items-center gap-3">
+          <AlertTriangle className="text-cighra-primary dark:text-cighra-gold w-6 h-6" />
+          <h3 className="font-tactical font-bold text-cighra-primary dark:text-cighra-gold tracking-widest uppercase">KONFIRMASI PENGHAPUSAN UNIT</h3>
         </div>
         <div className="p-6">
           <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-6 font-mono">
-            APAKAH ANDA YAKIN INGIN MENGHAPUS UNIT <span className="text-targetred font-bold underline">[{unit?.nomor_seri}]</span> DARI SISTEM? TINDAKAN INI TIDAK DAPAT DIBATALKAN.
+            APAKAH ANDA YAKIN INGIN MENGHAPUS UNIT <span className="text-cighra-primary dark:text-cighra-gold font-bold underline">[{unit?.nomor_seri}]</span> DARI SISTEM? TINDAKAN INI TIDAK DAPAT DIBATALKAN.
           </p>
           <div className="flex gap-3">
             <button
               onClick={onConfirm}
-              className="flex-1 bg-targetred text-white py-3 font-tactical font-bold tracking-widest hover:bg-red-700 transition-colors"
+              className="flex-1 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white py-3 font-tactical font-bold tracking-widest hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 transition-colors"
             >
               YA, HAPUS UNIT
             </button>

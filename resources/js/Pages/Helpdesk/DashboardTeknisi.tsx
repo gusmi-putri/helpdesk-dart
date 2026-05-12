@@ -83,7 +83,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-gunmetal flex font-sans selection:bg-olive selection:text-sand relative text-gunmetal dark:text-slate-300">
+    <div className="min-h-screen bg-cighra-light dark:bg-cighra-dark flex font-sans selection:bg-cighra-primary dark:selection:bg-cighra-gold dark:selection:text-slate-900 selection:text-white relative text-gunmetal dark:text-slate-300">
       
       <TeknisiSidebar 
         isMobileMenuOpen={isMobileMenuOpen}
@@ -105,7 +105,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
         {/* Scrollable Content Container */}
         <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar z-10">
           <div className="max-w-[1400px] mx-auto">
-            <div className="mb-4 border-b border-slate-200 dark:border-slate-700 pb-4">
+            <div className="mb-4 border-b border-slate-200 dark:border-slate-600 pb-4">
               <h2 className="text-2xl font-tactical font-bold text-slate-800 dark:text-white tracking-widest uppercase">
                 PORTAL PERBAIKAN DART
               </h2>

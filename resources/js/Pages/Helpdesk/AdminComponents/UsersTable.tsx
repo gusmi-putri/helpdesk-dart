@@ -33,11 +33,11 @@ const UsersTable: React.FC<UsersTableProps> = ({
   });
 
   return (
-    <div className="bg-white dark:bg-navy/80 border border-slate-200 dark:border-slate-700 shadow-xl overflow-hidden animate-in fade-in relative">
+    <div className="bg-white dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600 shadow-xl overflow-hidden animate-in fade-in relative">
       <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-olive via-camogreen to-transparent"></div>
-      <div className="p-5 border-b border-slate-200 dark:border-slate-700 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-50 dark:bg-navy/80">
+      <div className="p-5 border-b border-slate-200 dark:border-slate-600 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-cighra-light dark:bg-cighra-darkcard/80">
         <h3 className="text-slate-800 dark:text-white font-tactical font-bold text-lg tracking-widest flex items-center gap-3">
-          <Users className="text-olive w-6 h-6" /> MANAJEMEN PERSONEL
+          <Users className="text-cighra-primary dark:text-cighra-gold w-6 h-6" /> MANAJEMEN PERSONEL
         </h3>
         <div className="flex items-center gap-4">
           <div className="relative">
@@ -47,12 +47,12 @@ const UsersTable: React.FC<UsersTableProps> = ({
               placeholder="CARI NAMA / NRP / HAK AKSES..."
               value={userSearch}
               onChange={(e) => setUserSearch(e.target.value)}
-              className="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 pl-9 pr-4 py-2 text-sm font-mono text-slate-800 dark:text-white focus:outline-none focus:border-olive transition-colors w-64 uppercase"
+              className="bg-cighra-light dark:bg-slate-800 border border-slate-300 dark:border-slate-600 pl-9 pr-4 py-2 text-sm font-mono text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:border-cighra-gold transition-colors w-64 uppercase"
             />
           </div>
           <button
             onClick={handleAddUser}
-            className="bg-targetred hover:bg-[#8B152A] text-sand px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-targetred shadow-lg"
+            className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-cighra-primary dark:border-cighra-gold shadow-lg"
           >
             <Plus className="w-4 h-4" /> TAMBAH USER
           </button>
@@ -60,7 +60,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-left font-sans text-sm">
-          <thead className="bg-slate-100 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 font-tactical tracking-widest border-b border-slate-200 dark:border-slate-700/50">
+          <thead className="bg-slate-100 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 font-tactical tracking-widest border-b border-slate-200 dark:border-slate-600/50">
             <tr>
               <th className="p-4">ID PERSONEL</th>
               <th className="p-4">NRP / NIP</th>
@@ -79,15 +79,15 @@ const UsersTable: React.FC<UsersTableProps> = ({
                 </td>
               </tr>
             ) : filteredUsers.map((u: any) => (
-              <tr key={u.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
-                <td className="p-4 font-mono text-slate-600 dark:text-slate-300 border-l-2 border-transparent group-hover:border-olive">{u.id}</td>
+              <tr key={u.id} className="hover:bg-cighra-light dark:hover:bg-slate-800/50 transition-colors group">
+                <td className="p-4 font-mono text-slate-600 dark:text-slate-300 border-l-2 border-transparent group-hover:border-cighra-primary dark:border-cighra-gold">{u.id}</td>
                 <td className="p-4 font-mono text-xs text-slate-500 dark:text-slate-400">{u.nrp_nip || '-'}</td>
                 <td className="p-4 text-slate-800 dark:text-white font-bold">{u.name}</td>
                 <td className="p-4 font-mono text-xs text-slate-500 dark:text-slate-400 lowercase">{u.email}</td>
                 <td className="p-4">
                   <span className={`px-3 py-1 text-[10px] font-mono font-bold tracking-widest border
-                    ${u.role === 'Admin' ? 'bg-red-900/30 text-targetred border-red-800' :
-                      u.role === 'Staf' ? 'bg-olive/20 text-[#b5cb5c] border-olive/50' :
+                    ${u.role === 'Admin' ? 'bg-red-900/30 text-cighra-primary dark:text-cighra-gold border-red-800' :
+                      u.role === 'Staf' ? 'bg-cighra-primary/20 dark:bg-cighra-gold/20 text-[#b5cb5c] border-cighra-primary dark:border-cighra-gold/50' :
                         u.role === 'Teknisi' ? 'bg-blue-900/30 text-blue-400 border-blue-800' :
                           'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600'}
                   `}>
@@ -109,10 +109,10 @@ const UsersTable: React.FC<UsersTableProps> = ({
                   <button onClick={() => handleShowDetail(u)} className="p-2 bg-slate-100 dark:bg-slate-700 hover:bg-blue-600 hover:text-white text-slate-600 dark:text-slate-300 transition-colors border border-slate-300 dark:border-slate-600" title="Detail">
                     <Eye className="w-4 h-4" />
                   </button>
-                  <button onClick={() => handleEditUser(u)} className="p-2 bg-slate-100 dark:bg-slate-700 hover:bg-olive hover:text-gunmetal dark:hover:text-white text-slate-600 dark:text-slate-300 transition-colors border border-slate-300 dark:border-slate-600" title="Edit">
+                  <button onClick={() => handleEditUser(u)} className="p-2 bg-slate-100 dark:bg-slate-700 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 dark:text-slate-900 hover:text-gunmetal dark:hover:text-white text-slate-600 dark:text-slate-300 transition-colors border border-slate-300 dark:border-slate-600" title="Edit">
                     <Edit className="w-4 h-4" />
                   </button>
-                  <button onClick={() => handleDeleteUser(u)} className="p-2 bg-slate-100 dark:bg-slate-700 hover:bg-targetred hover:text-white text-slate-600 dark:text-slate-300 transition-colors border border-slate-300 dark:border-slate-600" title="Hapus">
+                  <button onClick={() => handleDeleteUser(u)} className="p-2 bg-slate-100 dark:bg-slate-700 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 dark:text-slate-900 hover:text-white text-slate-600 dark:text-slate-300 transition-colors border border-slate-300 dark:border-slate-600" title="Hapus">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </td>

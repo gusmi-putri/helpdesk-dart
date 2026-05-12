@@ -14,8 +14,8 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
 }) => {
   return (
     <div className="animate-in fade-in space-y-6 mt-6">
-      <div className="bg-white/60 dark:bg-navy/70 border border-slate-300 dark:border-slate-600 rounded-sm overflow-hidden shadow-xl">
-        <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-navy/80 flex items-center justify-between text-slate-800 dark:text-white">
+      <div className="bg-white/60 dark:bg-cighra-darkcard/70 border border-slate-300 dark:border-slate-600 rounded-sm overflow-hidden shadow-xl">
+        <div className="p-4 border-b border-slate-200 dark:border-slate-600 bg-cighra-light dark:bg-cighra-darkcard/80 flex items-center justify-between text-slate-800 dark:text-white">
           <h3 className="font-tactical tracking-widest text-sm flex items-center gap-2"><CheckCircle className="w-4 h-4 text-camogreen" /> ARSIP PERBAIKAN SELESAI </h3>
         </div>
         <div className="overflow-x-auto p-2">
@@ -42,7 +42,7 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                   <td className="p-4">
                     <button
                       onClick={() => onSelectReport(report.db_id)}
-                      className="font-mono text-slate-600 dark:text-slate-300 text-sm bg-white dark:bg-navy px-2 py-1 border border-slate-300 dark:border-slate-600 block w-fit hover:border-olive hover:text-olive transition-colors"
+                      className="font-mono text-slate-600 dark:text-slate-300 text-sm bg-white dark:bg-cighra-darkcard px-2 py-1 border border-slate-300 dark:border-slate-600 block w-fit hover:border-cighra-primary dark:border-cighra-gold hover:text-cighra-primary dark:text-cighra-gold transition-colors"
                     >
                       {report.caseId}
                     </button>
@@ -66,7 +66,7 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                     </div>
                   </td>
                   <td className="p-4">
-                    <div className="bg-white/40 dark:bg-navy/30 p-4 border-l-4 border-camogreen text-sm text-gunmetal dark:text-slate-300 relative shadow-inner">
+                    <div className="bg-white/40 dark:bg-cighra-darkcard/30 p-4 border-l-4 border-camogreen text-sm text-gunmetal dark:text-slate-300 relative shadow-inner">
                       <span className="absolute top-1 left-2 text-xl text-slate-600/20 dark:text-slate-300/10 font-serif">"</span>
                       <span className="pl-4 block italic font-serif leading-relaxed uppercase mb-3">{report.perbaikan.tindakan}</span>
                       {report.perbaikan.metodePerbaikan && (
@@ -81,7 +81,7 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                       {report.kerusakan.fileBukti && report.kerusakan.fileBukti.length > 0 && (
                         <button
                           onClick={() => onViewProof(report.kerusakan.fileBukti)}
-                          className="w-full max-w-[140px] bg-white dark:bg-navy/80 hover:bg-slate-50 dark:hover:bg-black text-slate-600 dark:text-slate-300 px-2 py-1.5 text-[10px] font-mono font-bold tracking-widest transition-colors flex items-center justify-center gap-1.5 border border-slate-300 dark:border-slate-600"
+                          className="w-full max-w-[140px] bg-white dark:bg-cighra-darkcard/80 hover:bg-cighra-light dark:hover:bg-black text-slate-600 dark:text-slate-300 px-2 py-1.5 text-[10px] font-mono font-bold tracking-widest transition-colors flex items-center justify-center gap-1.5 border border-slate-300 dark:border-slate-600"
                         >
                           <Image className="w-3 h-3 text-red-500" /> BUKTI RUSAK
                         </button>
@@ -89,7 +89,7 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                       {report.perbaikan.foto_bukti_selesai && (
                         <button
                           onClick={() => onViewProof([report.perbaikan.foto_bukti_selesai])}
-                          className="w-full max-w-[140px] bg-white dark:bg-navy/80 hover:bg-slate-50 dark:hover:bg-black text-slate-600 dark:text-slate-300 px-2 py-1.5 text-[10px] font-mono font-bold tracking-widest transition-colors flex items-center justify-center gap-1.5 border border-slate-300 dark:border-slate-600"
+                          className="w-full max-w-[140px] bg-white dark:bg-cighra-darkcard/80 hover:bg-cighra-light dark:hover:bg-black text-slate-600 dark:text-slate-300 px-2 py-1.5 text-[10px] font-mono font-bold tracking-widest transition-colors flex items-center justify-center gap-1.5 border border-slate-300 dark:border-slate-600"
                         >
                           <CheckSquare className="w-3 h-3 text-camogreen" /> HASIL PERBAIKAN
                         </button>

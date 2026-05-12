@@ -7,9 +7,9 @@ interface FeedbackTableProps {
 
 const FeedbackTable: React.FC<FeedbackTableProps> = ({ dbFeedbacks }) => {
   return (
-    <div className="bg-white/60 dark:bg-navy/70 border border-slate-200 dark:border-slate-700 shadow-xl overflow-hidden animate-in fade-in relative">
+    <div className="bg-white/60 dark:bg-cighra-darkcard/70 border border-slate-200 dark:border-slate-600 shadow-xl overflow-hidden animate-in fade-in relative">
       <div className="absolute top-0 left-0 w-full h-[2px] bg-yellow-500"></div>
-      <div className="p-5 border-b border-slate-200 dark:border-slate-700/50 flex justify-between items-center bg-white/40 dark:bg-navy/80">
+      <div className="p-5 border-b border-slate-200 dark:border-slate-600/50 flex justify-between items-center bg-white/40 dark:bg-cighra-darkcard/80">
         <h3 className="text-slate-800 dark:text-white font-tactical font-bold text-lg tracking-widest flex items-center gap-3">
           <MessageSquare className="text-yellow-500 w-6 h-6" /> PANEL EVALUASI & PENGADUAN
         </h3>
@@ -19,7 +19,7 @@ const FeedbackTable: React.FC<FeedbackTableProps> = ({ dbFeedbacks }) => {
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-left font-sans text-sm">
-          <thead className="bg-slate-100 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 font-tactical tracking-widest border-b border-slate-200 dark:border-slate-700/50">
+          <thead className="bg-slate-100 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 font-tactical tracking-widest border-b border-slate-200 dark:border-slate-600/50">
             <tr>
               <th className="p-4 w-48">PENGIRIM</th>
               <th className="p-4 w-32">KATEGORI</th>
@@ -27,7 +27,7 @@ const FeedbackTable: React.FC<FeedbackTableProps> = ({ dbFeedbacks }) => {
               <th className="p-4">RINCIAN EVALUASI</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-300 dark:divide-gray-800 bg-white dark:bg-gunmetal/30">
+          <tbody className="divide-y divide-gray-300 dark:divide-gray-800 bg-white dark:bg-cighra-dark/30">
             {dbFeedbacks.length === 0 ? (
               <tr>
                 <td colSpan={4} className="p-20 text-center text-slate-500 italic font-mono uppercase tracking-widest">
@@ -42,7 +42,7 @@ const FeedbackTable: React.FC<FeedbackTableProps> = ({ dbFeedbacks }) => {
                     <div className="text-[10px] font-mono text-slate-500">{f.tanggal}</div>
                   </td>
                   <td className="p-4">
-                    <span className="px-2 py-1 text-[10px] font-mono font-bold bg-gray-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 tracking-tighter uppercase">
+                    <span className="px-2 py-1 text-[10px] font-mono font-bold bg-gray-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-600 tracking-tighter uppercase">
                       {f.kategori}
                     </span>
                   </td>

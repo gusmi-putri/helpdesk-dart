@@ -5,16 +5,13 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  /* === MODERN VIBRANT PALETTE === */
-  --color-gunmetal: #0F172A;
-  --color-navy: #1E293B;
-  --color-sand: #F8FAFC;
-  --color-olive: #10B981;
-  --color-camogreen: #059669;
-  --color-targetred: #EF4444;
-  --color-khaki: #FBBF24;
-  --color-soft-gunmetal: #64748B;
-  --color-soft-sand: #94A3B8;
+  /* === CIGHRA APTA NIRBHAYA PALETTE === */
+  --color-cighra-primary: #1E3166;
+  --color-cighra-gold: #E6C21F;
+  --color-cighra-accent: #E55722;
+  --color-cighra-light: #B9DEFF;
+  --color-cighra-dark: #121E3B; /* Lighter, more comfortable Navy Background */
+  --color-cighra-darkcard: #1D2D50; /* Lighter blue for columns/cards than the background */
 
   --font-sans: "Inter", sans-serif;
   --font-tactical: "Rajdhani", sans-serif;
@@ -23,31 +20,29 @@
 
 @layer base {
   body {
-    @apply bg-sand text-slate-800 dark:bg-gunmetal dark:text-slate-100 font-sans selection:bg-olive/30 selection:text-emerald-900 dark:selection:text-white;
+    @apply bg-cighra-light text-slate-800 dark:bg-cighra-dark dark:text-slate-100 font-sans selection:bg-cighra-gold/30 selection:text-cighra-primary dark:selection:text-white;
   }
 }
 
 @layer utilities {
   .glass-panel {
-    @apply bg-white/90 dark:bg-navy/90 backdrop-blur-xl border border-slate-200 dark:border-slate-700/50 shadow-lg;
-  }
-
-  .tactical-border {
-    @apply border-2 border-olive hover:border-camogreen transition-colors duration-300;
+    @apply bg-white/95 dark:bg-cighra-darkcard/95 backdrop-blur-xl border border-slate-200 dark:border-white/10 shadow-lg;
   }
 
   .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
   }
+
   .custom-scrollbar::-webkit-scrollbar-track {
     background: transparent;
   }
+
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #475569;
-    border-radius: 3px;
+    @apply bg-slate-300 dark:bg-slate-700 rounded-full;
   }
+
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #10B981;
+    @apply bg-cighra-primary dark:bg-cighra-gold;
   }
 }
 
@@ -59,15 +54,29 @@
 }
 
 @keyframes typing {
-  from { max-width: 0 }
-  to { max-width: 100% }
+  from {
+    max-width: 0
+  }
+
+  to {
+    max-width: 100%
+  }
 }
 
 @keyframes blink-caret {
-  from, to { border-color: transparent }
-  50% { border-color: #10B981; }
+
+  from,
+  to {
+    border-color: transparent
+  }
+
+  50% {
+    border-color: #E6C21F;
+  }
 }
 
 @keyframes shimmer {
-  100% { transform: translateX(100%); }
+  100% {
+    transform: translateX(100%);
+  }
 }

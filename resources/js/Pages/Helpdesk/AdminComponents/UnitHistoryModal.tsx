@@ -16,29 +16,29 @@ const UnitHistoryModal: React.FC<UnitHistoryModalProps> = ({ isOpen, onClose, un
 
   return (
     <div className="fixed inset-0 z-[140] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-      <div className="bg-slate-50 dark:bg-gunmetal border-2 border-blue-600 w-full max-w-4xl shadow-2xl animate-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
+      <div className="bg-cighra-light dark:bg-cighra-dark border-2 border-blue-600 w-full max-w-4xl shadow-2xl animate-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
         <div className="p-4 border-b border-blue-600 bg-blue-900/10 flex justify-between items-center">
           <h3 className="font-tactical font-bold text-blue-500 tracking-widest uppercase flex items-center gap-2">
             <Clock className="w-5 h-5" /> RIWAYAT PERBAIKAN: {unit.nomor_seri}
           </h3>
-          <button onClick={onClose} className="text-slate-500 hover:text-targetred text-xl">✕</button>
+          <button onClick={onClose} className="text-slate-500 hover:text-cighra-primary dark:text-cighra-gold text-xl">✕</button>
         </div>
 
         <div className="p-6 overflow-y-auto custom-scrollbar flex-1">
           <div className="mb-6 grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="p-3 bg-white/40 dark:bg-navy/80 border border-slate-200 dark:border-slate-700/50">
+            <div className="p-3 bg-white/40 dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600/50">
               <p className="text-[9px] font-mono text-slate-500 uppercase tracking-widest">Nama Unit</p>
               <p className="text-sm font-bold uppercase">{unit.nama_dart}</p>
             </div>
-            <div className="p-3 bg-white/40 dark:bg-navy/80 border border-slate-200 dark:border-slate-700/50">
+            <div className="p-3 bg-white/40 dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600/50">
               <p className="text-[9px] font-mono text-slate-500 uppercase tracking-widest">Jenis DART</p>
               <p className="text-sm font-bold uppercase">{unit.jenis_dart}</p>
             </div>
-            <div className="p-3 bg-white/40 dark:bg-navy/80 border border-slate-200 dark:border-slate-700/50">
+            <div className="p-3 bg-white/40 dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600/50">
               <p className="text-[9px] font-mono text-slate-500 uppercase tracking-widest">Lokasi</p>
               <p className="text-sm font-bold uppercase">{unit.asal_satuan}</p>
             </div>
-            <div className="p-3 bg-white/40 dark:bg-navy/80 border border-slate-200 dark:border-slate-700/50">
+            <div className="p-3 bg-white/40 dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600/50">
               <p className="text-[9px] font-mono text-slate-500 uppercase tracking-widest">Total Kasus</p>
               <p className="text-sm font-bold uppercase text-blue-500">{unitHistory.length} ENTRI</p>
             </div>
@@ -51,7 +51,7 @@ const UnitHistoryModal: React.FC<UnitHistoryModalProps> = ({ isOpen, onClose, un
               </div>
             ) : (
               unitHistory.map((entry: any) => (
-                <div key={entry.caseId} className="border border-slate-200 dark:border-slate-700/50 bg-white/20 dark:bg-navy/80 p-4 relative group">
+                <div key={entry.caseId} className="border border-slate-200 dark:border-slate-600/50 bg-white/20 dark:bg-cighra-darkcard/80 p-4 relative group">
                   <div className="absolute top-0 left-0 w-1 h-full bg-blue-600 opacity-50"></div>
                   <div className="flex justify-between items-start mb-3">
                     <div>
@@ -63,7 +63,7 @@ const UnitHistoryModal: React.FC<UnitHistoryModalProps> = ({ isOpen, onClose, un
                     <span className={`px-2 py-1 text-[9px] font-mono font-bold border
                       ${entry.status === 'SELESAI' ? 'bg-green-900/20 text-green-500 border-green-800' :
                         entry.status === 'PROSES' ? 'bg-blue-900/20 text-blue-500 border-blue-800' :
-                          'bg-targetred/20 text-targetred border-targetred/50'}
+                          'bg-cighra-primary/20 dark:bg-cighra-gold/20 text-cighra-primary dark:text-cighra-gold border-cighra-primary dark:border-cighra-gold/50'}
                     `}>
                       {entry.status}
                     </span>
@@ -81,7 +81,7 @@ const UnitHistoryModal: React.FC<UnitHistoryModalProps> = ({ isOpen, onClose, un
                         Dilaporkan oleh: {entry.kerusakan.pelapor} pada {entry.kerusakan.tanggal}
                       </p>
                     </div>
-                    <div className="space-y-2 border-l border-slate-200 dark:border-slate-700/50 pl-4">
+                    <div className="space-y-2 border-l border-slate-200 dark:border-slate-600/50 pl-4">
                       <p className="text-[9px] font-mono text-slate-500 uppercase flex items-center gap-1">
                         <Wrench className="w-3 h-3" /> Penanganan Teknisi
                       </p>

@@ -26,12 +26,12 @@ const ReportHistory: React.FC<ReportHistoryProps> = ({
       {/* Stats Summary Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         {[
-          { label: 'TOTAL LAPORAN', value: stats.total, color: 'border-olive', text: 'text-olive' },
+          { label: 'TOTAL LAPORAN', value: stats.total, color: 'border-cighra-primary dark:border-cighra-gold', text: 'text-cighra-primary dark:text-cighra-gold' },
           { label: 'MENUNGGU', value: stats.pending, color: 'border-yellow-500', text: 'text-yellow-500' },
           { label: 'DALAM PROSES', value: stats.proses, color: 'border-blue-500', text: 'text-blue-500' },
           { label: 'SELESAI', value: stats.selesai, color: 'border-camogreen', text: 'text-camogreen' },
         ].map((s, i) => (
-          <div key={i} className={`bg-white dark:bg-navy/80 border-l-4 ${s.color} p-3 shadow-md`}>
+          <div key={i} className={`bg-white dark:bg-cighra-darkcard/80 border-l-4 ${s.color} p-3 shadow-md`}>
             <p className="text-[9px] font-mono font-bold text-slate-500 dark:text-slate-300 tracking-widest uppercase mb-0.5">{s.label}</p>
             <p className={`text-xl font-tactical font-bold ${s.text}`}>{s.value}</p>
           </div>
@@ -45,26 +45,26 @@ const ReportHistory: React.FC<ReportHistoryProps> = ({
         </div>
         
         <div className="flex items-center gap-3 w-full md:w-auto">
-          <div className="flex bg-white dark:bg-navy/60 border border-slate-200 dark:border-slate-700/50 p-1 rounded-sm shadow-sm">
+          <div className="flex bg-white dark:bg-cighra-darkcard/60 border border-slate-200 dark:border-slate-600/50 p-1 rounded-sm shadow-sm">
             {(['ALL', 'TODAY', 'WEEK'] as const).map((t) => (
               <button
                 key={t}
                 onClick={() => setFilterTime(t)}
-                className={`px-3 py-1.5 text-[9px] font-tactical font-bold tracking-widest transition-all ${filterTime === t ? 'bg-olive text-white shadow-md' : 'text-slate-500 hover:text-olive'}`}
+                className={`px-3 py-1.5 text-[9px] font-tactical font-bold tracking-widest transition-all ${filterTime === t ? 'bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white shadow-md' : 'text-slate-500 hover:text-cighra-primary dark:text-cighra-gold'}`}
               >
                 {t === 'ALL' ? 'SEMUA' : t === 'TODAY' ? 'HARI INI' : 'MINGGU INI'}
               </button>
             ))}
           </div>
-          <div className="bg-olive/10 border border-olive/30 px-4 py-2 hidden sm:block">
-            <span className="text-[10px] font-mono text-olive font-bold tracking-widest">TOTAL: {history.length} TIKET</span>
+          <div className="bg-cighra-primary/10 dark:bg-cighra-gold/10 border border-cighra-primary dark:border-cighra-gold/30 px-4 py-2 hidden sm:block">
+            <span className="text-[10px] font-mono text-cighra-primary dark:text-cighra-gold font-bold tracking-widest">TOTAL: {history.length} TIKET</span>
           </div>
         </div>
       </div>
 
       <div className="space-y-4 max-h-[700px] overflow-y-auto pr-2 custom-scrollbar">
         {history.length === 0 ? (
-          <div className="p-8 text-center text-slate-500 font-mono bg-white/40 dark:bg-navy/80 border border-slate-200 dark:border-slate-700/50">
+          <div className="p-8 text-center text-slate-500 font-mono bg-white/40 dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600/50">
             {filterTime === 'ALL' ? 'ANDA BELUM PERNAH MENGAJUKAN LAPORAN APAPUN.' : 'TIDAK ADA LAPORAN PADA PERIODE INI.'}
           </div>
         ) : (
@@ -72,11 +72,11 @@ const ReportHistory: React.FC<ReportHistoryProps> = ({
             <div
               key={index}
               onClick={() => onSelectItem(item.db_id)}
-              className="glass-panel p-5 border-l-4 border-l-soft-gunmetal/20 dark:border-l-soft-sand/10 hover:border-l-olive transition-all cursor-pointer group hover:bg-white dark:hover:bg-black/40 bg-white/60 dark:bg-navy/80 shadow-md border border-slate-200 dark:border-slate-700"
+              className="glass-panel p-5 border-l-4 border-l-soft-gunmetal/20 dark:border-l-soft-sand/10 hover:border-l-olive transition-all cursor-pointer group hover:bg-white dark:hover:bg-black/40 bg-white/60 dark:bg-cighra-darkcard/80 shadow-md border border-slate-200 dark:border-slate-600"
             >
               <div className="flex justify-between items-start mb-3">
                 <div className="flex items-center gap-3">
-                  <span className="text-[10px] font-mono text-slate-500 dark:text-slate-300 bg-slate-50 dark:bg-navy/80 px-2 py-1 tracking-widest">{item.caseId}</span>
+                  <span className="text-[10px] font-mono text-slate-500 dark:text-slate-300 bg-cighra-light dark:bg-cighra-darkcard/80 px-2 py-1 tracking-widest">{item.caseId}</span>
                   <span className="text-xs font-mono text-slate-500 dark:text-slate-400 tracking-tighter uppercase">{item.kerusakan.tanggal}</span>
                 </div>
                 <div className={`px-3 py-1 text-[9px] font-tactical font-bold tracking-[0.2em] flex items-center gap-2 border uppercase
@@ -88,7 +88,7 @@ const ReportHistory: React.FC<ReportHistoryProps> = ({
                   {item.status}
                 </div>
               </div>
-              <h4 className="text-sm font-bold text-slate-800 dark:text-white mb-2 group-hover:text-olive transition-colors uppercase tracking-wide">
+              <h4 className="text-sm font-bold text-slate-800 dark:text-white mb-2 group-hover:text-cighra-primary dark:text-cighra-gold transition-colors uppercase tracking-wide">
                 {item.kerusakan.barangRusak}
               </h4>
               <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 font-mono leading-relaxed italic">
@@ -97,7 +97,7 @@ const ReportHistory: React.FC<ReportHistoryProps> = ({
               <div className="mt-4 flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="text-[10px] text-slate-500 dark:text-slate-300 flex items-center gap-1 font-mono uppercase">
-                    <Activity size={12} className="text-olive" /> {item.kerusakan.lokasi}
+                    <Activity size={12} className="text-cighra-primary dark:text-cighra-gold" /> {item.kerusakan.lokasi}
                   </div>
                   {item.status === 'SELESAI' && item.perbaikan.tanggalSelesai && (
                     <div className="text-[10px] text-camogreen font-bold font-mono flex items-center gap-1 uppercase">
@@ -105,7 +105,7 @@ const ReportHistory: React.FC<ReportHistoryProps> = ({
                     </div>
                   )}
                   {item.perbaikan.teknisi && item.status !== 'SELESAI' && (
-                    <div className="text-[10px] text-olive font-bold font-mono flex items-center gap-1 uppercase">
+                    <div className="text-[10px] text-cighra-primary dark:text-cighra-gold font-bold font-mono flex items-center gap-1 uppercase">
                       [TEKNISI: {item.perbaikan.teknisi.toUpperCase()}]
                       {item.perbaikan.teknisi_wa && (
                         <a
