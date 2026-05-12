@@ -18,7 +18,7 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
   const [selectedItemId, setSelectedItemId] = useState<number | string | null>(null);
   const [filterTime, setFilterTime] = useState<'ALL' | 'TODAY' | 'WEEK'>('ALL');
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-  
+
   const addNotification = useStore(state => state.addNotification);
   const currentUser = useStore(state => state.currentUser);
   const logoutAction = useStore(state => state.logout);
@@ -34,9 +34,9 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
 
   const filteredHistory = history.filter((item: any) => {
     if (filterTime === 'ALL') return true;
-    
+
     const parseDate = (str: string) => {
-        try { return new Date(str.replace(',', '')); } catch(e) { return new Date(0); }
+      try { return new Date(str.replace(',', '')); } catch (e) { return new Date(0); }
     };
 
     const itemDate = parseDate(item.kerusakan.tanggal);
@@ -44,9 +44,9 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
 
     if (filterTime === 'TODAY') return itemDate.toDateString() === now.toDateString();
     if (filterTime === 'WEEK') {
-        const oneWeekAgo = new Date();
-        oneWeekAgo.setDate(now.getDate() - 7);
-        return itemDate >= oneWeekAgo;
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(now.getDate() - 7);
+      return itemDate >= oneWeekAgo;
     }
     return true;
   });
@@ -108,8 +108,8 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-cighra-dark flex font-sans selection:bg-cighra-primary dark:selection:bg-cighra-gold dark:selection:text-slate-900 selection:text-gunmetal relative text-slate-800 dark:text-slate-200">
-      
-      <PelaporSidebar 
+
+      <PelaporSidebar
         isMobileMenuOpen={isMobileMenuOpen}
         setIsMobileMenuOpen={setIsMobileMenuOpen}
         activeMenu={activeMenu}
@@ -121,14 +121,14 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
       <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-paper.png')] opacity-[0.05] pointer-events-none"></div>
 
-        <PelaporTopbar 
+        <PelaporTopbar
           setIsMobileMenuOpen={setIsMobileMenuOpen}
           currentUser={currentUser}
         />
 
         <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
           {activeMenu === 'FORM' ? (
-            <ReportForm 
+            <ReportForm
               data={data}
               setData={setData}
               errors={errors}
@@ -142,7 +142,7 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
               removeFile={removeFile}
             />
           ) : (
-            <ReportHistory 
+            <ReportHistory
               history={filteredHistory}
               filterTime={filterTime}
               setFilterTime={setFilterTime}
@@ -152,13 +152,13 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
         </div>
       </main>
 
-      <PelaporReportDetailModal 
+      <PelaporReportDetailModal
         isOpen={!!selectedItemId}
         onClose={() => setSelectedItemId(null)}
         report={selectedItem}
       />
 
-      <LogoutConfirmModal 
+      <LogoutConfirmModal
         isOpen={isLogoutModalOpen}
         onClose={() => setIsLogoutModalOpen(false)}
         onConfirm={confirmLogout}

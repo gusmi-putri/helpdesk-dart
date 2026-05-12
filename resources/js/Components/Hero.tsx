@@ -56,7 +56,7 @@ const Hero = () => {
           transition={{ duration: 0.8 }}
           className="mb-6 flex justify-center"
         >
-          <Crosshair className="text-cighra-gold w-16 h-16 animate-pulse" />
+          <img src="/logo.png" className="w-24 h-24 object-contain animate-pulse" alt="Logo" />
         </motion.div>
 
         <motion.h1
