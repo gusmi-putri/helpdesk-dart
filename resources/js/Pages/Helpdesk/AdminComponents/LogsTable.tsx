@@ -31,13 +31,13 @@ const LogsTable: React.FC<LogsTableProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center gap-3 bg-gray-100 dark:bg-cighra-darkcard p-1 border border-slate-200 dark:border-slate-600/50">
-          <span className="text-[10px] font-mono font-bold text-slate-500 px-3 uppercase tracking-tighter">Filter Level:</span>
+        <div className="flex items-center gap-3 bg-slate-50 dark:bg-cighra-darkcard p-1 border border-slate-200 dark:border-slate-600 shadow-sm">
+          <span className="text-[10px] font-mono font-bold text-slate-400 px-3 uppercase tracking-tighter">Filter Level:</span>
           {['ALL', 'INFO', 'SUCCESS', 'WARN', 'ALERT'].map(lvl => (
             <button
               key={lvl}
               onClick={() => setLogFilter(lvl)}
-              className={`px-3 py-1.5 text-[10px] font-mono font-bold transition-all ${logFilter === lvl ? 'bg-yellow-500 text-black shadow-lg' : 'text-slate-500 hover:text-white hover:bg-slate-700'}`}
+              className={`px-3 py-1.5 text-[10px] font-mono font-bold transition-all ${logFilter === lvl ? 'bg-slate-800 text-white shadow-md' : 'text-slate-500 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700'}`}
             >
               {lvl}
             </button>
@@ -45,17 +45,17 @@ const LogsTable: React.FC<LogsTableProps> = ({
         </div>
       </div>
 
-      <div className="bg-white/60 dark:bg-cighra-darkcard/70 border border-slate-200 dark:border-slate-600 shadow-xl overflow-hidden relative">
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-yellow-500 via-yellow-400 to-transparent shadow-[0_0_10px_rgba(234,179,8,0.5)]"></div>
-        <div className="p-3 border-b border-slate-200 dark:border-slate-600/50 flex justify-between items-center bg-white/40 dark:bg-cighra-darkcard/80">
-          <h3 className="text-slate-800 dark:text-white font-mono font-bold text-[10px] tracking-widest flex items-center gap-2">
+      <div className="bg-white dark:bg-cighra-darkcard/70 border border-slate-200 dark:border-slate-600 shadow-xl overflow-hidden relative">
+        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-cighra-gold via-yellow-400 to-transparent shadow-[0_0_10px_rgba(234,179,8,0.3)]"></div>
+        <div className="p-3 border-b border-slate-200 dark:border-slate-600/50 flex justify-between items-center bg-slate-800">
+          <h3 className="text-white font-mono font-bold text-[10px] tracking-widest flex items-center gap-2 uppercase">
             <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div> /var/log/helpdesk_audit.log
           </h3>
-          <span className="text-[9px] text-slate-500 font-mono italic">Showing {filteredLogs.length} entries</span>
+          <span className="text-[9px] text-slate-300 font-mono italic">Showing {filteredLogs.length} entries</span>
         </div>
         <div className="overflow-x-auto max-h-[600px] overflow-y-auto custom-scrollbar">
           <table className="w-full text-left font-mono text-xs border-collapse">
-            <thead className="bg-gunmetal/50 text-slate-500 font-bold sticky top-0 z-10 border-b border-slate-700 shadow-md">
+            <thead className="bg-slate-800 text-slate-100 font-bold sticky top-0 z-10 border-b border-slate-700">
               <tr>
                 <th className="p-3 w-44 tracking-widest uppercase">Timestamp</th>
                 <th className="p-3 w-28 tracking-widest uppercase text-center">Severity</th>
@@ -63,37 +63,37 @@ const LogsTable: React.FC<LogsTableProps> = ({
                 <th className="p-3 tracking-widest uppercase">Action Payload</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-300 dark:divide-gray-800 bg-cighra-light dark:bg-cighra-dark">
+            <tbody className="divide-y divide-slate-100 dark:divide-gray-800 bg-white dark:bg-cighra-dark">
               {filteredLogs.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="p-10 text-center text-slate-500 italic tracking-widest uppercase">No records found for filter: {logFilter}</td>
+                  <td colSpan={4} className="p-10 text-center text-slate-400 italic tracking-widest uppercase">No records found for filter: {logFilter}</td>
                 </tr>
               ) : (
                 filteredLogs.map((log: any) => (
-                  <tr key={log.id} className="hover:bg-yellow-500/5 transition-colors group">
-                    <td className="p-3 text-slate-500 border-l-2 border-transparent group-hover:border-yellow-500 whitespace-nowrap">{log.time}</td>
+                  <tr key={log.id} className="hover:bg-slate-50 dark:hover:bg-yellow-500/5 transition-colors group">
+                    <td className="p-3 text-slate-400 border-l-2 border-transparent group-hover:border-cighra-gold whitespace-nowrap">{log.time}</td>
                     <td className="p-3 text-center">
                       <span className={`px-2 py-0.5 text-[10px] font-bold border rounded-sm inline-block min-w-[70px]
-                        ${log.level === 'SUCCESS' ? 'bg-green-900/20 text-green-500 border-green-800' : ''}
-                        ${log.level === 'ALERT' ? 'bg-red-900/30 text-cighra-primary dark:text-cighra-gold border-red-800 animate-pulse' : ''}
-                        ${log.level === 'WARN' ? 'bg-yellow-900/20 text-yellow-500 border-yellow-800' : ''}
-                        ${log.level === 'INFO' ? 'bg-blue-900/20 text-blue-400 border-blue-800' : ''}
+                        ${log.level === 'SUCCESS' ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-500 border-green-200 dark:border-green-800' : ''}
+                        ${log.level === 'ALERT' ? 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-cighra-gold border-red-200 dark:border-red-800 animate-pulse' : ''}
+                        ${log.level === 'WARN' ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-500 border-yellow-200 dark:border-yellow-800' : ''}
+                        ${log.level === 'INFO' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800' : ''}
                       `}>
                         {log.level}
                       </span>
                     </td>
-                    <td className="p-3 text-slate-800 dark:text-white font-bold flex items-center gap-2">
-                      <div className="w-5 h-5 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-[10px] text-slate-500">
+                    <td className="p-3 text-slate-700 dark:text-white font-bold flex items-center gap-2">
+                      <div className="w-5 h-5 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-[10px] text-slate-400">
                         {log.user?.charAt(0) || 'S'}
                       </div>
                       {log.user}
                     </td>
                     <td className="p-3">
                       <div className="flex items-center gap-3">
-                        <span className="text-gray-800 dark:text-slate-300 line-clamp-1 flex-1">{log.activity}</span>
+                        <span className="text-slate-600 dark:text-slate-300 line-clamp-1 flex-1">{log.activity}</span>
                         <button
                           onClick={() => setSelectedLogPayload(log.activity)}
-                          className="p-1 hover:bg-yellow-500/20 text-yellow-600 transition-colors opacity-0 group-hover:opacity-100"
+                          className="p-1 hover:bg-cighra-gold/20 text-cighra-gold transition-colors opacity-0 group-hover:opacity-100"
                         >
                           <Info className="w-4 h-4" />
                         </button>

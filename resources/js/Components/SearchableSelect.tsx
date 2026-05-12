@@ -92,13 +92,13 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
                     setIsOpen(false);
                     setSearchQuery('');
                   }}
-                  className={`px-4 py-3 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 dark:text-slate-900 hover:text-white cursor-pointer transition-colors flex flex-col border-b border-slate-200 dark:border-slate-600 last:border-none ${value.toString() === opt.id.toString() ? 'bg-cighra-primary/10 dark:bg-cighra-gold/10 border-l-4 border-l-olive' : ''}`}
+                  className={`px-4 py-3 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 cursor-pointer transition-colors flex flex-col border-b border-slate-200 dark:border-slate-600 last:border-none ${value.toString() === opt.id.toString() ? 'bg-cighra-primary/10 dark:bg-cighra-gold/10 border-l-4 border-l-olive' : ''}`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-bold font-mono text-xs tracking-wider uppercase">{opt.label}</span>
+                    <span className="font-bold font-mono text-xs tracking-wider uppercase text-slate-800 dark:text-slate-200">{opt.label}</span>
                     {value.toString() === opt.id.toString() && <Check size={14} className="text-cighra-primary dark:text-cighra-gold" />}
                   </div>
-                  <span className="text-[10px] opacity-70 uppercase tracking-tighter mt-0.5 font-mono">{opt.sublabel} | {opt.tag}</span>
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 uppercase tracking-tighter mt-0.5 font-mono">{opt.sublabel} | {opt.tag}</span>
                 </div>
               ))
             ) : (

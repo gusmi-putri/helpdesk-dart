@@ -289,7 +289,7 @@ const DashboardAdmin = (props: any) => {
   // MAIN RENDER WITH NESTED SIDEBAR LAYOUT
   // ==========================================
   return (
-    <div className="min-h-screen bg-cighra-light dark:bg-cighra-dark flex font-sans selection:bg-cighra-primary dark:selection:bg-cighra-gold dark:selection:text-slate-900 selection:text-gunmetal relative text-slate-800 dark:text-slate-200">
+    <div className="min-h-screen bg-slate-50 dark:bg-cighra-dark flex font-sans selection:bg-cighra-primary dark:selection:bg-cighra-gold dark:selection:text-slate-900 selection:text-gunmetal relative text-slate-800 dark:text-slate-200">
 
       {/* MOBILE OVERLAY */}
       {isMobileMenuOpen && (
@@ -299,7 +299,7 @@ const DashboardAdmin = (props: any) => {
         />
       )}
 
-      <Sidebar 
+      <Sidebar
         isMobileMenuOpen={isMobileMenuOpen}
         setIsMobileMenuOpen={setIsMobileMenuOpen}
         activeMenu={activeMenu}
@@ -316,7 +316,7 @@ const DashboardAdmin = (props: any) => {
       <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-paper.png')] opacity-[0.05] pointer-events-none"></div>
 
-        <Topbar 
+        <Topbar
           setIsMobileMenuOpen={setIsMobileMenuOpen}
           currentUser={currentUser}
         />
@@ -326,7 +326,7 @@ const DashboardAdmin = (props: any) => {
           <div className="max-w-[1400px] mx-auto">
             {activeMenu === 'ANALYTICS' && <AnalyticsSection dbCases={dbCases} />}
             {activeMenu === 'REPORTS' && (
-              <ReportsSection 
+              <ReportsSection
                 dbCases={dbCases}
                 reportStatusFilter={reportStatusFilter}
                 setReportStatusFilter={setReportStatusFilter}
@@ -336,7 +336,7 @@ const DashboardAdmin = (props: any) => {
               />
             )}
             {activeMenu === 'USERS' && (
-              <UsersTable 
+              <UsersTable
                 dbUsers={dbUsers}
                 handleAddUser={handleAddUser}
                 handleToggleUserStatus={handleToggleUserStatus}
@@ -346,7 +346,7 @@ const DashboardAdmin = (props: any) => {
               />
             )}
             {activeMenu === 'LOGS' && (
-              <LogsTable 
+              <LogsTable
                 dbLogs={dbLogs}
                 logFilter={logFilter}
                 setLogFilter={setLogFilter}
@@ -354,7 +354,7 @@ const DashboardAdmin = (props: any) => {
               />
             )}
             {activeMenu === 'UNITS' && (
-              <UnitsTable 
+              <UnitsTable
                 dbUnits={dbUnits}
                 unitSearch={unitSearch}
                 setUnitSearch={setUnitSearch}
@@ -373,94 +373,95 @@ const DashboardAdmin = (props: any) => {
               />
             )}
             {activeMenu === 'APPROVAL' && (
-              <ApprovalTable 
+              <ApprovalTable
                 dbUsers={dbUsers}
                 handleApproveUser={handleApproveUser}
                 handleRejectUser={handleRejectUser}
               />
             )}
             {activeMenu === 'FEEDBACK' && <FeedbackTable dbFeedbacks={dbFeedbacks} />}
-            {/* MODAL COMPONENTS */}
-            <UnitHistoryModal 
-              isOpen={isUnitHistoryModalOpen}
-              onClose={() => setIsUnitHistoryModalOpen(false)}
-              unit={selectedUnitForHistory}
-              dbCases={dbCases}
-            />
-            
-            <RecapModal 
-              isOpen={isRecapModalOpen}
-              onClose={() => setIsRecapModalOpen(false)}
-              recapPeriod={recapPeriod}
-              setRecapPeriod={setRecapPeriod}
-              recapStartDate={recapStartDate}
-              setRecapStartDate={setRecapStartDate}
-              recapEndDate={recapEndDate}
-              setRecapEndDate={setRecapEndDate}
-              recapYear={recapYear}
-              setRecapYear={setRecapYear}
-              onExport={handleExportRecap}
-            />
-
-            <UserDetailModal 
-              isOpen={isDetailModalOpen}
-              onClose={() => setIsDetailModalOpen(false)}
-              user={selectedUser}
-            />
-
-            <UserDeleteModal 
-              isOpen={isDeleteModalOpen}
-              onClose={() => setIsDeleteModalOpen(false)}
-              onConfirm={confirmDeleteUser}
-              user={userToDelete}
-            />
-
-            <UserEditModal 
-              isOpen={isEditModalOpen}
-              onClose={() => setIsEditModalOpen(false)}
-              onSubmit={handleSaveUser}
-              data={data}
-              setData={setData}
-              errors={errors}
-              processing={processing}
-              isAddMode={isAddMode}
-              dbRoles={dbRoles}
-            />
-
-            <UnitModal 
-              isOpen={isUnitModalOpen}
-              onClose={() => setIsUnitModalOpen(false)}
-              onSubmit={handleUnitSubmit}
-              data={unitForm.data}
-              setData={unitForm.setData}
-              errors={unitForm.errors}
-              processing={unitForm.processing}
-              isAddMode={isUnitAddMode}
-              editingUnit={editingUnit}
-            />
-
-            <UnitDeleteModal 
-              isOpen={isUnitDeleteModalOpen}
-              onClose={() => setIsUnitDeleteModalOpen(false)}
-              onConfirm={handleConfirmDeleteUnit}
-              unit={unitToDelete}
-            />
-
-            <RejectConfirmModal 
-              isOpen={isRejectModalOpen}
-              onClose={() => { setIsRejectModalOpen(false); setUserToReject(null); }}
-              onConfirm={confirmRejectUser}
-              userName={userToReject?.name || ''}
-            />
-
-            <LogoutConfirmModal 
-              isOpen={isLogoutModalOpen}
-              onClose={() => setIsLogoutModalOpen(false)}
-              onConfirm={confirmLogout}
-            />
           </div>
         </div>
       </main>
+
+      {/* MODAL COMPONENTS */}
+      <UnitHistoryModal
+        isOpen={isUnitHistoryModalOpen}
+        onClose={() => setIsUnitHistoryModalOpen(false)}
+        unit={selectedUnitForHistory}
+        dbCases={dbCases}
+      />
+
+      <RecapModal
+        isOpen={isRecapModalOpen}
+        onClose={() => setIsRecapModalOpen(false)}
+        recapPeriod={recapPeriod}
+        setRecapPeriod={setRecapPeriod}
+        recapStartDate={recapStartDate}
+        setRecapStartDate={setRecapStartDate}
+        recapEndDate={recapEndDate}
+        setRecapEndDate={setRecapEndDate}
+        recapYear={recapYear}
+        setRecapYear={setRecapYear}
+        onExport={handleExportRecap}
+      />
+
+      <UserDetailModal
+        isOpen={isDetailModalOpen}
+        onClose={() => setIsDetailModalOpen(false)}
+        user={selectedUser}
+      />
+
+      <UserDeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={confirmDeleteUser}
+        user={userToDelete}
+      />
+
+      <UserEditModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onSubmit={handleSaveUser}
+        data={data}
+        setData={setData}
+        errors={errors}
+        processing={processing}
+        isAddMode={isAddMode}
+        dbRoles={dbRoles}
+      />
+
+      <UnitModal
+        isOpen={isUnitModalOpen}
+        onClose={() => setIsUnitModalOpen(false)}
+        onSubmit={handleUnitSubmit}
+        data={unitForm.data}
+        setData={unitForm.setData}
+        errors={unitForm.errors}
+        processing={unitForm.processing}
+        isAddMode={isUnitAddMode}
+        editingUnit={editingUnit}
+      />
+
+      <UnitDeleteModal
+        isOpen={isUnitDeleteModalOpen}
+        onClose={() => setIsUnitDeleteModalOpen(false)}
+        onConfirm={handleConfirmDeleteUnit}
+        unit={unitToDelete}
+      />
+
+      <RejectConfirmModal
+        isOpen={isRejectModalOpen}
+        onClose={() => { setIsRejectModalOpen(false); setUserToReject(null); }}
+        onConfirm={confirmRejectUser}
+        userName={userToReject?.name || ''}
+      />
+
+      <LogoutConfirmModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={confirmLogout}
+      />
     </div>
   );
 };

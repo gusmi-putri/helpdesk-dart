@@ -72,17 +72,17 @@ const ReportHistory: React.FC<ReportHistoryProps> = ({
             <div
               key={index}
               onClick={() => onSelectItem(item.db_id)}
-              className="glass-panel p-5 border-l-4 border-l-soft-gunmetal/20 dark:border-l-soft-sand/10 hover:border-l-olive transition-all cursor-pointer group hover:bg-white dark:hover:bg-black/40 bg-white/60 dark:bg-cighra-darkcard/80 shadow-md border border-slate-200 dark:border-slate-600"
+              className="glass-panel p-5 border-l-4 border-l-slate-200 dark:border-l-soft-sand/10 hover:border-l-cighra-primary dark:hover:border-l-cighra-gold transition-all cursor-pointer group hover:bg-slate-50 dark:hover:bg-black/40 bg-white dark:bg-cighra-darkcard/80 shadow-md border border-slate-200 dark:border-slate-600"
             >
               <div className="flex justify-between items-start mb-3">
                 <div className="flex items-center gap-3">
-                  <span className="text-[10px] font-mono text-slate-500 dark:text-slate-300 bg-cighra-light dark:bg-cighra-darkcard/80 px-2 py-1 tracking-widest">{item.caseId}</span>
-                  <span className="text-xs font-mono text-slate-500 dark:text-slate-400 tracking-tighter uppercase">{item.kerusakan.tanggal}</span>
+                  <span className="text-[10px] font-mono text-slate-500 dark:text-slate-300 bg-slate-100 dark:bg-cighra-darkcard/80 px-2 py-1 tracking-widest">{item.caseId}</span>
+                  <span className="text-xs font-mono text-slate-400 dark:text-slate-400 tracking-tighter uppercase">{item.kerusakan.tanggal}</span>
                 </div>
-                <div className={`px-3 py-1 text-[9px] font-tactical font-bold tracking-[0.2em] flex items-center gap-2 border uppercase
-                  ${item.status === 'SELESAI' ? 'bg-green-900/20 text-green-500 border-green-800' :
-                    item.status === 'PROSES' ? 'bg-blue-900/20 text-blue-500 border-blue-800' :
-                      'bg-yellow-900/20 text-yellow-500 border-yellow-800'}
+                <div className={`px-3 py-1 text-[9px] font-tactical font-bold tracking-[0.2em] flex items-center gap-2 border uppercase shadow-sm
+                  ${item.status === 'SELESAI' ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-500 border-green-200 dark:border-green-800' :
+                    item.status === 'PROSES' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-500 border-blue-200 dark:border-blue-800' :
+                      'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-500 border-yellow-200 dark:border-yellow-800'}
                 `}>
                   {item.status === 'SELESAI' ? <CheckCircle2 size={10} /> : <Clock size={10} />}
                   {item.status}

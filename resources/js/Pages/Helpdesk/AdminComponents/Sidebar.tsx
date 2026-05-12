@@ -95,7 +95,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             </button>
 
             {isReportsExpanded && (
-              <div className="bg-cighra-light dark:bg-cighra-darkcard/20 py-2 border-l-4 border-cighra-primary dark:border-cighra-gold/20">
+              <div className="bg-slate-50 dark:bg-cighra-darkcard/20 py-2 border-l-4 border-cighra-primary dark:border-cighra-gold/20">
                 <button
                   onClick={() => { handleMenuClick('REPORTS'); setActiveSubReport('KERUSAKAN'); }}
                   className={`w-full text-left pl-14 py-2 text-xs font-tactical tracking-widest transition-colors ${activeMenu === 'REPORTS' && activeSubReport === 'KERUSAKAN' ? 'text-cighra-primary dark:text-cighra-gold font-bold' : 'text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:text-cighra-gold'}`}

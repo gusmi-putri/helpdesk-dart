@@ -27,13 +27,13 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
         </div>
       </div>
 
-      <div className="bg-white/60 dark:bg-cighra-darkcard/70 border border-slate-300 dark:border-slate-600 rounded-sm overflow-hidden shadow-xl">
-        <div className="p-4 border-b border-slate-200 dark:border-slate-600 bg-gunmetal flex items-center justify-between text-white">
+      <div className="bg-white dark:bg-cighra-darkcard/70 border border-slate-200 dark:border-slate-600 rounded-sm overflow-hidden shadow-xl">
+        <div className="p-4 border-b border-slate-200 dark:border-slate-600 bg-slate-800 flex items-center justify-between text-white">
           <h3 className="font-tactical tracking-widest text-sm flex items-center gap-2"><AlertTriangle className="w-4 h-4 text-yellow-500" /> DAFTAR PENANGANAN KERUSAKAN</h3>
         </div>
         <div className="overflow-x-auto p-2">
           <table className="w-full text-left font-sans">
-            <thead className="bg-gunmetal text-slate-300/60 border-b border-slate-600 font-tactical tracking-widest text-xs">
+            <thead className="bg-slate-800 text-slate-100 border-b border-slate-700 font-tactical tracking-widest text-xs">
               <tr>
                 <th className="p-4">ID TIKET</th>
                 <th className="p-4">PELAPOR & WAKTU</th>
@@ -43,7 +43,7 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
                 <th className="p-4 text-center">TINDAKAN</th>
               </tr>
             </thead>
-            <tbody className="divide-y border-slate-200 dark:border-slate-600">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-600 bg-white dark:bg-transparent">
               {reports.length === 0 && (
                 <tr>
                   <td colSpan={6} className="p-8 text-center text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest">
@@ -52,7 +52,7 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
                 </tr>
               )}
               {reports.map((report: any) => (
-                <tr key={report.db_id} className="hover:bg-gray-200 dark:hover:bg-slate-700/30 transition-colors text-slate-800 dark:text-white">
+                <tr key={report.db_id} className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors text-slate-800 dark:text-white">
                   <td className="p-4">
                     <button
                       onClick={() => onSelectReport(report.db_id)}
@@ -63,33 +63,33 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
                   </td>
                   <td className="p-4">
                     <div className="font-bold text-sm">{report.kerusakan.pelapor}</div>
-                    <div className="text-slate-600 dark:text-slate-300 text-xs font-mono mt-1 flex items-center gap-1">
+                    <div className="text-slate-500 dark:text-slate-300 text-xs font-mono mt-1 flex items-center gap-1">
                       <Clock className="w-3 h-3" /> {report.kerusakan.tanggal}
                     </div>
                   </td>
                   <td className="p-4">
                     <div className="font-bold mb-1">{report.unit?.nama_dart || report.kerusakan.barangRusak || 'UNIT TIDAK DIKENAL'}</div>
-                    <div className="text-slate-500 dark:text-slate-300 text-[10px] font-mono uppercase">LOK: {report.kerusakan.lokasi}</div>
+                    <div className="text-slate-400 dark:text-slate-300 text-[10px] font-mono uppercase">LOK: {report.kerusakan.lokasi}</div>
                   </td>
                   <td className="p-4">
                     <div className="flex flex-col gap-1">
-                      <span className={`text-[9px] font-bold px-2 py-0.5 w-fit border ${report.kerusakan.urgensi === 'Sangat Mendesak' ? 'bg-red-900/20 text-red-500 border-red-800' :
-                        'bg-blue-900/20 text-blue-500 border-blue-800'
+                      <span className={`text-[9px] font-bold px-2 py-0.5 w-fit border shadow-sm ${report.kerusakan.urgensi === 'Sangat Mendesak' ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-500 border-red-200 dark:border-red-800' :
+                        'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-500 border-blue-200 dark:border-blue-800'
                         }`}>
                         {report.kerusakan.urgensi?.toUpperCase() || 'NORMAL'}
                       </span>
-                      <span className="text-xs font-bold text-gunmetal dark:text-slate-300">
+                      <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                         {report.kerusakan.tingkatKerusakan || report.kerusakan.barangRusak}
                       </span>
                     </div>
                   </td>
                   <td className="p-4">
                     {report.status === 'PENDING' ? (
-                      <span className="bg-cighra-primary/10 dark:bg-cighra-gold/10 text-cighra-primary dark:text-cighra-gold border border-cighra-primary dark:border-cighra-gold/30 text-[10px] px-2 py-1 font-mono tracking-widest flex items-center gap-1 w-fit shadow-inner">
-                        <span className="w-1.5 h-1.5 rounded-full bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 animate-pulse block"></span> MENUNGGU TEKNISI
+                      <span className="bg-yellow-50 dark:bg-cighra-gold/10 text-yellow-700 dark:text-cighra-gold border border-yellow-200 dark:border-cighra-gold/30 text-[10px] px-2 py-1 font-mono tracking-widest flex items-center gap-1 w-fit shadow-sm">
+                        <span className="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse block"></span> MENUNGGU TEKNISI
                       </span>
                     ) : (
-                      <span className="bg-blue-900/10 text-blue-500 border border-blue-800/30 text-[10px] font-bold px-2 py-1 font-mono tracking-widest w-fit flex items-center gap-1">
+                      <span className="bg-blue-50 dark:bg-blue-900/10 text-blue-600 dark:text-blue-500 border border-blue-200 dark:border-blue-800/30 text-[10px] font-bold px-2 py-1 font-mono tracking-widest w-fit flex items-center gap-1 shadow-sm">
                         <Activity className="w-3 h-3" /> DALAM PERBAIKAN
                       </span>
                     )}
@@ -107,7 +107,7 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
                           {report.kerusakan.fileBukti && report.kerusakan.fileBukti.length > 0 && (
                             <button
                               onClick={() => onViewProof(report.kerusakan.fileBukti)}
-                              className="w-full bg-white dark:bg-cighra-darkcard/80 hover:bg-cighra-light dark:hover:bg-black text-slate-600 dark:text-slate-300 px-3 py-1.5 text-[10px] font-mono font-bold tracking-widest transition-colors flex items-center justify-center gap-2 border border-slate-300 dark:border-slate-600"
+                              className="w-full bg-white dark:bg-cighra-darkcard/80 hover:bg-slate-50 dark:hover:bg-black text-slate-600 dark:text-slate-300 px-3 py-1.5 text-[10px] font-mono font-bold tracking-widest transition-colors flex items-center justify-center gap-2 border border-slate-300 dark:border-slate-600"
                             >
                               <Eye className="w-3 h-3 text-cighra-primary dark:text-cighra-gold" /> LIHAT BUKTI
                             </button>
@@ -115,9 +115,9 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
                         </div>
                       </div>
                     ) : (
-                      <div className="text-slate-500 dark:text-slate-300 text-[10px] font-mono border border-slate-200 dark:border-slate-600 p-2 bg-cighra-light dark:bg-cighra-darkcard/80">
-                        [ TEKNISI DITUGASKAN ] <br />
-                        <span className="text-blue-600 dark:text-blue-400 font-bold block mt-1 text-xs uppercase">
+                      <div className="text-slate-500 dark:text-slate-300 text-[10px] font-mono border border-slate-200 dark:border-slate-600 p-2 bg-slate-50 dark:bg-cighra-darkcard/80 rounded-sm">
+                        <span className="text-[9px] text-slate-400 block mb-1">TEKNISI DITUGASKAN:</span>
+                        <span className="text-blue-600 dark:text-blue-400 font-bold block text-xs uppercase">
                           {report.perbaikan.teknisi}
                         </span>
                       </div>
