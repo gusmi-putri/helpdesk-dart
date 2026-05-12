@@ -8,8 +8,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        gunmetal: '#1E293B', // Dark mode background
-        sand: '#F5F0E6',     // Light mode background
+        gunmetal: '#0A1229', // Dark mode background (Deep Navy)
+        sand: '#EBF5FF',     // Light mode background (Sea Blue)
         olive: '#68a309ff',    // Primary action color
         khaki: '#FDE68A',    // Highlights
         targetred: '#6D1020', // New corporate red

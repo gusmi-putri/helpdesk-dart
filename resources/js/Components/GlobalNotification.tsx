@@ -19,9 +19,9 @@ const GlobalNotification = () => {
           <div className={`
             flex items-center gap-4 p-4 border-l-4 shadow-2xl min-w-[320px] max-w-md backdrop-blur-md
             ${n.type === 'success' 
-              ? 'bg-olive/90 border-gunmetal text-white' 
+              ? 'bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900/90 border-gunmetal text-white' 
               : n.type === 'error'
-              ? 'bg-targetred/90 border-white text-white'
+              ? 'bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900/90 border-white text-white'
               : 'bg-blue-600/90 border-white text-white'}
           `}>
             <div className="bg-white/20 p-2 rounded-sm shrink-0">

@@ -90,7 +90,7 @@ const DashboardStaf = (props: any) => {
   const completedReports = dbCases.filter((r: any) => r.status === 'SELESAI');
 
   return (
-    <div className="min-h-screen bg-sand dark:bg-gunmetal flex font-sans selection:bg-olive selection:text-sand relative text-gunmetal dark:text-soft-sand">
+    <div className="min-h-screen bg-cighra-light dark:bg-cighra-dark flex font-sans selection:bg-cighra-primary dark:selection:bg-cighra-gold dark:selection:text-slate-900 selection:text-white relative text-gunmetal dark:text-slate-300">
       
       <StafSidebar 
         isMobileMenuOpen={isMobileMenuOpen}
@@ -113,14 +113,14 @@ const DashboardStaf = (props: any) => {
         {/* Scrollable Content Container */}
         <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar z-10">
           <div className="max-w-[1400px] mx-auto">
-            <div className="mb-6 flex justify-between items-end border-b border-soft-gunmetal/10 dark:border-soft-sand/5 pb-4">
+            <div className="mb-6 flex justify-between items-end border-b border-slate-200 dark:border-slate-600 pb-4">
               <div>
-                <h2 className="text-2xl font-tactical font-bold text-gunmetal dark:text-white tracking-widest uppercase">
+                <h2 className="text-2xl font-tactical font-bold text-slate-800 dark:text-white tracking-widest uppercase">
                   {activeMenu === 'MASUK' ? 'MODUL PENUGASAN TEKNISI' : 
                    activeMenu === 'SELESAI' ? 'ARSIP DOKUMEN PENYELESAIAN' : 
                    'DATABASE INVENTARIS PERANGKAT'}
                 </h2>
-                <p className="text-xs font-mono text-soft-gunmetal/60 dark:text-soft-sand/40 mt-1 uppercase tracking-widest">
+                <p className="text-xs font-mono text-slate-500 dark:text-slate-300 mt-1 uppercase tracking-widest">
                    {activeMenu === 'INVENTARIS' ? 'STATUS KESIAPAN ALUTSISTA DART.' : 'Sistem Manajemen Pelaporan Kerusakan Dart.'}
                 </p>
               </div>
@@ -128,7 +128,7 @@ const DashboardStaf = (props: any) => {
               {activeMenu !== 'INVENTARIS' && (
                 <button 
                   onClick={() => setIsRecapModalOpen(true)}
-                  className="bg-targetred text-sand px-5 py-2 font-tactical font-bold text-xs tracking-widest hover:bg-deep-red transition-all flex items-center gap-2 shadow-lg"
+                  className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white px-5 py-2 font-tactical font-bold text-xs tracking-widest hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 transition-all flex items-center gap-2 shadow-lg"
                 >
                   <FileArchive className="w-4 h-4" /> CETAK REKAPITULASI
                 </button>

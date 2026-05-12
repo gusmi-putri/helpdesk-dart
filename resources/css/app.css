@@ -5,12 +5,13 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-gunmetal: #1E293B;
-  --color-sand: #F5F0E6;
-  --color-olive: #68a309ff;
-  --color-khaki: #FDE68A;
-  --color-targetred: #e12323ff;
-  --color-camogreen: #0c8237ff;
+  /* === CIGHRA APTA NIRBHAYA PALETTE === */
+  --color-cighra-primary: #1E3166;
+  --color-cighra-gold: #E6C21F;
+  --color-cighra-accent: #E55722;
+  --color-cighra-light: #B9DEFF;
+  --color-cighra-dark: #121E3B; /* Lighter, more comfortable Navy Background */
+  --color-cighra-darkcard: #1D2D50; /* Lighter blue for columns/cards than the background */
 
   --font-sans: "Inter", sans-serif;
   --font-tactical: "Rajdhani", sans-serif;
@@ -19,25 +20,32 @@
 
 @layer base {
   body {
-    @apply bg-sand text-gunmetal dark:bg-gunmetal dark:text-gray-200 font-sans cursor-crosshair selection:bg-camogreen selection:text-white;
+    @apply bg-cighra-light text-slate-800 dark:bg-cighra-dark dark:text-slate-100 font-sans selection:bg-cighra-gold/30 selection:text-cighra-primary dark:selection:text-white;
   }
 }
 
 @layer utilities {
-  .cursor-crosshair {
-    cursor: crosshair;
-  }
-
   .glass-panel {
-    @apply bg-white/60 dark:bg-black/40 backdrop-blur-md border border-gray-300 dark:border-gray-700/50 shadow-xl;
+    @apply bg-white/95 dark:bg-cighra-darkcard/95 backdrop-blur-xl border border-slate-200 dark:border-white/10 shadow-lg;
   }
 
-  .tactical-border {
-    @apply border-2 border-olive hover:border-camogreen transition-colors duration-300;
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-slate-300 dark:bg-slate-700 rounded-full;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-cighra-primary dark:bg-cighra-gold;
   }
 }
 
-/* Typewriter animation */
 .typewriter-text {
   display: inline-block;
   overflow: hidden;
@@ -63,6 +71,12 @@
   }
 
   50% {
-    border-color: #A3E635; /* new olive color */
+    border-color: #E6C21F;
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
   }
 }

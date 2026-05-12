@@ -26,13 +26,13 @@ const TracerBullet = ({ delay, top, duration, repeatDelay, angle = 0, origin = '
 
 const Hero = () => {
   return (
-    <section id="beranda" className="relative h-screen flex items-center justify-center overflow-hidden bg-sand dark:bg-gunmetal">
+    <section id="beranda" className="relative h-screen flex items-center justify-center overflow-hidden bg-cighra-light dark:bg-cighra-dark">
       {/* Background Overlay */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-olive/40 via-gunmetal to-gunmetal z-10 pointer-events-none"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-cighra-gold/20 via-sky-200/40 to-cighra-light z-10 pointer-events-none dark:from-cighra-gold/5 dark:via-cighra-dark/95 dark:to-cighra-dark"></div>
 
         <div
-          className="absolute inset-0 bg-cover bg-center grayscale mix-blend-overlay opacity-30 z-10 pointer-events-none scale-110"
+          className="absolute inset-0 bg-cover bg-center grayscale mix-blend-overlay opacity-50 z-10 pointer-events-none scale-110"
           style={{ backgroundImage: `url(${bgHero})` }}
         ></div>
 
@@ -56,25 +56,25 @@ const Hero = () => {
           transition={{ duration: 0.8 }}
           className="mb-6 flex justify-center"
         >
-          <Crosshair className="text-targetred w-16 h-16 animate-pulse" />
+          <Crosshair className="text-cighra-gold w-16 h-16 animate-pulse" />
         </motion.div>
 
         <motion.h1
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-5xl md:text-7xl font-stencil font-bold text-gunmetal dark:text-white mb-4 tracking-wider uppercase"
+          className="text-5xl md:text-7xl font-stencil font-bold text-slate-800 dark:text-white mb-4 tracking-wider uppercase"
         >
-          SISTEM PELAPORAN <br /> <span className="text-targetred">HELPDESK DART</span>
+          SISTEM PELAPORAN <br /> <span className="text-cighra-gold">HELPDESK DART</span>
         </motion.h1>
 
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.8 }}
-          className="text-lg md:text-xl text-soft-gunmetal/80 dark:text-soft-sand/70 font-tactical mb-8 max-w-2xl mx-auto border-l-4 border-olive pl-4 text-left"
+          className="text-lg md:text-xl text-slate-600 dark:text-slate-300 font-tactical mb-8 max-w-2xl mx-auto border-l-4 border-cighra-gold pl-4 text-left"
         >
-          <span className="typewriter-text text-camogreen font-bold">BENGPUSKOMLEKAD</span>
+          <span className="typewriter-text text-cighra-gold font-bold">BENGPUSKOMLEKAD</span>
           <br />
           Pusat Layanan Perbaikan DART: Penanganan Cepat untuk Jamin Kesiapan, Keamanan, dan Kelancaran Latihan Menembak.
         </motion.p>
@@ -85,17 +85,17 @@ const Hero = () => {
           transition={{ duration: 0.5, delay: 1.2 }}
           className="flex flex-col sm:flex-row justify-center gap-4"
         >
-          <Link href="/login" className="px-8 py-4 bg-targetred hover:bg-deep-red text-sand font-tactical font-bold text-lg tracking-widest uppercase transition-all tactical-border border-targetred shadow-lg hover:shadow-[0_0_20px_rgba(109,16,32,0.4)] text-center">
+          <Link href="/login" className="px-8 py-4 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white font-tactical font-bold text-lg tracking-widest uppercase transition-all tactical-border border-cighra-gold shadow-lg hover:shadow-[0_0_20px_rgba(30,49,102,0.4)] dark:hover:shadow-[0_0_20px_rgba(230,194,31,0.4)] text-center">
             Buat Laporan Baru
           </Link>
-          <a href="#PANDUAN" className="px-8 py-4 bg-transparent border-2 border-olive hover:bg-olive/10 text-gunmetal dark:text-sand font-tactical font-bold text-lg tracking-widest uppercase transition-all text-center">
+          <a href="#PANDUAN" className="px-8 py-4 bg-transparent border-2 border-cighra-gold hover:bg-cighra-primary dark:hover:bg-cighra-gold hover:text-white dark:hover:text-slate-900 text-slate-800 dark:text-white font-tactical font-bold text-lg tracking-widest uppercase transition-all text-center">
             Lihat Panduan
           </a>
         </motion.div>
       </div>
 
       {/* Grid Lines */}
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-20" style={{ backgroundImage: 'linear-gradient(#4b5320 1px, transparent 1px), linear-gradient(90deg, #4b5320 1px, transparent 1px)', backgroundSize: '50px 50px' }}></div>
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-20" style={{ backgroundImage: 'linear-gradient(#10B981 1px, transparent 1px), linear-gradient(90deg, #10B981 1px, transparent 1px)', backgroundSize: '50px 50px' }}></div>
     </section>
   );
 };
