@@ -9,8 +9,10 @@ import PelaporTopbar from './PelaporComponents/PelaporTopbar';
 import ReportForm from './PelaporComponents/ReportForm';
 import ReportHistory from './PelaporComponents/ReportHistory';
 import PelaporReportDetailModal from './PelaporComponents/PelaporReportDetailModal';
+import PostReportWizard from './PelaporComponents/PostReportWizard';
+import VideoBank from './PelaporComponents/VideoBank';
 
-type MenuTab = 'FORM' | 'HISTORY';
+type MenuTab = 'FORM' | 'HISTORY' | 'WIZARD' | 'VIDEO';
 
 const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser = null }: any) => {
   const [activeMenu, setActiveMenu] = useState<MenuTab>('FORM');
@@ -18,6 +20,7 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
   const [selectedItemId, setSelectedItemId] = useState<number | string | null>(null);
   const [filterTime, setFilterTime] = useState<'ALL' | 'TODAY' | 'WEEK'>('ALL');
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [lastReportedData, setLastReportedData] = useState<any>(null);
 
   const addNotification = useStore(state => state.addNotification);
   const currentUser = useStore(state => state.currentUser);
@@ -87,9 +90,15 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
     e.preventDefault();
     post('/reports', {
       onSuccess: () => {
+        // Simpan data yang baru saja dikirim untuk diberikan ke AI
+        setLastReportedData({
+          unit_id: data.unit_id,
+          deskripsi: data.deskripsi,
+          tingkat_kerusakan: data.tingkat_kerusakan
+        });
         reset();
         addNotification('Laporan Anda telah berhasil terkirim ke pusat komando.');
-        setActiveMenu('HISTORY');
+        setActiveMenu('WIZARD');
       },
       onError: () => {
         addNotification('Gagal mengirim laporan. Silakan periksa kembali koneksi Anda.', 'error');
@@ -118,7 +127,7 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
       />
 
       {/* MAIN CONTENT AREA */}
-      <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
+      <main className="flex-1 relative overflow-y-auto custom-scrollbar bg-slate-50 dark:bg-cighra-dark">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-paper.png')] opacity-[0.05] pointer-events-none"></div>
 
         <PelaporTopbar
@@ -127,7 +136,14 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
         />
 
         <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
-          {activeMenu === 'FORM' ? (
+          {activeMenu === 'WIZARD' && lastReportedData && (
+            <PostReportWizard 
+              reportData={lastReportedData} 
+              onClose={() => setActiveMenu('HISTORY')} 
+            />
+          )}
+
+          {activeMenu === 'FORM' && (
             <ReportForm
               data={data}
               setData={setData}
@@ -141,13 +157,19 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
               handleFileSelect={handleFileSelect}
               removeFile={removeFile}
             />
-          ) : (
+          )}
+          
+          {activeMenu === 'HISTORY' && (
             <ReportHistory
               history={filteredHistory}
               filterTime={filterTime}
               setFilterTime={setFilterTime}
               onSelectItem={setSelectedItemId}
             />
+          )}
+
+          {activeMenu === 'VIDEO' && (
+            <VideoBank />
           )}
         </div>
       </main>

@@ -4,8 +4,8 @@ import { Send, History, LogOut } from 'lucide-react';
 interface PelaporSidebarProps {
   isMobileMenuOpen: boolean;
   setIsMobileMenuOpen: (open: boolean) => void;
-  activeMenu: 'FORM' | 'HISTORY';
-  setActiveMenu: (menu: 'FORM' | 'HISTORY') => void;
+  activeMenu: 'FORM' | 'HISTORY' | 'WIZARD' | 'VIDEO';
+  setActiveMenu: (menu: 'FORM' | 'HISTORY' | 'WIZARD' | 'VIDEO') => void;
   handleLogout: () => void;
 }
 
@@ -37,14 +37,21 @@ const PelaporSidebar: React.FC<PelaporSidebarProps> = ({
           <Send size={18} /> BUAT LAPORAN
         </button>
 
-        <button
-          onClick={() => { setActiveMenu('HISTORY'); setIsMobileMenuOpen(false); }}
-          className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4
-            ${activeMenu === 'HISTORY' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-500 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-cighra-darkcard/50'}
-          `}
-        >
-          <History size={18} /> RIWAYAT LAPORAN
-        </button>
+          <button
+            onClick={() => { setActiveMenu('HISTORY'); setIsMobileMenuOpen(false); }}
+            className={`w-full flex items-center gap-3 px-6 py-4 font-tactical font-bold tracking-widest uppercase transition-all duration-300 ${activeMenu === 'HISTORY' ? 'bg-white dark:bg-cighra-darkcard text-cighra-primary dark:text-cighra-gold border-r-4 border-cighra-primary dark:border-cighra-gold shadow-[inset_4px_0_0_0_rgba(20,83,163,0.1)]' : 'text-slate-500 dark:text-slate-400 hover:bg-white/50 dark:hover:bg-cighra-darkcard/50 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
+          >
+            <History size={18} className={activeMenu === 'HISTORY' ? 'text-cighra-primary dark:text-cighra-gold' : ''} />
+            RIWAYAT LAPORAN
+          </button>
+          
+          <button
+            onClick={() => { setActiveMenu('VIDEO'); setIsMobileMenuOpen(false); }}
+            className={`w-full flex items-center gap-3 px-6 py-4 font-tactical font-bold tracking-widest uppercase transition-all duration-300 ${activeMenu === 'VIDEO' ? 'bg-white dark:bg-cighra-darkcard text-cighra-primary dark:text-cighra-gold border-r-4 border-cighra-primary dark:border-cighra-gold shadow-[inset_4px_0_0_0_rgba(20,83,163,0.1)]' : 'text-slate-500 dark:text-slate-400 hover:bg-white/50 dark:hover:bg-cighra-darkcard/50 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
+          >
+            <History size={18} className={activeMenu === 'VIDEO' ? 'text-cighra-primary dark:text-cighra-gold' : ''} />
+            BANK VIDEO
+          </button>
       </nav>
 
       <div className="p-4 border-t border-slate-200 dark:border-slate-600 bg-cighra-light dark:bg-cighra-dark/60">
