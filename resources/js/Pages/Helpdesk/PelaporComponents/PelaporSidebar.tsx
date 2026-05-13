@@ -1,5 +1,5 @@
 import React from 'react';
-import { Send, History, LogOut } from 'lucide-react';
+import { Send, History, LogOut, Video } from 'lucide-react';
 
 interface PelaporSidebarProps {
   isMobileMenuOpen: boolean;
@@ -49,7 +49,7 @@ const PelaporSidebar: React.FC<PelaporSidebarProps> = ({
             onClick={() => { setActiveMenu('VIDEO'); setIsMobileMenuOpen(false); }}
             className={`w-full flex items-center gap-3 px-6 py-4 font-tactical font-bold tracking-widest uppercase transition-all duration-300 ${activeMenu === 'VIDEO' ? 'bg-white dark:bg-cighra-darkcard text-cighra-primary dark:text-cighra-gold border-r-4 border-cighra-primary dark:border-cighra-gold shadow-[inset_4px_0_0_0_rgba(20,83,163,0.1)]' : 'text-slate-500 dark:text-slate-400 hover:bg-white/50 dark:hover:bg-cighra-darkcard/50 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
           >
-            <History size={18} className={activeMenu === 'VIDEO' ? 'text-cighra-primary dark:text-cighra-gold' : ''} />
+            <Video size={18} className={activeMenu === 'VIDEO' ? 'text-cighra-primary dark:text-cighra-gold' : ''} />
             BANK VIDEO
           </button>
       </nav>

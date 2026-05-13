@@ -23,43 +23,32 @@ const VideoBank: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Placeholder Video 1 */}
-        <motion.div whileHover={{ y: -5 }} className="glass-panel border border-slate-200 dark:border-slate-600 bg-white dark:bg-cighra-darkcard/80 rounded-sm overflow-hidden group cursor-pointer shadow-lg hover:shadow-olive/20 transition-all">
+        <motion.a href="https://drive.google.com/drive/folders/1T8eP4AD1AEC5Z2Pl06SsPo_fRkkVbeRB" target="_blank" rel="noopener noreferrer" whileHover={{ y: -5 }} className="glass-panel border border-slate-200 dark:border-slate-600 bg-white dark:bg-cighra-darkcard/80 rounded-sm overflow-hidden group cursor-pointer shadow-lg hover:shadow-olive/20 transition-all block">
           <div className="aspect-video bg-slate-900 relative flex items-center justify-center overflow-hidden">
             <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')] bg-cover bg-center opacity-40 group-hover:opacity-60 transition-opacity mix-blend-overlay"></div>
             <PlaySquare className="w-16 h-16 text-white/50 group-hover:text-cighra-gold transition-colors z-10" />
-            <div className="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] px-2 py-1 font-mono rounded-sm">03:45</div>
+            <div className="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] px-2 py-1 font-mono rounded-sm">G-DRIVE</div>
           </div>
           <div className="p-5 border-t-2 border-transparent group-hover:border-cighra-primary transition-colors">
-            <h4 className="font-tactical font-bold text-lg text-slate-800 dark:text-white uppercase leading-tight mb-2">Pengecekan Kabel Utama & Sensor</h4>
-            <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">Langkah awal memastikan konektivitas antara target dan terminal command center.</p>
+            <h4 className="font-tactical font-bold text-lg text-slate-800 dark:text-white uppercase leading-tight mb-2">Video Instalasi</h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">Buka video panduan instalasi melalui Google Drive.</p>
           </div>
-        </motion.div>
+        </motion.a>
 
         {/* Placeholder Video 2 */}
-        <motion.div whileHover={{ y: -5 }} className="glass-panel border border-slate-200 dark:border-slate-600 bg-white dark:bg-cighra-darkcard/80 rounded-sm overflow-hidden group cursor-pointer shadow-lg hover:shadow-olive/20 transition-all">
+        <motion.a href="https://drive.google.com/drive/folders/1z0OOdjWQnFCHk3ogpADNC53sJ1MfJbx2" target="_blank" rel="noopener noreferrer" whileHover={{ y: -5 }} className="glass-panel border border-slate-200 dark:border-slate-600 bg-white dark:bg-cighra-darkcard/80 rounded-sm overflow-hidden group cursor-pointer shadow-lg hover:shadow-olive/20 transition-all block">
           <div className="aspect-video bg-slate-900 relative flex items-center justify-center overflow-hidden">
             <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1581092160562-40aa08e78837?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')] bg-cover bg-center opacity-40 group-hover:opacity-60 transition-opacity mix-blend-overlay"></div>
             <PlaySquare className="w-16 h-16 text-white/50 group-hover:text-cighra-gold transition-colors z-10" />
-            <div className="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] px-2 py-1 font-mono rounded-sm">05:20</div>
+            <div className="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] px-2 py-1 font-mono rounded-sm">G-DRIVE</div>
           </div>
           <div className="p-5 border-t-2 border-transparent group-hover:border-cighra-primary transition-colors">
-            <h4 className="font-tactical font-bold text-lg text-slate-800 dark:text-white uppercase leading-tight mb-2">Reset Sistem Motor Mekanik DART</h4>
-            <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">Cara aman me-reset dinamo penggerak jika target macet atau tidak merespons perintah jatuh/bangun.</p>
+            <h4 className="font-tactical font-bold text-lg text-slate-800 dark:text-white uppercase leading-tight mb-2">Video Troubleshooting</h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">Buka panduan pemecahan masalah (troubleshooting) melalui Google Drive.</p>
           </div>
-        </motion.div>
-        
-        {/* Placeholder Video 3 */}
-        <motion.div whileHover={{ y: -5 }} className="glass-panel border border-slate-200 dark:border-slate-600 bg-white dark:bg-cighra-darkcard/80 rounded-sm overflow-hidden group cursor-pointer shadow-lg hover:shadow-olive/20 transition-all">
-          <div className="aspect-video bg-slate-900 relative flex items-center justify-center overflow-hidden">
-            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1631557348983-4db0b8ce1eb7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')] bg-cover bg-center opacity-40 group-hover:opacity-60 transition-opacity mix-blend-overlay"></div>
-            <PlaySquare className="w-16 h-16 text-white/50 group-hover:text-cighra-gold transition-colors z-10" />
-            <div className="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] px-2 py-1 font-mono rounded-sm">02:15</div>
-          </div>
-          <div className="p-5 border-t-2 border-transparent group-hover:border-cighra-primary transition-colors">
-            <h4 className="font-tactical font-bold text-lg text-slate-800 dark:text-white uppercase leading-tight mb-2">Kalibrasi Aki & Power Supply</h4>
-            <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">Pengecekan tegangan standar pada aki lapangan untuk mencegah drop tiba-tiba.</p>
-          </div>
-        </motion.div>
+        </motion.a>
+
+
       </div>
     </div>
   );

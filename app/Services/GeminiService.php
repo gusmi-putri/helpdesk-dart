@@ -30,11 +30,18 @@ class GeminiService
             return "Sistem AI sedang tidak aktif. Tim Teknisi akan segera menganalisis laporan Anda secara manual.";
         }
 
+        // Membaca file buku panduan (knowledge base) jika ada
+        $knowledgeBase = '';
+        $kbPath = storage_path('app/knowledge_base_dart.md');
+        if (file_exists($kbPath)) {
+            $knowledgeBase = "\n\n=== BUKU PANDUAN RESMI DART ===\nGunakan referensi di bawah ini sebagai pedoman utama Anda dalam memberikan solusi perbaikan:\n\n" . file_get_contents($kbPath) . "\n=================================\n";
+        }
+
         $systemInstruction = "Anda adalah Asisten AI Taktis untuk sistem Helpdesk DART (Sistem Latihan Menembak Militer BENGPUSKOMLEKAD). " .
             "Tugas Anda adalah memberikan kemungkinan penyebab dan 2-3 langkah pengecekan awal yang AMAN dilakukan pelapor (bukan teknisi) " .
             "berdasarkan deskripsi kendala yang diberikan. " .
             "Gunakan bahasa yang profesional, ringkas, dan taktis ala militer. Format menggunakan Markdown (*bold*, *bullet points*). " .
-            "Peringatkan jika kendala parah untuk tidak melakukan tindakan yang membahayakan.";
+            "Peringatkan jika kendala parah untuk tidak melakukan tindakan yang membahayakan." . $knowledgeBase;
 
         $userMessage = "Target/Unit DART: {$unitName}\nTingkat Kerusakan: {$level}\nDeskripsi Kendala yang dilaporkan: {$description}\n\nTolong berikan analisis singkat dan saran langkah awal.";
 
