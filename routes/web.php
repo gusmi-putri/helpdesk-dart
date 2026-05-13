@@ -43,6 +43,9 @@ Route::post('/reports/{id}/handle', [ReportController::class, 'handle'])->name('
 Route::post('/reports/{id}/complete', [ReportController::class, 'complete'])->name('reports.complete');
 Route::get('/reports/{id}/pdf', [DashboardController::class, 'exportPdf'])->name('reports.pdf');
 
+// AI Diagnostic Route
+Route::post('/api/diagnose', [\App\Http\Controllers\AiDiagnosticController::class, 'diagnose'])->name('api.diagnose');
+
 // Export Routes
 Route::get('/admin/recap/export', [\App\Http\Controllers\RecapController::class, 'export'])->middleware(['auth', 'role:Admin'])->name('admin.recap.export');
 Route::get('/staf/recap/export', [\App\Http\Controllers\RecapController::class, 'export'])->middleware(['auth', 'role:Staf'])->name('staf.recap.export');
