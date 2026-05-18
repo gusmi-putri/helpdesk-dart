@@ -2,14 +2,14 @@ import React from 'react';
 import {
   Radar, Users, UserCheck, Package, FileArchive,
   ChevronDown, ChevronRight, Database, MessageSquare,
-  Activity, LogOut
+  Activity, LogOut, Map as MapIcon
 } from 'lucide-react';
 
 interface SidebarProps {
   isMobileMenuOpen: boolean;
   setIsMobileMenuOpen: (open: boolean) => void;
-  activeMenu: 'ANALYTICS' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SETTINGS' | 'APPROVAL' | 'FEEDBACK';
-  handleMenuClick: (menu: 'ANALYTICS' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SETTINGS' | 'APPROVAL' | 'FEEDBACK') => void;
+  activeMenu: 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SETTINGS' | 'APPROVAL' | 'FEEDBACK';
+  handleMenuClick: (menu: 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SETTINGS' | 'APPROVAL' | 'FEEDBACK') => void;
   isReportsExpanded: boolean;
   setIsReportsExpanded: (expanded: boolean) => void;
   setActiveSubReport: (sub: 'KERUSAKAN' | 'PERBAIKAN') => void;
@@ -61,6 +61,15 @@ const Sidebar: React.FC<SidebarProps> = ({
             `}
           >
             <Activity size={18} /> ANALISIS DATA
+          </button>
+
+          <button
+            onClick={() => handleMenuClick('MAP')}
+            className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4
+              ${activeMenu === 'MAP' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50'}
+            `}
+          >
+            <MapIcon size={18} /> PETA MONITORING
           </button>
 
           <button

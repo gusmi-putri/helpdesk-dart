@@ -10,6 +10,7 @@ import LogsTable from './AdminComponents/LogsTable';
 import ReportsSection from './AdminComponents/ReportsSection';
 import ApprovalTable from './AdminComponents/ApprovalTable';
 import FeedbackTable from './AdminComponents/FeedbackTable';
+import MonitoringMap from './AdminComponents/MonitoringMap';
 import UserDetailModal from './AdminComponents/UserDetailModal';
 import UserDeleteModal from './AdminComponents/UserDeleteModal';
 import UserEditModal from './AdminComponents/UserEditModal';
@@ -23,7 +24,7 @@ import { useStore } from '@/store/useStore';
 import { router, useForm, usePage, Link } from '@inertiajs/react';
 
 type SubMenuReport = 'KERUSAKAN' | 'PERBAIKAN';
-type MenuTab = 'ANALYTICS' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SETTINGS' | 'APPROVAL' | 'FEEDBACK';
+type MenuTab = 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SETTINGS' | 'APPROVAL' | 'FEEDBACK';
 
 const DashboardAdmin = (props: any) => {
   const { dbCases = [], dbUsers = [], dbLogs = [], dbRoles = [], dbUnits = [], dbFeedbacks = [] } = props;
@@ -325,6 +326,7 @@ const DashboardAdmin = (props: any) => {
         <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar z-10">
           <div className="max-w-[1400px] mx-auto">
             {activeMenu === 'ANALYTICS' && <AnalyticsSection dbCases={dbCases} />}
+            {activeMenu === 'MAP' && <MonitoringMap dbUnits={dbUnits} dbCases={dbCases} />}
             {activeMenu === 'REPORTS' && (
               <ReportsSection
                 dbCases={dbCases}
