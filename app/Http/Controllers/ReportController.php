@@ -97,7 +97,7 @@ class ReportController extends Controller
         $request->validate([
             'catatan' => 'required|string',
             'metode' => 'required|in:Online,Offline',
-            'foto_selesai' => 'nullable|image|mimes:jpeg,png,jpg|max:20480',
+            'foto_selesai' => 'required|image|mimes:jpeg,png,jpg|max:20480',
         ]);
 
         $fotoSelesai = $report->file_bukti_selesai;

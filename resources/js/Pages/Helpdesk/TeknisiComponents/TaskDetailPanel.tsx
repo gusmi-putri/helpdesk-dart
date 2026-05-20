@@ -40,20 +40,20 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({ selectedTask, activeT
                 {selectedTask.kerusakan.barangRusak}
               </h2>
               <div className="flex flex-wrap gap-4 text-[11px] font-mono font-bold text-slate-600 dark:text-slate-300 mt-3">
-                <span className="flex items-center gap-1.5 px-2 py-1 bg-cighra-primary/10 dark:bg-cighra-gold/10 border border-cighra-primary dark:border-cighra-gold/20 text-cighra-primary dark:text-cighra-gold uppercase"><AlertCircle className="w-3.5 h-3.5" /> PRIORITAS: {selectedTask.kerusakan.urgensi?.toUpperCase() || 'NORMAL'}</span>
-                <span className="flex items-center gap-1.5 px-2 py-1 bg-cighra-primary/10 dark:bg-cighra-gold/10 border border-cighra-primary dark:border-cighra-gold/20 text-cighra-primary dark:text-cighra-gold uppercase"><Wrench className="w-3.5 h-3.5" /> LEVEL: {selectedTask.kerusakan.tingkatKerusakan?.toUpperCase() || 'UMUM'}</span>
-                <span className="flex items-center gap-1.5 px-2 py-1 bg-sand/40 dark:bg-soft-gunmetal/40 border border-slate-200 dark:border-slate-600 text-gunmetal dark:text-slate-300 uppercase"><MapPin className="w-3.5 h-3.5 text-cighra-primary dark:text-cighra-gold" /> LOKASI: {selectedTask.kerusakan.lokasi}</span>
+                <span className="flex items-center gap-1.5 px-2 py-1 bg-white dark:bg-cighra-gold/10 border border-cighra-primary/50 dark:border-cighra-gold/20 text-cighra-primary dark:text-cighra-gold uppercase shadow-sm"><AlertCircle className="w-3.5 h-3.5" /> PRIORITAS: {selectedTask.kerusakan.urgensi?.toUpperCase() || 'NORMAL'}</span>
+                <span className="flex items-center gap-1.5 px-2 py-1 bg-white dark:bg-cighra-gold/10 border border-cighra-primary/50 dark:border-cighra-gold/20 text-cighra-primary dark:text-cighra-gold uppercase shadow-sm"><Wrench className="w-3.5 h-3.5" /> LEVEL: {selectedTask.kerusakan.tingkatKerusakan?.toUpperCase() || 'UMUM'}</span>
+                <span className="flex items-center gap-1.5 px-2 py-1 bg-white dark:bg-soft-gunmetal/40 border border-slate-300 dark:border-slate-600 text-gunmetal dark:text-slate-300 uppercase shadow-sm"><MapPin className="w-3.5 h-3.5 text-cighra-primary dark:text-cighra-gold" /> LOKASI: {selectedTask.kerusakan.lokasi}</span>
               </div>
             </div>
-            <div className="bg-white dark:bg-cighra-darkcard/70 px-4 py-2 text-center border shadow-sm border-slate-200 dark:border-slate-600">
+            <div className="bg-white dark:bg-cighra-darkcard/70 px-4 py-2 text-center border shadow-sm border-slate-300 dark:border-slate-600">
               <div className="text-[9px] font-mono text-slate-500 dark:text-slate-400 tracking-widest mb-1 uppercase">KODE REFERENSI</div>
               <div className="font-mono text-lg font-bold text-slate-800 dark:text-white">{selectedTask.caseId}</div>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-            <div className="bg-white/60 dark:bg-cighra-darkcard/30 p-5 border border-slate-200 dark:border-slate-600 rounded-sm relative">
-              <span className="absolute -top-3 left-4 bg-cighra-light dark:bg-cighra-dark px-2 text-[10px] font-mono font-bold text-cighra-primary dark:text-cighra-gold border-x border-slate-200 dark:border-slate-600 uppercase">Deskripsi Kendala</span>
+            <div className="bg-white dark:bg-cighra-darkcard/30 p-5 border border-slate-300 dark:border-slate-600 rounded-sm relative shadow-sm">
+              <span className="absolute -top-3 left-4 bg-white dark:bg-cighra-darkcard px-3 py-0.5 text-[10px] font-mono font-bold text-cighra-primary dark:text-cighra-gold border border-slate-300 dark:border-slate-600 border-b-transparent dark:border-b-transparent uppercase">Deskripsi Kendala</span>
               <p className="text-sm text-gunmetal dark:text-slate-300/80 font-sans leading-relaxed italic border-l-2 border-cighra-primary dark:border-cighra-gold/30 pl-4 mt-2">
                 {selectedTask.kerusakan.deskripsi}
               </p>
