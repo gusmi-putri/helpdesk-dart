@@ -117,12 +117,16 @@
 .custom-div-icon {
   background: transparent !important;
   border: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
 }
 
 
 /* Leaflet dark theme override */
 .leaflet-container {
-  background: #121E3B !important;
+  background: #1D2D50 !important; /* Lighter navy background */
   font-family: 'Rajdhani', sans-serif !important;
 }
 
