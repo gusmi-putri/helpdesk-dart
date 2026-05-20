@@ -46,7 +46,7 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                     >
                       {report.caseId}
                     </button>
-                    <div className="mt-2 text-camogreen text-[10px] font-mono font-bold flex items-center gap-1 bg-green-50 dark:bg-green-900/20 px-1.5 py-0.5 border border-green-200 dark:border-green-900/30 w-fit">
+                    <div className="mt-2 text-white dark:text-green-400 text-[10px] font-mono font-bold flex items-center gap-1 bg-camogreen dark:bg-camogreen/20 px-1.5 py-0.5 border border-camogreen dark:border-camogreen/30 w-fit">
                       <CheckCircle className="w-3 h-3" /> TUNTAS
                     </div>
                   </td>
@@ -70,7 +70,7 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                       <span className="absolute top-1 left-2 text-xl text-slate-300/50 dark:text-slate-300/10 font-serif">"</span>
                       <span className="pl-4 block italic font-serif leading-relaxed uppercase mb-3">{report.perbaikan.tindakan}</span>
                       {report.perbaikan.metodePerbaikan && (
-                        <div className="ml-4 text-[10px] text-camogreen bg-green-50 dark:bg-camogreen/10 px-2 py-1 border border-green-200 dark:border-camogreen/30 inline-block font-mono uppercase">
+                        <div className="ml-4 text-[10px] text-white dark:text-green-400 bg-camogreen dark:bg-camogreen/20 px-2 py-1 border border-camogreen dark:border-camogreen/30 inline-block font-mono uppercase">
                           METODE: {report.perbaikan.metodePerbaikan}
                         </div>
                       )}

@@ -10,10 +10,10 @@ export default {
       colors: {
         gunmetal: '#0A1229', // Dark mode background (Deep Navy)
         sand: '#EBF5FF',     // Light mode background (Sea Blue)
-        olive: '#68a309ff',    // Primary action color
+        olive: '#68a309',    // Primary action color
         khaki: '#FDE68A',    // Highlights
         targetred: '#6D1020', // New corporate red
-        camogreen: '#0c8237ff', // Accents
+        camogreen: '#0c8237', // Accents
         // Functional text/border colors (replacing gray)
         'soft-gunmetal': '#334155', // For light mode secondary text (Slate-700 equivalent but bluer)
         'soft-sand': '#E2E8F0',     // For dark mode secondary text
