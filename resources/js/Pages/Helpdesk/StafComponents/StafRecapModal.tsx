@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileArchive, Download } from 'lucide-react';
+import { FileArchive, Download, X, Calendar, CalendarDays, CalendarRange } from 'lucide-react';
 
 interface StafRecapModalProps {
   isOpen: boolean;
@@ -31,126 +31,141 @@ const StafRecapModal: React.FC<StafRecapModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[150] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
-      <div className="bg-cighra-light dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full max-w-lg shadow-2xl animate-in zoom-in-95 duration-200">
-        <div className="p-4 border-b border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/10 flex justify-between items-center">
-          <h3 className="font-tactical font-bold text-cighra-primary dark:text-cighra-gold tracking-widest uppercase flex items-center gap-2">
-            <FileArchive className="w-5 h-5" /> CETAK REKAPITULASI
+    <div className="fixed inset-0 z-[150] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+      <div className="bg-white dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-600 w-full max-w-2xl shadow-2xl rounded-sm animate-in zoom-in-95 duration-200 overflow-hidden flex flex-col max-h-[90vh]">
+        <div className="p-5 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-black/20 flex justify-between items-center border-t-4 border-t-cighra-primary dark:border-t-cighra-gold">
+          <h3 className="font-tactical font-bold text-slate-800 dark:text-white tracking-widest uppercase flex items-center gap-3 text-lg">
+            <FileArchive className="w-5 h-5 text-cighra-primary dark:text-cighra-gold" /> CETAK REKAPITULASI
           </h3>
-          <button onClick={onClose} className="text-slate-600 hover:text-cighra-primary dark:text-cighra-gold text-xl">✕</button>
+          <button onClick={onClose} className="text-slate-400 hover:text-cighra-primary dark:hover:text-cighra-gold transition-colors p-1">
+            <X className="w-5 h-5" />
+          </button>
         </div>
         
-        <div className="p-6">
-          <p className="text-xs font-mono text-slate-500 dark:text-slate-300 mb-6 uppercase tracking-tight">
-            Pilih periode laporan untuk dicetak ke format PDF (Landscape). Laporan ini mencakup seluruh data unit, teknisi, dan status penyelesaian.
+        <div className="p-6 md:p-8 overflow-y-auto custom-scrollbar flex-1 space-y-6">
+          <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-800/50 p-4 border-l-4 border-olive rounded-r-sm shadow-sm">
+            Pilih periode laporan untuk dicetak ke format PDF (Landscape). Laporan ini mencakup seluruh data inventaris, teknisi pelaksana, dan status penyelesaian perbaikan.
           </p>
           
           <div className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Periode Standar</label>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {(['weekly', 'monthly', 'yearly'] as const).map(period => (
                 <button
                   key={period}
                   onClick={() => setRecapPeriod(period)}
-                  className={`p-3 border-2 transition-all flex flex-col items-center justify-center gap-1
+                  className={`p-4 border rounded-sm transition-all flex flex-col items-start gap-1 relative overflow-hidden group text-left
                     ${recapPeriod === period 
-                      ? 'border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/10 text-cighra-primary dark:text-cighra-gold shadow-[0_0_10px_rgba(200,30,30,0.2)]' 
-                      : 'border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:border-cighra-primary dark:border-cighra-gold/30'}
+                      ? 'border-cighra-primary dark:border-cighra-gold bg-cighra-primary/5 dark:bg-cighra-gold/10 shadow-sm ring-1 ring-cighra-primary dark:ring-cighra-gold' 
+                      : 'border-slate-200 dark:border-slate-600 bg-white dark:bg-cighra-darkcard hover:border-cighra-primary/50 dark:hover:border-cighra-gold/50'}
                   `}
                 >
-                  <p className="text-[10px] font-tactical font-bold uppercase tracking-widest">
+                  <div className={`w-4 h-4 rounded-full border flex items-center justify-center absolute top-4 right-4 transition-colors ${recapPeriod === period ? 'border-cighra-primary dark:border-cighra-gold' : 'border-slate-300 dark:border-slate-500'}`}>
+                     {recapPeriod === period && <div className="w-2 h-2 rounded-full bg-cighra-primary dark:bg-cighra-gold"></div>}
+                  </div>
+                  <p className={`text-sm font-bold uppercase tracking-widest ${recapPeriod === period ? 'text-cighra-primary dark:text-cighra-gold' : 'text-slate-700 dark:text-slate-300'}`}>
                     {period === 'weekly' ? 'Mingguan' : period === 'monthly' ? 'Bulanan' : 'Tahunan'}
                   </p>
-                  <p className="text-[8px] font-mono italic">Berdasarkan Tgl Ini</p>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-1">S/D Hari Ini</p>
                 </button>
               ))}
             </div>
 
-            <div className="flex gap-2">
+            <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-6 pt-4 border-t border-slate-100 dark:border-slate-700">Kriteria Spesifik</label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button
                 onClick={() => setRecapPeriod('custom')}
-                className={`flex-1 p-3 border-2 transition-all flex flex-col items-center justify-center gap-1
+                className={`p-4 border rounded-sm transition-all flex flex-col items-start gap-1 relative overflow-hidden group text-left
                   ${recapPeriod === 'custom' 
-                    ? 'border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/10 text-cighra-primary dark:text-cighra-gold shadow-[0_0_10px_rgba(200,30,30,0.2)]' 
-                    : 'border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:border-cighra-primary dark:border-cighra-gold/30'}
+                    ? 'border-cighra-primary dark:border-cighra-gold bg-cighra-primary/5 dark:bg-cighra-gold/10 shadow-sm ring-1 ring-cighra-primary dark:ring-cighra-gold' 
+                    : 'border-slate-200 dark:border-slate-600 bg-white dark:bg-cighra-darkcard hover:border-cighra-primary/50 dark:hover:border-cighra-gold/50'}
                 `}
               >
-                <p className="text-[10px] font-tactical font-bold uppercase tracking-widest">Rentang Khusus</p>
-                <p className="text-[8px] font-mono italic">Mulai - Selesai</p>
+                <div className={`w-4 h-4 rounded-full border flex items-center justify-center absolute top-4 right-4 transition-colors ${recapPeriod === 'custom' ? 'border-cighra-primary dark:border-cighra-gold' : 'border-slate-300 dark:border-slate-500'}`}>
+                   {recapPeriod === 'custom' && <div className="w-2 h-2 rounded-full bg-cighra-primary dark:bg-cighra-gold"></div>}
+                </div>
+                <div className="flex items-center gap-2 mb-1">
+                  <CalendarRange size={16} className={recapPeriod === 'custom' ? 'text-cighra-primary dark:text-cighra-gold' : 'text-slate-400'} />
+                  <p className={`text-sm font-bold uppercase tracking-widest ${recapPeriod === 'custom' ? 'text-cighra-primary dark:text-cighra-gold' : 'text-slate-700 dark:text-slate-300'}`}>Rentang Khusus</p>
+                </div>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider">Atur Tanggal Awal - Akhir</p>
               </button>
+
               <button
                 onClick={() => setRecapPeriod('year_specific')}
-                className={`flex-1 p-3 border-2 transition-all flex flex-col items-center justify-center gap-1
+                className={`p-4 border rounded-sm transition-all flex flex-col items-start gap-1 relative overflow-hidden group text-left
                   ${recapPeriod === 'year_specific' 
-                    ? 'border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/10 text-cighra-primary dark:text-cighra-gold shadow-[0_0_10_rgba(200,30,30,0.2)]' 
-                    : 'border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:border-cighra-primary dark:border-cighra-gold/30'}
+                    ? 'border-cighra-primary dark:border-cighra-gold bg-cighra-primary/5 dark:bg-cighra-gold/10 shadow-sm ring-1 ring-cighra-primary dark:ring-cighra-gold' 
+                    : 'border-slate-200 dark:border-slate-600 bg-white dark:bg-cighra-darkcard hover:border-cighra-primary/50 dark:hover:border-cighra-gold/50'}
                 `}
               >
-                <p className="text-[10px] font-tactical font-bold uppercase tracking-widest">Tahun Tertentu</p>
-                <p className="text-[8px] font-mono italic">Pilih Tahun</p>
+                <div className={`w-4 h-4 rounded-full border flex items-center justify-center absolute top-4 right-4 transition-colors ${recapPeriod === 'year_specific' ? 'border-cighra-primary dark:border-cighra-gold' : 'border-slate-300 dark:border-slate-500'}`}>
+                   {recapPeriod === 'year_specific' && <div className="w-2 h-2 rounded-full bg-cighra-primary dark:bg-cighra-gold"></div>}
+                </div>
+                <div className="flex items-center gap-2 mb-1">
+                  <CalendarDays size={16} className={recapPeriod === 'year_specific' ? 'text-cighra-primary dark:text-cighra-gold' : 'text-slate-400'} />
+                  <p className={`text-sm font-bold uppercase tracking-widest ${recapPeriod === 'year_specific' ? 'text-cighra-primary dark:text-cighra-gold' : 'text-slate-700 dark:text-slate-300'}`}>Tahun Tertentu</p>
+                </div>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider">Pilih Satu Tahun Penuh</p>
               </button>
             </div>
 
-            {/* Conditional Input for Custom Range */}
-            {recapPeriod === 'custom' && (
-              <div className="grid grid-cols-2 gap-3 p-4 bg-cighra-light dark:bg-cighra-darkcard/30 border border-cighra-primary dark:border-cighra-gold/30 animate-in slide-in-from-top-2">
-                <div>
-                  <label className="block text-[9px] font-mono text-slate-500 dark:text-slate-400 uppercase mb-1">Mulai Tanggal</label>
-                  <input 
-                    type="date" 
-                    value={recapStartDate}
-                    onChange={(e) => setRecapStartDate(e.target.value)}
-                    className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 p-2 text-xs font-mono outline-none focus:border-cighra-primary dark:border-cighra-gold text-slate-800 dark:text-white"
-                  />
+            {/* Input Fields Container */}
+            <div className="mt-4">
+              {recapPeriod === 'custom' && (
+                <div className="grid grid-cols-2 gap-4 p-5 bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-slate-600 rounded-sm animate-in slide-in-from-top-2">
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Mulai Tanggal</label>
+                    <input 
+                      type="date" 
+                      value={recapStartDate}
+                      onChange={(e) => setRecapStartDate(e.target.value)}
+                      className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 p-2.5 text-sm font-mono outline-none focus:border-cighra-primary dark:border-cighra-gold text-slate-800 dark:text-white rounded-sm transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Sampai Tanggal</label>
+                    <input 
+                      type="date" 
+                      value={recapEndDate}
+                      onChange={(e) => setRecapEndDate(e.target.value)}
+                      className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 p-2.5 text-sm font-mono outline-none focus:border-cighra-primary dark:border-cighra-gold text-slate-800 dark:text-white rounded-sm transition-colors"
+                    />
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-[9px] font-mono text-slate-500 dark:text-slate-400 uppercase mb-1">Sampai Tanggal</label>
-                  <input 
-                    type="date" 
-                    value={recapEndDate}
-                    onChange={(e) => setRecapEndDate(e.target.value)}
-                    className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 p-2 text-xs font-mono outline-none focus:border-cighra-primary dark:border-cighra-gold text-slate-800 dark:text-white"
-                  />
-                </div>
-              </div>
-            )}
+              )}
 
-            {/* Conditional Input for Year Specific */}
-            {recapPeriod === 'year_specific' && (
-              <div className="p-4 bg-cighra-light dark:bg-cighra-darkcard/30 border border-cighra-primary dark:border-cighra-gold/30 animate-in slide-in-from-top-2">
-                <label className="block text-[9px] font-mono text-slate-500 dark:text-slate-400 uppercase mb-1">Pilih Tahun</label>
-                <select 
-                  value={recapYear}
-                  onChange={(e) => setRecapYear(e.target.value)}
-                  className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 p-2 text-xs font-mono outline-none focus:border-cighra-primary dark:border-cighra-gold text-slate-800 dark:text-white"
-                >
-                  {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i).map(year => (
-                    <option key={year} value={year}>{year}</option>
-                  ))}
-                </select>
-              </div>
-            )}
-          </div>
-          
-          <div className="mt-8 grid grid-cols-2 gap-3">
-            <button
-              onClick={onExport}
-              className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white py-3 font-tactical font-bold tracking-widest hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 transition-all flex items-center justify-center gap-2 shadow-lg uppercase"
-            >
-              <Download className="w-4 h-4" /> Cetak Laporan
-            </button>
-            <button
-              onClick={onClose}
-              className="bg-transparent border border-soft-gunmetal/20 text-slate-500 py-3 font-tactical font-bold tracking-widest hover:bg-slate-600/10 transition-all uppercase"
-            >
-              Batalkan
-            </button>
+              {recapPeriod === 'year_specific' && (
+                <div className="p-5 bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-slate-600 rounded-sm animate-in slide-in-from-top-2">
+                  <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Pilih Tahun Evaluasi</label>
+                  <select 
+                    value={recapYear}
+                    onChange={(e) => setRecapYear(e.target.value)}
+                    className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 p-3 text-sm font-bold font-mono outline-none focus:border-cighra-primary dark:border-cighra-gold text-slate-800 dark:text-white rounded-sm transition-colors"
+                  >
+                    {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i).map(year => (
+                      <option key={year} value={year}>{year}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-        
-        <div className="p-3 bg-black/20 text-center">
-          <p className="text-[8px] font-mono text-slate-500 uppercase tracking-widest">
-            Generated by Command Center Security Module
-          </p>
+          
+        <div className="p-5 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-black/20 flex justify-end gap-3 shrink-0">
+          <button
+            onClick={onClose}
+            className="px-6 py-2.5 text-xs font-tactical font-bold tracking-widest border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-black/40 transition-colors uppercase rounded-sm"
+          >
+            Batal
+          </button>
+          <button
+            onClick={onExport}
+            className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-8 py-2.5 text-xs font-tactical font-bold tracking-widest transition-colors flex items-center gap-2 uppercase rounded-sm shadow-md"
+          >
+            <Download className="w-4 h-4" /> CETAK PDF
+          </button>
         </div>
       </div>
     </div>

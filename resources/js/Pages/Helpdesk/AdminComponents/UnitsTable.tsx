@@ -203,13 +203,13 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
                     </td>
                     <td className="p-4 font-mono text-[10px] text-slate-500 dark:text-slate-400">{u.last_maintenance}</td>
                     <td className="p-4 flex gap-2 justify-end">
-                      <button onClick={() => handleShowUnitHistory(u)} className="p-2 bg-slate-100 dark:bg-slate-700 hover:bg-blue-600 hover:text-white text-slate-600 dark:text-slate-300 transition-colors border border-slate-300 dark:border-slate-600" title="Riwayat">
+                      <button onClick={() => handleShowUnitHistory(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 text-slate-500 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Riwayat">
                         <History className="w-4 h-4" />
                       </button>
-                      <button onClick={() => handleEditUnit(u)} className="p-2 bg-slate-100 dark:bg-slate-700 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 dark:text-slate-900 hover:text-gunmetal dark:hover:text-white text-slate-600 dark:text-slate-300 transition-colors border border-slate-300 dark:border-slate-600" title="Edit">
+                      <button onClick={() => handleEditUnit(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 text-slate-500 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Edit">
                         <Edit className="w-4 h-4" />
                       </button>
-                      <button onClick={() => handleDeleteUnit(u)} className="p-2 bg-slate-100 dark:bg-slate-700 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 dark:text-slate-900 hover:text-white text-slate-600 dark:text-slate-300 transition-colors border border-slate-300 dark:border-slate-600" title="Hapus">
+                      <button onClick={() => handleDeleteUnit(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 text-slate-500 dark:text-slate-300 hover:text-red-600 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Hapus">
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </td>

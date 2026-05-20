@@ -42,11 +42,12 @@ const CompletionForm: React.FC<CompletionFormProps> = ({
           {errors.catatan && <p className="text-[9px] text-cighra-primary dark:text-cighra-gold mt-1 font-mono uppercase">{errors.catatan}</p>}
         </div>
 
-        <div className="border-2 border-dashed border-slate-300 dark:border-slate-600 p-4 text-center hover:border-cighra-primary dark:border-cighra-gold transition-all group cursor-pointer relative bg-cighra-light dark:bg-cighra-darkcard/10">
+        <div className={`border-2 border-dashed ${errors.foto_selesai ? 'border-red-500 dark:border-red-500 bg-red-50 dark:bg-red-900/10' : 'border-slate-300 dark:border-slate-600 bg-cighra-light dark:bg-cighra-darkcard/10'} p-4 text-center hover:border-cighra-primary dark:border-cighra-gold transition-all group cursor-pointer relative`}>
           <input
             type="file"
             accept="image/*"
-            className="absolute inset-0 opacity-0 cursor-pointer z-10"
+            required={!data.foto_selesai}
+            className="absolute inset-0 opacity-0 cursor-pointer z-10 w-full h-full"
             onChange={(e) => {
               const file = e.target.files ? e.target.files[0] : null;
               setData('foto_selesai', file);
@@ -72,14 +73,19 @@ const CompletionForm: React.FC<CompletionFormProps> = ({
                 <div className="flex items-center gap-3">
                   <Activity className="w-5 h-5 text-slate-500 group-hover:text-cighra-primary dark:text-cighra-gold transition-colors" />
                   <span className="text-xs font-mono text-slate-500 dark:text-slate-300 group-hover:text-cighra-primary dark:text-cighra-gold uppercase font-bold">
-                    UNGGAH FOTO BUKTI SELESAI
+                    UNGGAH FOTO BUKTI SELESAI <span className="text-cighra-primary dark:text-cighra-gold ml-1">*</span>
                   </span>
                 </div>
-                <span className="text-[9px] font-mono text-slate-500 dark:text-slate-400 uppercase">Klik atau tarik file ke area ini</span>
+                <span className="text-[9px] font-mono text-slate-500 dark:text-slate-400 uppercase">Klik atau tarik file ke area ini (Wajib)</span>
               </div>
             )}
           </div>
         </div>
+        {errors.foto_selesai && (
+          <p className="text-[10px] text-red-600 dark:text-red-400 mt-1 font-mono uppercase font-bold text-center">
+            {errors.foto_selesai}
+          </p>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
           <div>
