@@ -95,7 +95,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
         <div className="glass-panel p-6 border-l-4 border-l-olive !overflow-visible relative z-20 bg-white dark:bg-cighra-darkcard/80 shadow-xl border border-slate-200 dark:border-slate-600">
           <SearchableSelect 
             label="Nomor Seri DART"
-            placeholder="Ketik nomor seri atau nama unit DART..."
+            placeholder="Ketik nomor seri atau keterangan DART..."
             options={dbUnits
               .filter((unit: any) => unit.asal_satuan === authUser.asal_satuan)
               .map((unit: any) => ({

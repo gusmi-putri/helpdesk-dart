@@ -371,7 +371,6 @@ const DashboardAdmin = (props: any) => {
                 }}
                 handleShowUnitHistory={handleShowUnitHistory}
                 handleEditUnit={handleEditUnit}
-                handleDeleteUnit={handleDeleteUnit}
               />
             )}
             {activeMenu === 'APPROVAL' && (

@@ -11,7 +11,6 @@ interface UnitsTableProps {
   handleUnitSort: (key: string) => void;
   handleShowUnitHistory: (unit: any) => void;
   handleEditUnit: (unit: any) => void;
-  handleDeleteUnit: (unit: any) => void;
 }
 
 const UnitsTable: React.FC<UnitsTableProps> = ({
@@ -22,8 +21,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
   unitSortConfig,
   handleUnitSort,
   handleShowUnitHistory,
-  handleEditUnit,
-  handleDeleteUnit
+  handleEditUnit
 }) => {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = React.useState(false);
@@ -58,7 +56,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
   };
 
   const handleDownloadTemplate = () => {
-    const csvContent = "nomor_seri,nama_dart,jenis_dart,asal_satuan,status_unit\nCONTOH-001,NAMA UNIT DART,DART STD,NAMA SATUAN,Siap Ops";
+    const csvContent = "nomor_seri,nama_dart,jenis_dart,asal_satuan,status_unit\nCONTOH-001,KETERANGAN DART,DART STD,NAMA SATUAN,Siap Ops";
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -116,7 +114,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
               <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-500 dark:text-slate-300" />
               <input
                 type="text"
-                placeholder="CARI SERI / NAMA / LOKASI..."
+                placeholder="CARI SERI / KETERANGAN / LOKASI..."
                 value={unitSearch}
                 onChange={(e) => setUnitSearch(e.target.value)}
                 className="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 pl-9 pr-4 py-2 text-sm font-mono text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:border-cighra-gold transition-colors w-64 uppercase"
@@ -157,11 +155,11 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
               <tr>
                 {[
                   { label: 'NOMOR SERI', key: 'nomor_seri' },
-                  { label: 'NAMA UNIT', key: 'nama_dart' },
                   { label: 'JENIS', key: 'jenis_dart' },
                   { label: 'ASAL SATUAN / LOKASI', key: 'asal_satuan' },
                   { label: 'STATUS', key: 'status_unit' },
                   { label: 'MAINTENANCE', key: 'last_maintenance' },
+                  { label: 'KETERANGAN', key: 'nama_dart' },
                 ].map((col) => (
                   <th
                     key={col.key}
@@ -189,7 +187,6 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
                 filteredUnits.map((u: any) => (
                   <tr key={u.db_id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group bg-white dark:bg-transparent">
                     <td className="p-4 font-mono font-bold text-cighra-primary dark:text-cighra-gold border-l-2 border-transparent group-hover:border-cighra-primary dark:border-cighra-gold">{u.nomor_seri}</td>
-                    <td className="p-4 text-slate-800 dark:text-white font-bold uppercase">{u.nama_dart}</td>
                     <td className="p-4 font-mono text-xs text-slate-500 dark:text-slate-300 uppercase">{u.jenis_dart}</td>
                     <td className="p-4 text-gunmetal dark:text-slate-300 uppercase">{u.asal_satuan}</td>
                     <td className="p-4">
@@ -202,15 +199,13 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
                       </span>
                     </td>
                     <td className="p-4 font-mono text-[10px] text-slate-500 dark:text-slate-400">{u.last_maintenance}</td>
+                    <td className="p-4 text-slate-800 dark:text-white font-bold uppercase">{u.nama_dart}</td>
                     <td className="p-4 flex gap-2 justify-end">
                       <button onClick={() => handleShowUnitHistory(u)} className="p-2 bg-slate-100 dark:bg-slate-700 hover:bg-blue-600 hover:text-white text-slate-600 dark:text-slate-300 transition-colors border border-slate-300 dark:border-slate-600" title="Riwayat">
                         <History className="w-4 h-4" />
                       </button>
                       <button onClick={() => handleEditUnit(u)} className="p-2 bg-slate-100 dark:bg-slate-700 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 dark:text-slate-900 hover:text-gunmetal dark:hover:text-white text-slate-600 dark:text-slate-300 transition-colors border border-slate-300 dark:border-slate-600" title="Edit">
                         <Edit className="w-4 h-4" />
-                      </button>
-                      <button onClick={() => handleDeleteUnit(u)} className="p-2 bg-slate-100 dark:bg-slate-700 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 dark:text-slate-900 hover:text-white text-slate-600 dark:text-slate-300 transition-colors border border-slate-300 dark:border-slate-600" title="Hapus">
-                        <Trash2 className="w-4 h-4" />
                       </button>
                     </td>
                   </tr>

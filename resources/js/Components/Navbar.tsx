@@ -52,12 +52,12 @@ const Navbar = () => {
           </div>
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-8">
-              {['BERANDA', 'PANDUAN', 'FEEDBACK', 'TENTANG KAMI', 'MASUK PANEL'].map((item) => (
+              {['BERANDA', 'PANDUAN', 'FEEDBACK', 'TENTANG KAMI', 'MASUK'].map((item) => (
                 <button
                   key={item}
-                  onClick={() => handleNavClick(item === 'MASUK PANEL' ? 'DASHBOARD' : item)}
+                  onClick={() => handleNavClick(item === 'MASUK' ? 'DASHBOARD' : item)}
                   className={`px-3 py-2 text-sm font-tactical font-bold tracking-wider transition-all border-b-2 
-                    ${((item === 'MASUK PANEL' || item === 'DASHBOARD') && url === '/login')
+                    ${((item === 'MASUK' || item === 'DASHBOARD') && url === '/login')
                       ? 'text-cighra-primary border-cighra-primary dark:text-cighra-gold dark:border-cighra-gold'
                       : 'text-slate-700 hover:text-cighra-primary hover:border-cighra-primary dark:text-slate-200 dark:hover:text-cighra-gold dark:hover:border-cighra-gold border-transparent'
                     }
@@ -92,12 +92,12 @@ const Navbar = () => {
           className="md:hidden bg-cighra-light dark:bg-cighra-dark border-b border-cighra-primary dark:border-cighra-gold"
         >
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {['BERANDA', 'PANDUAN', 'FEEDBACK', 'TENTANG KAMI', 'MASUK PANEL'].map((item) => (
+            {['BERANDA', 'PANDUAN', 'FEEDBACK', 'TENTANG KAMI', 'MASUK'].map((item) => (
               <button
                 key={item}
-                onClick={() => handleNavClick(item === 'MASUK PANEL' ? 'DASHBOARD' : item)}
+                onClick={() => handleNavClick(item === 'MASUK' ? 'DASHBOARD' : item)}
                 className={`w-full text-left block px-3 py-2 text-base font-tactical font-bold tracking-wider transition-colors
-                  ${((item === 'MASUK PANEL' || item === 'DASHBOARD') && url === '/login')
+                  ${((item === 'MASUK' || item === 'DASHBOARD') && url === '/login')
                     ? 'text-cighra-primary dark:text-cighra-gold bg-cighra-light dark:bg-cighra-darkcard/80'
                     : 'text-slate-700 dark:text-slate-300 hover:text-cighra-primary dark:text-cighra-gold hover:bg-white dark:hover:bg-black/20'
                   }

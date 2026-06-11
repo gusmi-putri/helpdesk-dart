@@ -50,7 +50,7 @@ const UnitModal: React.FC<UnitModalProps> = ({
               {errors.nomor_seri && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.nomor_seri}</p>}
             </div>
             <div>
-              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Nama Unit DART</label>
+              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Keterangan DART</label>
               <input
                 type="text"
                 value={data.nama_dart}

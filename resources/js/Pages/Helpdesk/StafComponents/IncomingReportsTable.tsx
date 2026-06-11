@@ -37,9 +37,9 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
               <tr>
                 <th className="p-4">ID TIKET</th>
                 <th className="p-4">PELAPOR & WAKTU</th>
-                <th className="p-4">UNIT & LOKASI</th>
                 <th className="p-4">PRIORITAS & JENIS</th>
                 <th className="p-4">STATUS</th>
+                <th className="p-4">KETERANGAN & LOKASI</th>
                 <th className="p-4 text-center">TINDAKAN</th>
               </tr>
             </thead>
@@ -68,10 +68,6 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
                     </div>
                   </td>
                   <td className="p-4">
-                    <div className="font-bold mb-1">{report.unit?.nama_dart || report.kerusakan.barangRusak || 'UNIT TIDAK DIKENAL'}</div>
-                    <div className="text-slate-400 dark:text-slate-300 text-[10px] font-mono uppercase">LOK: {report.kerusakan.lokasi}</div>
-                  </td>
-                  <td className="p-4">
                     <div className="flex flex-col gap-1">
                       <span className={`text-[9px] font-bold px-2 py-0.5 w-fit border shadow-sm ${report.kerusakan.urgensi === 'Sangat Mendesak' ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-500 border-red-200 dark:border-red-800' :
                         'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-500 border-blue-200 dark:border-blue-800'
@@ -93,6 +89,10 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
                         <Activity className="w-3 h-3" /> DALAM PERBAIKAN
                       </span>
                     )}
+                  </td>
+                  <td className="p-4">
+                    <div className="font-bold mb-1">{report.unit?.nama_dart || report.kerusakan.barangRusak || 'UNIT TIDAK DIKENAL'}</div>
+                    <div className="text-slate-400 dark:text-slate-300 text-[10px] font-mono uppercase">LOK: {report.kerusakan.lokasi}</div>
                   </td>
                   <td className="p-4 text-center">
                     {report.status === 'PENDING' ? (
