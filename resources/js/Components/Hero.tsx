@@ -32,7 +32,7 @@ const Hero = () => {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-cighra-gold/20 via-sky-200/40 to-cighra-light z-10 pointer-events-none dark:from-cighra-gold/5 dark:via-cighra-dark/95 dark:to-cighra-dark"></div>
 
         <div
-          className="absolute inset-0 bg-cover bg-center grayscale mix-blend-overlay opacity-50 z-10 pointer-events-none scale-110"
+          className="absolute inset-0 bg-cover bg-center grayscale mix-blend-overlay opacity-60 z-10 pointer-events-none scale-110"
           style={{ backgroundImage: `url(${bgHero})` }}
         ></div>
 
@@ -71,7 +71,7 @@ const Hero = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.5 }}
-          className="font-mono text-xs md:text-sm tracking-[0.3em] text-slate-500 dark:text-slate-400 uppercase mb-2"
+          className="font-mono text-xs md:text-sm tracking-[0.3em] text-cighra-primary font-bold drop-shadow-sm dark:font-normal dark:text-slate-400 uppercase mb-2"
         >
           Dynamic Autonomous Retaliatory Target
         </motion.p>
