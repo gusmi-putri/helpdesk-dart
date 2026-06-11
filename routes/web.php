@@ -28,11 +28,21 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pelapor', [DashboardController::class, 'pelapor'])->middleware('role:Pelapor');
     Route::get('/staf', [DashboardController::class, 'staf'])->middleware('role:Staf');
     Route::get('/teknisi', [DashboardController::class, 'teknisi'])->middleware('role:Teknisi');
-    Route::resource('users', \App\Http\Controllers\UserController::class)->middleware('role:Admin');
-    Route::post('/users/{id}/toggle-status', [\App\Http\Controllers\UserController::class, 'toggleStatus'])->middleware('role:Admin')->name('users.toggle-status');
+
+    // Users: Admin & Staf can manage
+    Route::resource('users', \App\Http\Controllers\UserController::class)->middleware('role:Admin,Staf');
+    Route::post('/users/{id}/toggle-status', [\App\Http\Controllers\UserController::class, 'toggleStatus'])->middleware('role:Admin,Staf')->name('users.toggle-status');
     Route::post('/users/{id}/approve', [\App\Http\Controllers\UserController::class, 'approve'])->middleware('role:Admin')->name('users.approve');
+
+    // Units: Admin & Staf can manage
     Route::post('units/import', [\App\Http\Controllers\UnitController::class, 'import'])->middleware('role:Admin')->name('units.import');
-    Route::resource('units', \App\Http\Controllers\UnitController::class)->middleware('role:Admin');
+    Route::resource('units', \App\Http\Controllers\UnitController::class)->middleware('role:Admin,Staf');
+
+    // Unit Mutations: request delete (Staf), approve/reject (Admin), restore (Admin)
+    Route::post('/units/{unit}/request-delete', [\App\Http\Controllers\UnitController::class, 'requestDelete'])->middleware('role:Staf')->name('units.request-delete');
+    Route::post('/mutations/{mutation}/approve', [\App\Http\Controllers\UnitController::class, 'approveMutation'])->middleware('role:Admin')->name('mutations.approve');
+    Route::post('/mutations/{mutation}/reject', [\App\Http\Controllers\UnitController::class, 'rejectMutation'])->middleware('role:Admin')->name('mutations.reject');
+    Route::post('/units/{unit}/restore', [\App\Http\Controllers\UnitController::class, 'restoreUnit'])->middleware('role:Admin')->name('units.restore');
 });
 
 // Reports Actions

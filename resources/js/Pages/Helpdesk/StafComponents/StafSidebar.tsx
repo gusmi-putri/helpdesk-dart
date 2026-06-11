@@ -1,13 +1,14 @@
 import React from 'react';
-import { AlertTriangle, CheckCircle, Database, LogOut } from 'lucide-react';
+import { AlertTriangle, CheckCircle, Database, LogOut, GitPullRequest, Users } from 'lucide-react';
 
 interface StafSidebarProps {
   isMobileMenuOpen: boolean;
   setIsMobileMenuOpen: (open: boolean) => void;
-  activeMenu: 'MASUK' | 'SELESAI' | 'INVENTARIS';
-  setActiveMenu: (menu: 'MASUK' | 'SELESAI' | 'INVENTARIS') => void;
+  activeMenu: 'MASUK' | 'SELESAI' | 'INVENTARIS' | 'MUTASI' | 'PERSONEL';
+  setActiveMenu: (menu: 'MASUK' | 'SELESAI' | 'INVENTARIS' | 'MUTASI' | 'PERSONEL') => void;
   handleLogout: () => void;
   pendingCount?: number;
+  mutationPendingCount?: number;
 }
 
 const StafSidebar: React.FC<StafSidebarProps> = ({
@@ -16,8 +17,13 @@ const StafSidebar: React.FC<StafSidebarProps> = ({
   activeMenu,
   setActiveMenu,
   handleLogout,
-  pendingCount = 0
+  pendingCount = 0,
+  mutationPendingCount = 0
 }) => {
+  const menuClass = (menu: string) =>
+    `w-full flex items-center justify-between px-6 py-3.5 font-tactical text-sm tracking-wider transition-all border-l-4
+    ${activeMenu === menu ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}`;
+
   return (
     <aside className={`fixed inset-y-0 left-0 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 w-72 bg-white dark:bg-cighra-dark border-r border-slate-200 dark:border-slate-600 z-50 flex-shrink-0 flex flex-col shadow-2xl`}>
       <div className="p-6 border-b border-slate-200 dark:border-slate-600 flex items-center gap-4 bg-cighra-light dark:bg-cighra-darkcard/80">
@@ -29,12 +35,10 @@ const StafSidebar: React.FC<StafSidebarProps> = ({
         </div>
       </div>
 
-      <nav className="flex-1 py-6 space-y-1">
+      <nav className="flex-1 py-6 space-y-1 overflow-y-auto custom-scrollbar">
         <button
           onClick={() => { setActiveMenu('MASUK'); setIsMobileMenuOpen(false); }}
-          className={`w-full flex items-center justify-between px-6 py-3.5 font-tactical text-sm tracking-wider transition-all border-l-4
-            ${activeMenu === 'MASUK' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}}
-          `}
+          className={menuClass('MASUK')}
         >
           <div className="flex items-center gap-3">
             <AlertTriangle className="w-5 h-5" /> LAPORAN MASUK
@@ -48,20 +52,43 @@ const StafSidebar: React.FC<StafSidebarProps> = ({
 
         <button
           onClick={() => { setActiveMenu('SELESAI'); setIsMobileMenuOpen(false); }}
-          className={`w-full flex items-center gap-3 px-6 py-3.5 font-tactical text-sm tracking-wider transition-all border-l-4
-            ${activeMenu === 'SELESAI' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}}
-          `}
+          className={menuClass('SELESAI')}
         >
-          <CheckCircle className="w-5 h-5" /> ARSIP PERBAIKAN SELESAI
+          <div className="flex items-center gap-3">
+            <CheckCircle className="w-5 h-5" /> ARSIP PERBAIKAN SELESAI
+          </div>
         </button>
 
         <button
           onClick={() => { setActiveMenu('INVENTARIS'); setIsMobileMenuOpen(false); }}
-          className={`w-full flex items-center gap-3 px-6 py-3.5 font-tactical text-sm tracking-wider transition-all border-l-4
-            ${activeMenu === 'INVENTARIS' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}}
-          `}
+          className={menuClass('INVENTARIS')}
         >
-          <Database className="w-5 h-5" /> INVENTARIS UNIT DART
+          <div className="flex items-center gap-3">
+            <Database className="w-5 h-5" /> INVENTARIS UNIT DART
+          </div>
+        </button>
+
+        <button
+          onClick={() => { setActiveMenu('MUTASI'); setIsMobileMenuOpen(false); }}
+          className={menuClass('MUTASI')}
+        >
+          <div className="flex items-center gap-3">
+            <GitPullRequest className="w-5 h-5" /> MUTASI INVENTARIS
+          </div>
+          {mutationPendingCount > 0 && (
+            <span className="bg-orange-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse">
+              {mutationPendingCount}
+            </span>
+          )}
+        </button>
+
+        <button
+          onClick={() => { setActiveMenu('PERSONEL'); setIsMobileMenuOpen(false); }}
+          className={menuClass('PERSONEL')}
+        >
+          <div className="flex items-center gap-3">
+            <Users className="w-5 h-5" /> DATA PERSONEL
+          </div>
         </button>
       </nav>
 

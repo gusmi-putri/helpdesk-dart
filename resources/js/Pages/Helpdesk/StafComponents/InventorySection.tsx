@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search } from 'lucide-react';
+import { Search, Plus, Trash2 } from 'lucide-react';
 
 interface InventorySectionProps {
   dbUnits: any[];
@@ -11,6 +11,8 @@ interface InventorySectionProps {
   setFilterSatuan: (s: string) => void;
   sortConfig: {key: string, direction: 'asc' | 'desc'} | null;
   setSortConfig: (config: {key: string, direction: 'asc' | 'desc'} | null) => void;
+  onAddUnit?: () => void;
+  onRequestDelete?: (unit: any) => void;
 }
 
 const InventorySection: React.FC<InventorySectionProps> = ({
@@ -22,7 +24,9 @@ const InventorySection: React.FC<InventorySectionProps> = ({
   filterSatuan,
   setFilterSatuan,
   sortConfig,
-  setSortConfig
+  setSortConfig,
+  onAddUnit,
+  onRequestDelete,
 }) => {
   const jenisOptions = ['ALL', ...new Set(dbUnits.map((u: any) => u.jenis_dart))];
   const satuanOptions = ['ALL', ...new Set(dbUnits.map((u: any) => u.asal_satuan))];
@@ -52,7 +56,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
   return (
     <div className="animate-in fade-in space-y-6 mt-6">
       <div className="bg-white dark:bg-cighra-dark/50 border border-slate-200 dark:border-slate-600 p-4 shadow-xl">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="md:col-span-1">
             <label className="block text-[10px] font-mono font-bold text-slate-500 dark:text-slate-300 mb-1 uppercase">CARI PERANGKAT</label>
             <div className="relative">
@@ -78,6 +82,14 @@ const InventorySection: React.FC<InventorySectionProps> = ({
               {satuanOptions.map((o: any) => <option key={o} value={o}>{o === 'ALL' ? 'SEMUA' : o}</option>)}
             </select>
           </div>
+          {onAddUnit && (
+            <div className="flex items-end">
+              <button onClick={onAddUnit}
+                className="w-full bg-cighra-primary dark:bg-cighra-gold text-white dark:text-slate-900 px-4 py-2 font-tactical font-bold text-xs tracking-widest hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 transition-all flex items-center justify-center gap-2">
+                <Plus className="w-4 h-4" /> AJUKAN TAMBAH UNIT
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -92,6 +104,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
                 <th className="p-4 cursor-pointer hover:text-cighra-gold" onClick={() => handleSort('status_unit')}>STATUS</th>
                 <th className="p-4">CEK</th>
                 <th className="p-4 cursor-pointer hover:text-cighra-gold" onClick={() => handleSort('nama_dart')}>KETERANGAN</th>
+                {onRequestDelete && <th className="p-4 text-right">OPSI</th>}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-soft-sand/5 text-slate-800 dark:text-white bg-white dark:bg-transparent">
@@ -112,6 +125,14 @@ const InventorySection: React.FC<InventorySectionProps> = ({
                   </td>
                   <td className="p-4 font-mono text-[10px] text-slate-400 dark:text-slate-400">{u.last_maintenance}</td>
                   <td className="p-4 font-bold uppercase">{u.nama_dart}</td>
+                  {onRequestDelete && (
+                    <td className="p-4 text-right">
+                      <button onClick={() => onRequestDelete(u)}
+                        className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-500 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Ajukan Penghapusan">
+                        <Trash2 size={14} />
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>

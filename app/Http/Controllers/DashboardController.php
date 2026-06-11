@@ -127,13 +127,48 @@ class DashboardController extends Controller
             ];
         });
 
+        $mutations = \App\Models\UnitMutation::with(['unit', 'requester', 'approver'])
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function($m) {
+                return [
+                    'id' => $m->id,
+                    'unit_id' => $m->unit_id,
+                    'type' => $m->type,
+                    'reason' => $m->reason,
+                    'document_path' => $m->document_path ? asset('storage/' . $m->document_path) : null,
+                    'requested_by' => $m->requester ? $m->requester->nama_lengkap : 'Unknown',
+                    'requested_by_id' => $m->requested_by,
+                    'approved_by' => $m->approver ? $m->approver->nama_lengkap : null,
+                    'status' => $m->status,
+                    'admin_notes' => $m->admin_notes,
+                    'unit_data' => $m->unit_data,
+                    'created_at' => $m->created_at->format('d M Y, H:i'),
+                    'updated_at' => $m->updated_at->format('d M Y, H:i'),
+                ];
+            });
+
+        $archivedUnits = Unit::onlyTrashed()->get()->map(function($u) {
+            return [
+                'db_id' => $u->id,
+                'nomor_seri' => $u->nomor_seri,
+                'nama_dart' => $u->nama_dart,
+                'jenis_dart' => $u->jenis_dart,
+                'asal_satuan' => $u->asal_satuan,
+                'status_unit' => $u->status_unit,
+                'deleted_at' => $u->deleted_at->format('d M Y, H:i'),
+            ];
+        });
+
         return Inertia::render('Helpdesk/DashboardAdmin', [
             'dbCases' => $cases,
             'dbUsers' => $users,
             'dbLogs' => $logs,
             'dbRoles' => $roles,
             'dbUnits' => $units,
-            'dbFeedbacks' => $feedbacks
+            'dbFeedbacks' => $feedbacks,
+            'dbMutations' => $mutations,
+            'dbArchivedUnits' => $archivedUnits,
         ]);
     }
 
@@ -183,7 +218,7 @@ class DashboardController extends Controller
     {
         $cases = $this->formatReports(Report::query());
         
-        // Ambil semua teknisi untuk ditugaskan
+        // Ambil semua teknisi untuk ditugaskan (tetap diperlukan untuk AssignTechnicianModal)
         $technicians = User::whereHas('role', function($q) {
             $q->where('nama_role', 'Teknisi');
         })->with('reportsDitangani')->get()->map(function($u) {
@@ -194,6 +229,27 @@ class DashboardController extends Controller
                 'spesialisasi' => $u->spesialisasi,
                 'tasksReceived' => $u->reportsDitangani->count(),
                 'tasksInProgress' => $u->reportsDitangani->whereIn('status_laporan', ['Diterima Teknisi', 'Diproses'])->count()
+            ];
+        });
+
+        // Ambil semua users untuk data personel
+        $allUsers = User::with('role')->get()->map(function($u) {
+            return [
+                'db_id' => $u->id,
+                'id' => 'USR-'.str_pad($u->id, 3, '0', STR_PAD_LEFT),
+                'name' => $u->nama_lengkap,
+                'username' => $u->username,
+                'email' => $u->email,
+                'nrp_nip' => $u->nrp_nip,
+                'no_wa' => $u->no_wa,
+                'asal_satuan' => $u->asal_satuan,
+                'spesialisasi' => $u->spesialisasi,
+                'is_approved' => $u->is_approved,
+                'role' => $u->role ? $u->role->nama_role : 'No Role',
+                'role_id' => $u->role_id,
+                'is_active' => $u->is_active,
+                'status' => !$u->is_approved ? 'Menunggu' : ($u->is_active ? 'Aktif' : 'Nonaktif'),
+                'lastLogin' => 'Baru saja'
             ];
         });
 
@@ -209,10 +265,41 @@ class DashboardController extends Controller
             ];
         });
 
+        $mutations = \App\Models\UnitMutation::with(['unit', 'requester', 'approver'])
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function($m) {
+                return [
+                    'id' => $m->id,
+                    'unit_id' => $m->unit_id,
+                    'type' => $m->type,
+                    'reason' => $m->reason,
+                    'document_path' => $m->document_path ? asset('storage/' . $m->document_path) : null,
+                    'requested_by' => $m->requester ? $m->requester->nama_lengkap : 'Unknown',
+                    'requested_by_id' => $m->requested_by,
+                    'approved_by' => $m->approver ? $m->approver->nama_lengkap : null,
+                    'status' => $m->status,
+                    'admin_notes' => $m->admin_notes,
+                    'unit_data' => $m->unit_data,
+                    'created_at' => $m->created_at->format('d M Y, H:i'),
+                    'updated_at' => $m->updated_at->format('d M Y, H:i'),
+                ];
+            });
+
+        $roles = \App\Models\Role::where('nama_role', '!=', 'Admin')->get()->map(function($r) {
+            return [
+                'id' => $r->id,
+                'name' => $r->nama_role
+            ];
+        });
+
         return Inertia::render('Helpdesk/DashboardStaf', [
             'dbCases' => $cases,
             'dbUsers' => $technicians,
-            'dbUnits' => $units
+            'dbAllUsers' => $allUsers,
+            'dbUnits' => $units,
+            'dbMutations' => $mutations,
+            'dbRoles' => $roles,
         ]);
     }
 }

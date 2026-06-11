@@ -11,6 +11,7 @@ import ReportsSection from './AdminComponents/ReportsSection';
 import ApprovalTable from './AdminComponents/ApprovalTable';
 import FeedbackTable from './AdminComponents/FeedbackTable';
 import MonitoringMap from './AdminComponents/MonitoringMap';
+import MutationApproval from './AdminComponents/MutationApproval';
 import UserDetailModal from './AdminComponents/UserDetailModal';
 import UserDeleteModal from './AdminComponents/UserDeleteModal';
 import UserEditModal from './AdminComponents/UserEditModal';
@@ -24,10 +25,10 @@ import { useStore } from '@/store/useStore';
 import { router, useForm, usePage, Link } from '@inertiajs/react';
 
 type SubMenuReport = 'KERUSAKAN' | 'PERBAIKAN';
-type MenuTab = 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SETTINGS' | 'APPROVAL' | 'FEEDBACK';
+type MenuTab = 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SETTINGS' | 'APPROVAL' | 'FEEDBACK' | 'MUTATIONS';
 
 const DashboardAdmin = (props: any) => {
-  const { dbCases = [], dbUsers = [], dbLogs = [], dbRoles = [], dbUnits = [], dbFeedbacks = [] } = props;
+  const { dbCases = [], dbUsers = [], dbLogs = [], dbRoles = [], dbUnits = [], dbFeedbacks = [], dbMutations = [], dbArchivedUnits = [] } = props;
   const [activeMenu, setActiveMenu] = useState<MenuTab>('ANALYTICS');
   const [activeSubReport, setActiveSubReport] = useState<SubMenuReport>('KERUSAKAN');
   const [isReportsExpanded, setIsReportsExpanded] = useState<boolean>(true);
@@ -310,6 +311,7 @@ const DashboardAdmin = (props: any) => {
         setActiveSubReport={setActiveSubReport}
         activeSubReport={activeSubReport}
         dbUsers={dbUsers}
+        dbMutations={dbMutations}
         handleLogout={handleLogout}
       />
 
@@ -381,6 +383,7 @@ const DashboardAdmin = (props: any) => {
               />
             )}
             {activeMenu === 'FEEDBACK' && <FeedbackTable dbFeedbacks={dbFeedbacks} />}
+            {activeMenu === 'MUTATIONS' && <MutationApproval dbMutations={dbMutations} dbArchivedUnits={dbArchivedUnits} />}
           </div>
         </div>
       </main>
