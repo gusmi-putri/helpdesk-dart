@@ -42,7 +42,7 @@ const CompletionForm: React.FC<CompletionFormProps> = ({
           {errors.catatan && <p className="text-[9px] text-cighra-primary dark:text-cighra-gold mt-1 font-mono uppercase">{errors.catatan}</p>}
         </div>
 
-        <div className={`border-2 border-dashed ${errors.foto_selesai ? 'border-red-500 dark:border-red-500 bg-red-50 dark:bg-red-900/10' : 'border-slate-300 dark:border-slate-600 bg-cighra-light dark:bg-cighra-darkcard/10'} p-4 text-center hover:border-cighra-primary dark:border-cighra-gold transition-all group cursor-pointer relative`}>
+        <div className={`border-2 border-dashed ${errors.foto_selesai ? 'border-red-500 dark:border-red-500 bg-red-50 dark:bg-red-900/10' : 'border-slate-300 dark:border-slate-600 bg-cighra-light dark:bg-cighra-darkcard/10'} p-4 text-center hover:border-cighra-primary dark:hover:border-cighra-gold transition-all group cursor-pointer relative`}>
           <input
             type="file"
             accept="image/*"
@@ -71,8 +71,8 @@ const CompletionForm: React.FC<CompletionFormProps> = ({
             ) : (
               <div className="flex flex-col items-center gap-1">
                 <div className="flex items-center gap-3">
-                  <Activity className="w-5 h-5 text-slate-500 group-hover:text-cighra-primary dark:text-cighra-gold transition-colors" />
-                  <span className="text-xs font-mono text-slate-500 dark:text-slate-300 group-hover:text-cighra-primary dark:text-cighra-gold uppercase font-bold">
+                  <Activity className="w-5 h-5 text-slate-500 group-hover:text-cighra-primary dark:group-hover:text-cighra-gold transition-colors" />
+                  <span className="text-xs font-mono text-slate-500 dark:text-slate-300 group-hover:text-cighra-primary dark:group-hover:text-cighra-gold uppercase font-bold">
                     UNGGAH FOTO BUKTI SELESAI <span className="text-cighra-primary dark:text-cighra-gold ml-1">*</span>
                   </span>
                 </div>

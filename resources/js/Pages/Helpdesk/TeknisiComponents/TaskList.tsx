@@ -83,7 +83,7 @@ const TaskList: React.FC<TaskListProps> = ({
                 </span>
               </div>
 
-              <h3 className="text-slate-800 dark:text-white font-tactical text-lg font-bold mb-1 group-hover:text-cighra-primary dark:text-cighra-gold transition-colors leading-tight line-clamp-2 uppercase">
+              <h3 className="text-slate-800 dark:text-white font-tactical text-lg font-bold mb-1 group-hover:text-cighra-primary dark:group-hover:text-cighra-gold transition-colors leading-tight line-clamp-2 uppercase">
                 {task.kerusakan.barangRusak}
               </h3>
 

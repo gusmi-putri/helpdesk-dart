@@ -34,7 +34,7 @@ const Contact = () => {
           <div className="flex items-center gap-3 mb-8">
             <h2 className="text-2xl md:text-4xl font-stencil text-slate-800 dark:text-white uppercase">UMPAN BALIK</h2>
           </div>
-          <p className="text-slate-600 dark:text-slate-300 mb-8 font-mono text-sm tracking-wide">BERIKAN SARAN ATAU PENILAIAN ANDA UNTUK MEMBANTU KAMI MENINGKATKAN LAYANAN HELPDESK DART.</p>
+          <p className="text-slate-600 dark:text-slate-300 mb-8 font-mono text-sm tracking-wide">BERIKAN SARAN ATAU PENILAIAN ANDA UNTUK MEMBANTU KAMI MENINGKATKAN LAYANAN SISFO DART (DYNAMIC AUTONOMOUS RETALIATORY TARGET).</p>
 
           <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

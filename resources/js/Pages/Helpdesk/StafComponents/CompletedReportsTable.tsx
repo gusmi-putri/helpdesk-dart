@@ -42,7 +42,7 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                   <td className="p-4">
                     <button
                       onClick={() => onSelectReport(report.db_id)}
-                      className="font-mono text-slate-600 dark:text-slate-300 text-sm bg-white dark:bg-cighra-darkcard px-2 py-1 border border-slate-300 dark:border-slate-600 block w-fit hover:border-cighra-primary dark:border-cighra-gold hover:text-cighra-primary dark:text-cighra-gold transition-colors"
+                      className="font-mono text-slate-600 dark:text-slate-300 text-sm bg-white dark:bg-cighra-darkcard px-2 py-1 border border-slate-300 dark:border-slate-600 block w-fit hover:border-cighra-primary dark:hover:border-cighra-gold hover:text-cighra-primary dark:hover:text-cighra-gold transition-colors"
                     >
                       {report.caseId}
                     </button>

@@ -23,7 +23,7 @@ const PelaporSidebar: React.FC<PelaporSidebarProps> = ({
           <img src="/logo.png" alt="DART Logo" className="w-12 h-14 object-contain" />
         </div>
         <div>
-          <h1 className="font-stencil text-2xl tracking-widest text-slate-800 dark:text-white leading-none">HELPDESK-DART</h1>
+          <h1 className="font-stencil text-2xl tracking-widest text-slate-800 dark:text-white leading-none">SISFO DART</h1>
         </div>
       </div>
 
@@ -57,7 +57,7 @@ const PelaporSidebar: React.FC<PelaporSidebarProps> = ({
       </nav>
 
       <div className="p-4 border-t border-slate-200 dark:border-slate-600 bg-cighra-light dark:bg-cighra-dark/60">
-        <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:text-cighra-gold hover:bg-cighra-primary/10 dark:bg-cighra-gold/10 font-tactical text-sm tracking-wider transition-all rounded-sm border border-transparent hover:border-cighra-primary dark:border-cighra-gold/30">
+        <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 font-tactical text-sm tracking-wider transition-all rounded-sm border border-transparent hover:border-cighra-primary dark:hover:border-cighra-gold/30">
           <LogOut className="w-5 h-5" /> KELUAR SISTEM
         </button>
       </div>

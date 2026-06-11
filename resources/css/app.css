@@ -18,6 +18,17 @@
   --font-sans: "Inter", sans-serif;
   --font-tactical: "Rajdhani", sans-serif;
   --font-stencil: "Oswald", sans-serif;
+
+  /* Ported from tailwind.config.js */
+  --color-gunmetal: #0A1229;
+  --color-sand: #EBF5FF;
+  --color-olive: #68a309;
+  --color-khaki: #FDE68A;
+  --color-targetred: #6D1020;
+  --color-camogreen: #0c8237;
+  --color-soft-gunmetal: #334155;
+  --color-soft-sand: #E2E8F0;
+  --color-deep-red: #4A0B16;
 }
 
 @layer base {
