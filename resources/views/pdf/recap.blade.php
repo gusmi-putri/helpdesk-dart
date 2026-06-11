@@ -35,11 +35,11 @@
     </style>
 </head>
 <body>
-    <div class="watermark">HELPDESK DART</div>
+    <div class="watermark">SISFO DART</div>
 
     <div class="header">
         <img src="{{ public_path('logo.png') }}" style="height: 50px; margin-bottom: 5px;" alt="LOGO">
-        <h1>COMMAND CENTER HELPDESK DART</h1>
+        <h1>COMMAND CENTER SISFO DART</h1>
         <p>{{ $title }}</p>
     </div>
 
@@ -123,7 +123,7 @@
     </table>
 
     <div class="footer">
-        Diterbitkan secara otomatis oleh Sistem Helpdesk DART Command Center pada {{ now()->format('d/m/Y H:i:s') }}
+        Diterbitkan secara otomatis oleh Sistem SISFO DART Command Center pada {{ now()->format('d/m/Y H:i:s') }}
     </div>
 </body>
 </html>

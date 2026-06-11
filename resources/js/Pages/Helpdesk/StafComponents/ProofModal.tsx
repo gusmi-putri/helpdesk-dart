@@ -17,7 +17,7 @@ const ProofModal: React.FC<ProofModalProps> = ({ isOpen, onClose, viewingProof }
           <h3 className="font-tactical font-bold text-cighra-primary dark:text-cighra-gold tracking-widest uppercase flex items-center gap-2">
             <Camera className="w-5 h-5" /> LAMPIRAN BUKTI KENDALA
           </h3>
-          <button onClick={onClose} className="text-slate-500 hover:text-cighra-primary dark:text-cighra-gold transition-colors font-bold text-xl">✕</button>
+          <button onClick={onClose} className="text-slate-500 dark:text-slate-400 hover:text-cighra-primary dark:hover:text-cighra-gold transition-colors font-bold text-xl">✕</button>
         </div>
         <div className="p-6">
           <div className="grid grid-cols-2 gap-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">

@@ -85,7 +85,7 @@ const AnalyticsSection: React.FC<AnalyticsSectionProps> = ({ dbCases }) => {
         <div className="bg-white dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600 p-6 shadow-lg">
           <h3 className="text-xs font-tactical font-bold text-gunmetal dark:text-slate-300 tracking-widest mb-6 uppercase border-b border-slate-200 dark:border-slate-600 pb-2">Status Penanganan Laporan</h3>
           <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
               <PieChart>
                 <Pie
                   data={statusData}
@@ -111,7 +111,7 @@ const AnalyticsSection: React.FC<AnalyticsSectionProps> = ({ dbCases }) => {
         <div className="bg-white dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600 p-6 shadow-lg">
           <h3 className="text-xs font-tactical font-bold text-gunmetal dark:text-slate-300 tracking-widest mb-6 uppercase border-b border-slate-200 dark:border-slate-600 pb-2">Klasifikasi Urgensi</h3>
           <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
               <BarChart data={urgencyData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#374151" vertical={false} />
                 <XAxis dataKey="name" stroke="#6b7280" style={{ fontSize: '10px', fontFamily: 'monospace' }} />

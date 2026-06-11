@@ -17,7 +17,7 @@ const PelaporReportDetailModal: React.FC<PelaporReportDetailModalProps> = ({ isO
           <h3 className="font-tactical font-bold text-cighra-primary dark:text-cighra-gold tracking-widest uppercase flex items-center gap-2">
             <Activity size={18} /> RINCIAN TIKET: {report.caseId}
           </h3>
-          <button onClick={onClose} className="text-slate-500 hover:text-cighra-primary dark:text-cighra-gold text-xl">✕</button>
+          <button onClick={onClose} className="text-slate-500 dark:text-slate-400 hover:text-cighra-primary dark:hover:text-cighra-gold text-xl">✕</button>
         </div>
         <div className="p-8 space-y-8 overflow-y-auto max-h-[80vh] custom-scrollbar text-gunmetal dark:text-slate-300">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

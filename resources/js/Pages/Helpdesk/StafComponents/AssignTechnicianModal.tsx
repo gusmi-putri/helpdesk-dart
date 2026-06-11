@@ -23,14 +23,14 @@ const AssignTechnicianModal: React.FC<AssignTechnicianModalProps> = ({
           <h3 className="font-tactical font-bold text-cighra-primary dark:text-cighra-gold tracking-widest uppercase flex items-center gap-2">
             <Users className="w-5 h-5" /> PILIH PERSONEL TEKNISI
           </h3>
-          <button onClick={onClose} className="text-slate-600 hover:text-cighra-primary dark:text-cighra-gold transition-colors font-bold text-xl">✕</button>
+          <button onClick={onClose} className="text-slate-600 dark:text-slate-400 hover:text-cighra-primary dark:hover:text-cighra-gold transition-colors font-bold text-xl">✕</button>
         </div>
         <div className="p-6">
           <p className="text-sm text-slate-600 dark:text-slate-300 mb-4 font-mono uppercase">Pilih personel yang akan ditugaskan untuk menangani laporan ini.</p>
 
           <div className="space-y-3 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
             {technicians.map((tek: any) => (
-              <div key={tek.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-cighra-light dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600 hover:border-cighra-primary dark:border-cighra-gold dark:hover:border-cighra-primary dark:border-cighra-gold transition-colors group">
+              <div key={tek.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-cighra-light dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600 hover:border-cighra-primary dark:hover:border-cighra-gold transition-colors group">
                 <div className="flex flex-col mb-3 sm:mb-0 text-gunmetal dark:text-slate-300">
                   <span className="font-bold text-slate-800 dark:text-white text-lg uppercase">{tek.name}</span>
                   <span className="text-xs text-cighra-primary dark:text-cighra-gold font-mono uppercase tracking-widest mt-1">{tek.spesialisasi || 'GENERALIST'} | {tek.username}</span>

@@ -94,7 +94,7 @@ const Register: React.FC = () => {
                 REGISTRASI PELAPOR
               </h2>
               <p className="text-slate-500 dark:text-slate-300 text-[11px] font-mono tracking-[0.2em] uppercase mt-1">
-                SISTEM HELPDESK DART
+                SISTEM SISFO DART
               </p>
             </div>
             <Link href="/login" className="flex items-center gap-2 px-4 py-2 border border-slate-300 dark:border-slate-600 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 transition-all duration-300 text-[10px] font-mono font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">

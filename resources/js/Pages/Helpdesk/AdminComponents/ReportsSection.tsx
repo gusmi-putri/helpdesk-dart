@@ -189,7 +189,7 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
                     <td className="p-4 text-center">
                       <button
                         onClick={() => handlePrintCasePDF(c)}
-                        className="bg-slate-100 dark:bg-slate-700 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 dark:text-slate-900 text-slate-500 dark:text-slate-400 hover:text-gunmetal dark:hover:text-white border border-slate-300 dark:border-slate-600 hover:border-cighra-primary dark:border-cighra-gold p-2.5 transition-all flex items-center justify-center mx-auto group-hover:shadow-[0_0_15px_rgba(75,83,32,0.4)] relative overflow-hidden group/btn"
+                        className="bg-slate-50 dark:bg-slate-700 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold border border-slate-200 dark:border-slate-600 hover:border-cighra-primary dark:border-cighra-gold p-2.5 transition-all flex items-center justify-center mx-auto group-hover:shadow-[0_0_15px_rgba(75,83,32,0.4)] relative overflow-hidden group/btn rounded-sm"
                         title="Unduh PDF Berkas Kasus (2 Halaman)"
                       >
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-olive/10 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite]"></div>

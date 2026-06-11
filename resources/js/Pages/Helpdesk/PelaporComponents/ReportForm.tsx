@@ -30,15 +30,32 @@ const ReportForm: React.FC<ReportFormProps> = ({
   removeFile
 }) => {
   const [isConfirmOpen, setIsConfirmOpen] = React.useState(false);
+  const [localErrors, setLocalErrors] = React.useState<any>({});
+
+  React.useEffect(() => {
+    if (data.file_bukti && data.file_bukti.length > 0) {
+      setLocalErrors((prev: any) => ({ ...prev, file_bukti: null }));
+    }
+  }, [data.file_bukti]);
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const newErrors: any = {};
+    if (!data.unit_id) newErrors.unit_id = 'Nomor Seri DART wajib dipilih.';
+    if (!data.file_bukti || data.file_bukti.length === 0) newErrors.file_bukti = 'Wajib mengunggah minimal 1 bukti kendala (Foto/Video).';
+    
+    if (Object.keys(newErrors).length > 0) {
+      setLocalErrors(newErrors);
+      return;
+    }
+    
+    setLocalErrors({});
     setIsConfirmOpen(true);
   };
 
   const confirmSubmit = () => {
     setIsConfirmOpen(false);
-    const syntheticEvent = { preventDefault: () => {} } as React.FormEvent;
+    const syntheticEvent = { preventDefault: () => { } } as React.FormEvent;
     handleSubmit(syntheticEvent);
   };
 
@@ -73,19 +90,19 @@ const ReportForm: React.FC<ReportFormProps> = ({
           <h3 className="text-xs font-tactical font-bold text-cighra-primary dark:text-cighra-gold tracking-[0.2em] uppercase flex items-center gap-2"><CircleUser size={16} /> DATA PELAPOR</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label className="block text-xs font-semibold text-slate-500 dark:text-slate-300 mb-1.5">Nama Lengkap</label>
+              <label className="block text-xs font-bold text-slate-500 dark:text-slate-300 mb-2 uppercase tracking-wider">Nama Lengkap</label>
               <input type="text" readOnly value={authUser?.nama_lengkap || currentUser?.name || ''} className="w-full bg-white dark:bg-cighra-darkcard/80 border border-slate-300 dark:border-slate-600 px-4 py-2.5 text-sm text-gunmetal dark:text-slate-300 cursor-not-allowed rounded-sm" />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-500 dark:text-slate-300 mb-1.5">Pangkat / NRP / Golongan</label>
+              <label className="block text-xs font-bold text-slate-500 dark:text-slate-300 mb-2 uppercase tracking-wider">Pangkat / NRP / Golongan</label>
               <input type="text" readOnly value={authUser?.nrp_nip || '-'} className="w-full bg-white dark:bg-cighra-darkcard/80 border border-slate-300 dark:border-slate-600 px-4 py-2.5 text-sm text-gunmetal dark:text-slate-300 cursor-not-allowed rounded-sm" />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-500 dark:text-slate-300 mb-1.5">Satuan Kerja</label>
+              <label className="block text-xs font-bold text-slate-500 dark:text-slate-300 mb-2 uppercase tracking-wider">Satuan Kerja</label>
               <input type="text" readOnly value={authUser?.asal_satuan || '-'} className="w-full bg-white dark:bg-cighra-darkcard/80 border border-slate-300 dark:border-slate-600 px-4 py-2.5 text-sm text-gunmetal dark:text-slate-300 cursor-not-allowed rounded-sm" />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-500 dark:text-slate-300 mb-1.5">Nomor WhatsApp Aktif</label>
+              <label className="block text-xs font-bold text-slate-500 dark:text-slate-300 mb-2 uppercase tracking-wider">Nomor WhatsApp Aktif</label>
               <input type="text" readOnly value={authUser?.no_wa || '-'} className="w-full bg-white dark:bg-cighra-darkcard/80 border border-slate-300 dark:border-slate-600 px-4 py-2.5 text-sm text-gunmetal dark:text-slate-300 cursor-not-allowed rounded-sm" />
             </div>
           </div>
@@ -93,7 +110,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
         </div>
 
         <div className="glass-panel p-6 border-l-4 border-l-olive !overflow-visible relative z-20 bg-white dark:bg-cighra-darkcard/80 shadow-xl border border-slate-200 dark:border-slate-600">
-          <SearchableSelect 
+          <SearchableSelect
             label="Nomor Seri DART"
             placeholder="Ketik nomor seri atau keterangan DART..."
             options={dbUnits
@@ -105,13 +122,13 @@ const ReportForm: React.FC<ReportFormProps> = ({
                 tag: `${unit.jenis_dart} | ${unit.asal_satuan}`
               }))}
             value={data.unit_id}
-            onChange={(val) => setData('unit_id', val.toString())}
-            error={errors.unit_id}
+            onChange={(val) => { setData('unit_id', val.toString()); setLocalErrors((prev: any) => ({ ...prev, unit_id: null })); }}
+            error={errors.unit_id || localErrors.unit_id}
           />
         </div>
 
         <div className="glass-panel p-6 border-l-4 border-l-olive bg-white dark:bg-cighra-darkcard/80 shadow-xl border border-slate-200 dark:border-slate-600">
-          <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-3 uppercase">Tingkat Kerusakan <span className="text-cighra-primary dark:text-cighra-gold">*</span></label>
+          <label className="block text-xs font-bold text-slate-500 dark:text-slate-300 mb-2 uppercase tracking-wider">Tingkat Kerusakan <span className="text-cighra-primary dark:text-cighra-gold">*</span></label>
           <div className="space-y-3">
             {['Ringan', 'Sedang', 'Parah'].map(level => (
               <label key={level} className={`flex items-center gap-3 p-3 rounded-sm border cursor-pointer transition-all ${data.tingkat_kerusakan === level ? 'border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/10 dark:bg-cighra-primary/20 dark:bg-cighra-gold/20' : 'border-slate-200 dark:border-slate-600 hover:border-cighra-primary dark:border-cighra-gold/50 hover:bg-white dark:hover:bg-black/40'}`}>
@@ -126,8 +143,8 @@ const ReportForm: React.FC<ReportFormProps> = ({
         </div>
 
         <div className="glass-panel p-6 border-l-4 border-l-olive bg-white dark:bg-cighra-darkcard/80 shadow-xl border border-slate-200 dark:border-slate-600">
-          <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1 uppercase">Upload Bukti Kendala <span className="text-cighra-primary dark:text-cighra-gold">*</span></label>
-          <p className="text-xs text-slate-500 dark:text-slate-300 mb-4">Maksimum 5 file (Gambar atau Video). Ukuran maks 100 MB per file.</p>
+          <label className="block text-xs font-bold text-slate-500 dark:text-slate-300 mb-2 uppercase tracking-wider">Upload Bukti Kendala <span className="text-cighra-primary dark:text-cighra-gold">*</span></label>
+          <p className="text-xs text-slate-500 dark:text-slate-300 mb-4">Maksimum 5 file (Gambar atau Video). Ukuran maks 20 MB per file.</p>
           <input type="file" ref={fileInputRef} onChange={handleFileSelect} accept="image/*,video/*" multiple className="hidden" />
           <button type="button" onClick={() => fileInputRef.current?.click()} disabled={data.file_bukti.length >= 5}
             className="flex items-center gap-2 px-5 py-2.5 border-2 border-dashed border-cighra-primary dark:border-cighra-gold/40 text-cighra-primary dark:text-cighra-gold font-semibold text-sm rounded-sm hover:bg-cighra-primary/10 dark:bg-cighra-gold/10 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
@@ -148,11 +165,11 @@ const ReportForm: React.FC<ReportFormProps> = ({
               <p className="text-[10px] text-slate-500">{data.file_bukti.length}/5 file terpilih</p>
             </div>
           )}
-          {errors.file_bukti && <p className="text-[9px] text-cighra-primary dark:text-cighra-gold mt-1 font-mono uppercase">{errors.file_bukti}</p>}
+          {(errors.file_bukti || localErrors.file_bukti) && <p className="text-[10px] text-red-500 dark:text-cighra-gold mt-3 font-mono font-bold uppercase bg-red-50 dark:bg-cighra-gold/10 p-2 border border-red-200 dark:border-cighra-gold/30 rounded-sm shadow-sm">{errors.file_bukti || localErrors.file_bukti}</p>}
         </div>
 
         <div className="glass-panel p-6 border-l-4 border-l-olive bg-white dark:bg-cighra-darkcard/80 shadow-xl border border-slate-200 dark:border-slate-600">
-          <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1 uppercase">Prioritas Penanganan <span className="text-cighra-primary dark:text-cighra-gold">*</span></label>
+          <label className="block text-xs font-bold text-slate-500 dark:text-slate-300 mb-2 uppercase tracking-wider">Prioritas Penanganan <span className="text-cighra-primary dark:text-cighra-gold">*</span></label>
           <p className="text-xs text-slate-500 dark:text-slate-300 italic mb-3">Pilihlah tingkat urgensi sesuai kondisi lapangan agar tim dapat memprioritaskan penanganan.</p>
           <div className="space-y-3">
             {[
@@ -174,7 +191,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
         </div>
 
         <div className="glass-panel p-6 border-l-4 border-l-olive bg-white dark:bg-cighra-darkcard/80 shadow-xl border border-slate-200 dark:border-slate-600">
-          <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-2 uppercase">Deskripsi Kerusakan <span className="text-cighra-primary dark:text-cighra-gold">*</span></label>
+          <label className="block text-xs font-bold text-slate-500 dark:text-slate-300 mb-2 uppercase tracking-wider">Deskripsi Kerusakan <span className="text-cighra-primary dark:text-cighra-gold">*</span></label>
           <textarea value={data.deskripsi} onChange={(e) => setData('deskripsi', e.target.value)} required rows={5}
             className="w-full bg-cighra-light/50 dark:bg-cighra-darkcard/80 border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:border-cighra-gold transition-colors resize-none rounded-sm"
             placeholder="Jelaskan secara detail kondisi kerusakan, kronologi kejadian, dan gejala yang dialami..." />

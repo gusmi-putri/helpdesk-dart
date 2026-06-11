@@ -49,7 +49,7 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
 
   return (
     <div className="relative" ref={containerRef} style={{ zIndex: isOpen ? 100 : 1 }}>
-      {label && <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-2 uppercase">{label} <span className="text-cighra-primary dark:text-cighra-gold">*</span></label>}
+      {label && <label className="block text-xs font-bold text-slate-500 dark:text-slate-300 mb-2 uppercase tracking-wider">{label} <span className="text-cighra-primary dark:text-cighra-gold">*</span></label>}
       
       {/* Trigger Area */}
       <div 

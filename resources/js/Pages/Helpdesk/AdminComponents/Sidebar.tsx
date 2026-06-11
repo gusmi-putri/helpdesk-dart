@@ -48,7 +48,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             <img src="/logo.png" alt="DART Logo" className="w-12 h-14 object-contain drop-shadow-[0_0_8px_rgba(255,215,0,0.5)]" />
           </div>
           <div>
-            <h1 className="font-stencil text-2xl tracking-widest text-slate-800 dark:text-white leading-none">HELPDESK-DART</h1>
+            <h1 className="font-stencil text-2xl tracking-widest text-slate-800 dark:text-white leading-none">SISFO DART</h1>
           </div>
         </div>
 
@@ -57,7 +57,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           <button
             onClick={() => handleMenuClick('ANALYTICS')}
             className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4
-              ${activeMenu === 'ANALYTICS' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50'}
+              ${activeMenu === 'ANALYTICS' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}}
             `}
           >
             <Activity size={18} /> ANALISIS DATA
@@ -66,7 +66,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           <button
             onClick={() => handleMenuClick('MAP')}
             className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4
-              ${activeMenu === 'MAP' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50'}
+              ${activeMenu === 'MAP' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}}
             `}
           >
             <MapIcon size={18} /> PETA MONITORING
@@ -75,7 +75,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           <button
             onClick={() => handleMenuClick('USERS')}
             className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4
-              ${activeMenu === 'USERS' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50'}
+              ${activeMenu === 'USERS' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}}
             `}
           >
             <Users size={18} /> DATA PERSONEL
@@ -84,7 +84,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           <button
             onClick={() => handleMenuClick('UNITS')}
             className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4
-              ${activeMenu === 'UNITS' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50'}
+              ${activeMenu === 'UNITS' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}}
             `}
           >
             <Package size={18} /> DATA INVENTARIS
@@ -94,7 +94,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             <button
               onClick={() => setIsReportsExpanded(!isReportsExpanded)}
               className={`w-full flex items-center justify-between px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4
-                ${activeMenu === 'REPORTS' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50'}
+                ${activeMenu === 'REPORTS' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}}
               `}
             >
               <div className="flex items-center gap-3">
@@ -107,13 +107,13 @@ const Sidebar: React.FC<SidebarProps> = ({
               <div className="bg-slate-50 dark:bg-cighra-darkcard/20 py-2 border-l-4 border-cighra-primary dark:border-cighra-gold/20">
                 <button
                   onClick={() => { handleMenuClick('REPORTS'); setActiveSubReport('KERUSAKAN'); }}
-                  className={`w-full text-left pl-14 py-2 text-xs font-tactical tracking-widest transition-colors ${activeMenu === 'REPORTS' && activeSubReport === 'KERUSAKAN' ? 'text-cighra-primary dark:text-cighra-gold font-bold' : 'text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:text-cighra-gold'}`}
+                  className={`w-full text-left pl-14 py-2 text-xs font-tactical tracking-widest transition-colors ${activeMenu === 'REPORTS' && activeSubReport === 'KERUSAKAN' ? 'text-cighra-primary dark:text-cighra-gold font-bold' : 'text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
                 >
                   » KERUSAKAN
                 </button>
                 <button
                   onClick={() => { handleMenuClick('REPORTS'); setActiveSubReport('PERBAIKAN'); }}
-                  className={`w-full text-left pl-14 py-2 text-xs font-tactical tracking-widest transition-colors ${activeMenu === 'REPORTS' && activeSubReport === 'PERBAIKAN' ? 'text-cighra-primary dark:text-cighra-gold font-bold' : 'text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:text-cighra-gold'}`}
+                  className={`w-full text-left pl-14 py-2 text-xs font-tactical tracking-widest transition-colors ${activeMenu === 'REPORTS' && activeSubReport === 'PERBAIKAN' ? 'text-cighra-primary dark:text-cighra-gold font-bold' : 'text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
                 >
                   » PERBAIKAN
                 </button>
@@ -124,7 +124,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           <button
             onClick={() => handleMenuClick('APPROVAL')}
             className={`w-full flex items-center justify-between px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4 mt-4
-              ${activeMenu === 'APPROVAL' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50'}
+              ${activeMenu === 'APPROVAL' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}}
             `}
           >
             <div className="flex items-center gap-3">
@@ -140,7 +140,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           <button
             onClick={() => handleMenuClick('FEEDBACK')}
             className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4
-              ${activeMenu === 'FEEDBACK' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50'}
+              ${activeMenu === 'FEEDBACK' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}}
             `}
           >
             <MessageSquare size={18} /> UMPAN BALIK
@@ -149,7 +149,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           <button
             onClick={() => handleMenuClick('LOGS')}
             className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4
-              ${activeMenu === 'LOGS' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50'}
+              ${activeMenu === 'LOGS' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}}
             `}
           >
             <Database size={18} /> LOG AKTIVITAS
@@ -157,7 +157,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         </nav>
 
         <div className="p-4 border-t border-slate-200 dark:border-slate-600 bg-cighra-light dark:bg-cighra-dark/60">
-          <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-300 hover:text-cighra-primary dark:text-cighra-gold hover:bg-cighra-primary/10 dark:bg-cighra-gold/10 font-tactical text-sm tracking-wider transition-all rounded-sm border border-transparent hover:border-cighra-primary dark:border-cighra-gold/30">
+          <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 font-tactical text-sm tracking-wider transition-all rounded-sm border border-transparent hover:border-cighra-primary dark:hover:border-cighra-gold/30">
             <LogOut className="w-5 h-5" /> KELUAR SISTEM
           </button>
         </div>

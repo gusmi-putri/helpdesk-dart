@@ -51,7 +51,7 @@ const ReportHistory: React.FC<ReportHistoryProps> = ({
               <button
                 key={t}
                 onClick={() => setFilterTime(t)}
-                className={`px-3 py-1.5 text-[9px] font-tactical font-bold tracking-widest transition-all ${filterTime === t ? 'bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white shadow-md' : 'text-slate-500 hover:text-cighra-primary dark:text-cighra-gold'}`}
+                className={`px-3 py-1.5 text-[9px] font-tactical font-bold tracking-widest transition-all ${filterTime === t ? 'bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white shadow-md' : 'text-slate-500 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
               >
                 {t === 'ALL' ? 'SEMUA' : t === 'TODAY' ? 'HARI INI' : 'MINGGU INI'}
               </button>
@@ -90,7 +90,7 @@ const ReportHistory: React.FC<ReportHistoryProps> = ({
                   {item.status}
                 </div>
               </div>
-              <h4 className="text-sm font-bold text-slate-800 dark:text-white mb-2 group-hover:text-cighra-primary dark:text-cighra-gold transition-colors uppercase tracking-wide">
+              <h4 className="text-sm font-bold text-slate-800 dark:text-white mb-2 group-hover:text-cighra-primary dark:group-hover:text-cighra-gold transition-colors uppercase tracking-wide">
                 {item.kerusakan.barangRusak}
               </h4>
               <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 font-mono leading-relaxed italic">

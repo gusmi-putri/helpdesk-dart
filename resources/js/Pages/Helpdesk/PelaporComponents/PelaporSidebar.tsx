@@ -23,39 +23,41 @@ const PelaporSidebar: React.FC<PelaporSidebarProps> = ({
           <img src="/logo.png" alt="DART Logo" className="w-12 h-14 object-contain" />
         </div>
         <div>
-          <h1 className="font-stencil text-2xl tracking-widest text-slate-800 dark:text-white leading-none">HELPDESK-DART</h1>
+          <h1 className="font-stencil text-2xl tracking-widest text-slate-800 dark:text-white leading-none">SISFO DART</h1>
         </div>
       </div>
 
       <nav className="flex-1 overflow-y-auto custom-scrollbar py-6">
         <button
           onClick={() => { setActiveMenu('FORM'); setIsMobileMenuOpen(false); }}
-          className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4
-            ${activeMenu === 'FORM' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-500 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-cighra-darkcard/50'}
+          className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider uppercase transition-all duration-300 border-l-4
+            ${activeMenu === 'FORM' ? 'bg-cighra-primary/10 text-cighra-primary dark:bg-cighra-gold/10 dark:text-cighra-gold border-cighra-primary dark:border-cighra-gold shadow-inner' : 'border-transparent text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-cighra-darkcard/50 hover:text-cighra-primary dark:hover:text-cighra-gold'}
           `}
         >
-          <Send size={18} /> BUAT LAPORAN
+          <Send size={18} className={activeMenu === 'FORM' ? 'text-cighra-primary dark:text-cighra-gold' : ''} /> BUAT LAPORAN
         </button>
 
-          <button
-            onClick={() => { setActiveMenu('HISTORY'); setIsMobileMenuOpen(false); }}
-            className={`w-full flex items-center gap-3 px-6 py-4 font-tactical font-bold tracking-widest uppercase transition-all duration-300 ${activeMenu === 'HISTORY' ? 'bg-white dark:bg-cighra-darkcard text-cighra-primary dark:text-cighra-gold border-r-4 border-cighra-primary dark:border-cighra-gold shadow-[inset_4px_0_0_0_rgba(20,83,163,0.1)]' : 'text-slate-500 dark:text-slate-400 hover:bg-white/50 dark:hover:bg-cighra-darkcard/50 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
-          >
-            <History size={18} className={activeMenu === 'HISTORY' ? 'text-cighra-primary dark:text-cighra-gold' : ''} />
-            RIWAYAT LAPORAN
-          </button>
-          
-          <button
-            onClick={() => { setActiveMenu('VIDEO'); setIsMobileMenuOpen(false); }}
-            className={`w-full flex items-center gap-3 px-6 py-4 font-tactical font-bold tracking-widest uppercase transition-all duration-300 ${activeMenu === 'VIDEO' ? 'bg-white dark:bg-cighra-darkcard text-cighra-primary dark:text-cighra-gold border-r-4 border-cighra-primary dark:border-cighra-gold shadow-[inset_4px_0_0_0_rgba(20,83,163,0.1)]' : 'text-slate-500 dark:text-slate-400 hover:bg-white/50 dark:hover:bg-cighra-darkcard/50 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
-          >
-            <Video size={18} className={activeMenu === 'VIDEO' ? 'text-cighra-primary dark:text-cighra-gold' : ''} />
-            BANK VIDEO
-          </button>
+        <button
+          onClick={() => { setActiveMenu('HISTORY'); setIsMobileMenuOpen(false); }}
+          className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider uppercase transition-all duration-300 border-l-4
+            ${activeMenu === 'HISTORY' ? 'bg-cighra-primary/10 text-cighra-primary dark:bg-cighra-gold/10 dark:text-cighra-gold border-cighra-primary dark:border-cighra-gold shadow-inner' : 'border-transparent text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-cighra-darkcard/50 hover:text-cighra-primary dark:hover:text-cighra-gold'}
+          `}
+        >
+          <History size={18} className={activeMenu === 'HISTORY' ? 'text-cighra-primary dark:text-cighra-gold' : ''} /> RIWAYAT LAPORAN
+        </button>
+        
+        <button
+          onClick={() => { setActiveMenu('VIDEO'); setIsMobileMenuOpen(false); }}
+          className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider uppercase transition-all duration-300 border-l-4
+            ${activeMenu === 'VIDEO' ? 'bg-cighra-primary/10 text-cighra-primary dark:bg-cighra-gold/10 dark:text-cighra-gold border-cighra-primary dark:border-cighra-gold shadow-inner' : 'border-transparent text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-cighra-darkcard/50 hover:text-cighra-primary dark:hover:text-cighra-gold'}
+          `}
+        >
+          <Video size={18} className={activeMenu === 'VIDEO' ? 'text-cighra-primary dark:text-cighra-gold' : ''} /> BANK VIDEO
+        </button>
       </nav>
 
       <div className="p-4 border-t border-slate-200 dark:border-slate-600 bg-cighra-light dark:bg-cighra-dark/60">
-        <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:text-cighra-gold hover:bg-cighra-primary/10 dark:bg-cighra-gold/10 font-tactical text-sm tracking-wider transition-all rounded-sm border border-transparent hover:border-cighra-primary dark:border-cighra-gold/30">
+        <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 font-tactical text-sm tracking-wider transition-all rounded-sm border border-transparent hover:border-cighra-primary dark:hover:border-cighra-gold/30">
           <LogOut className="w-5 h-5" /> KELUAR SISTEM
         </button>
       </div>

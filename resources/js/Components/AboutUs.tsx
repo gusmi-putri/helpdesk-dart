@@ -13,7 +13,7 @@ const AboutUs = () => {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-5xl font-stencil text-slate-800 dark:text-white mb-4 uppercase">TENTANG KAMI</h2>
-          <p className="text-slate-600 dark:text-slate-300 font-mono text-sm tracking-widest uppercase">Mengenal Lebih Dekat Pusat Layanan Helpdesk DART</p>
+          <p className="text-slate-600 dark:text-slate-300 font-mono text-sm tracking-widest uppercase">Mengenal Lebih Dekat Pusat Layanan SISFO DART (Dynamic Autonomous Retaliatory Target)</p>
           <div className="w-24 h-1 bg-cighra-gold mx-auto mt-4"></div>
         </motion.div>
 
@@ -27,7 +27,7 @@ const AboutUs = () => {
             <div className="space-y-6">
               <h3 className="text-2xl font-tactical font-bold text-slate-800 dark:text-white tracking-wider uppercase">MISI KAMI</h3>
               <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                Kami berkomitmen untuk memberikan layanan dukungan teknis yang cepat, tepat, dan andal demi menjamin kelancaran operasional latihan menembak menggunakan sistem DART.
+                Kami berkomitmen untuk memberikan layanan dukungan teknis yang cepat, tepat, dan andal demi menjamin kelancaran operasional latihan menembak menggunakan sistem DART (Dynamic Autonomous Retaliatory Target).
               </p>
               <div className="space-y-4">
                 {[

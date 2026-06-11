@@ -48,7 +48,7 @@ const CompletionForm: React.FC<CompletionFormProps> = ({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Photo Upload (Required) */}
-          <div className="border-2 border-dashed border-slate-300 dark:border-slate-600 p-4 text-center hover:border-cighra-primary dark:border-cighra-gold transition-all group cursor-pointer relative bg-cighra-light dark:bg-cighra-darkcard/10 flex flex-col justify-center min-h-[140px]">
+          <div className={`border-2 border-dashed ${errors.foto_selesai ? 'border-red-500 dark:border-red-500 bg-red-50 dark:bg-red-900/10' : 'border-slate-300 dark:border-slate-600 bg-cighra-light dark:bg-cighra-darkcard/10'} p-4 text-center hover:border-cighra-primary dark:hover:border-cighra-gold transition-all group cursor-pointer relative flex flex-col justify-center min-h-[140px]`}>
             <input
               type="file"
               accept="image/*"
@@ -76,9 +76,9 @@ const CompletionForm: React.FC<CompletionFormProps> = ({
               ) : (
                 <div className="flex flex-col items-center gap-1">
                   <div className="flex items-center gap-3">
-                    <Activity className="w-5 h-5 text-slate-500 group-hover:text-cighra-primary dark:text-cighra-gold transition-colors" />
-                    <span className="text-xs font-mono text-slate-500 dark:text-slate-300 group-hover:text-cighra-primary dark:text-cighra-gold uppercase font-bold">
-                      FOTO DOKUMENTASI (WAJIB) *
+                    <Activity className="w-5 h-5 text-slate-500 group-hover:text-cighra-primary dark:group-hover:text-cighra-gold transition-colors" />
+                    <span className="text-xs font-mono text-slate-500 dark:text-slate-300 group-hover:text-cighra-primary dark:group-hover:text-cighra-gold uppercase font-bold">
+                      UNGGAH FOTO BUKTI SELESAI <span className="text-cighra-primary dark:text-cighra-gold ml-1">*</span>
                     </span>
                   </div>
                   <span className="text-[9px] font-mono text-slate-500 dark:text-slate-400 uppercase">Klik untuk unggah foto hasil perbaikan</span>
@@ -89,7 +89,7 @@ const CompletionForm: React.FC<CompletionFormProps> = ({
           </div>
 
           {/* Video Upload (Optional) */}
-          <div className="border-2 border-dashed border-slate-300 dark:border-slate-600 p-4 text-center hover:border-blue-500 transition-all group cursor-pointer relative bg-cighra-light dark:bg-cighra-darkcard/10 flex flex-col justify-center min-h-[140px]">
+          <div className={`border-2 border-dashed ${errors.video_selesai ? 'border-red-500 dark:border-red-500 bg-red-50 dark:bg-red-900/10' : 'border-slate-300 dark:border-slate-600 bg-cighra-light dark:bg-cighra-darkcard/10'} p-4 text-center hover:border-blue-500 transition-all group cursor-pointer relative flex flex-col justify-center min-h-[140px]`}>
             <input
               type="file"
               accept="video/*"
