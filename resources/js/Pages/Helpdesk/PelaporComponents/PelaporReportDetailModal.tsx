@@ -1,5 +1,5 @@
 import React from 'react';
-import { Activity, Wrench } from 'lucide-react';
+import { Activity, Wrench, Wallet, FileText } from 'lucide-react';
 
 interface PelaporReportDetailModalProps {
   isOpen: boolean;
@@ -32,6 +32,16 @@ const PelaporReportDetailModal: React.FC<PelaporReportDetailModalProps> = ({ isO
                 <div>
                   <p className="text-[9px] text-slate-500 font-mono uppercase tracking-widest">Lokasi Kejadian</p>
                   <p className="text-sm font-bold text-cighra-primary dark:text-cighra-gold uppercase">{report.kerusakan.lokasi}</p>
+                </div>
+                <div>
+                  <p className="text-[9px] text-slate-500 font-mono uppercase tracking-widest">Jenis Perbaikan</p>
+                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-mono font-bold border mt-1 uppercase ${
+                    report.kerusakan.jenisPerbaikan === 'Non-Swadaya'
+                      ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800'
+                      : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600'
+                  }`}>
+                    <Wallet className="w-3 h-3" /> {report.kerusakan.jenisPerbaikan || 'Swadaya'}
+                  </span>
                 </div>
                 <div>
                   <p className="text-[9px] text-slate-500 font-mono uppercase tracking-widest font-bold">Prioritas Penanganan</p>
@@ -110,6 +120,30 @@ const PelaporReportDetailModal: React.FC<PelaporReportDetailModalProps> = ({ isO
                 "{report.kerusakan.deskripsi}"
               </p>
             </div>
+
+            {report.kerusakan.jenisPerbaikan === 'Non-Swadaya' && (
+              <div className="bg-blue-500/10 p-4 border border-blue-500/30 text-slate-800 dark:text-slate-200">
+                <p className="text-[9px] text-blue-600 dark:text-blue-400 font-mono uppercase tracking-widest mb-2 font-bold">DOKUMEN & KETERANGAN ANGGARAN NON-SWADAYA:</p>
+                <p className="text-xs font-mono leading-relaxed uppercase italic mb-3">
+                  "{report.kerusakan.keteranganAnggaran || 'Tidak ada keterangan anggaran yang ditulis.'}"
+                </p>
+                {report.kerusakan.dokumenAnggaran?.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {report.kerusakan.dokumenAnggaran.map((doc: string, index: number) => (
+                      <a
+                        key={doc}
+                        href={doc}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-mono font-bold tracking-widest rounded-sm transition-colors uppercase"
+                      >
+                        <FileText className="w-3.5 h-3.5" /> Dokumen {index + 1}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
             {report.status === 'DITOLAK' && (
               <div className="bg-red-500/10 p-4 border border-red-500/30 text-slate-855 dark:text-slate-200 animate-in fade-in">

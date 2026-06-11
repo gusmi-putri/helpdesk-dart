@@ -1,5 +1,5 @@
 import React from 'react';
-import { Wrench, AlertCircle, MapPin } from 'lucide-react';
+import { Wrench, AlertCircle, MapPin, Wallet, FileText } from 'lucide-react';
 
 interface TaskDetailPanelProps {
   selectedTask: any | null;
@@ -54,6 +54,11 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({ selectedTask, activeT
                     ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-300 dark:border-amber-500/30'
                     : 'bg-green-500/10 text-green-600 dark:text-green-400 border border-green-300 dark:border-green-500/30'
                 }`}><Wrench className="w-3.5 h-3.5" /> LEVEL: {selectedTask.kerusakan.tingkatKerusakan?.toUpperCase() || 'UMUM'}</span>
+                <span className={`flex items-center gap-1.5 px-2 py-1 uppercase ${
+                  selectedTask.kerusakan.jenisPerbaikan === 'Non-Swadaya'
+                    ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-300 dark:border-blue-500/30'
+                    : 'bg-slate-100 dark:bg-soft-gunmetal/40 border border-slate-200 dark:border-slate-600 text-gunmetal dark:text-slate-300'
+                }`}><Wallet className="w-3.5 h-3.5" /> {selectedTask.kerusakan.jenisPerbaikan || 'Swadaya'}</span>
                 <span className="flex items-center gap-1.5 px-2 py-1 bg-sand/40 dark:bg-soft-gunmetal/40 border border-slate-200 dark:border-slate-600 text-gunmetal dark:text-slate-300 uppercase"><MapPin className="w-3.5 h-3.5 text-cighra-primary dark:text-cighra-gold" /> LOKASI: {selectedTask.kerusakan.lokasi}</span>
               </div>
             </div>
@@ -83,6 +88,30 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({ selectedTask, activeT
                     <img src={file} alt={`Bukti ${i}`} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
                   </div>
                 ))}
+              </div>
+            )}
+
+            {selectedTask.kerusakan.jenisPerbaikan === 'Non-Swadaya' && (
+              <div className="bg-blue-50 dark:bg-blue-900/10 p-5 border border-blue-200 dark:border-blue-800/40 rounded-sm relative shadow-sm">
+                <span className="absolute -top-3 left-4 bg-blue-50 dark:bg-cighra-darkcard px-3 py-0.5 text-[10px] font-mono font-bold text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800/40 border-b-transparent uppercase">Dukungan Anggaran</span>
+                <p className="text-sm text-gunmetal dark:text-slate-200 font-sans leading-relaxed italic border-l-2 border-blue-500 pl-4 mt-2">
+                  {selectedTask.kerusakan.keteranganAnggaran || 'Tidak ada keterangan anggaran.'}
+                </p>
+                {selectedTask.kerusakan.dokumenAnggaran?.length > 0 && (
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {selectedTask.kerusakan.dokumenAnggaran.map((doc: string, index: number) => (
+                      <a
+                        key={doc}
+                        href={doc}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-mono font-bold tracking-widest rounded-sm transition-colors uppercase"
+                      >
+                        <FileText className="w-3.5 h-3.5" /> Dokumen {index + 1}
+                      </a>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>

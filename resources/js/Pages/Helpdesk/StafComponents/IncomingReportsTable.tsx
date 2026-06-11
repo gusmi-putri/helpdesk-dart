@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertTriangle, Clock, Activity, ShieldAlert, Eye, CheckSquare, XCircle, CheckCircle } from 'lucide-react';
+import { AlertTriangle, Clock, Activity, ShieldAlert, Eye, XCircle, CheckCircle, Wallet } from 'lucide-react';
 
 interface IncomingReportsTableProps {
   reports: any[];
@@ -97,6 +97,13 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
                         </span>
                         <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                           {report.kerusakan.barangRusak}
+                        </span>
+                        <span className={`text-[9px] font-mono font-bold px-2 py-0.5 w-fit border shadow-sm uppercase ${
+                          report.kerusakan.jenisPerbaikan === 'Non-Swadaya'
+                            ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800'
+                            : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600'
+                        }`}>
+                          <Wallet className="inline w-3 h-3 mr-1" /> {report.kerusakan.jenisPerbaikan || 'Swadaya'}
                         </span>
                       </div>
                     </td>
