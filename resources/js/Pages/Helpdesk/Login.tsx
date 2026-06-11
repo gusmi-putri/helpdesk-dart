@@ -55,7 +55,7 @@ const Login: React.FC = () => {
             MASUK KE SISTEM
           </h2>
           <p className="text-slate-500 dark:text-slate-400 text-sm font-sans tracking-wide uppercase font-bold text-[10px]">
-            AKSES PUSAT KOMANDO HELPDESK-DART
+            AKSES PUSAT KOMANDO SISFO DART
           </p>
         </div>
 
@@ -146,7 +146,7 @@ const Login: React.FC = () => {
 
         <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-600 text-center">
           <p className="text-slate-400 dark:text-slate-500 text-[9px] font-mono uppercase tracking-widest">
-            Helpdesk-DART Operational Security System
+            SISFO DART Operational Security System
           </p>
         </div>
       </div>

@@ -80,7 +80,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
               </tr>
             ) : filteredUsers.map((u: any) => (
               <tr key={u.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
-                <td className="p-4 font-mono text-slate-600 dark:text-slate-300 border-l-2 border-transparent group-hover:border-cighra-primary dark:border-cighra-gold">{u.id}</td>
+                <td className="p-4 font-mono text-slate-600 dark:text-slate-300 border-l-2 border-transparent group-hover:border-cighra-primary dark:group-hover:border-cighra-gold">{u.id}</td>
                 <td className="p-4 font-mono text-xs text-slate-500 dark:text-slate-400">{u.nrp_nip || '-'}</td>
                 <td className="p-4 text-slate-800 dark:text-white font-bold">{u.name}</td>
                 <td className="p-4 font-mono text-xs text-slate-500 dark:text-slate-400 lowercase">{u.email}</td>
@@ -112,7 +112,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
                   <button onClick={() => handleEditUser(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 text-slate-500 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Edit">
                     <Edit className="w-4 h-4" />
                   </button>
-                  <button onClick={() => handleDeleteUser(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 text-slate-500 dark:text-slate-300 hover:text-red-600 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Hapus">
+                  <button onClick={() => handleDeleteUser(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-500 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Hapus">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </td>

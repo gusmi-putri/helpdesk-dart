@@ -48,7 +48,7 @@ const Navbar = () => {
             onClick={() => handleNavClick('BERANDA')}
           >
             <img src="/logo.png" alt="DART Logo" className="w-9 h-10 object-contain drop-shadow-[0_0_8px_rgba(30,49,102,0.4)] dark:drop-shadow-[0_0_8px_rgba(255,215,0,0.4)] transition-all group-hover:scale-105" />
-            <span className="font-stencil text-2xl tracking-widest text-cighra-primary dark:text-white transition-colors">Helpdesk DART</span>
+            <span className="font-stencil text-2xl tracking-widest text-cighra-primary dark:text-white transition-colors">SISFO DART</span>
           </div>
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-8">
@@ -78,7 +78,7 @@ const Navbar = () => {
           <div className="md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-slate-700 dark:text-slate-300 hover:text-gunmetal dark:hover:text-cighra-primary dark:text-white ml-4"
+              className="text-slate-700 dark:text-slate-300 hover:text-gunmetal dark:hover:text-cighra-gold ml-4"
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>

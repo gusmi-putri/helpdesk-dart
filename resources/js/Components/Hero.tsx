@@ -65,8 +65,16 @@ const Hero = () => {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="text-5xl md:text-7xl font-stencil font-bold text-slate-800 dark:text-white mb-4 tracking-wider uppercase"
         >
-          SISTEM PELAPORAN <br /> <span className="text-cighra-gold">HELPDESK DART</span>
+          SISTEM INFORMASI<br /> <span className="text-cighra-gold">DART</span>
         </motion.h1>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.5 }}
+          className="font-mono text-xs md:text-sm tracking-[0.3em] text-slate-500 dark:text-slate-400 uppercase mb-2"
+        >
+          Dynamic Autonomous Retaliatory Target
+        </motion.p>
 
         <motion.p
           initial={{ opacity: 0 }}
@@ -76,7 +84,7 @@ const Hero = () => {
         >
           <span className="typewriter-text text-cighra-gold font-bold">BENGPUSKOMLEKAD</span>
           <br />
-          Pusat Layanan Perbaikan DART: Penanganan Cepat untuk Jamin Kesiapan, Keamanan, dan Kelancaran Latihan Menembak.
+          Pusat Layanan Perbaikan DART (Dynamic Autonomous Retaliatory Target): Penanganan Cepat untuk Jamin Kesiapan, Keamanan, dan Kelancaran Latihan Menembak.
         </motion.p>
 
         <motion.div

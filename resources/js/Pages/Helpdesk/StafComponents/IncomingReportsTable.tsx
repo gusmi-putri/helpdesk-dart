@@ -56,7 +56,7 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
                   <td className="p-4">
                     <button
                       onClick={() => onSelectReport(report.db_id)}
-                      className="font-mono font-bold text-sm bg-white dark:bg-cighra-darkcard px-2 py-1 border border-slate-300 dark:border-slate-600 block text-center w-fit hover:border-cighra-primary dark:border-cighra-gold hover:text-cighra-primary dark:text-cighra-gold transition-colors group/tid"
+                      className="font-mono font-bold text-sm bg-white dark:bg-cighra-darkcard px-2 py-1 border border-slate-300 dark:border-slate-600 block text-center w-fit hover:border-cighra-primary dark:hover:border-cighra-gold hover:text-cighra-primary dark:hover:text-cighra-gold transition-colors group/tid"
                     >
                       {report.caseId}
                     </button>

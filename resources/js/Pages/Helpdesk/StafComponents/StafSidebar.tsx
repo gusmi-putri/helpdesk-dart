@@ -25,7 +25,7 @@ const StafSidebar: React.FC<StafSidebarProps> = ({
           <img src="/logo.png" alt="DART Logo" className="w-12 h-14 object-contain" />
         </div>
         <div>
-          <h1 className="font-stencil text-2xl tracking-widest text-slate-800 dark:text-white leading-none">HELPDESK-DART</h1>
+          <h1 className="font-stencil text-2xl tracking-widest text-slate-800 dark:text-white leading-none">SISFO DART</h1>
         </div>
       </div>
 
@@ -33,7 +33,7 @@ const StafSidebar: React.FC<StafSidebarProps> = ({
         <button
           onClick={() => { setActiveMenu('MASUK'); setIsMobileMenuOpen(false); }}
           className={`w-full flex items-center justify-between px-6 py-3.5 font-tactical text-sm tracking-wider transition-all border-l-4
-            ${activeMenu === 'MASUK' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50'}
+            ${activeMenu === 'MASUK' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}}
           `}
         >
           <div className="flex items-center gap-3">
@@ -49,7 +49,7 @@ const StafSidebar: React.FC<StafSidebarProps> = ({
         <button
           onClick={() => { setActiveMenu('SELESAI'); setIsMobileMenuOpen(false); }}
           className={`w-full flex items-center gap-3 px-6 py-3.5 font-tactical text-sm tracking-wider transition-all border-l-4
-            ${activeMenu === 'SELESAI' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50'}
+            ${activeMenu === 'SELESAI' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}}
           `}
         >
           <CheckCircle className="w-5 h-5" /> ARSIP PERBAIKAN SELESAI
@@ -58,7 +58,7 @@ const StafSidebar: React.FC<StafSidebarProps> = ({
         <button
           onClick={() => { setActiveMenu('INVENTARIS'); setIsMobileMenuOpen(false); }}
           className={`w-full flex items-center gap-3 px-6 py-3.5 font-tactical text-sm tracking-wider transition-all border-l-4
-            ${activeMenu === 'INVENTARIS' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50'}
+            ${activeMenu === 'INVENTARIS' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}}
           `}
         >
           <Database className="w-5 h-5" /> INVENTARIS UNIT DART
@@ -66,7 +66,7 @@ const StafSidebar: React.FC<StafSidebarProps> = ({
       </nav>
 
       <div className="p-4 border-t border-slate-200 dark:border-slate-600 bg-cighra-light dark:bg-cighra-darkcard/80">
-        <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-300 hover:text-cighra-primary dark:text-cighra-gold hover:bg-cighra-primary/10 dark:bg-cighra-gold/10 font-tactical text-sm tracking-wider transition-all rounded-sm border border-transparent hover:border-cighra-primary dark:border-cighra-gold/30">
+        <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 font-tactical text-sm tracking-wider transition-all rounded-sm border border-transparent hover:border-cighra-primary dark:hover:border-cighra-gold/30">
           <LogOut className="w-5 h-5" /> KELUAR SISTEM
         </button>
       </div>
