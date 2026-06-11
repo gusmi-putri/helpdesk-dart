@@ -81,9 +81,9 @@ const UnitModal: React.FC<UnitModalProps> = ({
                 className="w-full bg-white dark:bg-cighra-darkcard border border-gray-400 dark:border-slate-600 p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none"
                 required
               >
-                <option value="Siap Ops">SIAP OPS</option>
+                <option value="Beroperasi">BEROPERASI</option>
                 <option value="Rusak">RUSAK</option>
-                <option value="Perbaikan">PERBAIKAN</option>
+                <option value="Perbaikan">DALAM PERBAIKAN</option>
                 <option value="Nonaktif">NONAKTIF</option>
               </select>
             </div>

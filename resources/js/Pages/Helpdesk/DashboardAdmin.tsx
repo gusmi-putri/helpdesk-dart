@@ -74,7 +74,7 @@ const DashboardAdmin = (props: any) => {
     nama_dart: '',
     jenis_dart: 'DART STD',
     asal_satuan: '',
-    status_unit: 'Siap Ops',
+    status_unit: 'Beroperasi',
   });
 
   const [isUnitModalOpen, setIsUnitModalOpen] = useState(false);

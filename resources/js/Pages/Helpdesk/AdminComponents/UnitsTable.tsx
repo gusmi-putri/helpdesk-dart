@@ -56,7 +56,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
   };
 
   const handleDownloadTemplate = () => {
-    const csvContent = "nomor_seri,nama_dart,jenis_dart,asal_satuan,status_unit\nCONTOH-001,KETERANGAN DART,DART STD,NAMA SATUAN,Siap Ops";
+    const csvContent = "nomor_seri,nama_dart,jenis_dart,asal_satuan,status_unit\nCONTOH-001,KETERANGAN DART,DART STD,NAMA SATUAN,Beroperasi";
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -69,7 +69,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
 
   const unitStats = {
     TOTAL: dbUnits.length,
-    SIAP: dbUnits.filter((u: any) => u.status_unit === 'Siap Ops').length,
+    SIAP: dbUnits.filter((u: any) => u.status_unit === 'Beroperasi').length,
     RUSAK: dbUnits.filter((u: any) => u.status_unit === 'Rusak').length,
     PERBAIKAN: dbUnits.filter((u: any) => u.status_unit === 'Perbaikan').length,
   };
@@ -92,7 +92,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
           { label: 'TOTAL UNIT', value: unitStats.TOTAL, color: 'border-cighra-primary dark:border-cighra-gold', text: 'text-cighra-primary dark:text-cighra-gold' },
-          { label: 'SIAP OPERASIONAL', value: unitStats.SIAP, color: 'border-green-500', text: 'text-green-500' },
+          { label: 'BEROPERASI', value: unitStats.SIAP, color: 'border-green-500', text: 'text-green-500' },
           { label: 'RUSAK / KENDALA', value: unitStats.RUSAK, color: 'border-cighra-primary dark:border-cighra-gold', text: 'text-cighra-primary dark:text-cighra-gold' },
           { label: 'DALAM PERBAIKAN', value: unitStats.PERBAIKAN, color: 'border-blue-500', text: 'text-blue-500' },
         ].map((s, i) => (
@@ -191,11 +191,12 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
                     <td className="p-4 text-gunmetal dark:text-slate-300 uppercase">{u.asal_satuan}</td>
                     <td className="p-4">
                       <span className={`px-2 py-0.5 border text-[9px] font-bold tracking-widest uppercase
-                        ${u.status_unit === 'Siap Ops' ? 'bg-camogreen/10 text-camogreen border-camogreen/30' :
+                        ${u.status_unit === 'Beroperasi' ? 'bg-camogreen/10 text-camogreen border-camogreen/30' :
                           u.status_unit === 'Rusak' ? 'bg-cighra-primary/10 dark:bg-cighra-gold/10 text-cighra-primary dark:text-cighra-gold border-cighra-primary dark:border-cighra-gold/30' :
-                            'bg-blue-900/10 text-blue-500 border-blue-800/30'}
+                            u.status_unit === 'Perbaikan' ? 'bg-blue-900/10 text-blue-500 border-blue-800/30' :
+                            'bg-slate-900/10 text-slate-500 border-slate-800/30'}
                       `}>
-                        {u.status_unit}
+                        {u.status_unit === 'Perbaikan' ? 'Dalam Perbaikan' : u.status_unit}
                       </span>
                     </td>
                     <td className="p-4 font-mono text-[10px] text-slate-500 dark:text-slate-400">{u.last_maintenance}</td>

@@ -102,11 +102,12 @@ const InventorySection: React.FC<InventorySectionProps> = ({
                   <td className="p-4 uppercase text-slate-500 dark:text-slate-400">{u.asal_satuan}</td>
                   <td className="p-4">
                     <span className={`px-2 py-0.5 border text-[9px] font-bold tracking-widest shadow-sm
-                      ${u.status_unit === 'Siap Ops' ? 'bg-green-50 dark:bg-camogreen/10 text-green-700 dark:text-camogreen border-green-200 dark:border-camogreen/30' : 
+                      ${u.status_unit === 'Beroperasi' ? 'bg-green-50 dark:bg-camogreen/10 text-green-700 dark:text-camogreen border-green-200 dark:border-camogreen/30' : 
                         u.status_unit === 'Rusak' ? 'bg-red-50 dark:bg-cighra-gold/10 text-red-700 dark:text-cighra-gold border-red-200 dark:border-cighra-gold/30' : 
-                        'bg-blue-50 dark:bg-blue-900/10 text-blue-700 dark:text-blue-500 border-blue-200 dark:border-blue-800/30'}
+                        u.status_unit === 'Perbaikan' ? 'bg-blue-50 dark:bg-blue-900/10 text-blue-700 dark:text-blue-500 border-blue-200 dark:border-blue-800/30' :
+                        'bg-slate-50 dark:bg-slate-900/10 text-slate-700 dark:text-slate-500 border-slate-200 dark:border-slate-800/30'}
                     `}>
-                      {u.status_unit.toUpperCase()}
+                      {u.status_unit === 'Perbaikan' ? 'DALAM PERBAIKAN' : u.status_unit.toUpperCase()}
                     </span>
                   </td>
                   <td className="p-4 font-mono text-[10px] text-slate-400 dark:text-slate-400">{u.last_maintenance}</td>

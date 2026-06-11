@@ -25,7 +25,7 @@ class Unit extends Model
         } elseif ($hasProses) {
             $this->status_unit = 'Perbaikan';
         } else {
-            $this->status_unit = 'Siap Ops';
+            $this->status_unit = 'Beroperasi';
         }
 
         $this->save();
