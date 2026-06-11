@@ -34,6 +34,30 @@ const PelaporReportDetailModal: React.FC<PelaporReportDetailModalProps> = ({ isO
                   <p className="text-sm font-bold text-cighra-primary dark:text-cighra-gold uppercase">{report.kerusakan.lokasi}</p>
                 </div>
                 <div>
+                  <p className="text-[9px] text-slate-500 font-mono uppercase tracking-widest font-bold">Prioritas Penanganan</p>
+                  <span className={`inline-block px-2 py-0.5 text-[10px] font-mono font-bold border mt-1 uppercase ${
+                    report.kerusakan.urgensi?.toUpperCase() === 'SANGAT MENDESAK'
+                      ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-500 border-red-200 dark:border-red-800'
+                      : report.kerusakan.urgensi?.toUpperCase() === 'BISA MENUNGGU'
+                      ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-500 border-amber-200 dark:border-amber-800'
+                      : 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-500 border-green-200 dark:border-green-800'
+                  }`}>
+                    {report.kerusakan.urgensi || 'NORMAL'}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-[9px] text-slate-500 font-mono uppercase tracking-widest font-bold">Tingkat Kerusakan</p>
+                  <span className={`inline-block px-2 py-0.5 text-[10px] font-mono font-bold border mt-1 uppercase ${
+                    ['PARAH', 'BERAT'].includes(report.kerusakan.tingkatKerusakan?.toUpperCase() || '')
+                      ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-500 border-red-200 dark:border-red-800'
+                      : report.kerusakan.tingkatKerusakan?.toUpperCase() === 'SEDANG'
+                      ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-500 border-amber-200 dark:border-amber-800'
+                      : 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-500 border-green-200 dark:border-green-800'
+                  }`}>
+                    {report.kerusakan.tingkatKerusakan || 'UMUM'}
+                  </span>
+                </div>
+                <div>
                   <p className="text-[9px] text-slate-500 font-mono uppercase tracking-widest">Waktu Selesai</p>
                   <p className="text-sm font-mono text-slate-600 dark:text-slate-300">{report.perbaikan.tanggalSelesai || '-'}</p>
                 </div>

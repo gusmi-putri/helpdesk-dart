@@ -39,10 +39,22 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({ selectedTask, activeT
               <h2 className="text-2xl md:text-3xl font-tactical font-bold text-slate-800 dark:text-white mb-2 leading-none uppercase">
                 {selectedTask.kerusakan.barangRusak}
               </h2>
-              <div className="flex flex-wrap gap-4 text-[11px] font-mono font-bold text-slate-600 dark:text-slate-300 mt-3">
-                <span className="flex items-center gap-1.5 px-2 py-1 bg-white dark:bg-cighra-gold/15 border border-cighra-primary/50 dark:border-cighra-gold/40 text-cighra-primary dark:text-cighra-gold uppercase shadow-sm"><AlertCircle className="w-3.5 h-3.5" /> PRIORITAS: {selectedTask.kerusakan.urgensi?.toUpperCase() || 'NORMAL'}</span>
-                <span className="flex items-center gap-1.5 px-2 py-1 bg-white dark:bg-cighra-gold/15 border border-cighra-primary/50 dark:border-cighra-gold/40 text-cighra-primary dark:text-cighra-gold uppercase shadow-sm"><Wrench className="w-3.5 h-3.5" /> LEVEL: {selectedTask.kerusakan.tingkatKerusakan?.toUpperCase() || 'UMUM'}</span>
-                <span className="flex items-center gap-1.5 px-2 py-1 bg-white dark:bg-slate-700/60 border border-slate-300 dark:border-slate-500 text-gunmetal dark:text-slate-200 uppercase shadow-sm"><MapPin className="w-3.5 h-3.5 text-cighra-primary dark:text-cighra-gold" /> LOKASI: {selectedTask.kerusakan.lokasi}</span>
+              <div className="flex flex-wrap gap-4 text-[11px] font-mono font-bold mt-3">
+                <span className={`flex items-center gap-1.5 px-2 py-1 uppercase ${
+                  selectedTask.kerusakan.urgensi?.toUpperCase() === 'SANGAT MENDESAK'
+                    ? 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-300 dark:border-red-500/30'
+                    : selectedTask.kerusakan.urgensi?.toUpperCase() === 'BISA MENUNGGU'
+                    ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-300 dark:border-amber-500/30'
+                    : 'bg-green-500/10 text-green-600 dark:text-green-400 border border-green-300 dark:border-green-500/30'
+                }`}><AlertCircle className="w-3.5 h-3.5" /> PRIORITAS: {selectedTask.kerusakan.urgensi?.toUpperCase() || 'NORMAL'}</span>
+                <span className={`flex items-center gap-1.5 px-2 py-1 uppercase ${
+                  ['PARAH', 'BERAT'].includes(selectedTask.kerusakan.tingkatKerusakan?.toUpperCase() || '')
+                    ? 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-300 dark:border-red-500/30'
+                    : selectedTask.kerusakan.tingkatKerusakan?.toUpperCase() === 'SEDANG'
+                    ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-300 dark:border-amber-500/30'
+                    : 'bg-green-500/10 text-green-600 dark:text-green-400 border border-green-300 dark:border-green-500/30'
+                }`}><Wrench className="w-3.5 h-3.5" /> LEVEL: {selectedTask.kerusakan.tingkatKerusakan?.toUpperCase() || 'UMUM'}</span>
+                <span className="flex items-center gap-1.5 px-2 py-1 bg-sand/40 dark:bg-soft-gunmetal/40 border border-slate-200 dark:border-slate-600 text-gunmetal dark:text-slate-300 uppercase"><MapPin className="w-3.5 h-3.5 text-cighra-primary dark:text-cighra-gold" /> LOKASI: {selectedTask.kerusakan.lokasi}</span>
               </div>
             </div>
             <div className="bg-white dark:bg-cighra-darkcard/70 px-4 py-2 text-center border shadow-sm border-slate-300 dark:border-slate-600">
