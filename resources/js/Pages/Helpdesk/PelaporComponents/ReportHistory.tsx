@@ -17,7 +17,8 @@ const ReportHistory: React.FC<ReportHistoryProps> = ({
   const stats = {
     total: history.length,
     pending: history.filter((r: any) => r.status === 'PENDING').length,
-    proses: history.filter((r: any) => r.status === 'PROSES').length,
+    proses: history.filter((r: any) => r.status === 'DIVERIFIKASI' || r.status === 'DITERIMA TEKNISI' || r.status === 'DIPROSES').length,
+    selPreses: history.filter((r: any) => r.status === 'SELESAI').length, // wait, let's keep the key selesai
     selesai: history.filter((r: any) => r.status === 'SELESAI').length,
   };
 
@@ -81,8 +82,9 @@ const ReportHistory: React.FC<ReportHistoryProps> = ({
                 </div>
                 <div className={`px-3 py-1 text-[9px] font-tactical font-bold tracking-[0.2em] flex items-center gap-2 border uppercase shadow-sm
                   ${item.status === 'SELESAI' ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-500 border-green-200 dark:border-green-800' :
-                    item.status === 'PROSES' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-500 border-blue-200 dark:border-blue-800' :
-                      'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-500 border-yellow-200 dark:border-yellow-800'}
+                    item.status === 'DITOLAK' ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-500 border-red-200 dark:border-red-800' :
+                    item.status === 'PENDING' ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-500 border-yellow-200 dark:border-yellow-800' :
+                      'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-500 border-blue-200 dark:border-blue-800'}
                 `}>
                   {item.status === 'SELESAI' ? <CheckCircle2 size={10} /> : <Clock size={10} />}
                   {item.status}

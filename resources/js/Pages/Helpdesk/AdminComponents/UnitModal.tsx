@@ -50,7 +50,7 @@ const UnitModal: React.FC<UnitModalProps> = ({
               {errors.nomor_seri && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.nomor_seri}</p>}
             </div>
             <div>
-              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Nama Unit DART</label>
+              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Keterangan DART</label>
               <input
                 type="text"
                 value={data.nama_dart}
@@ -81,9 +81,9 @@ const UnitModal: React.FC<UnitModalProps> = ({
                 className="w-full bg-white dark:bg-cighra-darkcard border border-gray-400 dark:border-slate-600 p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none"
                 required
               >
-                <option value="Siap Ops">SIAP OPS</option>
+                <option value="Beroperasi">BEROPERASI</option>
                 <option value="Rusak">RUSAK</option>
-                <option value="Perbaikan">PERBAIKAN</option>
+                <option value="Perbaikan">DALAM PERBAIKAN</option>
                 <option value="Nonaktif">NONAKTIF</option>
               </select>
             </div>

@@ -51,7 +51,7 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases }) => {
         
         // Check if this unit has an active case
         const hasActiveCase = dbCases.some(c => 
-            c.unit_id === unit.db_id && (c.status === 'PENDING' || c.status === 'PROSES')
+            c.unit_id === unit.db_id && (c.status !== 'SELESAI' && c.status !== 'DITOLAK')
         );
         if (hasActiveCase) acc[satuan].hasDamage = true;
         
@@ -101,7 +101,7 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases }) => {
                         <div className="space-y-3">
                             <div className="flex items-center gap-3">
                                 <div className="w-3 h-3 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-pulse"></div>
-                                <span className="text-xs font-tactical tracking-wider uppercase text-slate-600 dark:text-slate-400">SIAP OPERASIONAL</span>
+                                <span className="text-xs font-tactical tracking-wider uppercase text-slate-600 dark:text-slate-400">BEROPERASI</span>
                             </div>
                             <div className="flex items-center gap-3">
                                 <div className="w-3 h-3 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(229,87,34,0.6)] animate-pulse"></div>
@@ -126,7 +126,7 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases }) => {
                                 
                                 <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-2">
                                     {selectedGroup.units.map((unit: any) => {
-                                        const hasCase = dbCases.some(c => c.unit_id === unit.db_id && (c.status === 'PENDING' || c.status === 'PROSES'));
+                                        const hasCase = dbCases.some(c => c.unit_id === unit.db_id && (c.status !== 'SELESAI' && c.status !== 'DITOLAK'));
                                         return (
                                             <div key={unit.db_id} className="bg-slate-50 dark:bg-slate-800/50 p-2 rounded border border-slate-200 dark:border-slate-700/50">
                                                 <div className="flex justify-between items-start mb-1">
@@ -134,7 +134,7 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases }) => {
                                                     {hasCase ? (
                                                         <span className="bg-orange-500/20 text-orange-600 dark:text-orange-500 px-1.5 py-0.5 rounded text-[9px] font-bold border border-orange-500/30">RUSAK</span>
                                                     ) : (
-                                                        <span className="bg-green-500/20 text-green-600 dark:text-green-500 px-1.5 py-0.5 rounded text-[9px] font-bold border border-green-500/30">SIAP</span>
+                                                        <span className="bg-green-500/20 text-green-600 dark:text-green-500 px-1.5 py-0.5 rounded text-[9px] font-bold border border-green-500/30">BEROPERASI</span>
                                                     )}
                                                 </div>
                                                 <div className="text-[10px] text-slate-500 font-mono italic">{unit.nama_dart}</div>

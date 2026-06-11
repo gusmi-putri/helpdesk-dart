@@ -11,7 +11,6 @@ interface UnitsTableProps {
   handleUnitSort: (key: string) => void;
   handleShowUnitHistory: (unit: any) => void;
   handleEditUnit: (unit: any) => void;
-  handleDeleteUnit: (unit: any) => void;
 }
 
 const UnitsTable: React.FC<UnitsTableProps> = ({
@@ -22,8 +21,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
   unitSortConfig,
   handleUnitSort,
   handleShowUnitHistory,
-  handleEditUnit,
-  handleDeleteUnit
+  handleEditUnit
 }) => {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = React.useState(false);
@@ -58,7 +56,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
   };
 
   const handleDownloadTemplate = () => {
-    const csvContent = "nomor_seri,nama_dart,jenis_dart,asal_satuan,status_unit\nCONTOH-001,NAMA UNIT DART,DART STD,NAMA SATUAN,Siap Ops";
+    const csvContent = "nomor_seri,nama_dart,jenis_dart,asal_satuan,status_unit\nCONTOH-001,KETERANGAN DART,DART STD,NAMA SATUAN,Beroperasi";
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -71,7 +69,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
 
   const unitStats = {
     TOTAL: dbUnits.length,
-    SIAP: dbUnits.filter((u: any) => u.status_unit === 'Siap Ops').length,
+    SIAP: dbUnits.filter((u: any) => u.status_unit === 'Beroperasi').length,
     RUSAK: dbUnits.filter((u: any) => u.status_unit === 'Rusak').length,
     PERBAIKAN: dbUnits.filter((u: any) => u.status_unit === 'Perbaikan').length,
   };
@@ -94,7 +92,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
           { label: 'TOTAL UNIT', value: unitStats.TOTAL, color: 'border-cighra-primary dark:border-cighra-gold', text: 'text-cighra-primary dark:text-cighra-gold' },
-          { label: 'SIAP OPERASIONAL', value: unitStats.SIAP, color: 'border-green-500', text: 'text-green-500' },
+          { label: 'BEROPERASI', value: unitStats.SIAP, color: 'border-green-500', text: 'text-green-500' },
           { label: 'RUSAK / KENDALA', value: unitStats.RUSAK, color: 'border-cighra-primary dark:border-cighra-gold', text: 'text-cighra-primary dark:text-cighra-gold' },
           { label: 'DALAM PERBAIKAN', value: unitStats.PERBAIKAN, color: 'border-blue-500', text: 'text-blue-500' },
         ].map((s, i) => (
@@ -116,7 +114,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
               <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-500 dark:text-slate-300" />
               <input
                 type="text"
-                placeholder="CARI SERI / NAMA / LOKASI..."
+                placeholder="CARI SERI / KETERANGAN / LOKASI..."
                 value={unitSearch}
                 onChange={(e) => setUnitSearch(e.target.value)}
                 className="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 pl-9 pr-4 py-2 text-sm font-mono text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:border-cighra-gold transition-colors w-64 uppercase"
@@ -157,11 +155,11 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
               <tr>
                 {[
                   { label: 'NOMOR SERI', key: 'nomor_seri' },
-                  { label: 'NAMA UNIT', key: 'nama_dart' },
                   { label: 'JENIS', key: 'jenis_dart' },
                   { label: 'ASAL SATUAN / LOKASI', key: 'asal_satuan' },
                   { label: 'STATUS', key: 'status_unit' },
                   { label: 'MAINTENANCE', key: 'last_maintenance' },
+                  { label: 'KETERANGAN', key: 'nama_dart' },
                 ].map((col) => (
                   <th
                     key={col.key}
@@ -189,28 +187,26 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
                 filteredUnits.map((u: any) => (
                   <tr key={u.db_id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group bg-white dark:bg-transparent">
                     <td className="p-4 font-mono font-bold text-cighra-primary dark:text-cighra-gold border-l-2 border-transparent group-hover:border-cighra-primary dark:border-cighra-gold">{u.nomor_seri}</td>
-                    <td className="p-4 text-slate-800 dark:text-white font-bold uppercase">{u.nama_dart}</td>
                     <td className="p-4 font-mono text-xs text-slate-500 dark:text-slate-300 uppercase">{u.jenis_dart}</td>
                     <td className="p-4 text-gunmetal dark:text-slate-300 uppercase">{u.asal_satuan}</td>
                     <td className="p-4">
                       <span className={`px-2 py-0.5 border text-[9px] font-bold tracking-widest uppercase
-                        ${u.status_unit === 'Siap Ops' ? 'bg-camogreen/10 text-camogreen border-camogreen/30' :
+                        ${u.status_unit === 'Beroperasi' ? 'bg-camogreen/10 text-camogreen border-camogreen/30' :
                           u.status_unit === 'Rusak' ? 'bg-cighra-primary/10 dark:bg-cighra-gold/10 text-cighra-primary dark:text-cighra-gold border-cighra-primary dark:border-cighra-gold/30' :
-                            'bg-blue-900/10 text-blue-500 border-blue-800/30'}
+                            u.status_unit === 'Perbaikan' ? 'bg-blue-900/10 text-blue-500 border-blue-800/30' :
+                            'bg-slate-900/10 text-slate-500 border-slate-800/30'}
                       `}>
-                        {u.status_unit}
+                        {u.status_unit === 'Perbaikan' ? 'Dalam Perbaikan' : u.status_unit}
                       </span>
                     </td>
                     <td className="p-4 font-mono text-[10px] text-slate-500 dark:text-slate-400">{u.last_maintenance}</td>
+                    <td className="p-4 text-slate-800 dark:text-white font-bold uppercase">{u.nama_dart}</td>
                     <td className="p-4 flex gap-2 justify-end">
                       <button onClick={() => handleShowUnitHistory(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 text-slate-500 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Riwayat">
                         <History className="w-4 h-4" />
                       </button>
                       <button onClick={() => handleEditUnit(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 text-slate-500 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Edit">
                         <Edit className="w-4 h-4" />
-                      </button>
-                      <button onClick={() => handleDeleteUnit(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 text-slate-500 dark:text-slate-300 hover:text-red-600 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Hapus">
-                        <Trash2 className="w-4 h-4" />
                       </button>
                     </td>
                   </tr>

@@ -25,7 +25,9 @@ return new class extends Migration
             $table->text('deskripsi_kerusakan');
             $table->string('file_bukti')->nullable();
             $table->string('file_bukti_selesai')->nullable();
-            $table->enum('status_laporan', ['Pending', 'Proses', 'Selesai'])->default('Pending');
+            $table->string('file_bukti_selesai_video')->nullable();
+            $table->text('alasan_penolakan')->nullable();
+            $table->enum('status_laporan', ['Pending', 'Diverifikasi', 'Diterima Teknisi', 'Diproses', 'Selesai', 'Ditolak'])->default('Pending');
             $table->enum('metode_perbaikan', ['Online', 'Offline'])->nullable();
             $table->timestamp('tgl_ditunjuk')->nullable();
             $table->timestamp('tgl_selesai')->nullable();

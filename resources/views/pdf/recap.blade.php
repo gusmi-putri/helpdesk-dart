@@ -19,9 +19,12 @@
         table.main-table td { padding: 6px; border: 1px solid #ccc; vertical-align: top; }
         
         .status-badge { padding: 2px 5px; border-radius: 3px; font-weight: bold; font-size: 8px; text-transform: uppercase; color: white; }
-        .status-pending { background-color: #c81e1e; }
-        .status-proses { background-color: #3b82f6; }
-        .status-selesai { background-color: #16a34a; }
+        .status-pending { background-color: #f59e0b; }
+        .status-diverifikasi { background-color: #3b82f6; }
+        .status-diterima-teknisi { background-color: #8b5cf6; }
+        .status-diproses { background-color: #06b6d4; }
+        .status-selesai { background-color: #10b981; }
+        .status-ditolak { background-color: #ef4444; }
 
         .footer { position: fixed; bottom: -20px; left: 0; right: 0; height: 30px; text-align: center; font-size: 8px; color: #999; border-top: 1px solid #eee; padding-top: 5px; }
         .watermark { position: fixed; top: 45%; left: 25%; font-size: 60px; color: rgba(75, 83, 32, 0.05); transform: rotate(-45deg); z-index: -1000; font-weight: bold; }
@@ -106,7 +109,7 @@
                     @endif
                 </td>
                 <td class="text-center">
-                    <span class="status-badge status-{{ strtolower($report->status_laporan) }}">
+                    <span class="status-badge status-{{ str_replace(' ', '-', strtolower($report->status_laporan)) }}">
                         {{ $report->status_laporan }}
                     </span>
                 </td>

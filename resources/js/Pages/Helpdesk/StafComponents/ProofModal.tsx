@@ -21,11 +21,18 @@ const ProofModal: React.FC<ProofModalProps> = ({ isOpen, onClose, viewingProof }
         </div>
         <div className="p-6">
           <div className="grid grid-cols-2 gap-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
-            {viewingProof.map((url, i) => (
-              <div key={i} className="border border-slate-300 dark:border-slate-600 rounded-sm overflow-hidden bg-black/60 flex items-center justify-center h-48">
-                <img src={url} alt={`Bukti ${i}`} className="max-w-full max-h-full object-contain" />
-              </div>
-            ))}
+            {viewingProof.map((url, i) => {
+              const isVideo = ['.mp4', '.mov', '.avi', '.webm'].some(ext => url.toLowerCase().includes(ext));
+              return (
+                <div key={i} className="border border-slate-300 dark:border-slate-600 rounded-sm overflow-hidden bg-black/60 flex items-center justify-center h-48">
+                  {isVideo ? (
+                    <video src={url} controls className="max-w-full max-h-full object-contain" />
+                  ) : (
+                    <img src={url} alt={`Bukti ${i}`} className="max-w-full max-h-full object-contain" />
+                  )}
+                </div>
+              );
+            })}
           </div>
           <div className="mt-8 flex justify-end">
             <button

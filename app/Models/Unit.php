@@ -17,15 +17,18 @@ class Unit extends Model
 
     public function syncStatus()
     {
-        $hasPending = $this->reports()->where('status_laporan', 'Pending')->exists();
-        $hasProses = $this->reports()->where('status_laporan', 'Proses')->exists();
+        $hasDiproses = $this->reports()->where('status_laporan', 'Diproses')->exists();
+        $hasRusak = $this->reports()->whereIn('status_laporan', ['Pending', 'Diverifikasi', 'Diterima Teknisi'])->exists();
 
-        if ($hasPending) {
-            $this->status_unit = 'Rusak';
-        } elseif ($hasProses) {
+        if ($hasDiproses) {
             $this->status_unit = 'Perbaikan';
+        } elseif ($hasRusak) {
+            $this->status_unit = 'Rusak';
         } else {
-            $this->status_unit = 'Siap Ops';
+            // Keep Nonaktif if it was Nonaktif, otherwise Beroperasi
+            if ($this->status_unit !== 'Nonaktif') {
+                $this->status_unit = 'Beroperasi';
+            }
         }
 
         $this->save();

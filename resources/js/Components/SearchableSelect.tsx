@@ -70,7 +70,7 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
             <input 
               autoFocus
               type="text" 
-              placeholder="Cari seri atau nama unit..."
+              placeholder="Cari seri atau keterangan..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-transparent border-none focus:ring-0 text-sm font-mono p-1 text-slate-800 dark:text-white"

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Users, Search, Plus, Eye, Edit, Trash2 } from 'lucide-react';
+import { Users, Search, Plus, Eye, Edit, Trash2, Power } from 'lucide-react';
 
 interface UsersTableProps {
   dbUsers: any[];
@@ -95,17 +95,28 @@ const UsersTable: React.FC<UsersTableProps> = ({
                   </span>
                 </td>
                 <td className="p-4">
-                  <button
-                    onClick={() => handleToggleUserStatus(u)}
-                    disabled={u.role === 'Admin'}
-                    className={`flex items-center gap-2 text-xs font-bold tracking-wider transition-all ${u.role !== 'Admin' ? 'hover:scale-105 cursor-pointer' : 'cursor-not-allowed opacity-80'} ${u.status === 'Aktif' ? 'text-green-600' : 'text-slate-400'}`}
-                    title={u.role === 'Admin' ? 'Status Admin tidak dapat diubah' : (u.status === 'Aktif' ? 'Klik untuk Nonaktifkan' : 'Klik untuk Aktifkan')}
-                  >
-                    <span className={`w-2 h-2 rounded-full shadow-[0_0_5px_currentColor] ${u.status === 'Aktif' ? 'bg-green-600 animate-pulse' : 'bg-slate-300'}`}></span>
-                    {u.status.toUpperCase()}
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <span className={`w-2 h-2 rounded-full ${u.status === 'Aktif' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-pulse' : 'bg-slate-300 dark:bg-slate-600'}`}></span>
+                    <span className={`text-[10px] font-bold tracking-widest uppercase ${u.status === 'Aktif' ? 'text-green-600 dark:text-green-500' : 'text-slate-400 dark:text-slate-500'}`}>
+                      {u.status}
+                    </span>
+                  </div>
                 </td>
                 <td className="p-4 flex gap-2 justify-end">
+                  <button 
+                    onClick={() => handleToggleUserStatus(u)} 
+                    disabled={u.role === 'Admin'}
+                    className={`p-2 transition-all border rounded-sm ${
+                      u.role === 'Admin' 
+                        ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 border-slate-200 dark:border-slate-700 cursor-not-allowed opacity-50' 
+                        : u.status === 'Aktif'
+                          ? 'bg-slate-50 dark:bg-slate-700 text-green-600 dark:text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 border-slate-200 dark:border-slate-600'
+                          : 'bg-slate-50 dark:bg-slate-700 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-600 border-slate-200 dark:border-slate-600'
+                    }`}
+                    title={u.role === 'Admin' ? 'Status Admin tidak dapat diubah' : (u.status === 'Aktif' ? 'Nonaktifkan User' : 'Aktifkan User')}
+                  >
+                    <Power className="w-4 h-4" />
+                  </button>
                   <button onClick={() => handleShowDetail(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 text-slate-500 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Detail">
                     <Eye className="w-4 h-4" />
                   </button>

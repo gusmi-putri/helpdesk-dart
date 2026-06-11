@@ -32,7 +32,7 @@ const DashboardAdmin = (props: any) => {
   const [activeSubReport, setActiveSubReport] = useState<SubMenuReport>('KERUSAKAN');
   const [isReportsExpanded, setIsReportsExpanded] = useState<boolean>(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
-  const [reportStatusFilter, setReportStatusFilter] = useState<'ALL' | 'PROSES' | 'SELESAI' | 'PENDING'>('ALL');
+  const [reportStatusFilter, setReportStatusFilter] = useState<'ALL' | 'PENDING' | 'DIVERIFIKASI' | 'DITERIMA TEKNISI' | 'DIPROSES' | 'SELESAI' | 'DITOLAK'>('ALL');
 
   // Auto-polling untuk real-time sinkronisasi
   useEffect(() => {
@@ -74,7 +74,7 @@ const DashboardAdmin = (props: any) => {
     nama_dart: '',
     jenis_dart: 'DART STD',
     asal_satuan: '',
-    status_unit: 'Siap Ops',
+    status_unit: 'Beroperasi',
   });
 
   const [isUnitModalOpen, setIsUnitModalOpen] = useState(false);
@@ -371,7 +371,6 @@ const DashboardAdmin = (props: any) => {
                 }}
                 handleShowUnitHistory={handleShowUnitHistory}
                 handleEditUnit={handleEditUnit}
-                handleDeleteUnit={handleDeleteUnit}
               />
             )}
             {activeMenu === 'APPROVAL' && (

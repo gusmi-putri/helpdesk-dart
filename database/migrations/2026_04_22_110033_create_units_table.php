@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('nama_dart', 100);
             $table->string('jenis_dart')->nullable();
             $table->string('asal_satuan', 100);
-            $table->enum('status_unit', ['Siap Ops', 'Rusak', 'Perbaikan', 'Nonaktif'])->default('Siap Ops');
+            $table->enum('status_unit', ['Beroperasi', 'Rusak', 'Perbaikan', 'Nonaktif'])->default('Beroperasi');
             $table->softDeletes();
             $table->timestamps();
         });

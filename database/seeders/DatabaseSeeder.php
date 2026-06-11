@@ -60,6 +60,10 @@ class DatabaseSeeder extends Seeder
         $this->call(UnitSeeder::class);
         $unit1 = \App\Models\Unit::where('nomor_seri', 'DRT-001')->first();
         $unit2 = \App\Models\Unit::where('nomor_seri', 'DRT-003')->first();
+        $unit4 = \App\Models\Unit::where('nomor_seri', 'DRT-004')->first();
+        $unit12 = \App\Models\Unit::where('nomor_seri', 'DRT-012')->first();
+        $unit15 = \App\Models\Unit::where('nomor_seri', 'DRT-015')->first();
+        $unit22 = \App\Models\Unit::where('nomor_seri', 'DRT-022')->first();
 
         // 4. Seed Reports
         \App\Models\Report::create([
@@ -87,9 +91,63 @@ class DatabaseSeeder extends Seeder
             'lokasi_laporan' => 'Sektor Utara',
             'klasifikasi' => 'ELEKTRONIK',
             'tingkat_kerusakan' => 'BERAT',
-            'urgensi' => 'URGENT',
+            'urgensi' => 'Sangat Mendesak',
             'deskripsi_kerusakan' => 'Radar tidak merespon perintah frekuensi X.',
             'status_laporan' => 'Pending',
+        ]);
+
+        \App\Models\Report::create([
+            'unit_id' => $unit4->id,
+            'user_id' => $pelapor->id,
+            'tanggal_lapor' => now()->subHours(5),
+            'lokasi_laporan' => 'Sektor Utara',
+            'klasifikasi' => 'HARDWARE',
+            'tingkat_kerusakan' => 'RINGAN',
+            'urgensi' => 'Bisa Menunggu',
+            'deskripsi_kerusakan' => 'Braket dudukan sensor longgar.',
+            'status_laporan' => 'Diverifikasi',
+        ]);
+
+        \App\Models\Report::create([
+            'unit_id' => $unit12->id,
+            'user_id' => $pelapor->id,
+            'staff_id' => $staf->id,
+            'teknisi_id' => $teknisi->id,
+            'tanggal_lapor' => now()->subHours(4),
+            'lokasi_laporan' => 'Sektor Selatan',
+            'klasifikasi' => 'HARDWARE',
+            'tingkat_kerusakan' => 'SEDANG',
+            'urgensi' => 'Bisa Menunggu',
+            'deskripsi_kerusakan' => 'Kabel daya sensor gerak terkelupas.',
+            'status_laporan' => 'Diterima Teknisi',
+            'tgl_ditunjuk' => now()->subHours(3),
+        ]);
+
+        \App\Models\Report::create([
+            'unit_id' => $unit15->id,
+            'user_id' => $pelapor->id,
+            'staff_id' => $staf->id,
+            'teknisi_id' => $teknisi->id,
+            'tanggal_lapor' => now()->subHours(8),
+            'lokasi_laporan' => 'Sektor Selatan',
+            'klasifikasi' => 'ELEKTRONIK',
+            'tingkat_kerusakan' => 'BERAT',
+            'urgensi' => 'Sangat Mendesak',
+            'deskripsi_kerusakan' => 'Layar monitor simulator berkedip terus menerus.',
+            'status_laporan' => 'Diproses',
+            'tgl_ditunjuk' => now()->subHours(7),
+        ]);
+
+        \App\Models\Report::create([
+            'unit_id' => $unit22->id,
+            'user_id' => $pelapor->id,
+            'tanggal_lapor' => now()->subDays(3),
+            'lokasi_laporan' => 'Sektor Timur',
+            'klasifikasi' => 'SKE',
+            'tingkat_kerusakan' => 'RINGAN',
+            'urgensi' => 'Pemeliharaan Rutin',
+            'deskripsi_kerusakan' => 'Laporan uji coba saja, tidak ada kerusakan riil.',
+            'status_laporan' => 'Ditolak',
         ]);
 
         // Sync status units

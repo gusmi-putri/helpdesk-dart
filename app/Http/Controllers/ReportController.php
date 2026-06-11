@@ -78,7 +78,7 @@ class ReportController extends Controller
         }
 
         $report->update([
-            'status_laporan' => 'Proses',
+            'status_laporan' => 'Diverifikasi',
             'staff_id' => $request->user()->id,
             'teknisi_id' => $teknisi->id,
             'tgl_ditunjuk' => now()
@@ -98,6 +98,7 @@ class ReportController extends Controller
             'catatan' => 'required|string',
             'metode' => 'required|in:Online,Offline',
             'foto_selesai' => 'required|image|mimes:jpeg,png,jpg|max:20480',
+            'video_selesai' => 'nullable|file|mimes:mp4,mov,avi,webm|max:51200',
         ]);
 
         $fotoSelesai = $report->file_bukti_selesai;
@@ -108,18 +109,77 @@ class ReportController extends Controller
             $fotoSelesai = $filename;
         }
 
-        $report->status_laporan = 'Selesai';
+        $videoSelesai = $report->file_bukti_selesai_video;
+        if ($request->hasFile('video_selesai')) {
+            $file = $request->file('video_selesai');
+            $filename = 'video_done_' . time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('reports', $filename, 'public');
+            $videoSelesai = $filename;
+        }
+
         $report->catatan_teknisi = $request->catatan;
         $report->metode_perbaikan = $request->metode;
         $report->file_bukti_selesai = $fotoSelesai;
+        $report->file_bukti_selesai_video = $videoSelesai;
         $report->tgl_selesai = now();
-        
+        $report->status_laporan = 'Selesai'; // transitions immediately to Selesai!
+
         if ($report->save()) {
-            \App\Models\SystemLog::log('SUCCESS', $request->user()->id, "Menyelesaikan penanganan laporan LPR-" . str_pad($report->id, 5, '0', STR_PAD_LEFT) . " dengan metode {$request->metode}");
+            \App\Models\SystemLog::log('SUCCESS', $request->user()->id, "Menyelesaikan penanganan laporan LPR-" . str_pad($report->id, 5, '0', STR_PAD_LEFT));
             $report->unit->syncStatus();
-            return redirect()->back()->with('message', 'Laporan perbaikan telah difinalisasi!');
+            return redirect()->back()->with('message', 'Laporan perbaikan telah diselesaikan!');
         }
 
-        return redirect()->back()->with('error', 'Gagal memfinalisasi laporan. Cek status sistem.');
+        return redirect()->back()->with('error', 'Gagal menyelesaikan laporan perbaikan.');
+    }
+
+    public function verify($id)
+    {
+        $report = Report::findOrFail($id);
+        $report->update(['status_laporan' => 'Diverifikasi']);
+        $report->unit->syncStatus();
+
+        \App\Models\SystemLog::log('INFO', auth()->id(), "Memverifikasi laporan kerusakan: LPR-" . str_pad($report->id, 5, '0', STR_PAD_LEFT));
+
+        return redirect()->back()->with('message', 'Laporan berhasil diverifikasi!');
+    }
+
+    public function reject(Request $request, $id)
+    {
+        $report = Report::findOrFail($id);
+        $request->validate([
+            'alasan' => 'required|string',
+        ]);
+        $report->update([
+            'status_laporan' => 'Ditolak',
+            'alasan_penolakan' => $request->alasan
+        ]);
+        $report->unit->syncStatus();
+
+        \App\Models\SystemLog::log('WARN', auth()->id(), "Menolak laporan kerusakan: LPR-" . str_pad($report->id, 5, '0', STR_PAD_LEFT) . " dengan alasan: {$request->alasan}");
+
+        return redirect()->back()->with('message', 'Laporan telah ditolak!');
+    }
+
+    public function acceptTask($id)
+    {
+        $report = Report::findOrFail($id);
+        $report->update(['status_laporan' => 'Diterima Teknisi']);
+        $report->unit->syncStatus();
+
+        \App\Models\SystemLog::log('INFO', auth()->id(), "Teknisi menerima tugas penanganan: LPR-" . str_pad($report->id, 5, '0', STR_PAD_LEFT));
+
+        return redirect()->back()->with('message', 'Tugas berhasil diterima!');
+    }
+
+    public function startProgress($id)
+    {
+        $report = Report::findOrFail($id);
+        $report->update(['status_laporan' => 'Diproses']);
+        $report->unit->syncStatus();
+
+        \App\Models\SystemLog::log('INFO', auth()->id(), "Mulai melakukan tindakan perbaikan kasus: LPR-" . str_pad($report->id, 5, '0', STR_PAD_LEFT));
+
+        return redirect()->back()->with('message', 'Perbaikan mulai diproses!');
     }
 }

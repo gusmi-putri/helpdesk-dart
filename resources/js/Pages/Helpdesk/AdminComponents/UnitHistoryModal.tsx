@@ -27,7 +27,7 @@ const UnitHistoryModal: React.FC<UnitHistoryModalProps> = ({ isOpen, onClose, un
         <div className="p-6 overflow-y-auto custom-scrollbar flex-1">
           <div className="mb-6 grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="p-3 bg-white/40 dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600/50">
-              <p className="text-[9px] font-mono text-slate-500 uppercase tracking-widest">Nama Unit</p>
+              <p className="text-[9px] font-mono text-slate-500 uppercase tracking-widest">Keterangan</p>
               <p className="text-sm font-bold uppercase">{unit.nama_dart}</p>
             </div>
             <div className="p-3 bg-white/40 dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600/50">

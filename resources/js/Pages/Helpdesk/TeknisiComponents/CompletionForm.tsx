@@ -9,6 +9,8 @@ interface CompletionFormProps {
   handleSubmit: (e: React.FormEvent) => void;
   imagePreview: string | null;
   setImagePreview: (src: string | null) => void;
+  videoPreview: string | null;
+  setVideoPreview: (src: string | null) => void;
 }
 
 const CompletionForm: React.FC<CompletionFormProps> = ({
@@ -18,7 +20,9 @@ const CompletionForm: React.FC<CompletionFormProps> = ({
   processing,
   handleSubmit,
   imagePreview,
-  setImagePreview
+  setImagePreview,
+  videoPreview,
+  setVideoPreview
 }) => {
   return (
     <>
@@ -42,50 +46,85 @@ const CompletionForm: React.FC<CompletionFormProps> = ({
           {errors.catatan && <p className="text-[9px] text-cighra-primary dark:text-cighra-gold mt-1 font-mono uppercase">{errors.catatan}</p>}
         </div>
 
-        <div className={`border-2 border-dashed ${errors.foto_selesai ? 'border-red-500 dark:border-red-500 bg-red-50 dark:bg-red-900/10' : 'border-slate-300 dark:border-slate-600 bg-cighra-light dark:bg-cighra-darkcard/10'} p-4 text-center hover:border-cighra-primary dark:hover:border-cighra-gold transition-all group cursor-pointer relative`}>
-          <input
-            type="file"
-            accept="image/*"
-            required={!data.foto_selesai}
-            className="absolute inset-0 opacity-0 cursor-pointer z-10 w-full h-full"
-            onChange={(e) => {
-              const file = e.target.files ? e.target.files[0] : null;
-              setData('foto_selesai', file);
-              if (file) {
-                const reader = new FileReader();
-                reader.onloadend = () => setImagePreview(reader.result as string);
-                reader.readAsDataURL(file);
-              } else {
-                setImagePreview(null);
-              }
-            }}
-          />
-          <div className="flex flex-col items-center justify-center gap-3">
-            {imagePreview ? (
-              <div className="relative w-full max-w-[200px] h-32 border-2 border-cighra-primary dark:border-cighra-gold shadow-lg overflow-hidden group-hover:scale-105 transition-transform">
-                <img src={imagePreview} className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <span className="text-[10px] text-white font-bold font-mono">GANTI FOTO</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Photo Upload (Required) */}
+          <div className={`border-2 border-dashed ${errors.foto_selesai ? 'border-red-500 dark:border-red-500 bg-red-50 dark:bg-red-900/10' : 'border-slate-300 dark:border-slate-600 bg-cighra-light dark:bg-cighra-darkcard/10'} p-4 text-center hover:border-cighra-primary dark:hover:border-cighra-gold transition-all group cursor-pointer relative flex flex-col justify-center min-h-[140px]`}>
+            <input
+              type="file"
+              accept="image/*"
+              className="absolute inset-0 opacity-0 cursor-pointer z-10"
+              onChange={(e) => {
+                const file = e.target.files ? e.target.files[0] : null;
+                setData('foto_selesai', file);
+                if (file) {
+                  const reader = new FileReader();
+                  reader.onloadend = () => setImagePreview(reader.result as string);
+                  reader.readAsDataURL(file);
+                } else {
+                  setImagePreview(null);
+                }
+              }}
+            />
+            <div className="flex flex-col items-center justify-center gap-3">
+              {imagePreview ? (
+                <div className="relative w-full max-w-[200px] h-32 border-2 border-cighra-primary dark:border-cighra-gold shadow-lg overflow-hidden group-hover:scale-105 transition-transform">
+                  <img src={imagePreview} className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="text-[10px] text-white font-bold font-mono">GANTI FOTO</span>
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center gap-1">
-                <div className="flex items-center gap-3">
-                  <Activity className="w-5 h-5 text-slate-500 group-hover:text-cighra-primary dark:group-hover:text-cighra-gold transition-colors" />
-                  <span className="text-xs font-mono text-slate-500 dark:text-slate-300 group-hover:text-cighra-primary dark:group-hover:text-cighra-gold uppercase font-bold">
-                    UNGGAH FOTO BUKTI SELESAI <span className="text-cighra-primary dark:text-cighra-gold ml-1">*</span>
-                  </span>
+              ) : (
+                <div className="flex flex-col items-center gap-1">
+                  <div className="flex items-center gap-3">
+                    <Activity className="w-5 h-5 text-slate-500 group-hover:text-cighra-primary dark:group-hover:text-cighra-gold transition-colors" />
+                    <span className="text-xs font-mono text-slate-500 dark:text-slate-300 group-hover:text-cighra-primary dark:group-hover:text-cighra-gold uppercase font-bold">
+                      UNGGAH FOTO BUKTI SELESAI <span className="text-cighra-primary dark:text-cighra-gold ml-1">*</span>
+                    </span>
+                  </div>
+                  <span className="text-[9px] font-mono text-slate-500 dark:text-slate-400 uppercase">Klik untuk unggah foto hasil perbaikan</span>
                 </div>
-                <span className="text-[9px] font-mono text-slate-500 dark:text-slate-400 uppercase">Klik atau tarik file ke area ini (Wajib)</span>
-              </div>
-            )}
+              )}
+            </div>
+            {errors.foto_selesai && <p className="text-[9px] text-cighra-primary dark:text-cighra-gold mt-1 font-mono uppercase">{errors.foto_selesai}</p>}
+          </div>
+
+          {/* Video Upload (Optional) */}
+          <div className={`border-2 border-dashed ${errors.video_selesai ? 'border-red-500 dark:border-red-500 bg-red-50 dark:bg-red-900/10' : 'border-slate-300 dark:border-slate-600 bg-cighra-light dark:bg-cighra-darkcard/10'} p-4 text-center hover:border-blue-500 transition-all group cursor-pointer relative flex flex-col justify-center min-h-[140px]`}>
+            <input
+              type="file"
+              accept="video/*"
+              className="absolute inset-0 opacity-0 cursor-pointer z-10"
+              onChange={(e) => {
+                const file = e.target.files ? e.target.files[0] : null;
+                setData('video_selesai', file);
+                if (file) {
+                  setVideoPreview(file.name);
+                } else {
+                  setVideoPreview(null);
+                }
+              }}
+            />
+            <div className="flex flex-col items-center justify-center gap-3">
+              {videoPreview ? (
+                <div className="relative w-full max-w-[200px] h-32 border-2 border-dashed border-blue-500 flex flex-col items-center justify-center bg-slate-800/30 p-2">
+                  <span className="text-[10px] text-blue-500 font-bold font-mono block text-center truncate w-full">{videoPreview}</span>
+                  <span className="text-[9px] text-slate-400 font-mono mt-2">VIDEO TERPILIH (OPSIONAL)</span>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center gap-1">
+                  <div className="flex items-center gap-3">
+                    <Activity className="w-5 h-5 text-slate-500 group-hover:text-blue-500 transition-colors" />
+                    <span className="text-xs font-mono text-slate-500 dark:text-slate-300 group-hover:text-blue-500 uppercase font-bold">
+                      VIDEO DOKUMENTASI (OPSIONAL)
+                    </span>
+                  </div>
+                  <span className="text-[9px] font-mono text-slate-500 dark:text-slate-400 uppercase">Klik untuk unggah video hasil perbaikan</span>
+                </div>
+              )}
+            </div>
+            {errors.video_selesai && <p className="text-[9px] text-cighra-primary dark:text-cighra-gold mt-1 font-mono uppercase">{errors.video_selesai}</p>}
           </div>
         </div>
-        {errors.foto_selesai && (
-          <p className="text-[10px] text-red-600 dark:text-red-400 mt-1 font-mono uppercase font-bold text-center">
-            {errors.foto_selesai}
-          </p>
-        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
           <div>
@@ -115,7 +154,7 @@ const CompletionForm: React.FC<CompletionFormProps> = ({
             {processing ? (
               <span className="flex items-center gap-2"><span className="w-5 h-5 animate-spin border-2 border-white border-t-transparent rounded-full" /> MENGIRIM...</span>
             ) : (
-              <><CheckCircle2 className="w-5 h-5" /> Kirim Laporan Selesai</>
+              <><CheckCircle2 className="w-5 h-5" /> Selesaikan Laporan</>
             )}
           </button>
         </div>
