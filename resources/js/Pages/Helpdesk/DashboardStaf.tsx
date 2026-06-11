@@ -14,6 +14,7 @@ import ProofModal from './StafComponents/ProofModal';
 import ReportDetailModal from './StafComponents/ReportDetailModal';
 import AssignTechnicianModal from './StafComponents/AssignTechnicianModal';
 import StafRecapModal from './StafComponents/StafRecapModal';
+import ReportRejectModal from './StafComponents/ReportRejectModal';
 
 type MenuTab = 'MASUK' | 'SELESAI' | 'INVENTARIS';
 
@@ -21,6 +22,7 @@ const DashboardStaf = (props: any) => {
   const { dbCases = [], dbUsers = [], dbUnits = [] } = props;
   const [activeMenu, setActiveMenu] = useState<MenuTab>('MASUK');
   const [assigningReportId, setAssigningReportId] = useState<number | null>(null);
+  const [rejectingReportId, setRejectingReportId] = useState<number | null>(null);
   const [viewingProof, setViewingProof] = useState<any[] | null>(null);
   const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
@@ -86,8 +88,33 @@ const DashboardStaf = (props: any) => {
     setIsRecapModalOpen(false);
   };
 
-  const incomingReports = dbCases.filter((r: any) => r.status === 'PENDING' || r.status === 'PROSES');
-  const completedReports = dbCases.filter((r: any) => r.status === 'SELESAI');
+  const handleVerify = (reportId: number) => {
+    router.post(`/reports/${reportId}/verify`, {}, {
+      onSuccess: () => {
+        addNotification('Laporan berhasil diverifikasi.');
+      },
+      onError: () => {
+        addNotification('Gagal memverifikasi laporan.', 'error');
+      }
+    });
+  };
+
+  const handleReject = (reportId: number, reason: string) => {
+    router.post(`/reports/${reportId}/reject`, { alasan: reason }, {
+      onSuccess: () => {
+        setRejectingReportId(null);
+        addNotification('Laporan telah ditolak.');
+      },
+      onError: () => {
+        addNotification('Gagal menolak laporan.', 'error');
+      }
+    });
+  };
+
+  const rejectingReport = dbCases.find((c: any) => c.db_id === rejectingReportId);
+
+  const incomingReports = dbCases.filter((r: any) => r.status !== 'SELESAI' && r.status !== 'DITOLAK');
+  const completedReports = dbCases.filter((r: any) => r.status === 'SELESAI' || r.status === 'DITOLAK');
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-cighra-dark flex font-sans selection:bg-cighra-primary dark:selection:bg-cighra-gold dark:selection:text-slate-900 selection:text-white relative text-gunmetal dark:text-slate-300">
@@ -141,6 +168,8 @@ const DashboardStaf = (props: any) => {
                 onSelectReport={setSelectedReportId}
                 onAssignTechnician={setAssigningReportId}
                 onViewProof={setViewingProof}
+                onVerify={handleVerify}
+                onReject={setRejectingReportId}
               />
             )}
 
@@ -207,6 +236,13 @@ const DashboardStaf = (props: any) => {
         isOpen={isLogoutModalOpen}
         onClose={() => setIsLogoutModalOpen(false)}
         onConfirm={confirmLogout}
+      />
+
+      <ReportRejectModal
+        isOpen={!!rejectingReportId}
+        onClose={() => setRejectingReportId(null)}
+        onConfirm={(reason) => rejectingReportId && handleReject(rejectingReportId, reason)}
+        caseId={rejectingReport ? rejectingReport.caseId : ''}
       />
 
     </div>

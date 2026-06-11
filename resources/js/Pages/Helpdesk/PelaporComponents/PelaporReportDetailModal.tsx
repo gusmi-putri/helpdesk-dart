@@ -48,8 +48,9 @@ const PelaporReportDetailModal: React.FC<PelaporReportDetailModalProps> = ({ isO
                   <p className="text-[9px] text-slate-500 font-mono uppercase tracking-widest">Status Perbaikan</p>
                   <span className={`inline-block px-3 py-1 text-[10px] font-tactical font-bold tracking-widest border mt-1
                     ${report.status === 'SELESAI' ? 'bg-green-900/20 text-green-500 border-green-800' :
-                      report.status === 'PROSES' ? 'bg-blue-900/20 text-blue-500 border-blue-800' :
-                        'bg-yellow-900/20 text-yellow-500 border-yellow-800'}
+                      report.status === 'DITOLAK' ? 'bg-red-900/20 text-red-500 border-red-800' :
+                      report.status === 'PENDING' ? 'bg-yellow-900/20 text-yellow-500 border-yellow-800' :
+                        'bg-blue-900/20 text-blue-500 border-blue-800'}
                   `}>
                     {report.perbaikan.statusPerbaikan || report.status}
                   </span>
@@ -86,6 +87,15 @@ const PelaporReportDetailModal: React.FC<PelaporReportDetailModalProps> = ({ isO
               </p>
             </div>
 
+            {report.status === 'DITOLAK' && (
+              <div className="bg-red-500/10 p-4 border border-red-500/30 text-slate-855 dark:text-slate-200 animate-in fade-in">
+                <p className="text-[9px] text-red-500 font-mono uppercase tracking-widest mb-2 font-bold">ALASAN PENOLAKAN LAPORAN (FEEDBACK STAF):</p>
+                <p className="text-xs font-mono leading-relaxed uppercase italic">
+                  "{report.perbaikan.alasanPenolakan || 'Tidak ada alasan penolakan yang ditulis.'}"
+                </p>
+              </div>
+            )}
+
             {report.perbaikan.tindakan && (
               <div className="bg-cighra-primary/5 dark:bg-cighra-gold/5 p-4 border border-cighra-primary dark:border-cighra-gold/30">
                 <p className="text-[9px] text-cighra-primary dark:text-cighra-gold font-mono uppercase tracking-widest mb-2">TINDAKAN PERBAIKAN (TEKNISI):</p>
@@ -97,6 +107,25 @@ const PelaporReportDetailModal: React.FC<PelaporReportDetailModalProps> = ({ isO
                     <span className="text-[9px] font-bold text-cighra-primary dark:text-cighra-gold tracking-tighter uppercase">METODE PERBAIKAN: {report.perbaikan.metodePerbaikan}</span>
                   </div>
                 )}
+              </div>
+            )}
+
+            {/* Dokumentasi Penyelesaian */}
+            {(report.perbaikan.foto_bukti_selesai || report.perbaikan.video_bukti_selesai) && (
+              <div className="bg-slate-100 dark:bg-cighra-darkcard/40 p-4 border border-slate-200 dark:border-slate-700/50 space-y-3 mt-4">
+                <p className="text-[9px] text-slate-500 font-mono uppercase tracking-widest font-bold">DOKUMENTASI HASIL PERBAIKAN:</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {report.perbaikan.foto_bukti_selesai && (
+                    <div className="border border-slate-300 dark:border-slate-700 rounded-sm overflow-hidden bg-black/40 flex items-center justify-center h-48">
+                      <img src={report.perbaikan.foto_bukti_selesai} alt="Foto Selesai" className="max-w-full max-h-full object-contain" />
+                    </div>
+                  )}
+                  {report.perbaikan.video_bukti_selesai && (
+                    <div className="border border-slate-300 dark:border-slate-700 rounded-sm overflow-hidden bg-black/40 flex items-center justify-center h-48">
+                      <video src={report.perbaikan.video_bukti_selesai} controls className="max-w-full max-h-full object-contain" />
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>

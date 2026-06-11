@@ -41,6 +41,10 @@ Route::post('/reports', [ReportController::class, 'store'])->name('reports.store
 Route::post('/reports/{id}/handle', [ReportController::class, 'handle'])->name('reports.handle');
 // Route complete is for Technician finishing task
 Route::post('/reports/{id}/complete', [ReportController::class, 'complete'])->name('reports.complete');
+Route::post('/reports/{id}/verify', [ReportController::class, 'verify'])->name('reports.verify');
+Route::post('/reports/{id}/reject', [ReportController::class, 'reject'])->name('reports.reject');
+Route::post('/reports/{id}/accept-task', [ReportController::class, 'acceptTask'])->name('reports.accept-task');
+Route::post('/reports/{id}/start-progress', [ReportController::class, 'startProgress'])->name('reports.start-progress');
 Route::get('/reports/{id}/pdf', [DashboardController::class, 'exportPdf'])->name('reports.pdf');
 
 // AI Diagnostic Route

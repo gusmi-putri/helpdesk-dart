@@ -32,7 +32,7 @@ const DashboardAdmin = (props: any) => {
   const [activeSubReport, setActiveSubReport] = useState<SubMenuReport>('KERUSAKAN');
   const [isReportsExpanded, setIsReportsExpanded] = useState<boolean>(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
-  const [reportStatusFilter, setReportStatusFilter] = useState<'ALL' | 'PROSES' | 'SELESAI' | 'PENDING'>('ALL');
+  const [reportStatusFilter, setReportStatusFilter] = useState<'ALL' | 'PENDING' | 'DIVERIFIKASI' | 'DITERIMA TEKNISI' | 'DIPROSES' | 'SELESAI' | 'DITOLAK'>('ALL');
 
   // Auto-polling untuk real-time sinkronisasi
   useEffect(() => {

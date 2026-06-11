@@ -11,15 +11,25 @@ interface AnalyticsSectionProps {
 }
 
 const AnalyticsSection: React.FC<AnalyticsSectionProps> = ({ dbCases }) => {
-  const statusCounts = { PENDING: 0, PROSES: 0, SELESAI: 0 };
+  const statusCounts = {
+    PENDING: 0,
+    DIVERIFIKASI: 0,
+    DITERIMA_TEKNISI: 0,
+    DIPROSES: 0,
+    SELESAI: 0,
+    DITOLAK: 0
+  };
   const urgencyCounts: any = {};
   const unitCounts: any = {};
 
   dbCases.forEach((c: any) => {
     // Status
     if (c.status === 'PENDING') statusCounts.PENDING++;
-    else if (c.status === 'PROSES') statusCounts.PROSES++;
+    else if (c.status === 'DIVERIFIKASI') statusCounts.DIVERIFIKASI++;
+    else if (c.status === 'DITERIMA TEKNISI') statusCounts.DITERIMA_TEKNISI++;
+    else if (c.status === 'DIPROSES') statusCounts.DIPROSES++;
     else if (c.status === 'SELESAI') statusCounts.SELESAI++;
+    else if (c.status === 'DITOLAK') statusCounts.DITOLAK++;
 
     // Urgency
     const urgency = c.kerusakan.urgensi || 'NORMAL';
@@ -31,10 +41,13 @@ const AnalyticsSection: React.FC<AnalyticsSectionProps> = ({ dbCases }) => {
   });
 
   const statusData = [
-    { name: 'PENDING', value: statusCounts.PENDING, color: '#dc2626' }, // targetred
-    { name: 'PROSES', value: statusCounts.PROSES, color: '#3b82f6' },  // blue
-    { name: 'SELESAI', value: statusCounts.SELESAI, color: '#22c55e' } // green
-  ];
+    { name: 'PENDING', value: statusCounts.PENDING, color: '#f59e0b' },
+    { name: 'DIVERIFIKASI', value: statusCounts.DIVERIFIKASI, color: '#3b82f6' },
+    { name: 'DITERIMA TEKNISI', value: statusCounts.DITERIMA_TEKNISI, color: '#8b5cf6' },
+    { name: 'DIPROSES', value: statusCounts.DIPROSES, color: '#06b6d4' },
+    { name: 'SELESAI', value: statusCounts.SELESAI, color: '#10b981' },
+    { name: 'DITOLAK', value: statusCounts.DITOLAK, color: '#ef4444' }
+  ].filter(s => s.value > 0);
 
   const urgencyData = Object.keys(urgencyCounts).map(key => ({
     name: key,
@@ -57,7 +70,7 @@ const AnalyticsSection: React.FC<AnalyticsSectionProps> = ({ dbCases }) => {
         <div className="bg-white dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600 p-6 flex flex-col items-center justify-center relative overflow-hidden shadow-lg">
           <div className="absolute top-0 left-0 w-full h-1 bg-blue-500"></div>
           <span className="text-[10px] font-mono text-slate-500 dark:text-slate-300 uppercase tracking-widest mb-2">Sedang Diproses</span>
-          <span className="text-4xl font-tactical font-bold text-blue-500">{statusCounts.PROSES}</span>
+          <span className="text-4xl font-tactical font-bold text-blue-500">{statusCounts.DIVERIFIKASI + statusCounts.DITERIMA_TEKNISI + statusCounts.DIPROSES}</span>
         </div>
         <div className="bg-white dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600 p-6 flex flex-col items-center justify-center relative overflow-hidden shadow-lg">
           <div className="absolute top-0 left-0 w-full h-1 bg-camogreen"></div>

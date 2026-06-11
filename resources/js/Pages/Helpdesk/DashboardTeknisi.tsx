@@ -20,13 +20,14 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
   const [activeTab, setActiveTab] = useState<'ACTIVE' | 'HISTORY'>('ACTIVE');
   const [searchQuery, setSearchQuery] = useState('');
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   // Filter tasks
-  const activeTasks = dbCases.filter((r: any) => r.status === 'PROSES' || r.status === 'PENDING');
-  const historyTasks = dbCases.filter((r: any) => r.status === 'SELESAI');
+  const activeTasks = dbCases.filter((r: any) => r.status === 'DIVERIFIKASI' || r.status === 'DITERIMA TEKNISI' || r.status === 'DIPROSES');
+  const historyTasks = dbCases.filter((r: any) => r.status === 'SELESAI' || r.status === 'DITOLAK');
 
   const tasksToShow = activeTab === 'ACTIVE' ? activeTasks : historyTasks;
   const filteredTasks = tasksToShow.filter((t: any) =>
@@ -41,6 +42,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
     catatan: '',
     metode: '',
     foto_selesai: null as File | null,
+    video_selesai: null as File | null,
   });
 
   // Auto-polling
@@ -51,12 +53,34 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
     return () => clearInterval(interval);
   }, []);
 
+  const handleAcceptTask = (taskId: number) => {
+    router.post(`/reports/${taskId}/accept-task`, {}, {
+      onSuccess: () => {
+        addNotification('Tugas berhasil diterima. Silakan mulai perbaikan ketika siap.');
+      },
+      onError: () => {
+        addNotification('Gagal menerima tugas.', 'error');
+      }
+    });
+  };
+
+  const handleStartProgress = (taskId: number) => {
+    router.post(`/reports/${taskId}/start-progress`, {}, {
+      onSuccess: () => {
+        addNotification('Tindakan perbaikan berhasil dimulai.');
+      },
+      onError: () => {
+        addNotification('Gagal memulai perbaikan.', 'error');
+      }
+    });
+  };
+
   const handleSubmitLaporan = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedTaskId) return;
 
-    if (!data.metode) {
-      addNotification('PERINGATAN: METODE PERBAIKAN WAJIB DIPILIH.', 'error');
+    if (!data.foto_selesai) {
+      addNotification('PERINGATAN: FOTO DOKUMENTASI WAJIB DIUNGGAH.', 'error');
       return;
     }
 
@@ -65,6 +89,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
         addNotification('Laporan penanganan telah berhasil dikirim ke sistem.');
         reset();
         setImagePreview(null);
+        setVideoPreview(null);
         setSelectedTaskId(null);
       },
       onError: () => {
@@ -131,17 +156,47 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
                     selectedTask={selectedTask}
                     onBack={() => setSelectedTaskId(null)}
                   />
-                ) : (
-                  <CompletionForm
-                    data={data}
-                    setData={setData}
-                    errors={errors}
-                    processing={processing}
-                    handleSubmit={handleSubmitLaporan}
-                    imagePreview={imagePreview}
-                    setImagePreview={setImagePreview}
-                  />
-                )}
+                ) : selectedTask ? (
+                  selectedTask.status === 'DIVERIFIKASI' ? (
+                    <div className="flex flex-col items-center justify-center p-8 border border-slate-200 dark:border-slate-600 bg-white/40 dark:bg-cighra-darkcard/30 rounded-sm text-center animate-in fade-in">
+                      <h3 className="text-lg font-tactical font-bold mb-4 uppercase text-slate-800 dark:text-white">TERIMA PENUGASAN INI?</h3>
+                      <p className="text-xs font-mono text-slate-500 dark:text-slate-400 max-w-sm mb-6 uppercase">
+                        Tekan tombol di bawah untuk mengonfirmasi bahwa Anda menerima tugas perbaikan unit DART ini.
+                      </p>
+                      <button
+                        onClick={() => handleAcceptTask(selectedTask.db_id)}
+                        className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white font-tactical font-bold px-8 py-3.5 tracking-widest uppercase transition-all shadow-md"
+                      >
+                        Terima Tugas
+                      </button>
+                    </div>
+                  ) : selectedTask.status === 'DITERIMA TEKNISI' ? (
+                    <div className="flex flex-col items-center justify-center p-8 border border-slate-200 dark:border-slate-600 bg-white/40 dark:bg-cighra-darkcard/30 rounded-sm text-center animate-in fade-in">
+                      <h3 className="text-lg font-tactical font-bold mb-4 uppercase text-slate-800 dark:text-white">MULAI PROSES PERBAIKAN?</h3>
+                      <p className="text-xs font-mono text-slate-500 dark:text-slate-400 max-w-sm mb-6 uppercase">
+                        Tekan tombol di bawah untuk menyatakan bahwa Anda telah mulai memeriksa/memperbaiki unit ini. Status unit akan berubah menjadi 'Perbaikan'.
+                      </p>
+                      <button
+                        onClick={() => handleStartProgress(selectedTask.db_id)}
+                        className="bg-blue-600 hover:bg-blue-500 text-white font-tactical font-bold px-8 py-3.5 tracking-widest uppercase transition-all shadow-md"
+                      >
+                        Mulai Perbaikan
+                      </button>
+                    </div>
+                  ) : (
+                    <CompletionForm
+                      data={data}
+                      setData={setData}
+                      errors={errors}
+                      processing={processing}
+                      handleSubmit={handleSubmitLaporan}
+                      imagePreview={imagePreview}
+                      setImagePreview={setImagePreview}
+                      videoPreview={videoPreview}
+                      setVideoPreview={setVideoPreview}
+                    />
+                  )
+                ) : null}
               </TaskDetailPanel>
             </div>
           </div>

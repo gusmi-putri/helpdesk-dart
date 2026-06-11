@@ -57,7 +57,9 @@ class DashboardController extends Controller
                     'tindakan' => $report->catatan_teknisi,
                     'metodePerbaikan' => $report->metode_perbaikan, 
                     'foto_bukti_selesai' => $report->file_bukti_selesai ? asset('storage/reports/' . $report->file_bukti_selesai) : null,
-                    'statusPerbaikan' => $report->status_laporan === 'Selesai' ? 'TUNTAS' : ($report->status_laporan === 'Proses' ? 'DIKERJAKAN' : 'MENUNGGU'),
+                    'video_bukti_selesai' => $report->file_bukti_selesai_video ? asset('storage/reports/' . $report->file_bukti_selesai_video) : null,
+                    'alasanPenolakan' => $report->alasan_penolakan,
+                    'statusPerbaikan' => strtoupper($report->status_laporan),
                 ]
             ];
         });
@@ -191,7 +193,7 @@ class DashboardController extends Controller
                 'username' => $u->username,
                 'spesialisasi' => $u->spesialisasi,
                 'tasksReceived' => $u->reportsDitangani->count(),
-                'tasksInProgress' => $u->reportsDitangani->where('status_laporan', 'Proses')->count()
+                'tasksInProgress' => $u->reportsDitangani->whereIn('status_laporan', ['Diterima Teknisi', 'Diproses'])->count()
             ];
         });
 

@@ -50,7 +50,7 @@ class RecapController extends Controller
         $stats = [
             'total' => $reports->count(),
             'selesai' => $reports->where('status_laporan', 'Selesai')->count(),
-            'proses' => $reports->where('status_laporan', 'Proses')->count(),
+            'proses' => $reports->whereIn('status_laporan', ['Diverifikasi', 'Diterima Teknisi', 'Diproses'])->count(),
             'pending' => $reports->where('status_laporan', 'Pending')->count(),
         ];
 

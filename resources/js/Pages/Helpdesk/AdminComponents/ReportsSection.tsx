@@ -3,8 +3,8 @@ import { Radar, FileArchive, AlertTriangle, Wrench, Download } from 'lucide-reac
 
 interface ReportsSectionProps {
   dbCases: any[];
-  reportStatusFilter: 'ALL' | 'PENDING' | 'PROSES' | 'SELESAI';
-  setReportStatusFilter: (s: 'ALL' | 'PENDING' | 'PROSES' | 'SELESAI') => void;
+  reportStatusFilter: 'ALL' | 'PENDING' | 'DIVERIFIKASI' | 'DITERIMA TEKNISI' | 'DIPROSES' | 'SELESAI' | 'DITOLAK';
+  setReportStatusFilter: (s: 'ALL' | 'PENDING' | 'DIVERIFIKASI' | 'DITERIMA TEKNISI' | 'DIPROSES' | 'SELESAI' | 'DITOLAK') => void;
   activeSubReport: 'KERUSAKAN' | 'PERBAIKAN';
   setIsRecapModalOpen: (open: boolean) => void;
   handlePrintCasePDF: (c: any) => void;
@@ -20,8 +20,9 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
 }) => {
   const counts = {
     PENDING: dbCases.filter((c: any) => c.status === 'PENDING').length,
-    PROSES: dbCases.filter((c: any) => c.status === 'PROSES').length,
+    AKTIF: dbCases.filter((c: any) => c.status === 'DIVERIFIKASI' || c.status === 'DITERIMA TEKNISI' || c.status === 'DIPROSES').length,
     SELESAI: dbCases.filter((c: any) => c.status === 'SELESAI').length,
+    DITOLAK: dbCases.filter((c: any) => c.status === 'DITOLAK').length,
   };
 
   const filteredCases = dbCases.filter((c: any) => {
@@ -32,18 +33,22 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
         <div className={`p-4 border-l-4 bg-white dark:bg-cighra-darkcard/80 shadow-md ${reportStatusFilter === 'PENDING' ? 'border-cighra-primary dark:border-cighra-gold' : 'border-slate-200 dark:border-slate-600'}`}>
           <div className="text-[10px] font-mono text-slate-500 dark:text-slate-300 uppercase tracking-widest">Laporan Baru</div>
           <div className="text-2xl font-tactical font-bold text-cighra-primary dark:text-cighra-gold">{counts.PENDING}</div>
         </div>
-        <div className={`p-4 border-l-4 bg-white dark:bg-cighra-darkcard/80 shadow-md ${reportStatusFilter === 'PROSES' ? 'border-blue-500' : 'border-slate-200 dark:border-slate-600'}`}>
-          <div className="text-[10px] font-mono text-slate-500 dark:text-slate-300 uppercase tracking-widest">Sedang Diproses</div>
-          <div className="text-2xl font-tactical font-bold text-blue-500">{counts.PROSES}</div>
+        <div className={`p-4 border-l-4 bg-white dark:bg-cighra-darkcard/80 shadow-md ${['DIVERIFIKASI', 'DITERIMA TEKNISI', 'DIPROSES'].includes(reportStatusFilter) ? 'border-blue-500' : 'border-slate-200 dark:border-slate-600'}`}>
+          <div className="text-[10px] font-mono text-slate-500 dark:text-slate-300 uppercase tracking-widest">Aktif / Penanganan</div>
+          <div className="text-2xl font-tactical font-bold text-blue-500">{counts.AKTIF}</div>
         </div>
         <div className={`p-4 border-l-4 bg-white dark:bg-cighra-darkcard/80 shadow-md ${reportStatusFilter === 'SELESAI' ? 'border-camogreen' : 'border-slate-200 dark:border-slate-600'}`}>
           <div className="text-[10px] font-mono text-slate-500 dark:text-slate-300 uppercase tracking-widest">Telah Selesai</div>
           <div className="text-2xl font-tactical font-bold text-camogreen">{counts.SELESAI}</div>
+        </div>
+        <div className={`p-4 border-l-4 bg-white dark:bg-cighra-darkcard/80 shadow-md ${reportStatusFilter === 'DITOLAK' ? 'border-red-600' : 'border-slate-200 dark:border-slate-600'}`}>
+          <div className="text-[10px] font-mono text-slate-500 dark:text-slate-300 uppercase tracking-widest">Ditolak</div>
+          <div className="text-2xl font-tactical font-bold text-red-600">{counts.DITOLAK}</div>
         </div>
       </div>
 
@@ -69,12 +74,12 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
           >
             <FileArchive className="w-4 h-4" /> EKSPOR DATA
           </button>
-          <div className="flex items-center gap-2 bg-slate-50 dark:bg-cighra-darkcard p-1 border border-slate-300 dark:border-slate-600">
-            {(['ALL', 'PENDING', 'PROSES', 'SELESAI'] as const).map(status => (
+          <div className="flex flex-wrap items-center gap-1 bg-slate-50 dark:bg-cighra-darkcard p-1 border border-slate-300 dark:border-slate-600">
+            {(['ALL', 'PENDING', 'DIVERIFIKASI', 'DITERIMA TEKNISI', 'DIPROSES', 'SELESAI', 'DITOLAK'] as const).map(status => (
               <button
                 key={status}
                 onClick={() => setReportStatusFilter(status)}
-                className={`px-3 py-1.5 text-[9px] font-tactical font-bold transition-all ${reportStatusFilter === status ? 'bg-slate-800 text-white shadow-lg' : 'text-slate-500 dark:text-slate-300 hover:text-slate-800 hover:bg-white dark:hover:bg-cighra-darkcard/50'}`}
+                className={`px-2 py-1.5 text-[9px] font-tactical font-bold transition-all ${reportStatusFilter === status ? 'bg-slate-800 text-white shadow-lg' : 'text-slate-500 dark:text-slate-300 hover:text-slate-800 hover:bg-white dark:hover:bg-cighra-darkcard/50'}`}
               >
                 {status === 'ALL' ? 'SEMUA' : status}
               </button>
@@ -172,10 +177,11 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
                     )}
 
                     <td className="p-4">
-                      <span className={`px-3 py-1.5 font-mono text-[10px] font-bold tracking-widest border shadow-sm
+                      <span className={`px-3 py-1.5 font-mono text-[10px] font-bold tracking-widest border shadow-sm uppercase
                     ${c.status === 'SELESAI' ? 'bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-500 border-green-200 dark:border-green-800' :
-                          c.status === 'PROSES' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-500 border-blue-200 dark:border-blue-800' :
-                            'bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white border-cighra-primary dark:border-cighra-gold animate-pulse'}
+                      c.status === 'DITOLAK' ? 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-500 border-red-200 dark:border-red-800' :
+                      c.status === 'PENDING' ? 'bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-500 border-yellow-200 dark:border-yellow-800 animate-pulse' :
+                        'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-500 border-blue-200 dark:border-blue-800'}
                   `}>
                         {c.status}
                       </span>

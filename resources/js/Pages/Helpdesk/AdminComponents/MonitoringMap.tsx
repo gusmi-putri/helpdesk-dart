@@ -51,7 +51,7 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases }) => {
         
         // Check if this unit has an active case
         const hasActiveCase = dbCases.some(c => 
-            c.unit_id === unit.db_id && (c.status === 'PENDING' || c.status === 'PROSES')
+            c.unit_id === unit.db_id && (c.status !== 'SELESAI' && c.status !== 'DITOLAK')
         );
         if (hasActiveCase) acc[satuan].hasDamage = true;
         
@@ -126,7 +126,7 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases }) => {
                                 
                                 <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-2">
                                     {selectedGroup.units.map((unit: any) => {
-                                        const hasCase = dbCases.some(c => c.unit_id === unit.db_id && (c.status === 'PENDING' || c.status === 'PROSES'));
+                                        const hasCase = dbCases.some(c => c.unit_id === unit.db_id && (c.status !== 'SELESAI' && c.status !== 'DITOLAK'));
                                         return (
                                             <div key={unit.db_id} className="bg-slate-50 dark:bg-slate-800/50 p-2 rounded border border-slate-200 dark:border-slate-700/50">
                                                 <div className="flex justify-between items-start mb-1">
