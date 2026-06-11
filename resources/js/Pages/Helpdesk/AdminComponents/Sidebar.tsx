@@ -2,19 +2,20 @@ import React from 'react';
 import {
   Radar, Users, UserCheck, Package, FileArchive,
   ChevronDown, ChevronRight, Database, MessageSquare,
-  Activity, LogOut, Map as MapIcon
+  Activity, LogOut, Map as MapIcon, GitPullRequest
 } from 'lucide-react';
 
 interface SidebarProps {
   isMobileMenuOpen: boolean;
   setIsMobileMenuOpen: (open: boolean) => void;
-  activeMenu: 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SETTINGS' | 'APPROVAL' | 'FEEDBACK';
-  handleMenuClick: (menu: 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SETTINGS' | 'APPROVAL' | 'FEEDBACK') => void;
+  activeMenu: 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SETTINGS' | 'APPROVAL' | 'FEEDBACK' | 'MUTATIONS';
+  handleMenuClick: (menu: 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SETTINGS' | 'APPROVAL' | 'FEEDBACK' | 'MUTATIONS') => void;
   isReportsExpanded: boolean;
   setIsReportsExpanded: (expanded: boolean) => void;
   setActiveSubReport: (sub: 'KERUSAKAN' | 'PERBAIKAN') => void;
   activeSubReport: 'KERUSAKAN' | 'PERBAIKAN';
   dbUsers: any[];
+  dbMutations?: any[];
   handleLogout: () => void;
 }
 
@@ -28,6 +29,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   setActiveSubReport,
   activeSubReport,
   dbUsers,
+  dbMutations = [],
   handleLogout
 }) => {
   return (
@@ -144,6 +146,22 @@ const Sidebar: React.FC<SidebarProps> = ({
             `}
           >
             <MessageSquare size={18} /> UMPAN BALIK
+          </button>
+
+          <button
+            onClick={() => handleMenuClick('MUTATIONS')}
+            className={`w-full flex items-center justify-between px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4
+              ${activeMenu === 'MUTATIONS' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}}
+            `}
+          >
+            <div className="flex items-center gap-3">
+              <GitPullRequest size={18} /> MUTASI INVENTARIS
+            </div>
+            {dbMutations.filter((m: any) => m.status === 'pending').length > 0 && (
+              <span className="bg-orange-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse">
+                {dbMutations.filter((m: any) => m.status === 'pending').length}
+              </span>
+            )}
           </button>
 
           <button

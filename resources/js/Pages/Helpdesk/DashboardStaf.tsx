@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FileArchive } from 'lucide-react';
 import { useStore } from '@/store/useStore';
-import { router, usePage } from '@inertiajs/react';
+import { router, usePage, useForm } from '@inertiajs/react';
 import LogoutConfirmModal from '@/Components/LogoutConfirmModal';
 
 // Sub-components
@@ -15,11 +15,20 @@ import ReportDetailModal from './StafComponents/ReportDetailModal';
 import AssignTechnicianModal from './StafComponents/AssignTechnicianModal';
 import StafRecapModal from './StafComponents/StafRecapModal';
 import ReportRejectModal from './StafComponents/ReportRejectModal';
+import StafUnitModal from './StafComponents/StafUnitModal';
+import RequestDeleteModal from './StafComponents/RequestDeleteModal';
+import MutationHistory from './StafComponents/MutationHistory';
 
-type MenuTab = 'MASUK' | 'SELESAI' | 'INVENTARIS';
+// Reuse Admin components for PersonelTable
+import UsersTable from './AdminComponents/UsersTable';
+import UserDetailModal from './AdminComponents/UserDetailModal';
+import UserDeleteModal from './AdminComponents/UserDeleteModal';
+import UserEditModal from './AdminComponents/UserEditModal';
+
+type MenuTab = 'MASUK' | 'SELESAI' | 'INVENTARIS' | 'MUTASI' | 'PERSONEL';
 
 const DashboardStaf = (props: any) => {
-  const { dbCases = [], dbUsers = [], dbUnits = [] } = props;
+  const { dbCases = [], dbUsers = [], dbUnits = [], dbMutations = [], dbAllUsers = [], dbRoles = [] } = props;
   const [activeMenu, setActiveMenu] = useState<MenuTab>('MASUK');
   const [assigningReportId, setAssigningReportId] = useState<number | null>(null);
   const [rejectingReportId, setRejectingReportId] = useState<number | null>(null);
@@ -41,6 +50,32 @@ const DashboardStaf = (props: any) => {
   const [filterSatuan, setFilterSatuan] = useState('ALL');
   const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
 
+  // Unit Mutation States
+  const [isAddUnitModalOpen, setIsAddUnitModalOpen] = useState(false);
+  const [isDeleteRequestModalOpen, setIsDeleteRequestModalOpen] = useState(false);
+  const [unitToDelete, setUnitToDelete] = useState<any>(null);
+  const [mutationProcessing, setMutationProcessing] = useState(false);
+
+  // Personel States
+  const [isUserDetailModalOpen, setIsUserDetailModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [isUserDeleteModalOpen, setIsUserDeleteModalOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<any>(null);
+  const [isUserEditModalOpen, setIsUserEditModalOpen] = useState(false);
+  const [isAddUserMode, setIsAddUserMode] = useState(false);
+  const [editingUser, setEditingUser] = useState<any>(null);
+
+  const userForm = useForm({
+    username: '',
+    password: '',
+    nama_lengkap: '',
+    nrp_nip: '',
+    role_id: '',
+    asal_satuan: '',
+    no_wa: '',
+    spesialisasi: ''
+  });
+
   const { auth } = usePage().props as any;
   const currentUser = auth.user;
   const logoutAction = useStore(state => state.logout);
@@ -51,7 +86,7 @@ const DashboardStaf = (props: any) => {
   // Auto-polling
   useEffect(() => {
     const interval = setInterval(() => {
-      router.reload({ only: ['dbCases', 'dbUsers', 'dbUnits'] });
+      router.reload({ only: ['dbCases', 'dbUsers', 'dbUnits', 'dbMutations', 'dbAllUsers'] });
     }, 15000);
     return () => clearInterval(interval);
   }, []);
@@ -111,10 +146,127 @@ const DashboardStaf = (props: any) => {
     });
   };
 
+  // === Unit Mutation Handlers ===
+  const handleAddUnitSubmit = (formData: FormData) => {
+    setMutationProcessing(true);
+    router.post('/units', formData, {
+      forceFormData: true,
+      onSuccess: () => {
+        setIsAddUnitModalOpen(false);
+        setMutationProcessing(false);
+        addNotification('Pengajuan penambahan unit telah dikirim. Menunggu persetujuan Admin.');
+      },
+      onError: () => {
+        setMutationProcessing(false);
+        addNotification('Gagal mengirim pengajuan. Periksa data yang diisi.', 'error');
+      }
+    });
+  };
+
+  const handleRequestDelete = (unit: any) => {
+    setUnitToDelete(unit);
+    setIsDeleteRequestModalOpen(true);
+  };
+
+  const handleSubmitDeleteRequest = (reason: string, document: File | null) => {
+    if (!unitToDelete) return;
+    setMutationProcessing(true);
+    const formData = new FormData();
+    formData.append('reason', reason);
+    if (document) formData.append('document', document);
+
+    router.post(`/units/${unitToDelete.db_id}/request-delete`, formData, {
+      forceFormData: true,
+      onSuccess: () => {
+        setIsDeleteRequestModalOpen(false);
+        setUnitToDelete(null);
+        setMutationProcessing(false);
+        addNotification('Pengajuan penghapusan telah dikirim. Menunggu persetujuan Admin.');
+      },
+      onError: () => {
+        setMutationProcessing(false);
+        addNotification('Gagal mengirim pengajuan penghapusan.', 'error');
+      }
+    });
+  };
+
+  // === Personel Handlers ===
+  const handleAddUser = () => {
+    setIsAddUserMode(true);
+    setEditingUser(null);
+    userForm.clearErrors();
+    userForm.reset();
+    setIsUserEditModalOpen(true);
+  };
+
+  const handleShowDetail = (user: any) => {
+    setSelectedUser(user);
+    setIsUserDetailModalOpen(true);
+  };
+
+  const handleEditUser = (user: any) => {
+    setIsAddUserMode(false);
+    setEditingUser(user);
+    userForm.clearErrors();
+    userForm.setData({
+      username: user.username || '',
+      password: '',
+      nama_lengkap: user.name,
+      nrp_nip: user.nrp_nip || '',
+      role_id: user.role_id || '',
+      asal_satuan: user.asal_satuan || '',
+      no_wa: user.no_wa || '',
+      spesialisasi: user.spesialisasi || ''
+    });
+    setIsUserEditModalOpen(true);
+  };
+
+  const handleSaveUser = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isAddUserMode) {
+      userForm.post('/users', {
+        onSuccess: () => {
+          setIsUserEditModalOpen(false);
+          userForm.reset();
+          addNotification('Personel berhasil ditambahkan.');
+        },
+      });
+    } else {
+      userForm.put(`/users/${editingUser.db_id}`, {
+        onSuccess: () => {
+          setIsUserEditModalOpen(false);
+          addNotification('Data personel berhasil diperbarui.');
+        },
+      });
+    }
+  };
+
+  const handleDeleteUser = (user: any) => {
+    setUserToDelete(user);
+    setIsUserDeleteModalOpen(true);
+  };
+
+  const confirmDeleteUser = () => {
+    if (userToDelete) {
+      router.delete(`/users/${userToDelete.db_id}`, {
+        onSuccess: () => {
+          setIsUserDeleteModalOpen(false);
+          setUserToDelete(null);
+          addNotification('Personel berhasil dihapus.');
+        }
+      });
+    }
+  };
+
+  const handleToggleUserStatus = (user: any) => {
+    router.post(`/users/${user.db_id}/toggle-status`);
+  };
+
   const rejectingReport = dbCases.find((c: any) => c.db_id === rejectingReportId);
 
   const incomingReports = dbCases.filter((r: any) => r.status !== 'SELESAI' && r.status !== 'DITOLAK');
   const completedReports = dbCases.filter((r: any) => r.status === 'SELESAI' || r.status === 'DITOLAK');
+  const pendingMutations = dbMutations.filter((m: any) => m.status === 'pending');
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-cighra-dark flex font-sans selection:bg-cighra-primary dark:selection:bg-cighra-gold dark:selection:text-slate-900 selection:text-white relative text-gunmetal dark:text-slate-300">
@@ -126,6 +278,7 @@ const DashboardStaf = (props: any) => {
         setActiveMenu={setActiveMenu}
         handleLogout={handleLogout}
         pendingCount={incomingReports.filter((r: any) => r.status === 'PENDING').length}
+        mutationPendingCount={pendingMutations.length}
       />
 
       {/* MAIN CONTENT AREA */}
@@ -145,14 +298,19 @@ const DashboardStaf = (props: any) => {
                 <h2 className="text-2xl font-tactical font-bold text-slate-800 dark:text-white tracking-widest uppercase">
                   {activeMenu === 'MASUK' ? 'MODUL PENUGASAN TEKNISI' :
                     activeMenu === 'SELESAI' ? 'ARSIP DOKUMEN PENYELESAIAN' :
-                      'DATABASE INVENTARIS PERANGKAT'}
+                      activeMenu === 'INVENTARIS' ? 'DATABASE INVENTARIS PERANGKAT' :
+                        activeMenu === 'MUTASI' ? 'MUTASI INVENTARIS' :
+                          'DATA PERSONEL'}
                 </h2>
                 <p className="text-xs font-mono text-slate-500 dark:text-slate-300 mt-1 uppercase tracking-widest">
-                  {activeMenu === 'INVENTARIS' ? 'STATUS KESIAPAN ALUTSISTA DART.' : 'Sistem Manajemen Pelaporan Kerusakan Dart.'}
+                  {activeMenu === 'INVENTARIS' ? 'STATUS KESIAPAN ALUTSISTA DART.' :
+                    activeMenu === 'MUTASI' ? 'RIWAYAT PENGAJUAN PENAMBAHAN & PENGHAPUSAN UNIT.' :
+                      activeMenu === 'PERSONEL' ? 'KELOLA DATA PENGGUNA SISTEM.' :
+                        'Sistem Manajemen Pelaporan Kerusakan Dart.'}
                 </p>
               </div>
 
-              {activeMenu !== 'INVENTARIS' && (
+              {(activeMenu === 'MASUK' || activeMenu === 'SELESAI') && (
                 <button
                   onClick={() => setIsRecapModalOpen(true)}
                   className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white px-5 py-2 font-tactical font-bold text-xs tracking-widest hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 transition-all flex items-center gap-2 shadow-lg"
@@ -192,6 +350,23 @@ const DashboardStaf = (props: any) => {
                 setFilterSatuan={setFilterSatuan}
                 sortConfig={sortConfig}
                 setSortConfig={setSortConfig}
+                onAddUnit={() => setIsAddUnitModalOpen(true)}
+                onRequestDelete={handleRequestDelete}
+              />
+            )}
+
+            {activeMenu === 'MUTASI' && (
+              <MutationHistory dbMutations={dbMutations} />
+            )}
+
+            {activeMenu === 'PERSONEL' && (
+              <UsersTable
+                dbUsers={dbAllUsers}
+                handleAddUser={handleAddUser}
+                handleToggleUserStatus={handleToggleUserStatus}
+                handleShowDetail={handleShowDetail}
+                handleEditUser={handleEditUser}
+                handleDeleteUser={handleDeleteUser}
               />
             )}
           </div>
@@ -243,6 +418,48 @@ const DashboardStaf = (props: any) => {
         onClose={() => setRejectingReportId(null)}
         onConfirm={(reason) => rejectingReportId && handleReject(rejectingReportId, reason)}
         caseId={rejectingReport ? rejectingReport.caseId : ''}
+      />
+
+      {/* Unit Mutation Modals */}
+      <StafUnitModal
+        isOpen={isAddUnitModalOpen}
+        onClose={() => setIsAddUnitModalOpen(false)}
+        onSubmit={handleAddUnitSubmit}
+        processing={mutationProcessing}
+      />
+
+      <RequestDeleteModal
+        isOpen={isDeleteRequestModalOpen}
+        onClose={() => { setIsDeleteRequestModalOpen(false); setUnitToDelete(null); }}
+        onSubmit={handleSubmitDeleteRequest}
+        unit={unitToDelete}
+        processing={mutationProcessing}
+      />
+
+      {/* Personel Modals */}
+      <UserDetailModal
+        isOpen={isUserDetailModalOpen}
+        onClose={() => setIsUserDetailModalOpen(false)}
+        user={selectedUser}
+      />
+
+      <UserDeleteModal
+        isOpen={isUserDeleteModalOpen}
+        onClose={() => setIsUserDeleteModalOpen(false)}
+        onConfirm={confirmDeleteUser}
+        user={userToDelete}
+      />
+
+      <UserEditModal
+        isOpen={isUserEditModalOpen}
+        onClose={() => setIsUserEditModalOpen(false)}
+        onSubmit={handleSaveUser}
+        data={userForm.data}
+        setData={userForm.setData}
+        errors={userForm.errors}
+        processing={userForm.processing}
+        isAddMode={isAddUserMode}
+        dbRoles={dbRoles}
       />
 
     </div>
