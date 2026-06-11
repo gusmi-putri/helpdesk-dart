@@ -110,10 +110,10 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases }) => {
                         </div>
                     </div>
 
-                    <div className="glass-panel p-4 flex-1 overflow-hidden flex flex-col">
+                    <div className="glass-panel p-4 flex-1 overflow-hidden flex flex-col min-h-0">
                         {selectedGroup ? (
-                            <div className="flex-1 flex flex-col animate-in slide-in-from-right-4 duration-300">
-                                <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-700 pb-3 mb-3">
+                            <div className="flex-1 flex flex-col animate-in slide-in-from-right-4 duration-300 min-h-0">
+                                <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-700 pb-3 mb-3 shrink-0">
                                     <button 
                                         onClick={() => setSelectedGroup(null)}
                                         className="p-1 hover:bg-slate-200 dark:hover:bg-slate-700 rounded transition-colors text-slate-500"
@@ -124,7 +124,7 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases }) => {
                                     <h3 className="font-tactical font-bold text-sm tracking-widest uppercase flex-1 truncate">{selectedGroup.name}</h3>
                                 </div>
                                 
-                                <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-2">
+                                <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-2 min-h-0">
                                     {selectedGroup.units.map((unit: any) => {
                                         const hasCase = dbCases.some(c => c.unit_id === unit.db_id && (c.status !== 'SELESAI' && c.status !== 'DITOLAK'));
                                         return (
@@ -143,16 +143,16 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases }) => {
                                     })}
                                 </div>
                                 
-                                <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+                                <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700 shrink-0">
                                     <div className="text-[9px] text-slate-500 font-mono text-center">
                                         COORD: {selectedGroup.coords[0].toFixed(4)}, {selectedGroup.coords[1].toFixed(4)}
                                     </div>
                                 </div>
                             </div>
                         ) : (
-                            <div className="flex-1 flex flex-col animate-in fade-in duration-300">
-                                <h3 className="font-tactical font-bold text-sm tracking-widest uppercase border-b border-slate-200 dark:border-slate-700 pb-2 mb-3">RINGKASAN SATUAN</h3>
-                                <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-2">
+                            <div className="flex-1 flex flex-col animate-in fade-in duration-300 min-h-0">
+                                <h3 className="font-tactical font-bold text-sm tracking-widest uppercase border-b border-slate-200 dark:border-slate-700 pb-2 mb-3 shrink-0">RINGKASAN SATUAN</h3>
+                                <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-2 min-h-0">
                                     {Object.values(satuanGroups).map((group: any) => (
                                         <div 
                                             key={group.name} 
