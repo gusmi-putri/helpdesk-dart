@@ -39,6 +39,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('units', \App\Http\Controllers\UnitController::class)->middleware('role:Admin,Staf');
 
     // Unit Mutations: request delete (Staf), approve/reject (Admin), restore (Admin)
+    Route::post('/units/request-add-batch', [\App\Http\Controllers\UnitController::class, 'requestAddBatch'])->middleware('role:Staf')->name('units.request-add-batch');
+    Route::post('/units/request-delete-batch', [\App\Http\Controllers\UnitController::class, 'requestDeleteBatch'])->middleware('role:Staf')->name('units.request-delete-batch');
     Route::post('/units/{unit}/request-delete', [\App\Http\Controllers\UnitController::class, 'requestDelete'])->middleware('role:Staf')->name('units.request-delete');
     Route::post('/mutations/{mutation}/approve', [\App\Http\Controllers\UnitController::class, 'approveMutation'])->middleware('role:Admin')->name('mutations.approve');
     Route::post('/mutations/{mutation}/reject', [\App\Http\Controllers\UnitController::class, 'rejectMutation'])->middleware('role:Admin')->name('mutations.reject');

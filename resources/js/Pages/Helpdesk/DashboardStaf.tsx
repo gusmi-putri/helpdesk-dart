@@ -18,6 +18,8 @@ import ReportRejectModal from './StafComponents/ReportRejectModal';
 import StafUnitModal from './StafComponents/StafUnitModal';
 import RequestDeleteModal from './StafComponents/RequestDeleteModal';
 import MutationHistory from './StafComponents/MutationHistory';
+import StafUnitBatchModal from './StafComponents/StafUnitBatchModal';
+import RequestDeleteBatchModal from './StafComponents/RequestDeleteBatchModal';
 
 // Reuse Admin components for PersonelTable
 import UsersTable from './AdminComponents/UsersTable';
@@ -55,6 +57,11 @@ const DashboardStaf = (props: any) => {
   const [isDeleteRequestModalOpen, setIsDeleteRequestModalOpen] = useState(false);
   const [unitToDelete, setUnitToDelete] = useState<any>(null);
   const [mutationProcessing, setMutationProcessing] = useState(false);
+  
+  // Batch Mutation States
+  const [isAddBatchModalOpen, setIsAddBatchModalOpen] = useState(false);
+  const [isDeleteBatchModalOpen, setIsDeleteBatchModalOpen] = useState(false);
+  const [selectedUnitsForDelete, setSelectedUnitsForDelete] = useState<any[]>([]);
 
   // Personel States
   const [isUserDetailModalOpen, setIsUserDetailModalOpen] = useState(false);
@@ -181,6 +188,49 @@ const DashboardStaf = (props: any) => {
       onError: () => {
         setMutationProcessing(false);
         addNotification('Gagal mengirim pengajuan penghapusan.', 'error');
+      }
+    });
+  };
+
+  const handleAddBatchSubmit = (formData: FormData) => {
+    setMutationProcessing(true);
+    router.post('/units/request-add-batch', formData, {
+      forceFormData: true,
+      onSuccess: () => {
+        setIsAddBatchModalOpen(false);
+        setMutationProcessing(false);
+      },
+      onError: () => {
+        setMutationProcessing(false);
+        addNotification('Gagal mengirim pengajuan massal.', 'error');
+      }
+    });
+  };
+
+  const handleRequestDeleteBatch = (selectedUnits: any[]) => {
+    setSelectedUnitsForDelete(selectedUnits);
+    setIsDeleteBatchModalOpen(true);
+  };
+
+  const handleSubmitDeleteBatch = (reason: string, document: File) => {
+    setMutationProcessing(true);
+    const formData = new FormData();
+    formData.append('reason', reason);
+    formData.append('document', document);
+    selectedUnitsForDelete.forEach(unit => {
+      formData.append('unit_ids[]', unit.db_id);
+    });
+
+    router.post('/units/request-delete-batch', formData, {
+      forceFormData: true,
+      onSuccess: () => {
+        setIsDeleteBatchModalOpen(false);
+        setSelectedUnitsForDelete([]);
+        setMutationProcessing(false);
+      },
+      onError: () => {
+        setMutationProcessing(false);
+        addNotification('Gagal mengirim pengajuan penghapusan massal.', 'error');
       }
     });
   };
@@ -343,7 +393,9 @@ const DashboardStaf = (props: any) => {
                 sortConfig={sortConfig}
                 setSortConfig={setSortConfig}
                 onAddUnit={() => setIsAddUnitModalOpen(true)}
+                onAddBatch={() => setIsAddBatchModalOpen(true)}
                 onRequestDelete={handleRequestDelete}
+                onRequestDeleteBatch={handleRequestDeleteBatch}
               />
             )}
 
@@ -425,6 +477,21 @@ const DashboardStaf = (props: any) => {
         onClose={() => { setIsDeleteRequestModalOpen(false); setUnitToDelete(null); }}
         onSubmit={handleSubmitDeleteRequest}
         unit={unitToDelete}
+        processing={mutationProcessing}
+      />
+
+      <StafUnitBatchModal
+        isOpen={isAddBatchModalOpen}
+        onClose={() => setIsAddBatchModalOpen(false)}
+        onSubmit={handleAddBatchSubmit}
+        processing={mutationProcessing}
+      />
+
+      <RequestDeleteBatchModal
+        isOpen={isDeleteBatchModalOpen}
+        onClose={() => { setIsDeleteBatchModalOpen(false); setSelectedUnitsForDelete([]); }}
+        onSubmit={handleSubmitDeleteBatch}
+        selectedUnits={selectedUnitsForDelete}
         processing={mutationProcessing}
       />
 
