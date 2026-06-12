@@ -95,7 +95,6 @@ const DashboardStaf = (props: any) => {
     router.post(`/reports/${reportId}/handle`, { teknisi_id: idTeknisi }, {
       onSuccess: () => {
         setAssigningReportId(null);
-        addNotification('Teknisi berhasil ditugaskan untuk menangani laporan.');
       },
       onError: () => {
         addNotification('Gagal menugaskan teknisi. Silakan periksa kembali koneksi Anda.', 'error');
@@ -126,7 +125,6 @@ const DashboardStaf = (props: any) => {
   const handleVerify = (reportId: number) => {
     router.post(`/reports/${reportId}/verify`, {}, {
       onSuccess: () => {
-        addNotification('Laporan berhasil diverifikasi.');
       },
       onError: () => {
         addNotification('Gagal memverifikasi laporan.', 'error');
@@ -138,7 +136,6 @@ const DashboardStaf = (props: any) => {
     router.post(`/reports/${reportId}/reject`, { alasan: reason }, {
       onSuccess: () => {
         setRejectingReportId(null);
-        addNotification('Laporan telah ditolak.');
       },
       onError: () => {
         addNotification('Gagal menolak laporan.', 'error');
@@ -154,7 +151,6 @@ const DashboardStaf = (props: any) => {
       onSuccess: () => {
         setIsAddUnitModalOpen(false);
         setMutationProcessing(false);
-        addNotification('Pengajuan penambahan unit telah dikirim. Menunggu persetujuan Admin.');
       },
       onError: () => {
         setMutationProcessing(false);
@@ -181,7 +177,6 @@ const DashboardStaf = (props: any) => {
         setIsDeleteRequestModalOpen(false);
         setUnitToDelete(null);
         setMutationProcessing(false);
-        addNotification('Pengajuan penghapusan telah dikirim. Menunggu persetujuan Admin.');
       },
       onError: () => {
         setMutationProcessing(false);
@@ -228,14 +223,12 @@ const DashboardStaf = (props: any) => {
         onSuccess: () => {
           setIsUserEditModalOpen(false);
           userForm.reset();
-          addNotification('Personel berhasil ditambahkan.');
         },
       });
     } else {
       userForm.put(`/users/${editingUser.db_id}`, {
         onSuccess: () => {
           setIsUserEditModalOpen(false);
-          addNotification('Data personel berhasil diperbarui.');
         },
       });
     }
@@ -252,7 +245,6 @@ const DashboardStaf = (props: any) => {
         onSuccess: () => {
           setIsUserDeleteModalOpen(false);
           setUserToDelete(null);
-          addNotification('Personel berhasil dihapus.');
         }
       });
     }
