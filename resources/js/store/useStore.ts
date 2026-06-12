@@ -55,6 +55,10 @@ export const useStore = create<AppState>()(
       logout: () => set({ currentUser: null }),
 
       addNotification: (message, type = 'success') => {
+        // Cegah duplikasi: jika notifikasi dengan pesan yang sama sudah ada, skip
+        const existing = get().notifications.find((n) => n.message === message);
+        if (existing) return;
+
         const id = Math.random().toString(36).substring(2, 9);
         const newNotification: Notification = {
           id,
