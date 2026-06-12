@@ -81,6 +81,23 @@ export const SATUAN_COORDINATES: Record<string, [number, number]> = {
     'SATUAN RADAR': [-6.1039, 106.9455], // Area Utara Jakarta
     'SATUAN RADAR 211': [-6.1039, 106.9455],
     
+    // NEW SATUAN KOORDINAT (SEBARAN RIIL INDONESIA)
+    'GRUP 1 KOPASSUS': [-6.1158, 106.1558],      // Serang, Banten
+    'GRUP 2 KOPASSUS': [-7.5622, 110.7628],      // Kartasura, Solo
+    'YONIF PARA RAIDER 501': [-7.6198, 111.5309], // Madiun, Jatim
+    'YONIF RAIDER 509': [-8.1741, 113.7198],      // Jember, Jatim
+    'YONIF RAIDER 328': [-6.4439, 106.8333],      // Cilodong, Depok
+    'YONIF RAIDER 300': [-6.8115, 107.1528],      // Cianjur, Jabar
+    'YON ARMED 9': [-6.5625, 107.4475],           // Purwakarta, Jabar
+    'YON KAV 4': [-6.9234, 107.6258],             // Bandung, Jabar
+    'YONIF 310': [-6.9458, 106.9128],             // Sukabumi, Jabar
+    'YONIF RAIDER 323': [-7.3758, 108.5667],      // Banjar, Ciamis/Jabar
+    'YON ARHANUD 3': [-6.9069, 107.6369],         // Bandung, Jabar
+    'YONIF 320': [-6.3128, 105.8528],             // Pandeglang, Banten
+    'YON ARMED 4': [-6.8858, 107.5458],           // Cimahi, Jabar
+    'YON KAV 9': [-6.2758, 106.6667],             // Serpong, Tangerang Selatan
+    'YON ARHANUD 10': [-6.2588, 106.8228],        // Pesanggrahan, Jakarta Selatan
+    
     // DEFAULT TENGAH INDONESIA
     'DEFAULT': [-2.5489, 118.0149]
 };
