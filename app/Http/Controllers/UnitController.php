@@ -320,4 +320,154 @@ class UnitController extends Controller
             'total' => $totalRows,
         ]));
     }
+
+    /**
+     * Staf mengajukan penambahan massal via CSV
+     */
+    public function requestAddBatch(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:csv,txt|max:5120',
+            'document' => 'required|file|mimes:pdf,png,jpg,jpeg|max:10240',
+            'reason' => 'nullable|string|max:500',
+        ], [
+            'file.required' => 'Silakan lampirkan file CSV daftar unit.',
+            'document.required' => 'Surat pendukung wajib dilampirkan untuk pengajuan massal.',
+        ]);
+
+        $documentPath = $request->file('document')->store('mutations/documents', 'public');
+        $reason = $request->input('reason', 'Pengajuan penambahan massal DART.');
+        $file = $request->file('file');
+        
+        $handle = fopen($file->getPathname(), "r");
+        if (!$handle) {
+            return redirect()->back()->with('error', 'Gagal membaca file CSV.');
+        }
+
+        $header = true;
+        $requested = 0;
+        $skipped = 0;
+
+        while ($row = fgetcsv($handle, 1000, ",")) {
+            if ($header) { $header = false; continue; }
+            if (count($row) < 4) continue;
+
+            $nomor_seri = trim($row[0]);
+            $nama_dart = trim($row[1]);
+            $jenis_dart = strtoupper(trim($row[2]));
+            $asal_satuan = strtoupper(trim($row[3]));
+            $status_unit = isset($row[4]) ? ucwords(strtolower(trim($row[4]))) : 'Siap Ops';
+
+            if (empty($nomor_seri)) continue;
+
+            // Jika sudah ada di database = skip
+            if (Unit::where('nomor_seri', $nomor_seri)->exists()) {
+                $skipped++;
+                continue;
+            }
+            
+            // Jika sudah ada pengajuan pending untuk nomor seri ini = skip
+            $isPending = UnitMutation::where('type', 'request_add')
+                ->where('status', 'pending')
+                ->where('unit_data->nomor_seri', $nomor_seri)
+                ->exists();
+                
+            if ($isPending) {
+                $skipped++;
+                continue;
+            }
+
+            $validJenis = ['DART STD', 'DART STK', 'SKE', 'MOVING TARGET'];
+            if (!in_array($jenis_dart, $validJenis)) $jenis_dart = 'DART STD';
+
+            $validStatus = ['Siap Ops', 'Beroperasi', 'Rusak', 'Perbaikan', 'Nonaktif'];
+            if (!in_array($status_unit, $validStatus)) $status_unit = 'Siap Ops';
+
+            UnitMutation::create([
+                'unit_id' => null,
+                'type' => 'request_add',
+                'reason' => $reason,
+                'document_path' => $documentPath,
+                'requested_by' => auth()->id(),
+                'status' => 'pending',
+                'unit_data' => [
+                    'nomor_seri' => $nomor_seri,
+                    'nama_dart' => $nama_dart,
+                    'jenis_dart' => $jenis_dart,
+                    'asal_satuan' => $asal_satuan,
+                    'status_unit' => $status_unit
+                ],
+            ]);
+
+            $requested++;
+        }
+
+        fclose($handle);
+
+        SystemLog::log('INFO', auth()->id(), "Staf mengajukan penambahan massal DART: {$requested} diajukan, {$skipped} dilewati.");
+
+        if ($requested === 0) {
+            return redirect()->back()->with('error', 'Semua nomor seri di dalam CSV sudah terdaftar atau tidak valid.');
+        }
+
+        return redirect()->back()->with('message', "{$requested} pengajuan penambahan unit berhasil dikirim. Menunggu persetujuan Admin.");
+    }
+
+    /**
+     * Staf mengajukan penghapusan massal
+     */
+    public function requestDeleteBatch(Request $request)
+    {
+        $request->validate([
+            'unit_ids' => 'required|array',
+            'unit_ids.*' => 'exists:units,id',
+            'reason' => 'required|string|max:500',
+            'document' => 'required|file|mimes:pdf,png,jpg,jpeg|max:10240',
+        ], [
+            'unit_ids.required' => 'Tidak ada unit yang dipilih untuk dihapus.',
+            'document.required' => 'Surat pendukung wajib dilampirkan.',
+        ]);
+
+        $documentPath = $request->file('document')->store('mutations/documents', 'public');
+        $reason = $request->input('reason');
+        $unitIds = $request->input('unit_ids');
+        
+        $requested = 0;
+        $skipped = 0;
+
+        foreach ($unitIds as $unitId) {
+            $unit = Unit::find($unitId);
+            if (!$unit) continue;
+
+            $existingPending = UnitMutation::where('unit_id', $unit->id)
+                ->where('type', 'request_delete')
+                ->where('status', 'pending')
+                ->exists();
+
+            if ($existingPending) {
+                $skipped++;
+                continue;
+            }
+
+            UnitMutation::create([
+                'unit_id' => $unit->id,
+                'type' => 'request_delete',
+                'reason' => $reason,
+                'document_path' => $documentPath,
+                'requested_by' => auth()->id(),
+                'status' => 'pending',
+                'unit_data' => $unit->toArray(),
+            ]);
+
+            $requested++;
+        }
+
+        SystemLog::log('INFO', auth()->id(), "Staf mengajukan penghapusan massal DART: {$requested} diajukan.");
+
+        if ($requested === 0) {
+            return redirect()->back()->with('error', 'Unit yang Anda pilih sudah pernah diajukan penghapusannya.');
+        }
+
+        return redirect()->back()->with('message', "{$requested} pengajuan penghapusan berhasil dikirim. Menunggu persetujuan Admin.");
+    }
 }

@@ -100,7 +100,6 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
           tingkat_kerusakan: data.tingkat_kerusakan
         });
         reset();
-        addNotification('Laporan Anda telah berhasil terkirim ke pusat komando.');
         setActiveMenu('WIZARD');
       },
       onError: () => {
@@ -140,9 +139,9 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
 
         <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
           {activeMenu === 'WIZARD' && lastReportedData && (
-            <PostReportWizard 
-              reportData={lastReportedData} 
-              onClose={() => setActiveMenu('HISTORY')} 
+            <PostReportWizard
+              reportData={lastReportedData}
+              onClose={() => setActiveMenu('HISTORY')}
             />
           )}
 
@@ -161,7 +160,7 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
               removeFile={removeFile}
             />
           )}
-          
+
           {activeMenu === 'HISTORY' && (
             <ReportHistory
               history={filteredHistory}

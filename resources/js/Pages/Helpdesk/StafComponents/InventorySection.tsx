@@ -1,5 +1,5 @@
-import React from 'react';
-import { Search, Plus, Trash2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { Search, Plus, Trash2, FileText, CheckSquare } from 'lucide-react';
 
 interface InventorySectionProps {
   dbUnits: any[];
@@ -12,7 +12,9 @@ interface InventorySectionProps {
   sortConfig: {key: string, direction: 'asc' | 'desc'} | null;
   setSortConfig: (config: {key: string, direction: 'asc' | 'desc'} | null) => void;
   onAddUnit?: () => void;
+  onAddBatch?: () => void;
   onRequestDelete?: (unit: any) => void;
+  onRequestDeleteBatch?: (units: any[]) => void;
 }
 
 const InventorySection: React.FC<InventorySectionProps> = ({
@@ -26,8 +28,11 @@ const InventorySection: React.FC<InventorySectionProps> = ({
   sortConfig,
   setSortConfig,
   onAddUnit,
+  onAddBatch,
   onRequestDelete,
+  onRequestDeleteBatch,
 }) => {
+  const [selectedUnitIds, setSelectedUnitIds] = useState<number[]>([]);
   const jenisOptions = ['ALL', ...new Set(dbUnits.map((u: any) => u.jenis_dart))];
   const satuanOptions = ['ALL', ...new Set(dbUnits.map((u: any) => u.asal_satuan))];
 
@@ -37,6 +42,22 @@ const InventorySection: React.FC<InventorySectionProps> = ({
       direction = 'desc';
     }
     setSortConfig({ key, direction });
+  };
+
+  const toggleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setSelectedUnitIds(filteredUnits.map((u: any) => u.db_id));
+    } else {
+      setSelectedUnitIds([]);
+    }
+  };
+
+  const toggleSelectUnit = (id: number) => {
+    if (selectedUnitIds.includes(id)) {
+      setSelectedUnitIds(selectedUnitIds.filter(v => v !== id));
+    } else {
+      setSelectedUnitIds([...selectedUnitIds, id]);
+    }
   };
 
   const filteredUnits = dbUnits.filter((u: any) => {
@@ -83,21 +104,47 @@ const InventorySection: React.FC<InventorySectionProps> = ({
             </select>
           </div>
           {onAddUnit && (
-            <div className="flex items-end">
+            <div className="flex flex-col xl:flex-row items-end gap-2 xl:col-span-1">
               <button onClick={onAddUnit}
                 className="w-full bg-cighra-primary dark:bg-cighra-gold text-white dark:text-slate-900 px-4 py-2 font-tactical font-bold text-xs tracking-widest hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 transition-all flex items-center justify-center gap-2">
                 <Plus className="w-4 h-4" /> AJUKAN TAMBAH UNIT
               </button>
+              {onAddBatch && (
+                <button onClick={onAddBatch}
+                  className="w-full bg-slate-800 dark:bg-slate-700 text-white dark:text-slate-200 px-4 py-2 font-tactical font-bold text-xs tracking-widest hover:bg-slate-700 dark:hover:bg-slate-600 transition-all flex items-center justify-center gap-2">
+                  <FileText className="w-4 h-4" /> MASSAL (CSV)
+                </button>
+              )}
             </div>
           )}
         </div>
       </div>
+
+      {onRequestDeleteBatch && selectedUnitIds.length > 0 && (
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/40 p-3 flex justify-between items-center shadow-md animate-in slide-in-from-top-2">
+          <p className="text-sm font-tactical font-bold text-red-700 dark:text-red-400 uppercase tracking-widest flex items-center gap-2">
+            <CheckSquare className="w-4 h-4" /> {selectedUnitIds.length} UNIT TERPILIH
+          </p>
+          <button 
+            onClick={() => {
+              const selected = dbUnits.filter(u => selectedUnitIds.includes(u.db_id));
+              onRequestDeleteBatch(selected);
+            }}
+            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 font-tactical font-bold text-xs tracking-widest transition-colors flex items-center gap-2 shadow-sm"
+          >
+            <Trash2 className="w-4 h-4" /> AJUKAN PENGHAPUSAN MASSAL
+          </button>
+        </div>
+      )}
 
       <div className="bg-white dark:bg-cighra-darkcard/70 border border-slate-200 dark:border-slate-600 rounded-sm overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-left font-sans text-xs">
             <thead className="bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-slate-700">
               <tr>
+                {onRequestDeleteBatch && (
+                  <th className="p-4 w-10"></th>
+                )}
                 <th className="p-4 cursor-pointer hover:text-cighra-gold" onClick={() => handleSort('nomor_seri')}>SN</th>
                 <th className="p-4 cursor-pointer hover:text-cighra-gold" onClick={() => handleSort('jenis_dart')}>JENIS</th>
                 <th className="p-4 cursor-pointer hover:text-cighra-gold" onClick={() => handleSort('asal_satuan')}>SATUAN</th>
@@ -109,7 +156,12 @@ const InventorySection: React.FC<InventorySectionProps> = ({
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-soft-sand/5 text-slate-800 dark:text-white bg-white dark:bg-transparent">
               {filteredUnits.map((u: any) => (
-                <tr key={u.db_id} className="hover:bg-slate-50 dark:hover:bg-black/40 transition-colors group">
+                <tr key={u.db_id} className={`hover:bg-slate-50 dark:hover:bg-black/40 transition-colors group ${selectedUnitIds.includes(u.db_id) ? 'bg-red-50/50 dark:bg-red-900/10' : ''}`}>
+                  {onRequestDeleteBatch && (
+                    <td className="p-4">
+                      <input type="checkbox" checked={selectedUnitIds.includes(u.db_id)} onChange={() => toggleSelectUnit(u.db_id)} className="w-4 h-4 cursor-pointer accent-cighra-primary dark:accent-cighra-gold" />
+                    </td>
+                  )}
                   <td className="p-4 font-mono font-bold text-cighra-primary dark:text-cighra-gold">{u.nomor_seri}</td>
                   <td className="p-4 uppercase text-slate-500 dark:text-slate-400">{u.jenis_dart}</td>
                   <td className="p-4 uppercase text-slate-500 dark:text-slate-400">{u.asal_satuan}</td>
