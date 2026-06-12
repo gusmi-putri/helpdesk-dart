@@ -35,8 +35,8 @@ export const SATUAN_COORDINATES: Record<string, [number, number]> = {
     'LANUD SUPADIO': [-0.1448, 109.4042],
 
     // DEFAULT KODAM
-    'BENGPUSKOMLEKAD': [-6.2088, 106.8456], // Jakarta
-    'PUSKOMLEKAD': [-6.2088, 106.8456], // Jakarta
+    'BENGPUSKOMLEKAD': [-6.9147, 107.6098], // Bandung
+    'PUSKOMLEKAD': [-6.9147, 107.6098], // Bandung
     'KODAM JAYA': [-6.255, 106.877], // Jakarta East
     'KODAM III/SILIWANGI': [-6.9147, 107.6098], // Bandung
     'KODAM III': [-6.9147, 107.6098], 
@@ -70,12 +70,14 @@ export const SATUAN_COORDINATES: Record<string, [number, number]> = {
     'TANGERANG': [-6.1702, 106.6403],
     'BEKASI': [-6.2383, 106.9756],
 
-    // DUMMY DATA FROM SEEDER (Untuk Demo Map agar tidak menumpuk)
-    'SEKTOR UTARA': [3.5852, 108.6270], // Natuna / Tarakan area
-    'SEKTOR SELATAN': [-8.7990, 115.1610], // Bali / Nusa Tenggara area
-    'SEKTOR TIMUR': [-2.591, 140.669], // Jayapura / Papua
-    'SEKTOR BARAT': [3.595, 98.672], // Medan / Sumatra
-    'POS KOMANDO PUSAT': [-6.1738, 106.8286], // Makostrad Jakarta
+    // DUMMY DATA FROM SEEDER
+    'AKMIL': [-7.4789, 110.2170], // Magelang
+    'AKADEMI MILITER': [-7.4789, 110.2170],
+    'YONIF RAIDER 303/SSM': [-7.2286, 107.9089], // Garut
+    'YONIF 303': [-7.2286, 107.9089],
+    'YONIF 315/GARUDA': [-6.5950, 106.8166], // Bogor
+    'YONIF 315': [-6.5950, 106.8166],
+    'PUSDIKIF PUSSENIF': [-6.8375, 107.4667], // Cipatat
     'SATUAN RADAR': [-6.1039, 106.9455], // Area Utara Jakarta
     'SATUAN RADAR 211': [-6.1039, 106.9455],
     

@@ -7,6 +7,9 @@ import { createRoot } from 'react-dom/client';
 import { useStore } from '@/store/useStore';
 
 // Listen for Inertia flash messages globally
+// Track last shown flash to prevent duplicate notifications
+let lastFlashKey: string | null = null;
+
 router.on('success', (event: any) => {
     const flash = event.detail.page?.props?.flash;
     const only = event.detail.visit?.only;
@@ -18,11 +21,31 @@ router.on('success', (event: any) => {
     }
 
     if (flash) {
+        const flashMsg = flash.success || flash.message || flash.error || '';
+        const flashKey = `${flashMsg}_${Date.now()}`;
+
+        // Deduplicate: jangan tampilkan flash yang sama dalam waktu dekat
+        if (flashMsg && flashMsg === lastFlashKey) {
+            return;
+        }
+
         if (flash.success || flash.message) {
+            lastFlashKey = flash.success || flash.message;
             useStore.getState().addNotification(flash.success || flash.message, 'success');
         }
         if (flash.error) {
+            lastFlashKey = flash.error;
             useStore.getState().addNotification(flash.error, 'error');
+        }
+
+        // Reset lastFlashKey setelah 1 detik agar flash yang sama bisa muncul lagi nanti
+        if (flashMsg) {
+            setTimeout(() => { lastFlashKey = null; }, 1000);
+        }
+
+        // Bersihkan flash dari props agar tidak re-trigger saat navigasi
+        if (event.detail.page?.props?.flash) {
+            event.detail.page.props.flash = {};
         }
     }
 });
