@@ -35,8 +35,8 @@ export const SATUAN_COORDINATES: Record<string, [number, number]> = {
     'LANUD SUPADIO': [-0.1448, 109.4042],
 
     // DEFAULT KODAM
-    'BENGPUSKOMLEKAD': [-6.2088, 106.8456], // Jakarta
-    'PUSKOMLEKAD': [-6.2088, 106.8456], // Jakarta
+    'BENGPUSKOMLEKAD': [-6.9147, 107.6098], // Bandung
+    'PUSKOMLEKAD': [-6.9147, 107.6098], // Bandung
     'KODAM JAYA': [-6.255, 106.877], // Jakarta East
     'KODAM III/SILIWANGI': [-6.9147, 107.6098], // Bandung
     'KODAM III': [-6.9147, 107.6098], 
@@ -70,14 +70,33 @@ export const SATUAN_COORDINATES: Record<string, [number, number]> = {
     'TANGERANG': [-6.1702, 106.6403],
     'BEKASI': [-6.2383, 106.9756],
 
-    // DUMMY DATA FROM SEEDER (Untuk Demo Map agar tidak menumpuk)
-    'SEKTOR UTARA': [3.5852, 108.6270], // Natuna / Tarakan area
-    'SEKTOR SELATAN': [-8.7990, 115.1610], // Bali / Nusa Tenggara area
-    'SEKTOR TIMUR': [-2.591, 140.669], // Jayapura / Papua
-    'SEKTOR BARAT': [3.595, 98.672], // Medan / Sumatra
-    'POS KOMANDO PUSAT': [-6.1738, 106.8286], // Makostrad Jakarta
+    // DUMMY DATA FROM SEEDER
+    'AKMIL': [-7.4789, 110.2170], // Magelang
+    'AKADEMI MILITER': [-7.4789, 110.2170],
+    'YONIF RAIDER 303/SSM': [-7.2286, 107.9089], // Garut
+    'YONIF 303': [-7.2286, 107.9089],
+    'YONIF 315/GARUDA': [-6.5950, 106.8166], // Bogor
+    'YONIF 315': [-6.5950, 106.8166],
+    'PUSDIKIF PUSSENIF': [-6.8375, 107.4667], // Cipatat
     'SATUAN RADAR': [-6.1039, 106.9455], // Area Utara Jakarta
     'SATUAN RADAR 211': [-6.1039, 106.9455],
+    
+    // NEW SATUAN KOORDINAT (SEBARAN RIIL INDONESIA)
+    'GRUP 1 KOPASSUS': [-6.1158, 106.1558],      // Serang, Banten
+    'GRUP 2 KOPASSUS': [-7.5622, 110.7628],      // Kartasura, Solo
+    'YONIF PARA RAIDER 501': [-7.6198, 111.5309], // Madiun, Jatim
+    'YONIF RAIDER 509': [-8.1741, 113.7198],      // Jember, Jatim
+    'YONIF RAIDER 328': [-6.4439, 106.8333],      // Cilodong, Depok
+    'YONIF RAIDER 300': [-6.8115, 107.1528],      // Cianjur, Jabar
+    'YON ARMED 9': [-6.5625, 107.4475],           // Purwakarta, Jabar
+    'YON KAV 4': [-6.9234, 107.6258],             // Bandung, Jabar
+    'YONIF 310': [-6.9458, 106.9128],             // Sukabumi, Jabar
+    'YONIF RAIDER 323': [-7.3758, 108.5667],      // Banjar, Ciamis/Jabar
+    'YON ARHANUD 3': [-6.9069, 107.6369],         // Bandung, Jabar
+    'YONIF 320': [-6.3128, 105.8528],             // Pandeglang, Banten
+    'YON ARMED 4': [-6.8858, 107.5458],           // Cimahi, Jabar
+    'YON KAV 9': [-6.2758, 106.6667],             // Serpong, Tangerang Selatan
+    'YON ARHANUD 10': [-6.2588, 106.8228],        // Pesanggrahan, Jakarta Selatan
     
     // DEFAULT TENGAH INDONESIA
     'DEFAULT': [-2.5489, 118.0149]

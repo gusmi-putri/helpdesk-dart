@@ -1,5 +1,5 @@
 import React from 'react';
-import { Phone, MapPin, AlertCircle, CircleUser, Upload, Camera, Trash2, Send, ShieldCheck, X } from 'lucide-react';
+import { Phone, MapPin, AlertCircle, CircleUser, Upload, Camera, Trash2, Send, ShieldCheck, X, Wallet, FileText, Building2 } from 'lucide-react';
 import SearchableSelect from '@/Components/SearchableSelect';
 
 interface ReportFormProps {
@@ -31,6 +31,8 @@ const ReportForm: React.FC<ReportFormProps> = ({
 }) => {
   const [isConfirmOpen, setIsConfirmOpen] = React.useState(false);
   const [localErrors, setLocalErrors] = React.useState<any>({});
+  const budgetDocInputRef = React.useRef<HTMLInputElement>(null);
+  const isNonSwadaya = data.jenis_perbaikan === 'Non-Swadaya';
 
   React.useEffect(() => {
     if (data.file_bukti && data.file_bukti.length > 0) {
@@ -41,8 +43,11 @@ const ReportForm: React.FC<ReportFormProps> = ({
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: any = {};
+    if (!data.jenis_perbaikan) newErrors.jenis_perbaikan = 'Jenis perbaikan wajib dipilih.';
     if (!data.unit_id) newErrors.unit_id = 'Nomor Seri DART wajib dipilih.';
     if (!data.file_bukti || data.file_bukti.length === 0) newErrors.file_bukti = 'Wajib mengunggah minimal 1 bukti kendala (Foto/Video).';
+    if (isNonSwadaya && (!data.dokumen_anggaran || data.dokumen_anggaran.length === 0)) newErrors.dokumen_anggaran = 'Dokumen pendukung perintah dan anggaran wajib diunggah.';
+    if (isNonSwadaya && !data.keterangan_anggaran?.trim()) newErrors.keterangan_anggaran = 'Keterangan dana anggaran perbaikan wajib diisi.';
     
     if (Object.keys(newErrors).length > 0) {
       setLocalErrors(newErrors);
@@ -60,6 +65,33 @@ const ReportForm: React.FC<ReportFormProps> = ({
   };
 
   const selectedUnit = dbUnits.find((u: any) => u.id?.toString() === data.unit_id?.toString());
+
+  const handleRepairTypeChange = (type: 'Swadaya' | 'Non-Swadaya') => {
+    setData('jenis_perbaikan', type);
+    setLocalErrors((prev: any) => ({ ...prev, jenis_perbaikan: null }));
+
+    if (type === 'Swadaya') {
+      setData('dokumen_anggaran', []);
+      setData('keterangan_anggaran', '');
+      if (budgetDocInputRef.current) budgetDocInputRef.current.value = '';
+    }
+  };
+
+  const handleBudgetDocSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newFiles = Array.from(e.target.files || []);
+    const currentFiles = data.dokumen_anggaran || [];
+    const nextFiles = [...currentFiles, ...newFiles].slice(0, 10);
+
+    setData('dokumen_anggaran', nextFiles);
+    if (nextFiles.length > 0) {
+      setLocalErrors((prev: any) => ({ ...prev, dokumen_anggaran: null }));
+    }
+    if (budgetDocInputRef.current) budgetDocInputRef.current.value = '';
+  };
+
+  const removeBudgetDoc = (index: number) => {
+    setData('dokumen_anggaran', (data.dokumen_anggaran || []).filter((_: File, i: number) => i !== index));
+  };
 
   return (
     <div className="max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6">
@@ -86,6 +118,55 @@ const ReportForm: React.FC<ReportFormProps> = ({
       </div>
 
       <form onSubmit={handleFormSubmit} className="space-y-6">
+        <div className="glass-panel p-6 border-l-4 border-l-olive bg-white dark:bg-cighra-darkcard/80 shadow-xl border border-slate-200 dark:border-slate-600">
+          <h3 className="text-xs font-tactical font-bold text-cighra-primary dark:text-cighra-gold tracking-[0.2em] uppercase flex items-center gap-2 mb-4">
+            <Wallet size={16} /> JENIS PERBAIKAN
+          </h3>
+          <p className="text-xs text-slate-500 dark:text-slate-300 mb-4">
+            Pilih sumber dukungan perbaikan sebelum mengisi rincian kendala.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[
+              {
+                value: 'Swadaya',
+                title: 'Swadaya',
+                desc: 'Perbaikan didukung dana Satkai secara pribadi dan dapat langsung ditindaklanjuti.',
+                icon: Wallet,
+              },
+              {
+                value: 'Non-Swadaya',
+                title: 'Non-Swadaya',
+                desc: 'Perbaikan didukung dana anggaran resmi instansi pusat dan wajib melampirkan dokumen.',
+                icon: Building2,
+              },
+            ].map((option) => {
+              const Icon = option.icon;
+              const selected = data.jenis_perbaikan === option.value;
+
+              return (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => handleRepairTypeChange(option.value as 'Swadaya' | 'Non-Swadaya')}
+                  className={`text-left p-4 border rounded-sm transition-all min-h-[132px] ${
+                    selected
+                      ? 'border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/10 shadow-md'
+                      : 'border-slate-200 dark:border-slate-600 hover:border-cighra-primary dark:hover:border-cighra-gold/70 hover:bg-slate-50 dark:hover:bg-black/30'
+                  }`}
+                >
+                  <span className="flex items-center gap-2 text-sm font-tactical font-bold uppercase tracking-widest text-slate-800 dark:text-white mb-2">
+                    <Icon className="w-4 h-4 text-cighra-primary dark:text-cighra-gold" /> {option.title}
+                  </span>
+                  <span className="block text-xs text-slate-500 dark:text-slate-300 leading-relaxed">{option.desc}</span>
+                </button>
+              );
+            })}
+          </div>
+          {(errors.jenis_perbaikan || localErrors.jenis_perbaikan) && <p className="text-[10px] text-red-500 dark:text-cighra-gold mt-3 font-mono font-bold uppercase">{errors.jenis_perbaikan || localErrors.jenis_perbaikan}</p>}
+        </div>
+
+        {data.jenis_perbaikan && (
+          <>
         <div className="glass-panel p-6 border-l-4 border-l-olive space-y-5 bg-white dark:bg-cighra-darkcard/80 shadow-xl border border-slate-200 dark:border-slate-600">
           <h3 className="text-xs font-tactical font-bold text-cighra-primary dark:text-cighra-gold tracking-[0.2em] uppercase flex items-center gap-2"><CircleUser size={16} /> DATA PELAPOR</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -126,6 +207,68 @@ const ReportForm: React.FC<ReportFormProps> = ({
             error={errors.unit_id || localErrors.unit_id}
           />
         </div>
+
+        {isNonSwadaya && (
+          <div className="glass-panel p-6 border-l-4 border-l-olive bg-white dark:bg-cighra-darkcard/80 shadow-xl border border-slate-200 dark:border-slate-600">
+            <h3 className="text-xs font-tactical font-bold text-cighra-primary dark:text-cighra-gold tracking-[0.2em] uppercase flex items-center gap-2 mb-4">
+              <FileText size={16} /> DOKUMEN DUKUNGAN NON-SWADAYA
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-300 mb-4">
+              Lampirkan dokumen perintah dan keterangan bahwa tersedia dana anggaran perbaikan untuk Satkai terkait.
+            </p>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-500 dark:text-slate-300 mb-2 uppercase tracking-wider">Dokumen Pendukung Perintah & Anggaran <span className="text-cighra-primary dark:text-cighra-gold">*</span></label>
+                <input type="file" ref={budgetDocInputRef} onChange={handleBudgetDocSelect} accept=".pdf,.doc,.docx,image/*" multiple className="hidden" />
+                <button
+                  type="button"
+                  onClick={() => budgetDocInputRef.current?.click()}
+                  disabled={(data.dokumen_anggaran?.length || 0) >= 10}
+                  className="flex items-center gap-2 px-5 py-2.5 border-2 border-dashed border-cighra-primary dark:border-cighra-gold/40 text-cighra-primary dark:text-cighra-gold font-semibold text-sm rounded-sm hover:bg-cighra-primary/10 dark:bg-cighra-gold/10 transition-colors"
+                >
+                  <Upload size={18} /> Tambah Dokumen
+                </button>
+                {(data.dokumen_anggaran?.length || 0) > 0 && (
+                  <div className="mt-3 space-y-2">
+                    {data.dokumen_anggaran.map((file: File, i: number) => (
+                      <div key={`${file.name}-${i}`} className="flex items-center justify-between p-2.5 bg-white dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600 rounded-sm">
+                        <div className="flex items-center gap-2 text-sm text-gunmetal dark:text-slate-300 truncate">
+                          <FileText size={14} className="text-cighra-primary dark:text-cighra-gold flex-shrink-0" />
+                          <span className="truncate">{file.name}</span>
+                          <span className="text-[10px] text-slate-500 flex-shrink-0">({(file.size / 1024 / 1024).toFixed(1)} MB)</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeBudgetDoc(i)}
+                          className="text-slate-500 hover:text-cighra-primary dark:text-cighra-gold transition-colors p-1"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    ))}
+                    <p className="text-[10px] text-slate-500">{data.dokumen_anggaran.length}/10 dokumen pendukung terpilih</p>
+                  </div>
+                )}
+                {(errors.dokumen_anggaran || localErrors.dokumen_anggaran) && <p className="text-[10px] text-red-500 dark:text-cighra-gold mt-3 font-mono font-bold uppercase">{errors.dokumen_anggaran || localErrors.dokumen_anggaran}</p>}
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-500 dark:text-slate-300 mb-2 uppercase tracking-wider">Keterangan Dana Anggaran Perbaikan <span className="text-cighra-primary dark:text-cighra-gold">*</span></label>
+                <textarea
+                  value={data.keterangan_anggaran}
+                  onChange={(e) => {
+                    setData('keterangan_anggaran', e.target.value);
+                    setLocalErrors((prev: any) => ({ ...prev, keterangan_anggaran: null }));
+                  }}
+                  rows={4}
+                  className="w-full bg-cighra-light/50 dark:bg-cighra-darkcard/80 border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:border-cighra-gold transition-colors resize-none rounded-sm"
+                  placeholder="Tuliskan nomor/rujukan perintah, sumber anggaran, dan keterangan bahwa dana perbaikan tersedia untuk Satkai terkait..."
+                />
+                {(errors.keterangan_anggaran || localErrors.keterangan_anggaran) && <p className="text-[10px] text-red-500 dark:text-cighra-gold mt-3 font-mono font-bold uppercase">{errors.keterangan_anggaran || localErrors.keterangan_anggaran}</p>}
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="glass-panel p-6 border-l-4 border-l-olive bg-white dark:bg-cighra-darkcard/80 shadow-xl border border-slate-200 dark:border-slate-600">
           <label className="block text-xs font-bold text-slate-500 dark:text-slate-300 mb-2 uppercase tracking-wider">Tingkat Kerusakan <span className="text-cighra-primary dark:text-cighra-gold">*</span></label>
@@ -204,6 +347,8 @@ const ReportForm: React.FC<ReportFormProps> = ({
           <Send size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
           {processing ? 'MENGIRIM LAPORAN...' : 'Kirim Laporan Sekarang'}
         </button>
+          </>
+        )}
       </form>
 
       {/* Confirmation Modal */}
@@ -224,8 +369,10 @@ const ReportForm: React.FC<ReportFormProps> = ({
               </p>
               <div className="bg-white dark:bg-cighra-darkcard/80 p-3 border border-cighra-primary dark:border-cighra-gold/20 text-xs font-mono space-y-1">
                 <p className="text-slate-500 dark:text-slate-300">UNIT: <span className="text-slate-800 dark:text-white font-bold">{selectedUnit?.nama_dart || selectedUnit?.nomor_seri || '-'}</span></p>
+                <p className="text-slate-500 dark:text-slate-300">JENIS: <span className="text-slate-800 dark:text-white font-bold uppercase">{data.jenis_perbaikan || '-'}</span></p>
                 <p className="text-slate-500 dark:text-slate-300">TINGKAT: <span className="text-slate-800 dark:text-white font-bold uppercase">{data.tingkat_kerusakan || '-'}</span></p>
                 <p className="text-slate-500 dark:text-slate-300">URGENSI: <span className="text-slate-800 dark:text-white font-bold uppercase">{data.urgensi || '-'}</span></p>
+                {isNonSwadaya && <p className="text-slate-500 dark:text-slate-300">DOKUMEN ANGGARAN: <span className="text-slate-800 dark:text-white font-bold">{data.dokumen_anggaran?.length || 0} dokumen</span></p>}
                 <p className="text-slate-500 dark:text-slate-300">BUKTI: <span className="text-slate-800 dark:text-white font-bold">{data.file_bukti?.length || 0} file</span></p>
               </div>
             </div>

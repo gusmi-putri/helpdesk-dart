@@ -62,6 +62,9 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
     deskripsi: '',
     tingkat_kerusakan: '',
     urgensi: '',
+    jenis_perbaikan: '',
+    dokumen_anggaran: [] as File[],
+    keterangan_anggaran: '',
     klasifikasi: '',
     file_bukti: [] as File[],
   });

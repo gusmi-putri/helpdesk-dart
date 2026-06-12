@@ -57,7 +57,6 @@ const DashboardStaf = (props: any) => {
   const [isDeleteRequestModalOpen, setIsDeleteRequestModalOpen] = useState(false);
   const [unitToDelete, setUnitToDelete] = useState<any>(null);
   const [mutationProcessing, setMutationProcessing] = useState(false);
-  
   // Batch Mutation States
   const [isAddBatchModalOpen, setIsAddBatchModalOpen] = useState(false);
   const [isDeleteBatchModalOpen, setIsDeleteBatchModalOpen] = useState(false);
@@ -158,6 +157,7 @@ const DashboardStaf = (props: any) => {
       onSuccess: () => {
         setIsAddUnitModalOpen(false);
         setMutationProcessing(false);
+        addNotification('Pengajuan penambahan unit telah dikirim. Menunggu persetujuan Admin.');
       },
       onError: () => {
         setMutationProcessing(false);
@@ -184,6 +184,7 @@ const DashboardStaf = (props: any) => {
         setIsDeleteRequestModalOpen(false);
         setUnitToDelete(null);
         setMutationProcessing(false);
+        addNotification('Pengajuan penghapusan telah dikirim. Menunggu persetujuan Admin.');
       },
       onError: () => {
         setMutationProcessing(false);
@@ -273,12 +274,14 @@ const DashboardStaf = (props: any) => {
         onSuccess: () => {
           setIsUserEditModalOpen(false);
           userForm.reset();
+          addNotification('Personel berhasil ditambahkan.');
         },
       });
     } else {
       userForm.put(`/users/${editingUser.db_id}`, {
         onSuccess: () => {
           setIsUserEditModalOpen(false);
+          addNotification('Data personel berhasil diperbarui.');
         },
       });
     }
@@ -295,6 +298,7 @@ const DashboardStaf = (props: any) => {
         onSuccess: () => {
           setIsUserDeleteModalOpen(false);
           setUserToDelete(null);
+          addNotification('Personel berhasil dihapus.');
         }
       });
     }
@@ -494,7 +498,6 @@ const DashboardStaf = (props: any) => {
         selectedUnits={selectedUnitsForDelete}
         processing={mutationProcessing}
       />
-
       {/* Personel Modals */}
       <UserDetailModal
         isOpen={isUserDetailModalOpen}

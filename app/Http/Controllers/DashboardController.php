@@ -30,6 +30,12 @@ class DashboardController extends Controller
     private function formatReports($query)
     {
         return $query->with(['unit', 'pelapor', 'teknisi'])->get()->map(function ($report) {
+            $dokumenAnggaran = $report->dokumen_anggaran
+                ? collect(json_decode($report->dokumen_anggaran, true) ?? [$report->dokumen_anggaran])
+                    ->map(fn($path) => asset('storage/' . $path))
+                    ->toArray()
+                : [];
+
             return [
                 'caseId' => 'LPR-' . str_pad($report->id, 5, '0', STR_PAD_LEFT),
                 'db_id' => $report->id,
@@ -45,6 +51,9 @@ class DashboardController extends Controller
                     'klasifikasi' => $report->klasifikasi ?? ($report->tingkat_kerusakan ?? 'RINGAN'),
                     'tingkatKerusakan' => $report->tingkat_kerusakan ?? ($report->klasifikasi ?? '-'),
                     'urgensi' => $report->urgensi ?? '-',
+                    'jenisPerbaikan' => $report->jenis_perbaikan ?? 'Swadaya',
+                    'dokumenAnggaran' => $dokumenAnggaran,
+                    'keteranganAnggaran' => $report->keterangan_anggaran,
                     'foto_bukti' => $report->file_bukti && !json_decode($report->file_bukti) ? asset('storage/reports/' . $report->file_bukti) : null,
                     'fileBukti' => $report->file_bukti ? collect(json_decode($report->file_bukti, true) ?? [])->map(fn($path) => asset('storage/' . $path))->toArray() : [],
                 ],

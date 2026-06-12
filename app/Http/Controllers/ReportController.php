@@ -13,11 +13,19 @@ class ReportController extends Controller
 {
     public function store(Request $request)
     {
+        $dokumenAnggaranRules = $request->jenis_perbaikan === 'Non-Swadaya'
+            ? 'required|array|min:1|max:10'
+            : 'nullable|array|max:10';
+
         $request->validate([
             'unit_id' => 'required|exists:units,id',
             'deskripsi' => 'required|string',
             'tingkat_kerusakan' => 'required|in:Ringan,Sedang,Parah',
             'urgensi' => 'required|in:Sangat Mendesak,Bisa Menunggu,Pemeliharaan Rutin',
+            'jenis_perbaikan' => 'required|in:Swadaya,Non-Swadaya',
+            'keterangan_anggaran' => 'required_if:jenis_perbaikan,Non-Swadaya|nullable|string|max:2000',
+            'dokumen_anggaran' => $dokumenAnggaranRules,
+            'dokumen_anggaran.*' => 'file|mimes:pdf,doc,docx,jpg,jpeg,png|max:20480',
             'klasifikasi' => 'nullable|in:RINGAN,SEDANG,DARURAT',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:20480',
             'file_bukti.*' => 'nullable|file|mimes:jpg,jpeg,png,gif,mp4,mov,avi,webm|max:20480',
@@ -41,12 +49,23 @@ class ReportController extends Controller
             }
         }
 
+        $dokumenAnggaranPaths = [];
+        if ($request->hasFile('dokumen_anggaran')) {
+            $dokumenFiles = array_slice($request->file('dokumen_anggaran'), 0, 10);
+            foreach ($dokumenFiles as $file) {
+                $dokumenAnggaranPaths[] = $file->store('dokumen-anggaran', 'public');
+            }
+        }
+
         Report::create([
             'unit_id' => $request->unit_id,
             'user_id' => $request->user()->id,
             'lokasi_laporan' => $request->user()->asal_satuan,
             'klasifikasi' => $request->klasifikasi ?? strtoupper($request->tingkat_kerusakan),
             'file_bukti' => !empty($filePaths) ? json_encode($filePaths) : $fotoPath,
+            'jenis_perbaikan' => $request->jenis_perbaikan,
+            'dokumen_anggaran' => !empty($dokumenAnggaranPaths) ? json_encode($dokumenAnggaranPaths) : null,
+            'keterangan_anggaran' => $request->keterangan_anggaran,
             'tanggal_lapor' => now(),
             'deskripsi_kerusakan' => $request->deskripsi,
             'tingkat_kerusakan' => $request->tingkat_kerusakan,

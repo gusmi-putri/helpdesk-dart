@@ -107,7 +107,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
             <div className="flex flex-col xl:flex-row items-end gap-2 xl:col-span-1">
               <button onClick={onAddUnit}
                 className="w-full bg-cighra-primary dark:bg-cighra-gold text-white dark:text-slate-900 px-4 py-2 font-tactical font-bold text-xs tracking-widest hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 transition-all flex items-center justify-center gap-2">
-                <Plus className="w-4 h-4" /> TAMBAH UNIT
+                <Plus className="w-4 h-4" /> AJUKAN TAMBAH UNIT
               </button>
               {onAddBatch && (
                 <button onClick={onAddBatch}

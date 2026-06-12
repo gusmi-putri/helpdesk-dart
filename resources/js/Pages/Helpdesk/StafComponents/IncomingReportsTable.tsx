@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertTriangle, Clock, Activity, ShieldAlert, Eye, CheckSquare, XCircle, CheckCircle } from 'lucide-react';
+import { AlertTriangle, Clock, Activity, ShieldAlert, Eye, XCircle, CheckCircle, Wallet } from 'lucide-react';
 
 interface IncomingReportsTableProps {
   reports: any[];
@@ -76,14 +76,34 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
                       </div>
                     </td>
                     <td className="p-4">
-                      <div className="flex flex-col gap-1">
-                        <span className={`text-[9px] font-bold px-2 py-0.5 w-fit border shadow-sm ${report.kerusakan.urgensi === 'Sangat Mendesak' ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-500 border-red-200 dark:border-red-800' :
-                          'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-500 border-blue-200 dark:border-blue-800'
-                          }`}>
+                      <div className="flex flex-col gap-1.5">
+                        <span className={`text-[9px] font-mono font-bold px-2 py-0.5 w-fit border shadow-sm uppercase ${
+                          report.kerusakan.urgensi === 'Sangat Mendesak'
+                            ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-500 border-red-200 dark:border-red-800'
+                            : report.kerusakan.urgensi === 'Bisa Menunggu'
+                            ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-500 border-amber-200 dark:border-amber-800'
+                            : 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-500 border-green-200 dark:border-green-800'
+                        }`}>
                           {report.kerusakan.urgensi?.toUpperCase() || 'NORMAL'}
                         </span>
+                        <span className={`text-[9px] font-mono font-bold px-2 py-0.5 w-fit border shadow-sm uppercase ${
+                          ['PARAH', 'BERAT'].includes(report.kerusakan.tingkatKerusakan?.toUpperCase() || '')
+                            ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-500 border-red-200 dark:border-red-800'
+                            : report.kerusakan.tingkatKerusakan?.toUpperCase() === 'SEDANG'
+                            ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-500 border-amber-200 dark:border-amber-800'
+                            : 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-500 border-green-200 dark:border-green-800'
+                        }`}>
+                          LEVEL: {report.kerusakan.tingkatKerusakan?.toUpperCase() || 'UMUM'}
+                        </span>
                         <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                          {report.kerusakan.tingkatKerusakan || report.kerusakan.barangRusak}
+                          {report.kerusakan.barangRusak}
+                        </span>
+                        <span className={`text-[9px] font-mono font-bold px-2 py-0.5 w-fit border shadow-sm uppercase ${
+                          report.kerusakan.jenisPerbaikan === 'Non-Swadaya'
+                            ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800'
+                            : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600'
+                        }`}>
+                          <Wallet className="inline w-3 h-3 mr-1" /> {report.kerusakan.jenisPerbaikan || 'Swadaya'}
                         </span>
                       </div>
                     </td>
