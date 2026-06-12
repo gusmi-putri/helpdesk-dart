@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GitPullRequest, CheckCircle, XCircle, Archive, RotateCcw, FileText, ExternalLink, Plus, Trash2, Clock, Search, Eye } from 'lucide-react';
+import { GitPullRequest, CheckCircle, XCircle, Archive, RotateCcw, FileText, ExternalLink, Plus, Trash2, Clock, Search, Eye, X } from 'lucide-react';
 import { router } from '@inertiajs/react';
 
 interface MutationApprovalProps {
@@ -13,6 +13,7 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
   const [reviewingMutation, setReviewingMutation] = useState<any>(null);
   const [adminNotes, setAdminNotes] = useState('');
   const [processing, setProcessing] = useState(false);
+  const [restoreModal, setRestoreModal] = useState<{ isOpen: boolean; unit: any }>({ isOpen: false, unit: null });
 
   const pendingMutations = dbMutations.filter((m: any) => m.status === 'pending');
   const historyMutations = dbMutations.filter((m: any) => m.status !== 'pending');
@@ -34,9 +35,11 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
   };
 
   const handleRestore = (unitId: number) => {
-    if (confirm('Kembalikan unit ini dari arsip ke database aktif?')) {
-      router.post(`/units/${unitId}/restore`, { reason: 'Dikembalikan dari arsip oleh Admin.' });
-    }
+    setProcessing(true);
+    router.post(`/units/${unitId}/restore`, { reason: 'Dikembalikan dari arsip oleh Admin.' }, {
+      onSuccess: () => { setRestoreModal({ isOpen: false, unit: null }); setProcessing(false); },
+      onError: () => setProcessing(false),
+    });
   };
 
   const getTypeBadge = (type: string) => {
@@ -177,7 +180,7 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                       <td className="p-4 uppercase text-slate-500 dark:text-slate-400">{u.asal_satuan}</td>
                       <td className="p-4 text-slate-500 dark:text-slate-400 font-mono text-[10px]">{u.deleted_at}</td>
                       <td className="p-4 text-right">
-                        <button onClick={() => handleRestore(u.db_id)}
+                        <button onClick={() => setRestoreModal({ isOpen: true, unit: u })}
                           className="px-3 py-1.5 bg-purple-600 text-white font-tactical text-[10px] tracking-widest hover:bg-purple-700 transition-all flex items-center gap-1 ml-auto">
                           <RotateCcw size={12} /> KEMBALIKAN
                         </button>
@@ -232,6 +235,53 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
               </div>
             ))
           )}
+        </div>
+      )}
+      {/* Restore Confirmation Modal */}
+      {restoreModal.isOpen && (
+        <div className="fixed inset-0 z-[130] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" onClick={() => setRestoreModal({ isOpen: false, unit: null })}>
+          <div className="bg-cighra-light dark:bg-cighra-dark border-2 border-purple-500 dark:border-purple-400 w-full max-w-md shadow-2xl animate-in fade-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
+            {/* Header */}
+            <div className="p-4 border-b border-purple-500 dark:border-purple-400 bg-purple-900/20 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <RotateCcw className="text-purple-500 dark:text-purple-400 w-6 h-6 animate-spin" style={{ animationDuration: '3s' }} />
+                <h3 className="font-tactical font-bold text-purple-700 dark:text-purple-300 tracking-widest uppercase">KONFIRMASI PENGEMBALIAN</h3>
+              </div>
+              <button onClick={() => setRestoreModal({ isOpen: false, unit: null })} className="text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors">
+                <X size={18} />
+              </button>
+            </div>
+            {/* Body */}
+            <div className="p-6 space-y-4">
+              <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-mono">
+                APAKAH ANDA YAKIN INGIN MENGEMBALIKAN UNIT INI DARI ARSIP KE DATABASE AKTIF?
+              </p>
+              <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800/40 p-3 space-y-1">
+                <p className="text-xs font-mono text-slate-500 dark:text-slate-400 uppercase">Detail Unit:</p>
+                <p className="text-sm font-bold text-purple-700 dark:text-purple-300 uppercase">
+                  [{restoreModal.unit?.nomor_seri}] {restoreModal.unit?.nama_dart}
+                </p>
+                <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400">
+                  {restoreModal.unit?.jenis_dart} — {restoreModal.unit?.asal_satuan}
+                </p>
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button
+                  onClick={() => handleRestore(restoreModal.unit?.db_id)}
+                  disabled={processing}
+                  className="flex-1 py-3 bg-purple-600 text-white font-tactical font-bold tracking-widest hover:bg-purple-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  <RotateCcw size={14} /> YA, KEMBALIKAN
+                </button>
+                <button
+                  onClick={() => setRestoreModal({ isOpen: false, unit: null })}
+                  className="flex-1 py-3 bg-gray-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-tactical font-bold tracking-widest hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors"
+                >
+                  BATAL
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
