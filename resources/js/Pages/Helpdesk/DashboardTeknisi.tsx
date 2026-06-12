@@ -56,7 +56,6 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
   const handleAcceptTask = (taskId: number) => {
     router.post(`/reports/${taskId}/accept-task`, {}, {
       onSuccess: () => {
-        addNotification('Tugas berhasil diterima. Silakan mulai perbaikan ketika siap.');
       },
       onError: () => {
         addNotification('Gagal menerima tugas.', 'error');
@@ -67,7 +66,6 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
   const handleStartProgress = (taskId: number) => {
     router.post(`/reports/${taskId}/start-progress`, {}, {
       onSuccess: () => {
-        addNotification('Tindakan perbaikan berhasil dimulai.');
       },
       onError: () => {
         addNotification('Gagal memulai perbaikan.', 'error');
@@ -86,7 +84,6 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
 
     post(`/reports/${selectedTaskId}/complete`, {
       onSuccess: () => {
-        addNotification('Laporan penanganan telah berhasil dikirim ke sistem.');
         reset();
         setImagePreview(null);
         setVideoPreview(null);

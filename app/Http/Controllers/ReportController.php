@@ -58,7 +58,7 @@ class ReportController extends Controller
 
         \App\Models\SystemLog::log('WARN', $request->user()->id, "Mengirimkan laporan kerusakan baru di lokasi: {$request->user()->asal_satuan}");
 
-        return redirect()->back()->with('message', 'Laporan berhasil ditransmisikan ke Pusat Komando!');
+        return redirect()->back()->with('message', 'Laporan anda telah berhasil terkirim');
     }
 
     public function handle(Request $request, $id)
