@@ -49,28 +49,22 @@ const UnitModal: React.FC<UnitModalProps> = ({
               />
               {errors.nomor_seri && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.nomor_seri}</p>}
             </div>
+
             <div>
-              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Keterangan DART</label>
-              <input
-                type="text"
-                value={data.nama_dart}
-                onChange={(e) => setData('nama_dart', e.target.value)}
-                className={`w-full bg-white dark:bg-cighra-darkcard border ${errors.nama_dart ? 'border-red-500' : 'border-gray-400 dark:border-slate-600'} p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none`}
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Jenis DART</label>
+              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Jenis</label>
               <select
-                value={data.jenis_dart}
-                onChange={(e) => setData('jenis_dart', e.target.value)}
+                value={data.jenis}
+                onChange={(e) => setData('jenis', e.target.value)}
                 className="w-full bg-white dark:bg-cighra-darkcard border border-gray-400 dark:border-slate-600 p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none"
                 required
               >
                 <option value="DART STD">DART STD</option>
                 <option value="DART STK">DART STK</option>
-                <option value="SKE">SKE</option>
-                <option value="MOVING TARGET">MOVING TARGET</option>
+                <option value="DART Portabel - Swing">DART Portabel - Swing</option>
+                <option value="DART Portabel - Pop">DART Portabel - Pop</option>
+                <option value="DART Portabel - Flip">DART Portabel - Flip</option>
+                <option value="DART Marathon Target">DART Marathon Target</option>
+                <option value="Moving Target">Moving Target</option>
               </select>
             </div>
             <div>

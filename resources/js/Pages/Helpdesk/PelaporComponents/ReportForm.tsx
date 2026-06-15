@@ -199,8 +199,8 @@ const ReportForm: React.FC<ReportFormProps> = ({
               .map((unit: any) => ({
                 id: unit.id,
                 label: unit.nomor_seri,
-                sublabel: unit.nama_dart,
-                tag: `${unit.jenis_dart} | ${unit.asal_satuan}`
+                sublabel: unit.nomor_seri,
+                tag: `${unit.jenis} | ${unit.asal_satuan}`
               }))}
             value={data.unit_id}
             onChange={(val) => { setData('unit_id', val.toString()); setLocalErrors((prev: any) => ({ ...prev, unit_id: null })); }}
@@ -368,7 +368,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
                 Apakah Anda yakin semua data laporan sudah benar dan lengkap? Laporan yang telah dikirim tidak dapat diubah kembali.
               </p>
               <div className="bg-white dark:bg-cighra-darkcard/80 p-3 border border-cighra-primary dark:border-cighra-gold/20 text-xs font-mono space-y-1">
-                <p className="text-slate-500 dark:text-slate-300">UNIT: <span className="text-slate-800 dark:text-white font-bold">{selectedUnit?.nama_dart || selectedUnit?.nomor_seri || '-'}</span></p>
+                <p className="text-slate-500 dark:text-slate-300">UNIT: <span className="text-slate-800 dark:text-white font-bold">{selectedUnit?.nomor_seri || '-'}</span></p>
                 <p className="text-slate-500 dark:text-slate-300">JENIS: <span className="text-slate-800 dark:text-white font-bold uppercase">{data.jenis_perbaikan || '-'}</span></p>
                 <p className="text-slate-500 dark:text-slate-300">TINGKAT: <span className="text-slate-800 dark:text-white font-bold uppercase">{data.tingkat_kerusakan || '-'}</span></p>
                 <p className="text-slate-500 dark:text-slate-300">URGENSI: <span className="text-slate-800 dark:text-white font-bold uppercase">{data.urgensi || '-'}</span></p>

@@ -50,7 +50,7 @@ const RequestDeleteBatchModal: React.FC<RequestDeleteBatchModalProps> = ({ isOpe
                   {selectedUnits.map((u, i) => (
                     <div key={u.db_id} className="text-xs font-mono text-red-700 dark:text-red-400 bg-white/50 dark:bg-black/20 p-1.5 flex gap-2">
                        <span className="font-bold w-4">{i + 1}.</span> 
-                       <span>[{u.nomor_seri}] {u.nama_dart}</span>
+                       <span>[{u.nomor_seri}]</span>
                     </div>
                   ))}
                 </div>

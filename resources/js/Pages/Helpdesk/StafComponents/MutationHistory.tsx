@@ -29,15 +29,14 @@ const MutationHistory: React.FC<MutationHistoryProps> = ({ dbMutations }) => {
     const isBatch = Array.isArray(m.unit_data);
     if (isBatch) {
       const matchInBatch = m.unit_data.some((u: any) => 
-        u.nomor_seri?.toLowerCase().includes(q) ||
-        u.nama_dart?.toLowerCase().includes(q)
+        u.nomor_seri?.toLowerCase().includes(q) ?.toLowerCase().includes(q)
       );
       if (matchInBatch) return true;
     }
 
     return (
       (!isBatch && m.unit_data?.nomor_seri?.toLowerCase().includes(q)) ||
-      (!isBatch && m.unit_data?.nama_dart?.toLowerCase().includes(q)) ||
+
       m.requested_by?.toLowerCase().includes(q) ||
       m.reason?.toLowerCase().includes(q)
     );
@@ -163,8 +162,8 @@ const MutationHistory: React.FC<MutationHistoryProps> = ({ dbMutations }) => {
                                   <tr key={uIdx} className="hover:bg-slate-100 dark:hover:bg-slate-800/30">
                                     <td className="p-2 font-mono">{uIdx + 1}</td>
                                     <td className="p-2 font-mono font-bold text-cighra-primary dark:text-cighra-gold">{u.nomor_seri}</td>
-                                    <td className="p-2 uppercase font-bold text-[10px]">{u.nama_dart}</td>
-                                    <td className="p-2 uppercase text-[10px]">{u.jenis_dart}</td>
+
+                                    <td className="p-2 uppercase text-[10px]">{u.jenis}</td>
                                     <td className="p-2 uppercase text-[10px]">{u.asal_satuan}</td>
                                     <td className="p-2 text-right">
                                       <span className={`px-2 py-0.5 text-[9px] font-mono font-bold border rounded-sm
@@ -186,10 +185,10 @@ const MutationHistory: React.FC<MutationHistoryProps> = ({ dbMutations }) => {
                     ) : (
                       <div>
                         <p className="text-sm font-bold text-slate-800 dark:text-white uppercase">
-                          [{m.unit_data?.nomor_seri || '-'}] {m.unit_data?.nama_dart || '-'}
+                          [{m.unit_data?.nomor_seri || '-'}]
                         </p>
                         <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400 mt-0.5">
-                          {m.unit_data?.jenis_dart} — {m.unit_data?.asal_satuan}
+                          {m.unit_data?.jenis} — {m.unit_data?.asal_satuan}
                         </p>
                       </div>
                     )}

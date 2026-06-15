@@ -31,7 +31,7 @@ class AiDiagnosticController extends Controller
         if (class_exists(\App\Models\Unit::class)) {
             $unit = \App\Models\Unit::find($validated['unit_id']);
             if ($unit) {
-                $unitName = $unit->nomor_seri . ' (' . $unit->nama_dart . ')';
+                $unitName = $unit->nomor_seri;
             }
         }
 

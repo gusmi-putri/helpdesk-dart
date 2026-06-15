@@ -32,7 +32,7 @@ const AdminUnitBatchModal: React.FC<AdminUnitBatchModalProps> = ({ isOpen, onClo
   };
 
   const downloadTemplate = () => {
-    const csvContent = "nomor_seri,nama_dart,jenis_dart,asal_satuan,status_unit\nCONTOH-001,KETERANGAN DART,DART STD,NAMA SATUAN,Beroperasi";
+    const csvContent = "nomor_seri,jenis,asal_satuan,status_unit\nCONTOH-001,DART STD,NAMA SATUAN,Beroperasi";
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = window.document.createElement("a");
     const url = URL.createObjectURL(blob);

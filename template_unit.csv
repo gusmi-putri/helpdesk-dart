@@ -1,6 +1,3 @@
-nomor_seri,nama_dart,jenis_dart,asal_satuan,status_unit
-DRT-098,DART Alpha,DART STD,AKMIL,Siap Ops
-DRT-097,DART Beta,DART STK,AKMIL,Beroperasi
-DRT-095,DART Gamma,DART STK,AKMIL,Rusak
-DRT-088,Target Delta,MOVING TARGET,AKMIL,Perbaikan
-DRT-085,DART Epsilon,DART STD,AKMIL,Nonaktif
+nomor_seri,jenis,asal_satuan,status_unit 
+DRT-098,DART STD,AKMIL,Siap Ops 
+DRT-085,DART STD,AKMIL,Nonaktif

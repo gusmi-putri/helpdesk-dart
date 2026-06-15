@@ -73,8 +73,7 @@ const DashboardAdmin = (props: any) => {
 
   const unitForm = useForm({
     nomor_seri: '',
-    nama_dart: '',
-    jenis_dart: 'DART STD',
+    jenis: 'DART STD',
     asal_satuan: '',
     status_unit: 'Beroperasi',
     document: null as File | null,
@@ -185,8 +184,8 @@ const DashboardAdmin = (props: any) => {
     unitForm.clearErrors();
     unitForm.setData({
       nomor_seri: unit.nomor_seri,
-      nama_dart: unit.nama_dart,
-      jenis_dart: unit.jenis_dart,
+
+      jenis: unit.jenis,
       asal_satuan: unit.asal_satuan,
       status_unit: unit.status_unit,
     });

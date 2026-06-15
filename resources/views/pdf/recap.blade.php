@@ -83,7 +83,7 @@
                     <small>{{ $report->tanggal_lapor ? $report->tanggal_lapor->format('d/m/Y H:i') : '-' }}</small>
                 </td>
                 <td>
-                    <strong>{{ $report->unit->nama_dart ?? '-' }}</strong><br>
+                    <strong></strong><br>
                     <small>{{ $report->unit->nomor_seri ?? '-' }}</small><br>
                     <small>SATUAN: {{ $report->lokasi_laporan }}</small>
                 </td>

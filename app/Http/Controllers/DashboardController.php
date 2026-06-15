@@ -46,7 +46,7 @@ class DashboardController extends Controller
                     'pelapor_id' => $report->user_id,
                     'pelapor' => $report->pelapor ? $report->pelapor->nama_lengkap : 'Unknown',
                     'lokasi' => $report->lokasi_laporan ?? ($report->unit ? $report->unit->asal_satuan : 'Unknown'),
-                    'barangRusak' => $report->unit ? $report->unit->nama_dart : 'Hardware Anonim',
+                    'barangRusak' => $report->unit ? $report->unit->nomor_seri : 'Unknown',
                     'deskripsi' => $report->deskripsi_kerusakan,
                     'klasifikasi' => $report->klasifikasi ?? ($report->tingkat_kerusakan ?? 'RINGAN'),
                     'tingkatKerusakan' => $report->tingkat_kerusakan ?? ($report->klasifikasi ?? '-'),
@@ -117,8 +117,7 @@ class DashboardController extends Controller
             return [
                 'db_id' => $u->id,
                 'nomor_seri' => $u->nomor_seri,
-                'nama_dart' => $u->nama_dart,
-                'jenis_dart' => $u->jenis_dart,
+                'jenis' => $u->jenis,
                 'asal_satuan' => $u->asal_satuan,
                 'status_unit' => $u->status_unit,
                 'last_maintenance' => $u->updated_at->format('d M Y')
@@ -161,8 +160,7 @@ class DashboardController extends Controller
             return [
                 'db_id' => $u->id,
                 'nomor_seri' => $u->nomor_seri,
-                'nama_dart' => $u->nama_dart,
-                'jenis_dart' => $u->jenis_dart,
+                'jenis' => $u->jenis,
                 'asal_satuan' => $u->asal_satuan,
                 'status_unit' => $u->status_unit,
                 'deleted_at' => $u->deleted_at->format('d M Y, H:i'),
@@ -266,8 +264,7 @@ class DashboardController extends Controller
             return [
                 'db_id' => $u->id,
                 'nomor_seri' => $u->nomor_seri,
-                'nama_dart' => $u->nama_dart,
-                'jenis_dart' => $u->jenis_dart,
+                'jenis' => $u->jenis,
                 'asal_satuan' => $u->asal_satuan,
                 'status_unit' => $u->status_unit,
                 'last_maintenance' => $u->updated_at->format('d/m/Y'),

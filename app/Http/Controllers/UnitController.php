@@ -16,8 +16,7 @@ class UnitController extends Controller
     {
         $request->validate([
             'nomor_seri' => 'required|string|max:50|unique:units',
-            'nama_dart' => 'required|string|max:100',
-            'jenis_dart' => 'required|in:DART STD,DART STK,SKE,MOVING TARGET',
+            'jenis' => 'required|in:DART STD,DART STK,DART Portabel - Swing,DART Portabel - Pop,DART Portabel - Flip,DART Marathon Target,Moving Target',
             'asal_satuan' => 'required|string|max:100',
             'status_unit' => 'required|in:Beroperasi,Rusak,Perbaikan,Nonaktif',
             'document' => 'required|file|mimes:pdf,png,jpg,jpeg|max:10240',
@@ -33,7 +32,7 @@ class UnitController extends Controller
 
         if ($isAdmin) {
             // Admin: langsung buat unit
-            $unit = Unit::create($request->only(['nomor_seri', 'nama_dart', 'jenis_dart', 'asal_satuan', 'status_unit']));
+            $unit = Unit::create($request->only(['nomor_seri',  'jenis', 'asal_satuan', 'status_unit']));
 
             UnitMutation::create([
                 'unit_id' => $unit->id,
@@ -43,10 +42,10 @@ class UnitController extends Controller
                 'requested_by' => $user->id,
                 'approved_by' => $user->id,
                 'status' => 'approved',
-                'unit_data' => $request->only(['nomor_seri', 'nama_dart', 'jenis_dart', 'asal_satuan', 'status_unit']),
+                'unit_data' => $request->only(['nomor_seri',  'jenis', 'asal_satuan', 'status_unit']),
             ]);
 
-            SystemLog::log('INFO', $user->id, "Admin menambahkan unit DART baru: {$request->nomor_seri} - {$request->nama_dart}");
+            SystemLog::log('INFO', $user->id, "Admin menambahkan unit DART baru: {$request->nomor_seri}");
             return redirect()->back()->with('message', 'Unit DART berhasil ditambahkan.');
         } else {
             // Staff: buat pengajuan (pending)
@@ -57,10 +56,10 @@ class UnitController extends Controller
                 'document_path' => $documentPath,
                 'requested_by' => $user->id,
                 'status' => 'pending',
-                'unit_data' => $request->only(['nomor_seri', 'nama_dart', 'jenis_dart', 'asal_satuan', 'status_unit']),
+                'unit_data' => $request->only(['nomor_seri',  'jenis', 'asal_satuan', 'status_unit']),
             ]);
 
-            SystemLog::log('INFO', $user->id, "Staf mengajukan penambahan unit DART baru: {$request->nomor_seri} - {$request->nama_dart}");
+            SystemLog::log('INFO', $user->id, "Staf mengajukan penambahan unit DART baru: {$request->nomor_seri}");
             return redirect()->back()->with('message', 'Pengajuan penambahan unit telah dikirim. Menunggu persetujuan Admin.');
         }
     }
@@ -69,8 +68,7 @@ class UnitController extends Controller
     {
         $request->validate([
             'nomor_seri' => 'required|string|max:50|unique:units,nomor_seri,' . $unit->id,
-            'nama_dart' => 'required|string|max:100',
-            'jenis_dart' => 'required|in:DART STD,DART STK,SKE,MOVING TARGET',
+            'jenis' => 'required|in:DART STD,DART STK,DART Portabel - Swing,DART Portabel - Pop,DART Portabel - Flip,DART Marathon Target,Moving Target',
             'asal_satuan' => 'required|string|max:100',
             'status_unit' => 'required|in:Beroperasi,Rusak,Perbaikan,Nonaktif',
         ]);
@@ -87,7 +85,7 @@ class UnitController extends Controller
      */
     public function destroy(Unit $unit)
     {
-        $info = "{$unit->nomor_seri} - {$unit->nama_dart}";
+        $info = "{$unit->nomor_seri}";
 
         UnitMutation::create([
             'unit_id' => $unit->id,
@@ -140,7 +138,7 @@ class UnitController extends Controller
             'unit_data' => $unit->toArray(),
         ]);
 
-        SystemLog::log('INFO', auth()->id(), "Staf mengajukan penghapusan unit DART: {$unit->nomor_seri} - {$unit->nama_dart}");
+        SystemLog::log('INFO', auth()->id(), "Staf mengajukan penghapusan unit DART: {$unit->nomor_seri}");
         return redirect()->back()->with('message', 'Pengajuan penghapusan telah dikirim. Menunggu persetujuan Admin.');
     }
 
@@ -170,8 +168,7 @@ class UnitController extends Controller
                             $u = $unitData[$idx];
                             $unit = Unit::create([
                                 'nomor_seri' => $u['nomor_seri'],
-                                'nama_dart' => strtoupper($u['nama_dart']),
-                                'jenis_dart' => $u['jenis_dart'],
+                                'jenis' => $u['jenis'],
                                 'asal_satuan' => strtoupper($u['asal_satuan']),
                                 'status_unit' => in_array($u['status_unit'] ?? '', ['Beroperasi', 'Rusak', 'Perbaikan', 'Nonaktif']) ? $u['status_unit'] : 'Beroperasi',
                             ]);
@@ -187,8 +184,7 @@ class UnitController extends Controller
                         $u = $unitData[$idx];
                         $unit = Unit::create([
                             'nomor_seri' => $u['nomor_seri'],
-                            'nama_dart' => strtoupper($u['nama_dart']),
-                            'jenis_dart' => $u['jenis_dart'],
+                            'jenis' => $u['jenis'],
                             'asal_satuan' => strtoupper($u['asal_satuan']),
                             'status_unit' => in_array($u['status_unit'] ?? '', ['Beroperasi', 'Rusak', 'Perbaikan', 'Nonaktif']) ? $u['status_unit'] : 'Beroperasi',
                         ]);
@@ -202,8 +198,7 @@ class UnitController extends Controller
                         if ($u['status'] === 'pending') {
                             $unit = Unit::create([
                                 'nomor_seri' => $u['nomor_seri'],
-                                'nama_dart' => strtoupper($u['nama_dart']),
-                                'jenis_dart' => $u['jenis_dart'],
+                                'jenis' => $u['jenis'],
                                 'asal_satuan' => strtoupper($u['asal_satuan']),
                                 'status_unit' => in_array($u['status_unit'] ?? '', ['Beroperasi', 'Rusak', 'Perbaikan', 'Nonaktif']) ? $u['status_unit'] : 'Beroperasi',
                             ]);
@@ -235,8 +230,7 @@ class UnitController extends Controller
                 // Single unit request
                 $unit = Unit::create([
                     'nomor_seri' => $unitData['nomor_seri'],
-                    'nama_dart' => strtoupper($unitData['nama_dart']),
-                    'jenis_dart' => $unitData['jenis_dart'],
+                    'jenis' => $unitData['jenis'],
                     'asal_satuan' => strtoupper($unitData['asal_satuan']),
                     'status_unit' => in_array($unitData['status_unit'] ?? '', ['Beroperasi', 'Rusak', 'Perbaikan', 'Nonaktif']) ? $unitData['status_unit'] : 'Beroperasi',
                 ]);
@@ -405,8 +399,8 @@ class UnitController extends Controller
             if (count($row) < 4) continue;
 
             $nomor_seri = trim($row[0]);
-            $nama_dart = trim($row[1]);
-            $jenis_dart = trim($row[2]);
+
+            $jenis = trim($row[2]);
             $asal_satuan = trim($row[3]);
             $status_unit = isset($row[4]) ? trim($row[4]) : 'Beroperasi';
 
@@ -417,11 +411,9 @@ class UnitController extends Controller
                 continue;
             }
 
-            $validJenis = ['DART STD', 'DART STK', 'SKE', 'MOVING TARGET'];
-            if (!in_array(strtoupper($jenis_dart), $validJenis)) {
-                $jenis_dart = 'DART STD';
-            } else {
-                $jenis_dart = strtoupper($jenis_dart);
+            $validJenis = ['DART STD', 'DART STK', 'DART Portabel - Swing', 'DART Portabel - Pop', 'DART Portabel - Flip', 'DART Marathon Target', 'Moving Target'];
+            if (!in_array($jenis, $validJenis)) {
+                $jenis = 'DART STD';
             }
 
             $validStatus = ['Beroperasi', 'Rusak', 'Perbaikan', 'Nonaktif'];
@@ -432,16 +424,14 @@ class UnitController extends Controller
 
             $unit = Unit::create([
                 'nomor_seri' => $nomor_seri,
-                'nama_dart' => strtoupper($nama_dart),
-                'jenis_dart' => $jenis_dart,
+                'jenis' => $jenis,
                 'asal_satuan' => strtoupper($asal_satuan),
                 'status_unit' => $status_unit
             ]);
 
             $importedUnitsData[] = [
                 'nomor_seri' => $nomor_seri,
-                'nama_dart' => strtoupper($nama_dart),
-                'jenis_dart' => $jenis_dart,
+                'jenis' => $jenis,
                 'asal_satuan' => strtoupper($asal_satuan),
                 'status_unit' => $status_unit,
                 'status' => 'approved',
@@ -509,8 +499,8 @@ class UnitController extends Controller
             if (count($row) < 4) continue;
 
             $nomor_seri = trim($row[0]);
-            $nama_dart = trim($row[1]);
-            $jenis_dart = strtoupper(trim($row[2]));
+
+            $jenis = strtoupper(trim($row[2]));
             $asal_satuan = strtoupper(trim($row[3]));
             $status_unit = isset($row[4]) ? ucwords(strtolower(trim($row[4]))) : 'Beroperasi';
 
@@ -533,16 +523,17 @@ class UnitController extends Controller
                 continue;
             }
 
-            $validJenis = ['DART STD', 'DART STK', 'SKE', 'MOVING TARGET'];
-            if (!in_array($jenis_dart, $validJenis)) $jenis_dart = 'DART STD';
+            $validJenis = ['DART STD', 'DART STK', 'DART Portabel - Swing', 'DART Portabel - Pop', 'DART Portabel - Flip', 'DART Marathon Target', 'Moving Target'];
+            if (!in_array($jenis, $validJenis)) {
+                $jenis = 'DART STD';
+            }
 
             $validStatus = ['Beroperasi', 'Rusak', 'Perbaikan', 'Nonaktif'];
             if (!in_array($status_unit, $validStatus)) $status_unit = 'Beroperasi';
 
             $unitsToPropose[] = [
                 'nomor_seri' => $nomor_seri,
-                'nama_dart' => $nama_dart,
-                'jenis_dart' => $jenis_dart,
+                'jenis' => $jenis,
                 'asal_satuan' => $asal_satuan,
                 'status_unit' => $status_unit,
                 'status' => 'pending',

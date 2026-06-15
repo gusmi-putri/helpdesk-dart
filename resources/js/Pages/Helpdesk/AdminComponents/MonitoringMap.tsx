@@ -31,7 +31,7 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases }) => {
 
     // Filter units based on search
     const filteredUnits = dbUnits.filter(unit => 
-        unit.nama_dart.toLowerCase().includes(searchQuery.toLowerCase()) ||
+
         unit.nomor_seri.toLowerCase().includes(searchQuery.toLowerCase()) ||
         unit.asal_satuan.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -137,7 +137,6 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases }) => {
                                                         <span className="bg-green-500/20 text-green-600 dark:text-green-500 px-1.5 py-0.5 rounded text-[9px] font-bold border border-green-500/30">BEROPERASI</span>
                                                     )}
                                                 </div>
-                                                <div className="text-[10px] text-slate-500 font-mono italic">{unit.nama_dart}</div>
                                             </div>
                                         );
                                     })}

@@ -10,7 +10,6 @@ interface StafUnitModalProps {
 
 const StafUnitModal: React.FC<StafUnitModalProps> = ({ isOpen, onClose, onSubmit, processing }) => {
   const [nomorSeri, setNomorSeri] = useState('');
-  const [namaDart, setNamaDart] = useState('');
   const [jenisDart, setJenisDart] = useState('DART STD');
   const [asalSatuan, setAsalSatuan] = useState('');
   const [statusUnit, setStatusUnit] = useState('Beroperasi');
@@ -24,8 +23,8 @@ const StafUnitModal: React.FC<StafUnitModalProps> = ({ isOpen, onClose, onSubmit
     if (!document) return;
     const formData = new FormData();
     formData.append('nomor_seri', nomorSeri);
-    formData.append('nama_dart', namaDart);
-    formData.append('jenis_dart', jenisDart);
+
+    formData.append('jenis', jenisDart);
     formData.append('asal_satuan', asalSatuan);
     formData.append('status_unit', statusUnit);
     formData.append('reason', reason || 'Pengajuan penambahan unit baru.');
@@ -35,7 +34,6 @@ const StafUnitModal: React.FC<StafUnitModalProps> = ({ isOpen, onClose, onSubmit
 
   const handleClose = () => {
     setNomorSeri('');
-    setNamaDart('');
     setJenisDart('DART STD');
     setAsalSatuan('');
     setStatusUnit('Beroperasi');
@@ -67,21 +65,20 @@ const StafUnitModal: React.FC<StafUnitModalProps> = ({ isOpen, onClose, onSubmit
               className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm font-mono focus:border-cighra-primary dark:focus:border-cighra-gold outline-none text-slate-800 dark:text-white" placeholder="DRT-XXX" />
           </div>
 
-          <div>
-            <label className="block text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Nama / Keterangan DART *</label>
-            <input type="text" value={namaDart} onChange={(e) => setNamaDart(e.target.value.toUpperCase())} required
-              className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm font-mono focus:border-cighra-primary dark:focus:border-cighra-gold outline-none text-slate-800 dark:text-white" placeholder="NAMA UNIT DART" />
-          </div>
+
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Jenis DART *</label>
+              <label className="block text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Jenis *</label>
               <select value={jenisDart} onChange={(e) => setJenisDart(e.target.value)}
                 className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm font-mono focus:border-cighra-primary dark:focus:border-cighra-gold outline-none text-slate-800 dark:text-white">
                 <option value="DART STD">DART STD</option>
                 <option value="DART STK">DART STK</option>
-                <option value="SKE">SKE</option>
-                <option value="MOVING TARGET">MOVING TARGET</option>
+                <option value="DART Portabel - Swing">DART Portabel - Swing</option>
+                <option value="DART Portabel - Pop">DART Portabel - Pop</option>
+                <option value="DART Portabel - Flip">DART Portabel - Flip</option>
+                <option value="DART Marathon Target">DART Marathon Target</option>
+                <option value="Moving Target">Moving Target</option>
               </select>
             </div>
             <div>

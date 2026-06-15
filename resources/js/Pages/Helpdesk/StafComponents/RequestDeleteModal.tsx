@@ -47,7 +47,7 @@ const RequestDeleteModal: React.FC<RequestDeleteModalProps> = ({ isOpen, onClose
                   Anda mengajukan penghapusan unit:
                 </p>
                 <p className="text-xs font-mono text-red-700 dark:text-red-400 mt-1">
-                  [{unit.nomor_seri}] {unit.nama_dart} — {unit.asal_satuan}
+                  [{unit.nomor_seri}]— {unit.asal_satuan}
                 </p>
                 <p className="text-[10px] text-red-600 dark:text-red-400 mt-2">
                   Pengajuan ini akan dikirim ke Admin untuk persetujuan. Unit tidak akan langsung dihapus.

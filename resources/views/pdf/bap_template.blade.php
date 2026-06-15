@@ -38,7 +38,7 @@
         <table class="grid">
             <tr><td class="label">NOMOR TIKET</td><td class="separator">:</td><td><strong>{{ $report->case_id }}</strong></td></tr>
             <tr><td class="label">TANGGAL LAPOR</td><td class="separator">:</td><td>{{ $report->created_at->format('d F Y, H:i') }} WIB</td></tr>
-            <tr><td class="label">UNIT DART</td><td class="separator">:</td><td>{{ $report->unit->nomor_seri }} — {{ $report->unit->nama_dart }}</td></tr>
+            <tr><td class="label">UNIT DART</td><td class="separator">:</td><td>{{ $report->unit->nomor_seri }}</td></tr>
             <tr><td class="label">LOKASI UNIT</td><td class="separator">:</td><td>{{ $report->unit->asal_satuan }}</td></tr>
         </table>
     </div>

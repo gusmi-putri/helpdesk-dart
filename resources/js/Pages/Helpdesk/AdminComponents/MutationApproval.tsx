@@ -236,10 +236,10 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                       ) : (
                         <div>
                           <p className="text-sm font-bold text-slate-800 dark:text-white uppercase">
-                            [{m.unit_data?.nomor_seri || '-'}] {m.unit_data?.nama_dart || '-'}
+                            [{m.unit_data?.nomor_seri || '-'}]
                           </p>
                           <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400">
-                            {m.unit_data?.jenis_dart} — {m.unit_data?.asal_satuan} | Diajukan: {m.created_at} oleh {m.requested_by}
+                            {m.unit_data?.jenis} — {m.unit_data?.asal_satuan} | Diajukan: {m.created_at} oleh {m.requested_by}
                           </p>
                         </div>
                       )}
@@ -425,8 +425,8 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                                 <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-800/30">
                                   <td className="p-3 font-mono text-center">{idx + 1}</td>
                                   <td className="p-3 font-mono font-bold text-cighra-primary dark:text-cighra-gold">{u.nomor_seri}</td>
-                                  <td className="p-3 uppercase font-bold">{u.nama_dart}</td>
-                                  <td className="p-3 uppercase font-mono text-[10px]">{u.jenis_dart}</td>
+
+                                  <td className="p-3 uppercase font-mono text-[10px]">{u.jenis}</td>
                                   <td className="p-3 uppercase">{u.asal_satuan}</td>
                                   <td className="p-3 text-center">
                                     <span className={`px-2 py-0.5 text-[9px] font-mono font-bold border rounded-sm
@@ -500,8 +500,8 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                   {dbArchivedUnits.map((u: any) => (
                     <tr key={u.db_id} className="hover:bg-slate-50 dark:hover:bg-black/30 transition-colors">
                       <td className="p-4 font-mono font-bold text-cighra-primary dark:text-cighra-gold">{u.nomor_seri}</td>
-                      <td className="p-4 font-bold uppercase">{u.nama_dart}</td>
-                      <td className="p-4 uppercase text-slate-500 dark:text-slate-400">{u.jenis_dart}</td>
+
+                      <td className="p-4 uppercase text-slate-500 dark:text-slate-400">{u.jenis}</td>
                       <td className="p-4 uppercase text-slate-500 dark:text-slate-400">{u.asal_satuan}</td>
                       <td className="p-4 text-slate-500 dark:text-slate-400 font-mono text-[10px]">{u.deleted_at}</td>
                       <td className="p-4 text-right">
@@ -534,10 +534,10 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
               const isBatch = Array.isArray(m.unit_data);
               if (isBatch) {
                 return m.unit_data.some((u: any) =>
-                  u.nomor_seri?.toLowerCase().includes(q) || u.nama_dart?.toLowerCase().includes(q)
+                  u.nomor_seri?.toLowerCase().includes(q) ?.toLowerCase().includes(q)
                 ) || m.requested_by?.toLowerCase().includes(q);
               }
-              return m.unit_data?.nomor_seri?.toLowerCase().includes(q) || m.unit_data?.nama_dart?.toLowerCase().includes(q) || m.requested_by?.toLowerCase().includes(q);
+              return m.unit_data?.nomor_seri?.toLowerCase().includes(q) ?.toLowerCase().includes(q) || m.requested_by?.toLowerCase().includes(q);
             }).map((m: any) => {
               const isBatch = Array.isArray(m.unit_data);
               return (
@@ -584,8 +584,8 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                                     <tr key={uIdx} className="hover:bg-slate-100 dark:hover:bg-slate-800/30">
                                       <td className="p-2 font-mono text-center">{uIdx + 1}</td>
                                       <td className="p-2 font-mono font-bold text-cighra-primary dark:text-cighra-gold">{u.nomor_seri}</td>
-                                      <td className="p-2 uppercase font-bold text-[10px]">{u.nama_dart}</td>
-                                      <td className="p-2 uppercase text-[10px]">{u.jenis_dart}</td>
+
+                                      <td className="p-2 uppercase text-[10px]">{u.jenis}</td>
                                       <td className="p-2 uppercase text-[10px]">{u.asal_satuan}</td>
                                       <td className="p-2 text-right">
                                         <span className={`px-2 py-0.5 text-[9px] font-mono font-bold border rounded-sm
@@ -605,7 +605,7 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                           )}
                         </div>
                       ) : (
-                        <p className="text-sm font-bold text-slate-800 dark:text-white uppercase">[{m.unit_data?.nomor_seri || '-'}] {m.unit_data?.nama_dart || '-'}</p>
+                        <p className="text-sm font-bold text-slate-800 dark:text-white uppercase">[{m.unit_data?.nomor_seri || '-'}]</p>
                       )}
 
                       {m.reason && <p className="text-xs text-slate-600 dark:text-slate-300 italic">"{m.reason}"</p>}
@@ -651,10 +651,10 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
               <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800/40 p-3 space-y-1">
                 <p className="text-xs font-mono text-slate-500 dark:text-slate-400 uppercase">Detail Unit:</p>
                 <p className="text-sm font-bold text-purple-700 dark:text-purple-300 uppercase">
-                  [{restoreModal.unit?.nomor_seri}] {restoreModal.unit?.nama_dart}
+                  [{restoreModal.unit?.nomor_seri}]
                 </p>
                 <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400">
-                  {restoreModal.unit?.jenis_dart} — {restoreModal.unit?.asal_satuan}
+                  {restoreModal.unit?.jenis} — {restoreModal.unit?.asal_satuan}
                 </p>
               </div>
               <div className="flex gap-3 pt-2">

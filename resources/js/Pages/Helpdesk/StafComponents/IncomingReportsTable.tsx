@@ -130,7 +130,7 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
                       )}
                     </td>
                     <td className="p-4">
-                      <div className="font-bold mb-1">{report.unit?.nama_dart || report.kerusakan.barangRusak || 'UNIT TIDAK DIKENAL'}</div>
+                      <div className="font-bold mb-1">{report.unit?.nomor_seri || report.kerusakan.barangRusak || 'UNIT TIDAK DIKENAL'}</div>
                       <div className="text-slate-400 dark:text-slate-300 text-[10px] font-mono uppercase">LOK: {report.kerusakan.lokasi}</div>
                     </td>
                     <td className="p-4 text-center">

@@ -28,11 +28,11 @@ const UnitHistoryModal: React.FC<UnitHistoryModalProps> = ({ isOpen, onClose, un
           <div className="mb-6 grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="p-3 bg-white/70 dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600/50 shadow-sm">
               <p className="text-[9px] font-mono text-slate-700 dark:text-slate-400 uppercase tracking-widest">Keterangan</p>
-              <p className="text-sm font-bold uppercase text-slate-900 dark:text-white">{unit.nama_dart}</p>
+              <p className="text-sm font-bold uppercase text-slate-900 dark:text-white"></p>
             </div>
             <div className="p-3 bg-white/70 dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600/50 shadow-sm">
-              <p className="text-[9px] font-mono text-slate-700 dark:text-slate-400 uppercase tracking-widest">Jenis DART</p>
-              <p className="text-sm font-bold uppercase text-slate-900 dark:text-white">{unit.jenis_dart}</p>
+              <p className="text-[9px] font-mono text-slate-700 dark:text-slate-400 uppercase tracking-widest">Jenis</p>
+              <p className="text-sm font-bold uppercase text-slate-900 dark:text-white">{unit.jenis}</p>
             </div>
             <div className="p-3 bg-white/70 dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600/50 shadow-sm">
               <p className="text-[9px] font-mono text-slate-700 dark:text-slate-400 uppercase tracking-widest">Lokasi</p>

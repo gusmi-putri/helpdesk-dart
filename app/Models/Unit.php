@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Unit extends Model
 {
     use SoftDeletes;
-    protected $fillable = ['nomor_seri', 'nama_dart', 'jenis_dart', 'asal_satuan', 'status_unit'];
+    protected $fillable = ['nomor_seri',  'jenis', 'asal_satuan', 'status_unit'];
 
     public function reports()
     {

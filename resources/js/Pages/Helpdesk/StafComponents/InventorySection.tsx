@@ -33,7 +33,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
   onRequestDeleteBatch,
 }) => {
   const [selectedUnitIds, setSelectedUnitIds] = useState<number[]>([]);
-  const jenisOptions = ['ALL', ...new Set(dbUnits.map((u: any) => u.jenis_dart))];
+  const jenisOptions = ['ALL', ...new Set(dbUnits.map((u: any) => u.jenis))];
   const satuanOptions = ['ALL', ...new Set(dbUnits.map((u: any) => u.asal_satuan))];
 
   const handleSort = (key: string) => {
@@ -61,7 +61,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
   };
 
   const handleDownloadTemplate = () => {
-    const csvContent = "nomor_seri,nama_dart,jenis_dart,asal_satuan,status_unit\nCONTOH-001,KETERANGAN DART,DART STD,NAMA SATUAN,Beroperasi";
+    const csvContent = "nomor_seri,jenis,asal_satuan,status_unit\nCONTOH-001,DART STD,NAMA SATUAN,Beroperasi";
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -80,10 +80,10 @@ const InventorySection: React.FC<InventorySectionProps> = ({
   };
 
   const filteredUnits = dbUnits.filter((u: any) => {
-    const matchesSearch = u.nama_dart.toLowerCase().includes(unitSearch.toLowerCase()) ||
+    const matchesSearch =
       u.nomor_seri.toLowerCase().includes(unitSearch.toLowerCase()) ||
       u.asal_satuan.toLowerCase().includes(unitSearch.toLowerCase());
-    const matchesJenis = filterJenis === 'ALL' || u.jenis_dart === filterJenis;
+    const matchesJenis = filterJenis === 'ALL' || u.jenis === filterJenis;
     const matchesSatuan = filterSatuan === 'ALL' || u.asal_satuan === filterSatuan;
     return matchesSearch && matchesJenis && matchesSatuan;
   }).sort((a: any, b: any) => {
@@ -211,11 +211,11 @@ const InventorySection: React.FC<InventorySectionProps> = ({
                 )}
                 {[
                   { label: 'NOMOR SERI', key: 'nomor_seri' },
-                  { label: 'JENIS', key: 'jenis_dart' },
+                  { label: 'JENIS', key: 'jenis' },
                   { label: 'ASAL SATUAN / LOKASI', key: 'asal_satuan' },
                   { label: 'STATUS', key: 'status_unit' },
                   { label: 'MAINTENANCE', key: 'last_maintenance' },
-                  { label: 'KETERANGAN', key: 'nama_dart' },
+
                 ].map((col) => (
                   <th
                     key={col.key}
@@ -248,7 +248,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
                       </td>
                     )}
                     <td className="p-4 font-mono font-bold text-cighra-primary dark:text-cighra-gold border-l-2 border-transparent group-hover:border-cighra-primary dark:border-cighra-gold">{u.nomor_seri}</td>
-                    <td className="p-4 font-mono text-xs text-slate-500 dark:text-slate-300 uppercase">{u.jenis_dart}</td>
+                    <td className="p-4 font-mono text-xs text-slate-500 dark:text-slate-300 uppercase">{u.jenis}</td>
                     <td className="p-4 text-gunmetal dark:text-slate-300 uppercase">{u.asal_satuan}</td>
                     <td className="p-4">
                       <span className={`px-2 py-0.5 border text-[9px] font-bold tracking-widest uppercase
@@ -261,7 +261,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
                       </span>
                     </td>
                     <td className="p-4 font-mono text-[10px] text-slate-500 dark:text-slate-400">{u.last_maintenance}</td>
-                    <td className="p-4 text-slate-800 dark:text-white font-bold uppercase">{u.nama_dart}</td>
+
                     {onRequestDelete && (
                       <td className="p-4 text-right">
                         <button onClick={() => onRequestDelete(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-500 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm cursor-pointer" title="Ajukan Penghapusan">

@@ -31,7 +31,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
   const [filterJenis, setFilterJenis] = React.useState('ALL');
   const [filterSatuan, setFilterSatuan] = React.useState('ALL');
 
-  const jenisOptions = ['ALL', ...new Set(dbUnits.map((u: any) => u.jenis_dart))];
+  const jenisOptions = ['ALL', ...new Set(dbUnits.map((u: any) => u.jenis))];
   const satuanOptions = ['ALL', ...new Set(dbUnits.map((u: any) => u.asal_satuan))];
 
   // Read flash data from Inertia
@@ -57,9 +57,8 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
 
   const filteredUnits = dbUnits.filter((u: any) => {
     const matchesSearch = u.nomor_seri.toLowerCase().includes(unitSearch.toLowerCase()) ||
-                          u.nama_dart.toLowerCase().includes(unitSearch.toLowerCase()) ||
                           u.asal_satuan.toLowerCase().includes(unitSearch.toLowerCase());
-    const matchesJenis = filterJenis === 'ALL' || u.jenis_dart === filterJenis;
+    const matchesJenis = filterJenis === 'ALL' || u.jenis === filterJenis;
     const matchesSatuan = filterSatuan === 'ALL' || u.asal_satuan === filterSatuan;
     return matchesSearch && matchesJenis && matchesSatuan;
   }).sort((a: any, b: any) => {
@@ -156,11 +155,11 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
               <tr>
                 {[
                   { label: 'NOMOR SERI', key: 'nomor_seri' },
-                  { label: 'JENIS', key: 'jenis_dart' },
+                  { label: 'JENIS', key: 'jenis' },
                   { label: 'ASAL SATUAN / LOKASI', key: 'asal_satuan' },
                   { label: 'STATUS', key: 'status_unit' },
                   { label: 'MAINTENANCE', key: 'last_maintenance' },
-                  { label: 'KETERANGAN', key: 'nama_dart' },
+
                 ].map((col) => (
                   <th
                     key={col.key}
@@ -188,7 +187,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
                 filteredUnits.map((u: any) => (
                   <tr key={u.db_id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group bg-white dark:bg-transparent">
                     <td className="p-4 font-mono font-bold text-cighra-primary dark:text-cighra-gold border-l-2 border-transparent group-hover:border-cighra-primary dark:border-cighra-gold">{u.nomor_seri}</td>
-                    <td className="p-4 font-mono text-xs text-slate-500 dark:text-slate-300 uppercase">{u.jenis_dart}</td>
+                    <td className="p-4 font-mono text-xs text-slate-500 dark:text-slate-300 uppercase">{u.jenis}</td>
                     <td className="p-4 text-gunmetal dark:text-slate-300 uppercase">{u.asal_satuan}</td>
                     <td className="p-4">
                       <span className={`px-2 py-0.5 border text-[9px] font-bold tracking-widest uppercase
@@ -201,7 +200,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
                       </span>
                     </td>
                     <td className="p-4 font-mono text-[10px] text-slate-500 dark:text-slate-400">{u.last_maintenance}</td>
-                    <td className="p-4 text-slate-800 dark:text-white font-bold uppercase">{u.nama_dart}</td>
+
                     <td className="p-4 flex gap-2 justify-end">
                       <button onClick={() => handleShowUnitHistory(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 text-slate-500 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Riwayat">
                         <History className="w-4 h-4" />
