@@ -23,7 +23,46 @@ class DashboardController extends Controller
         $report->deskripsi_kerusakan = ucfirst(mb_strtolower(trim($report->deskripsi_kerusakan)));
         $report->catatan_teknisi = $report->catatan_teknisi ? ucfirst(mb_strtolower(trim($report->catatan_teknisi))) : null;
 
-        $pdf = Pdf::loadView('pdf.bap_template', compact('report'));
+        // Formal Date Formatting
+        $tahunAnggaran = $report->created_at->format('Y');
+        $bulanList = [
+            1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+            5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+        ];
+        
+        $bulanMulai = $bulanList[(int)$report->created_at->format('n')];
+        $tanggalMulaiText = $report->created_at->format('d') . ' ' . $bulanMulai . ' ' . $report->created_at->format('Y');
+        
+        if ($report->tanggal_selesai_perbaikan) {
+            $tanggalSelesai = \Carbon\Carbon::parse($report->tanggal_selesai_perbaikan);
+            $bulanSelesai = $bulanList[(int)$tanggalSelesai->format('n')];
+            $tanggalSelesaiText = $tanggalSelesai->format('d') . ' ' . $bulanSelesai . ' ' . $tanggalSelesai->format('Y');
+        } else {
+            $tanggalSelesaiText = date('d') . ' ' . $bulanList[(int)date('n')] . ' ' . date('Y');
+        }
+        
+        $tanggalTTD = date('d') . ' ' . $bulanList[(int)date('n')] . ' ' . date('Y');
+
+        // Extract Images for Lampiran
+        $images = [];
+        if ($report->dokumen_anggaran) {
+            $paths = json_decode($report->dokumen_anggaran, true);
+            if (!is_array($paths)) $paths = [$report->dokumen_anggaran];
+            
+            foreach ($paths as $path) {
+                $fullPath = storage_path('app/public/' . $path);
+                if (file_exists($fullPath)) {
+                    $type = pathinfo($fullPath, PATHINFO_EXTENSION);
+                    $data = file_get_contents($fullPath);
+                    $images[] = 'data:image/' . $type . ';base64,' . base64_encode($data);
+                }
+            }
+        }
+
+        $pdf = Pdf::loadView('pdf.bap_template', compact(
+            'report', 'tahunAnggaran', 'tanggalMulaiText', 'tanggalSelesaiText', 'tanggalTTD', 'images'
+        ));
         
         return $pdf->download('BAP_' . $report->case_id . '.pdf');
     }
