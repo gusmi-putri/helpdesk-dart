@@ -95,21 +95,28 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
               />
               {errors.nama_lengkap && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.nama_lengkap}</p>}
             </div>
-            <div>
-              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Hak Akses (Role)</label>
-              <select
-                value={data.role_id}
-                onChange={(e) => setData('role_id', e.target.value)}
-                className={`w-full bg-white dark:bg-cighra-darkcard border ${errors.role_id ? 'border-red-500' : 'border-gray-400 dark:border-slate-600'} p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none`}
-                required
-              >
-                <option value="">PILIH ROLE</option>
-                {dbRoles?.map((role: any) => (
-                  <option key={role.id} value={role.id}>{role.name.toUpperCase()}</option>
-                ))}
-              </select>
-              {errors.role_id && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.role_id}</p>}
-            </div>
+            {data.username === 'admin' ? (
+              <div className="bg-gray-100 dark:bg-gray-900/50 p-2 border border-slate-200 dark:border-slate-600/50 flex flex-col justify-center">
+                <label className="block text-[9px] font-mono text-slate-500 uppercase tracking-widest">Hak Akses (Locked)</label>
+                <p className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400">ADMINISTRATOR</p>
+              </div>
+            ) : (
+              <div>
+                <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Hak Akses (Role)</label>
+                <select
+                  value={data.role_id}
+                  onChange={(e) => setData('role_id', e.target.value)}
+                  className={`w-full bg-white dark:bg-cighra-darkcard border ${errors.role_id ? 'border-red-500' : 'border-gray-400 dark:border-slate-600'} p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none`}
+                  required
+                >
+                  <option value="">PILIH ROLE</option>
+                  {dbRoles?.map((role: any) => (
+                    <option key={role.id} value={role.id}>{role.name.toUpperCase()}</option>
+                  ))}
+                </select>
+                {errors.role_id && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.role_id}</p>}
+              </div>
+            )}
             <div>
               <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">No. WhatsApp</label>
               <input

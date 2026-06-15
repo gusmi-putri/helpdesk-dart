@@ -70,16 +70,26 @@ class UserController extends Controller
 
         $adminRoleId = \App\Models\Role::where('nama_role', 'Admin')->first()?->id;
 
-        $request->validate([
+        $rules = [
             'nama_lengkap' => 'required|string|max:100',
             'nrp_nip' => 'required|string|min:8|max:50',
-            'role_id' => ['required', 'exists:roles,id', 'not_in:' . $adminRoleId],
             'asal_satuan' => 'nullable|string|max:100',
             'no_wa' => 'nullable|string|max:20',
             'spesialisasi' => 'nullable|string|max:100',
-        ]);
+        ];
 
-        $user->update($request->only('nama_lengkap', 'nrp_nip', 'role_id', 'asal_satuan', 'no_wa', 'spesialisasi'));
+        if ($user->role_id !== $adminRoleId) {
+            $rules['role_id'] = ['required', 'exists:roles,id', 'not_in:' . $adminRoleId];
+        }
+
+        $request->validate($rules);
+
+        $updateData = $request->only('nama_lengkap', 'nrp_nip', 'asal_satuan', 'no_wa', 'spesialisasi');
+        if ($user->role_id !== $adminRoleId) {
+            $updateData['role_id'] = $request->role_id;
+        }
+
+        $user->update($updateData);
 
         $admin = auth()->user();
         \App\Models\SystemLog::log('INFO', $admin->id, "Memperbarui data personel: {$user->nama_lengkap}");
