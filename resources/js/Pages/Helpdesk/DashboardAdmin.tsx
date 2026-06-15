@@ -32,7 +32,6 @@ const DashboardAdmin = (props: any) => {
   const { dbCases = [], dbUsers = [], dbLogs = [], dbRoles = [], dbUnits = [], dbFeedbacks = [], dbMutations = [], dbArchivedUnits = [] } = props;
   const [activeMenu, setActiveMenu] = useState<MenuTab>('ANALYTICS');
   const [activeSubReport, setActiveSubReport] = useState<SubMenuReport>('KERUSAKAN');
-  const [isReportsExpanded, setIsReportsExpanded] = useState<boolean>(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [reportStatusFilter, setReportStatusFilter] = useState<'ALL' | 'PENDING' | 'DIVERIFIKASI' | 'DITERIMA TEKNISI' | 'DIPROSES' | 'SELESAI' | 'DITOLAK'>('ALL');
 
@@ -281,11 +280,6 @@ const DashboardAdmin = (props: any) => {
   const handleMenuClick = (menu: MenuTab) => {
     setActiveMenu(menu);
     setIsMobileMenuOpen(false);
-    if (menu === 'REPORTS') {
-      setIsReportsExpanded(true);
-    } else {
-      setIsReportsExpanded(false);
-    }
   };
 
   const handleExportRecap = () => {
@@ -323,10 +317,6 @@ const DashboardAdmin = (props: any) => {
         setIsMobileMenuOpen={setIsMobileMenuOpen}
         activeMenu={activeMenu}
         handleMenuClick={handleMenuClick}
-        isReportsExpanded={isReportsExpanded}
-        setIsReportsExpanded={setIsReportsExpanded}
-        setActiveSubReport={setActiveSubReport}
-        activeSubReport={activeSubReport}
         dbUsers={dbUsers}
         dbMutations={dbMutations}
         handleLogout={handleLogout}
@@ -352,6 +342,7 @@ const DashboardAdmin = (props: any) => {
                 reportStatusFilter={reportStatusFilter}
                 setReportStatusFilter={setReportStatusFilter}
                 activeSubReport={activeSubReport}
+                setActiveSubReport={setActiveSubReport}
                 setIsRecapModalOpen={setIsRecapModalOpen}
                 handlePrintCasePDF={handlePrintCasePDF}
               />

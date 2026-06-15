@@ -130,7 +130,12 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases }) => {
                                         return (
                                             <div key={unit.db_id} className="bg-slate-50 dark:bg-slate-800/50 p-2 rounded border border-slate-200 dark:border-slate-700/50">
                                                 <div className="flex justify-between items-start mb-1">
-                                                    <div className="font-bold text-xs text-slate-700 dark:text-slate-300">{unit.nomor_seri}</div>
+                                                    <div className="flex flex-col">
+                                                        <span className="font-bold text-xs text-slate-800 dark:text-slate-200">{unit.nomor_seri}</span>
+                                                        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono mt-0.5 flex items-center gap-1">
+                                                            <Target size={10} className="text-cighra-gold" /> {unit.jenis || 'DART'}
+                                                        </span>
+                                                    </div>
                                                     {hasCase ? (
                                                         <span className="bg-orange-500/20 text-orange-600 dark:text-orange-500 px-1.5 py-0.5 rounded text-[9px] font-bold border border-orange-500/30">RUSAK</span>
                                                     ) : (

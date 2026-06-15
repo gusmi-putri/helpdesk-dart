@@ -6,6 +6,7 @@ interface ReportsSectionProps {
   reportStatusFilter: 'ALL' | 'PENDING' | 'DIVERIFIKASI' | 'DITERIMA TEKNISI' | 'DIPROSES' | 'SELESAI' | 'DITOLAK';
   setReportStatusFilter: (s: 'ALL' | 'PENDING' | 'DIVERIFIKASI' | 'DITERIMA TEKNISI' | 'DIPROSES' | 'SELESAI' | 'DITOLAK') => void;
   activeSubReport: 'KERUSAKAN' | 'PERBAIKAN';
+  setActiveSubReport: (s: 'KERUSAKAN' | 'PERBAIKAN') => void;
   setIsRecapModalOpen: (open: boolean) => void;
   handlePrintCasePDF: (c: any) => void;
 }
@@ -15,12 +16,13 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
   reportStatusFilter,
   setReportStatusFilter,
   activeSubReport,
+  setActiveSubReport,
   setIsRecapModalOpen,
   handlePrintCasePDF
 }) => {
   const counts = {
     PENDING: dbCases.filter((c: any) => c.status === 'PENDING').length,
-    AKTIF: dbCases.filter((c: any) => c.status === 'DIVERIFIKASI' || c.status === 'DITERIMA TEKNISI' || c.status === 'DIPROSES').length,
+    AKTIF: dbCases.filter((c: any) => ['DIVERIFIKASI', 'DITERIMA TEKNISI', 'DIPROSES'].includes(c.status)).length,
     SELESAI: dbCases.filter((c: any) => c.status === 'SELESAI').length,
     DITOLAK: dbCases.filter((c: any) => c.status === 'DITOLAK').length,
   };
@@ -32,7 +34,8 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
-      {/* Summary Cards */}
+      
+      {/* 1. Summary Cards (Original Tactical Style) */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
         <div className={`p-4 border-l-4 bg-white dark:bg-cighra-darkcard/80 shadow-md ${reportStatusFilter === 'PENDING' ? 'border-cighra-primary dark:border-cighra-gold' : 'border-slate-200 dark:border-slate-600'}`}>
           <div className="text-[10px] font-mono text-slate-500 dark:text-slate-300 uppercase tracking-widest">Laporan Baru</div>
@@ -52,47 +55,79 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
         </div>
       </div>
 
-      {/* Header Laporan */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-800 border border-slate-200 dark:border-slate-600 p-6 shadow-2xl relative overflow-hidden">
-        <div className="absolute right-0 top-0 bottom-0 w-64 bg-gradient-to-l from-white/10 to-transparent pointer-events-none"></div>
-        <div className="relative z-10">
-          <h2 className="text-2xl font-tactical font-bold text-white tracking-widest flex items-center gap-3">
-            <Radar className="text-cighra-gold w-8 h-8 animate-spin-slow" />
-            {activeSubReport === 'KERUSAKAN' ? 'LAPORAN KERUSAKAN' : 'LAPORAN PERBAIKAN'}
-          </h2>
-          <p className="text-slate-300 font-mono text-xs mt-2 tracking-widest uppercase">
-            {activeSubReport === 'KERUSAKAN'
-              ? 'Daftar pelaporan kerusakan perangkat yang diajukan oleh pengguna.'
-              : 'Progres penanganan dan status teknisi pada setiap laporan.'}
-          </p>
+      {/* Main Container */}
+      <div className="bg-white dark:bg-cighra-darkcard/70 border border-slate-200 dark:border-slate-600 shadow-xl overflow-hidden relative">
+        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-olive via-camogreen to-transparent"></div>
+
+        {/* 2. Header Area (Row 1) */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-800 border-b border-slate-700 p-6 relative overflow-hidden">
+          <div className="absolute right-0 top-0 bottom-0 w-64 bg-gradient-to-l from-white/10 to-transparent pointer-events-none"></div>
+          <div className="relative z-10">
+            <h2 className="text-2xl font-tactical font-bold text-white tracking-widest flex items-center gap-3">
+              <Radar className="text-cighra-gold w-8 h-8 animate-spin-slow" />
+              {activeSubReport === 'KERUSAKAN' ? 'LAPORAN KERUSAKAN' : 'LAPORAN PERBAIKAN'}
+            </h2>
+            <p className="text-slate-300 font-mono text-xs mt-2 tracking-widest uppercase">
+              {activeSubReport === 'KERUSAKAN'
+                ? 'Daftar pelaporan kerusakan perangkat yang diajukan oleh pengguna.'
+                : 'Progres penanganan dan status teknisi pada setiap laporan.'}
+            </p>
+          </div>
+          <div className="relative z-10 mt-4 md:mt-0">
+            <button
+              onClick={() => setIsRecapModalOpen(true)}
+              className="bg-cighra-gold text-slate-900 px-5 py-2 font-tactical font-bold text-xs tracking-widest hover:bg-cighra-gold/90 transition-all flex items-center gap-2 shadow-lg uppercase"
+            >
+              <FileArchive className="w-4 h-4" /> EKSPOR DATA
+            </button>
+          </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 relative z-10">
+        {/* 3. Sub-Report Tabs (Row 2) */}
+        <div className="px-6 pt-2 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-cighra-darkcard flex gap-6">
           <button
-            onClick={() => setIsRecapModalOpen(true)}
-            className="bg-cighra-gold text-slate-900 px-5 py-2 font-tactical font-bold text-xs tracking-widest hover:bg-cighra-gold/90 transition-all flex items-center gap-2 shadow-lg uppercase"
+            onClick={() => setActiveSubReport('KERUSAKAN')}
+            className={`py-3 px-2 text-xs font-tactical tracking-widest uppercase transition-all border-b-2 ${
+              activeSubReport === 'KERUSAKAN' 
+                ? 'text-cighra-primary dark:text-cighra-gold border-cighra-primary dark:border-cighra-gold font-bold' 
+                : 'text-slate-500 border-transparent hover:text-slate-800 dark:hover:text-slate-300'
+            }`}
           >
-            <FileArchive className="w-4 h-4" /> EKSPOR DATA
+            Laporan Kerusakan
           </button>
-          <div className="flex flex-wrap items-center gap-1 bg-slate-50 dark:bg-cighra-darkcard p-1 border border-slate-300 dark:border-slate-600">
+          <button
+            onClick={() => setActiveSubReport('PERBAIKAN')}
+            className={`py-3 px-2 text-xs font-tactical tracking-widest uppercase transition-all border-b-2 ${
+              activeSubReport === 'PERBAIKAN' 
+                ? 'text-cighra-primary dark:text-cighra-gold border-cighra-primary dark:border-cighra-gold font-bold' 
+                : 'text-slate-500 border-transparent hover:text-slate-800 dark:hover:text-slate-300'
+            }`}
+          >
+            Riwayat Perbaikan
+          </button>
+        </div>
+
+        {/* 4. Status Filters (Row 3) */}
+        <div className="p-4 px-6 bg-white dark:bg-transparent border-b border-slate-200 dark:border-slate-700">
+          <div className="flex flex-wrap items-center gap-2">
             {(['ALL', 'PENDING', 'DIVERIFIKASI', 'DITERIMA TEKNISI', 'DIPROSES', 'SELESAI', 'DITOLAK'] as const).map(status => (
               <button
                 key={status}
                 onClick={() => setReportStatusFilter(status)}
-                className={`px-2 py-1.5 text-[9px] font-tactical font-bold transition-all ${reportStatusFilter === status ? 'bg-slate-800 text-white shadow-lg' : 'text-slate-500 dark:text-slate-300 hover:text-slate-800 hover:bg-white dark:hover:bg-cighra-darkcard/50'}`}
+                className={`px-4 py-2 rounded border text-[10px] font-tactical font-bold tracking-widest uppercase transition-all ${
+                  reportStatusFilter === status 
+                    ? 'bg-slate-800 dark:bg-cighra-gold text-white dark:text-slate-900 shadow-md border-slate-800 dark:border-cighra-gold' 
+                    : 'bg-transparent text-slate-500 dark:text-slate-400 border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800/50'
+                }`}
               >
                 {status === 'ALL' ? 'SEMUA' : status}
               </button>
             ))}
           </div>
         </div>
-      </div>
 
-      {/* Main Relational Table */}
-      <div className="bg-white dark:bg-cighra-darkcard/70 border border-slate-200 dark:border-slate-600 shadow-xl overflow-hidden relative">
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-olive via-camogreen to-transparent"></div>
-
-        <div className="overflow-x-auto p-2">
+        {/* 5. Main Table (Row 4) */}
+        <div className="overflow-x-auto p-4">
           <table className="w-full text-left font-sans text-sm break-words">
             <thead className="bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-slate-700">
               <tr>
