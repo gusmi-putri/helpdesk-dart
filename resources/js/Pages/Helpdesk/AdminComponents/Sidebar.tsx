@@ -75,21 +75,28 @@ const Sidebar: React.FC<SidebarProps> = ({
           </button>
 
           <button
-            onClick={() => handleMenuClick('USERS')}
-            className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4
-              ${activeMenu === 'USERS' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}}
-            `}
-          >
-            <Users size={18} /> DATA PERSONEL
-          </button>
-
-          <button
             onClick={() => handleMenuClick('UNITS')}
             className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4
               ${activeMenu === 'UNITS' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}}
             `}
           >
             <Package size={18} /> DATA INVENTARIS
+          </button>
+
+          <button
+            onClick={() => handleMenuClick('MUTATIONS')}
+            className={`w-full flex items-center justify-between px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4
+              ${activeMenu === 'MUTATIONS' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}}
+            `}
+          >
+            <div className="flex items-center gap-3">
+              <GitPullRequest size={18} /> MUTASI INVENTARIS
+            </div>
+            {dbMutations.filter((m: any) => m.status === 'pending').length > 0 && (
+              <span className="bg-orange-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse">
+                {dbMutations.filter((m: any) => m.status === 'pending').length}
+              </span>
+            )}
           </button>
 
           <div className="mt-4">
@@ -124,6 +131,14 @@ const Sidebar: React.FC<SidebarProps> = ({
           </div>
 
           <button
+            onClick={() => handleMenuClick('USERS')}
+            className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4
+              ${activeMenu === 'USERS' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}}
+            `}
+          >
+            <Users size={18} /> DATA PERSONEL
+          </button>
+          <button
             onClick={() => handleMenuClick('APPROVAL')}
             className={`w-full flex items-center justify-between px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4 mt-4
               ${activeMenu === 'APPROVAL' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}}
@@ -146,22 +161,6 @@ const Sidebar: React.FC<SidebarProps> = ({
             `}
           >
             <MessageSquare size={18} /> UMPAN BALIK
-          </button>
-
-          <button
-            onClick={() => handleMenuClick('MUTATIONS')}
-            className={`w-full flex items-center justify-between px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4
-              ${activeMenu === 'MUTATIONS' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}}
-            `}
-          >
-            <div className="flex items-center gap-3">
-              <GitPullRequest size={18} /> MUTASI INVENTARIS
-            </div>
-            {dbMutations.filter((m: any) => m.status === 'pending').length > 0 && (
-              <span className="bg-orange-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse">
-                {dbMutations.filter((m: any) => m.status === 'pending').length}
-              </span>
-            )}
           </button>
 
           <button

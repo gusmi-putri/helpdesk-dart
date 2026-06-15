@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertTriangle, CheckCircle, Database, LogOut, GitPullRequest, Users } from 'lucide-react';
+import { AlertTriangle, CheckCircle, Package, LogOut, GitPullRequest, Users } from 'lucide-react';
 
 interface StafSidebarProps {
   isMobileMenuOpen: boolean;
@@ -55,7 +55,7 @@ const StafSidebar: React.FC<StafSidebarProps> = ({
           className={menuClass('SELESAI')}
         >
           <div className="flex items-center gap-3">
-            <CheckCircle className="w-5 h-5" /> ARSIP PERBAIKAN SELESAI
+            <CheckCircle className="w-5 h-5" /> ARSIP PERBAIKAN
           </div>
         </button>
 
@@ -64,7 +64,7 @@ const StafSidebar: React.FC<StafSidebarProps> = ({
           className={menuClass('INVENTARIS')}
         >
           <div className="flex items-center gap-3">
-            <Database className="w-5 h-5" /> INVENTARIS UNIT DART
+            <Package className="w-5 h-5" /> DATA INVENTARIS
           </div>
         </button>
 
