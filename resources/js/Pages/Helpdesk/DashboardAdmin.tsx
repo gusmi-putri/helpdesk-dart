@@ -6,6 +6,7 @@ import Topbar from './AdminComponents/Topbar';
 import AnalyticsSection from './AdminComponents/AnalyticsSection';
 import UsersTable from './AdminComponents/UsersTable';
 import UnitsTable from './AdminComponents/UnitsTable';
+import AdminUnitBatchModal from './AdminComponents/AdminUnitBatchModal';
 import LogsTable from './AdminComponents/LogsTable';
 import ReportsSection from './AdminComponents/ReportsSection';
 import ApprovalTable from './AdminComponents/ApprovalTable';
@@ -76,6 +77,7 @@ const DashboardAdmin = (props: any) => {
     jenis_dart: 'DART STD',
     asal_satuan: '',
     status_unit: 'Beroperasi',
+    document: null as File | null,
   });
 
   const [isUnitModalOpen, setIsUnitModalOpen] = useState(false);
@@ -86,6 +88,8 @@ const DashboardAdmin = (props: any) => {
   const [isUnitHistoryModalOpen, setIsUnitHistoryModalOpen] = useState(false);
   const [selectedUnitForHistory, setSelectedUnitForHistory] = useState<any>(null);
   const [unitSearch, setUnitSearch] = useState<string>('');
+  const [isAdminBatchModalOpen, setIsAdminBatchModalOpen] = useState(false);
+  const [isBatchUploading, setIsBatchUploading] = useState(false);
   const [unitSortConfig, setUnitSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
   const [isRecapModalOpen, setIsRecapModalOpen] = useState(false);
   const [recapPeriod, setRecapPeriod] = useState<'weekly' | 'monthly' | 'yearly' | 'custom' | 'year_specific'>('monthly');
@@ -228,6 +232,20 @@ const DashboardAdmin = (props: any) => {
     }
   };
 
+  const handleImportBatchSubmit = (formData: FormData) => {
+    setIsBatchUploading(true);
+    router.post('/units/import', formData, {
+      forceFormData: true,
+      onSuccess: () => {
+        setIsAdminBatchModalOpen(false);
+        setIsBatchUploading(false);
+      },
+      onError: () => {
+        setIsBatchUploading(false);
+      }
+    });
+  };
+
   const handleApproveUser = (user: any) => {
     router.post(`/users/${user.db_id}/approve`, {}, {
       onSuccess: () => {
@@ -363,6 +381,7 @@ const DashboardAdmin = (props: any) => {
                 unitSearch={unitSearch}
                 setUnitSearch={setUnitSearch}
                 handleAddUnit={handleAddUnit}
+                onImportBatch={() => setIsAdminBatchModalOpen(true)}
                 unitSortConfig={unitSortConfig}
                 handleUnitSort={(key) => {
                   let direction: 'asc' | 'desc' = 'asc';
@@ -445,6 +464,13 @@ const DashboardAdmin = (props: any) => {
         processing={unitForm.processing}
         isAddMode={isUnitAddMode}
         editingUnit={editingUnit}
+      />
+
+      <AdminUnitBatchModal
+        isOpen={isAdminBatchModalOpen}
+        onClose={() => setIsAdminBatchModalOpen(false)}
+        onSubmit={handleImportBatchSubmit}
+        processing={isBatchUploading}
       />
 
       <UnitDeleteModal
