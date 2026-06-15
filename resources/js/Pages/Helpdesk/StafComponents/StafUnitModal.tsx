@@ -21,6 +21,7 @@ const StafUnitModal: React.FC<StafUnitModalProps> = ({ isOpen, onClose, onSubmit
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!document) return;
     const formData = new FormData();
     formData.append('nomor_seri', nomorSeri);
     formData.append('nama_dart', namaDart);
@@ -28,9 +29,7 @@ const StafUnitModal: React.FC<StafUnitModalProps> = ({ isOpen, onClose, onSubmit
     formData.append('asal_satuan', asalSatuan);
     formData.append('status_unit', statusUnit);
     formData.append('reason', reason || 'Pengajuan penambahan unit baru.');
-    if (document) {
-      formData.append('document', document);
-    }
+    formData.append('document', document);
     onSubmit(formData);
   };
 
@@ -111,7 +110,7 @@ const StafUnitModal: React.FC<StafUnitModalProps> = ({ isOpen, onClose, onSubmit
           </div>
 
           <div>
-            <label className="block text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Surat Pendukung (PDF/JPG/PNG)</label>
+            <label className="block text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Surat Pendukung (PDF/JPG/PNG) *</label>
             <div className="relative">
               {document ? (
                 <div className="flex items-center gap-2 bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-800/30 px-3 py-2 rounded-sm">
@@ -125,7 +124,7 @@ const StafUnitModal: React.FC<StafUnitModalProps> = ({ isOpen, onClose, onSubmit
                 <label className="flex items-center gap-2 bg-slate-50 dark:bg-cighra-darkcard border border-dashed border-slate-300 dark:border-slate-600 px-3 py-3 cursor-pointer hover:border-cighra-primary dark:hover:border-cighra-gold transition-colors rounded-sm">
                   <Upload className="w-4 h-4 text-slate-400" />
                   <span className="text-xs font-mono text-slate-500">Pilih file surat pendukung...</span>
-                  <input type="file" accept=".pdf,.png,.jpg,.jpeg" className="hidden" onChange={(e) => e.target.files?.[0] && setDocument(e.target.files[0])} />
+                  <input type="file" accept=".pdf,.png,.jpg,.jpeg" required className="hidden" onChange={(e) => e.target.files?.[0] && setDocument(e.target.files[0])} />
                 </label>
               )}
             </div>
