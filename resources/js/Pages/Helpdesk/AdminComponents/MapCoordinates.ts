@@ -80,10 +80,7 @@ export const SATUAN_COORDINATES: Record<string, [number, number]> = {
     'PUSDIKIF PUSSENIF': [-6.8375, 107.4667], // Cipatat
     'SATUAN RADAR': [-6.1039, 106.9455], // Area Utara Jakarta
     'SATUAN RADAR 211': [-6.1039, 106.9455],
-    
     // NEW SATUAN KOORDINAT (SEBARAN RIIL INDONESIA)
-    'GRUP 1 KOPASSUS': [-6.1158, 106.1558],      // Serang, Banten
-    'GRUP 2 KOPASSUS': [-7.5622, 110.7628],      // Kartasura, Solo
     'YONIF PARA RAIDER 501': [-7.6198, 111.5309], // Madiun, Jatim
     'YONIF RAIDER 509': [-8.1741, 113.7198],      // Jember, Jatim
     'YONIF RAIDER 328': [-6.4439, 106.8333],      // Cilodong, Depok

@@ -8,33 +8,53 @@ interface MutationHistoryProps {
 const MutationHistory: React.FC<MutationHistoryProps> = ({ dbMutations }) => {
   const [activeTab, setActiveTab] = useState<'pending' | 'history'>('pending');
   const [searchQuery, setSearchQuery] = useState('');
+  const [expandedIds, setExpandedIds] = useState<number[]>([]);
 
   const pendingMutations = dbMutations.filter((m: any) => m.status === 'pending');
   const historyMutations = dbMutations.filter((m: any) => m.status !== 'pending');
 
+  const toggleExpand = (id: number) => {
+    if (expandedIds.includes(id)) {
+      setExpandedIds(expandedIds.filter(v => v !== id));
+    } else {
+      setExpandedIds([...expandedIds, id]);
+    }
+  };
+
   const filteredMutations = (activeTab === 'pending' ? pendingMutations : historyMutations).filter((m: any) => {
     if (!searchQuery) return true;
     const q = searchQuery.toLowerCase();
+    
+    // Support searching within batch items
+    const isBatch = Array.isArray(m.unit_data);
+    if (isBatch) {
+      const matchInBatch = m.unit_data.some((u: any) => 
+        u.nomor_seri?.toLowerCase().includes(q) ||
+        u.nama_dart?.toLowerCase().includes(q)
+      );
+      if (matchInBatch) return true;
+    }
+
     return (
-      m.unit_data?.nomor_seri?.toLowerCase().includes(q) ||
-      m.unit_data?.nama_dart?.toLowerCase().includes(q) ||
+      (!isBatch && m.unit_data?.nomor_seri?.toLowerCase().includes(q)) ||
+      (!isBatch && m.unit_data?.nama_dart?.toLowerCase().includes(q)) ||
       m.requested_by?.toLowerCase().includes(q) ||
       m.reason?.toLowerCase().includes(q)
     );
   });
 
-  const getTypeBadge = (type: string) => {
+  const getTypeBadge = (type: string, isBatch: boolean = false) => {
     switch (type) {
       case 'request_add':
-        return <span className="bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800/40 px-2 py-0.5 text-[9px] font-mono font-bold flex items-center gap-1"><Plus size={10} /> TAMBAH</span>;
+        return <span className="bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800/40 px-2 py-0.5 text-[9px] font-mono font-bold flex items-center gap-1"><Plus size={10} /> {isBatch ? 'TAMBAH MASSAL' : 'TAMBAH'}</span>;
       case 'request_delete':
         return <span className="bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800/40 px-2 py-0.5 text-[9px] font-mono font-bold flex items-center gap-1"><Trash2 size={10} /> HAPUS</span>;
       case 'approved_add':
-        return <span className="bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800/40 px-2 py-0.5 text-[9px] font-mono font-bold flex items-center gap-1"><CheckCircle size={10} /> TAMBAH (DISETUJUI)</span>;
+        return <span className="bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800/40 px-2 py-0.5 text-[9px] font-mono font-bold flex items-center gap-1"><CheckCircle size={10} /> {isBatch ? 'TAMBAH MASSAL (DISETUJUI)' : 'TAMBAH (DISETUJUI)'}</span>;
       case 'approved_delete':
         return <span className="bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800/40 px-2 py-0.5 text-[9px] font-mono font-bold flex items-center gap-1"><CheckCircle size={10} /> HAPUS (DISETUJUI)</span>;
       case 'rejected_add':
-        return <span className="bg-orange-100 dark:bg-orange-900/20 text-orange-700 dark:text-orange-400 border border-orange-200 dark:border-orange-800/40 px-2 py-0.5 text-[9px] font-mono font-bold flex items-center gap-1"><XCircle size={10} /> TAMBAH (DITOLAK)</span>;
+        return <span className="bg-orange-100 dark:bg-orange-900/20 text-orange-700 dark:text-orange-400 border border-orange-200 dark:border-orange-800/40 px-2 py-0.5 text-[9px] font-mono font-bold flex items-center gap-1"><XCircle size={10} /> {isBatch ? 'TAMBAH MASSAL (DITOLAK)' : 'TAMBAH (DITOLAK)'}</span>;
       case 'rejected_delete':
         return <span className="bg-orange-100 dark:bg-orange-900/20 text-orange-700 dark:text-orange-400 border border-orange-200 dark:border-orange-800/40 px-2 py-0.5 text-[9px] font-mono font-bold flex items-center gap-1"><XCircle size={10} /> HAPUS (DITOLAK)</span>;
       case 'restore':
@@ -101,47 +121,104 @@ const MutationHistory: React.FC<MutationHistoryProps> = ({ dbMutations }) => {
             </p>
           </div>
         ) : (
-          filteredMutations.map((m: any) => (
-            <div key={m.id} className="glass-panel p-4 hover:shadow-lg transition-shadow border-l-4 border-l-cighra-gold/50">
-              <div className="flex flex-col md:flex-row justify-between items-start gap-3">
-                <div className="flex-1 space-y-2">
-                  <div className="flex flex-wrap items-center gap-2">
-                    {getTypeBadge(m.type)}
-                    {getStatusBadge(m.status)}
+          filteredMutations.map((m: any) => {
+            const isBatch = Array.isArray(m.unit_data);
+            return (
+              <div key={m.id} className="glass-panel p-4 hover:shadow-lg transition-shadow border-l-4 border-l-cighra-gold/50">
+                <div className="flex flex-col md:flex-row justify-between items-start gap-3">
+                  <div className="flex-1 space-y-2 w-full">
+                    <div className="flex flex-wrap items-center gap-2">
+                      {getTypeBadge(m.type, isBatch)}
+                      {getStatusBadge(m.status)}
+                    </div>
+                    {isBatch ? (
+                      <div className="w-full">
+                        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700/50 pb-2">
+                          <p className="text-sm font-bold text-slate-800 dark:text-white uppercase">
+                            PENGAJUAN TAMBAH MASSAL ({m.unit_data.length} UNIT)
+                          </p>
+                          <button
+                            onClick={() => toggleExpand(m.id)}
+                            className="text-xs text-cighra-primary dark:text-cighra-gold font-mono hover:underline cursor-pointer font-bold"
+                          >
+                            {expandedIds.includes(m.id) ? 'SEMBUNYIKAN RINCIAN ▲' : 'LIHAT RINCIAN ▼'}
+                          </button>
+                        </div>
+                        
+                        {expandedIds.includes(m.id) && (
+                          <div className="mt-3 overflow-x-auto border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-cighra-darkcard/50 rounded-sm">
+                            <table className="w-full text-left font-sans text-xs">
+                              <thead className="bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-tactical tracking-wider uppercase border-b border-slate-300 dark:border-slate-700">
+                                <tr>
+                                  <th className="p-2 w-10">NO</th>
+                                  <th className="p-2">NOMOR SERI</th>
+                                  <th className="p-2">NAMA DART</th>
+                                  <th className="p-2">JENIS</th>
+                                  <th className="p-2">SATUAN</th>
+                                  <th className="p-2 text-right">STATUS</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-slate-200 dark:divide-slate-700/50 text-slate-800 dark:text-slate-300">
+                                {m.unit_data.map((u: any, uIdx: number) => (
+                                  <tr key={uIdx} className="hover:bg-slate-100 dark:hover:bg-slate-800/30">
+                                    <td className="p-2 font-mono">{uIdx + 1}</td>
+                                    <td className="p-2 font-mono font-bold text-cighra-primary dark:text-cighra-gold">{u.nomor_seri}</td>
+                                    <td className="p-2 uppercase font-bold text-[10px]">{u.nama_dart}</td>
+                                    <td className="p-2 uppercase text-[10px]">{u.jenis_dart}</td>
+                                    <td className="p-2 uppercase text-[10px]">{u.asal_satuan}</td>
+                                    <td className="p-2 text-right">
+                                      <span className={`px-2 py-0.5 text-[9px] font-mono font-bold border rounded-sm
+                                        ${u.status === 'approved' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40' :
+                                          u.status === 'rejected' ? 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/40' :
+                                          'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800/40'
+                                        }
+                                      `}>
+                                        {u.status === 'approved' ? 'DISETUJUI' : u.status === 'rejected' ? 'DITOLAK' : 'MENUNGGU'}
+                                      </span>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div>
+                        <p className="text-sm font-bold text-slate-800 dark:text-white uppercase">
+                          [{m.unit_data?.nomor_seri || '-'}] {m.unit_data?.nama_dart || '-'}
+                        </p>
+                        <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400 mt-0.5">
+                          {m.unit_data?.jenis_dart} — {m.unit_data?.asal_satuan}
+                        </p>
+                      </div>
+                    )}
+                    {m.reason && (
+                      <p className="text-xs text-slate-600 dark:text-slate-300 italic bg-slate-50 dark:bg-slate-800/50 p-2 border-l-2 border-cighra-gold">
+                        "{m.reason}"
+                      </p>
+                    )}
+                    {m.admin_notes && m.status !== 'pending' && (
+                      <p className="text-xs text-slate-600 dark:text-slate-300 bg-blue-50 dark:bg-blue-900/10 p-2 border-l-2 border-blue-500">
+                        <span className="font-bold text-blue-700 dark:text-blue-400">Catatan Admin:</span> {m.admin_notes}
+                      </p>
+                    )}
                   </div>
-                  <div>
-                    <p className="text-sm font-bold text-slate-800 dark:text-white uppercase">
-                      [{m.unit_data?.nomor_seri || '-'}] {m.unit_data?.nama_dart || '-'}
-                    </p>
-                    <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400 mt-0.5">
-                      {m.unit_data?.jenis_dart} — {m.unit_data?.asal_satuan}
-                    </p>
+                  <div className="text-right space-y-1 shrink-0 mt-2 md:mt-0">
+                    <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400">Diajukan: {m.created_at}</p>
+                    <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400">Oleh: {m.requested_by}</p>
+                    {m.approved_by && <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400">Diproses: {m.approved_by}</p>}
+                    {m.document_path && (
+                      <a href={m.document_path} target="_blank" rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-[10px] font-mono text-cighra-primary dark:text-cighra-gold hover:underline">
+                        <FileText size={12} /> LIHAT SURAT <ExternalLink size={10} />
+                      </a>
+                    )}
                   </div>
-                  {m.reason && (
-                    <p className="text-xs text-slate-600 dark:text-slate-300 italic bg-slate-50 dark:bg-slate-800/50 p-2 border-l-2 border-cighra-gold">
-                      "{m.reason}"
-                    </p>
-                  )}
-                  {m.admin_notes && m.status !== 'pending' && (
-                    <p className="text-xs text-slate-600 dark:text-slate-300 bg-blue-50 dark:bg-blue-900/10 p-2 border-l-2 border-blue-500">
-                      <span className="font-bold text-blue-700 dark:text-blue-400">Catatan Admin:</span> {m.admin_notes}
-                    </p>
-                  )}
-                </div>
-                <div className="text-right space-y-1 shrink-0">
-                  <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400">Diajukan: {m.created_at}</p>
-                  <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400">Oleh: {m.requested_by}</p>
-                  {m.approved_by && <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400">Diproses: {m.approved_by}</p>}
-                  {m.document_path && (
-                    <a href={m.document_path} target="_blank" rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-[10px] font-mono text-cighra-primary dark:text-cighra-gold hover:underline">
-                      <FileText size={12} /> LIHAT SURAT <ExternalLink size={10} />
-                    </a>
-                  )}
                 </div>
               </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
     </div>

@@ -7,6 +7,7 @@ interface UnitsTableProps {
   unitSearch: string;
   setUnitSearch: (s: string) => void;
   handleAddUnit: () => void;
+  onImportBatch: () => void;
   unitSortConfig: { key: string, direction: 'asc' | 'desc' } | null;
   handleUnitSort: (key: string) => void;
   handleShowUnitHistory: (unit: any) => void;
@@ -18,14 +19,20 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
   unitSearch,
   setUnitSearch,
   handleAddUnit,
+  onImportBatch,
   unitSortConfig,
   handleUnitSort,
   handleShowUnitHistory,
   handleEditUnit
 }) => {
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
-  const [isUploading, setIsUploading] = React.useState(false);
   const [importResult, setImportResult] = React.useState<any>(null);
+
+  // Local filter states
+  const [filterJenis, setFilterJenis] = React.useState('ALL');
+  const [filterSatuan, setFilterSatuan] = React.useState('ALL');
+
+  const jenisOptions = ['ALL', ...new Set(dbUnits.map((u: any) => u.jenis_dart))];
+  const satuanOptions = ['ALL', ...new Set(dbUnits.map((u: any) => u.asal_satuan))];
 
   // Read flash data from Inertia
   const { flash } = usePage().props as any;
@@ -41,32 +48,6 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
     }
   }, [flash?.import_result]);
 
-  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setIsUploading(true);
-      const formData = new FormData();
-      formData.append('file', e.target.files[0]);
-      router.post('/units/import', formData, {
-        onFinish: () => {
-          setIsUploading(false);
-          if (fileInputRef.current) fileInputRef.current.value = '';
-        }
-      });
-    }
-  };
-
-  const handleDownloadTemplate = () => {
-    const csvContent = "nomor_seri,nama_dart,jenis_dart,asal_satuan,status_unit\nCONTOH-001,KETERANGAN DART,DART STD,NAMA SATUAN,Beroperasi";
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute('download', 'template_unit_dart.csv');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   const unitStats = {
     TOTAL: dbUnits.length,
     SIAP: dbUnits.filter((u: any) => u.status_unit === 'Beroperasi').length,
@@ -74,11 +55,14 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
     PERBAIKAN: dbUnits.filter((u: any) => u.status_unit === 'Perbaikan').length,
   };
 
-  const filteredUnits = dbUnits.filter((u: any) =>
-    u.nomor_seri.toLowerCase().includes(unitSearch.toLowerCase()) ||
-    u.nama_dart.toLowerCase().includes(unitSearch.toLowerCase()) ||
-    u.asal_satuan.toLowerCase().includes(unitSearch.toLowerCase())
-  ).sort((a: any, b: any) => {
+  const filteredUnits = dbUnits.filter((u: any) => {
+    const matchesSearch = u.nomor_seri.toLowerCase().includes(unitSearch.toLowerCase()) ||
+                          u.nama_dart.toLowerCase().includes(unitSearch.toLowerCase()) ||
+                          u.asal_satuan.toLowerCase().includes(unitSearch.toLowerCase());
+    const matchesJenis = filterJenis === 'ALL' || u.jenis_dart === filterJenis;
+    const matchesSatuan = filterSatuan === 'ALL' || u.asal_satuan === filterSatuan;
+    return matchesSearch && matchesJenis && matchesSatuan;
+  }).sort((a: any, b: any) => {
     if (!unitSortConfig) return 0;
     const { key, direction } = unitSortConfig;
     if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
@@ -109,43 +93,60 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
           <h3 className="text-white font-tactical font-bold text-lg tracking-widest flex items-center gap-3 uppercase">
             <Package className="text-cighra-gold w-6 h-6" /> DATA INVENTARIS UNIT
           </h3>
-          <div className="flex items-center gap-4">
-            <div className="relative">
-              <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-500 dark:text-slate-300" />
-              <input
-                type="text"
-                placeholder="CARI SERI / KETERANGAN / LOKASI..."
-                value={unitSearch}
-                onChange={(e) => setUnitSearch(e.target.value)}
-                className="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 pl-9 pr-4 py-2 text-sm font-mono text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:border-cighra-gold transition-colors w-64 uppercase"
-              />
-            </div>
-            <input 
-              type="file" 
-              accept=".csv,.txt" 
-              className="hidden" 
-              ref={fileInputRef}
-              onChange={handleImport}
-            />
+          <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
             <button
-              onClick={handleDownloadTemplate}
-              className="bg-cighra-light dark:bg-slate-800 hover:bg-cighra-light dark:hover:bg-gunmetal/80 text-slate-600 dark:text-slate-300 px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-slate-300 dark:border-slate-600 shadow uppercase"
+              onClick={onImportBatch}
+              className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-blue-600 shadow-lg uppercase cursor-pointer"
             >
-              <Download className="w-4 h-4" /> TEMPLATE
-            </button>
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isUploading}
-              className={`bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-blue-600 shadow-lg uppercase ${isUploading ? 'opacity-50 cursor-not-allowed' : ''}`}
-            >
-              <Upload className={`w-4 h-4 ${isUploading ? 'animate-bounce' : ''}`} /> {isUploading ? 'MENGUNGGAH...' : 'IMPORT CSV'}
+              <Upload className="w-4 h-4" /> IMPORT CSV
             </button>
             <button
               onClick={handleAddUnit}
-              className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-cighra-primary dark:border-cighra-gold shadow-lg uppercase"
+              className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-cighra-primary dark:border-cighra-gold shadow-lg uppercase cursor-pointer"
             >
               <Plus className="w-4 h-4" /> TAMBAH UNIT
             </button>
+          </div>
+        </div>
+
+        {/* Filter Row */}
+        <div className="p-4 bg-slate-50 dark:bg-cighra-dark/30 border-b border-slate-200 dark:border-slate-600 flex flex-col md:flex-row gap-4 items-center">
+          <div className="w-full md:w-72">
+            <label className="block text-[9px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">CARI PERANGKAT</label>
+            <div className="relative">
+              <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
+              <input
+                type="text"
+                placeholder="SN / KETERANGAN..."
+                value={unitSearch}
+                onChange={(e) => setUnitSearch(e.target.value)}
+                className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 pl-9 pr-4 py-2 text-xs font-mono text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold transition-colors uppercase"
+              />
+            </div>
+          </div>
+          <div className="w-full md:w-56">
+            <label className="block text-[9px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">JENIS UNIT</label>
+            <select
+              value={filterJenis}
+              onChange={(e) => setFilterJenis(e.target.value)}
+              className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-3 py-2 text-xs font-mono text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold transition-colors uppercase"
+            >
+              {jenisOptions.map((o: any) => (
+                <option key={o} value={o}>{o === 'ALL' ? 'SEMUA JENIS' : o}</option>
+              ))}
+            </select>
+          </div>
+          <div className="w-full md:w-56">
+            <label className="block text-[9px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">SATUAN KERJA</label>
+            <select
+              value={filterSatuan}
+              onChange={(e) => setFilterSatuan(e.target.value)}
+              className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-3 py-2 text-xs font-mono text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold transition-colors uppercase"
+            >
+              {satuanOptions.map((o: any) => (
+                <option key={o} value={o}>{o === 'ALL' ? 'SEMUA SATUAN' : o}</option>
+              ))}
+            </select>
           </div>
         </div>
 

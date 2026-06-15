@@ -15,8 +15,74 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
   const [processing, setProcessing] = useState(false);
   const [restoreModal, setRestoreModal] = useState<{ isOpen: boolean; unit: any }>({ isOpen: false, unit: null });
 
+  // Batch states
+  const [expandedIds, setExpandedIds] = useState<number[]>([]);
+  const [selectedIndicesMap, setSelectedIndicesMap] = useState<Record<number, number[]>>({});
+  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
+
   const pendingMutations = dbMutations.filter((m: any) => m.status === 'pending');
   const historyMutations = dbMutations.filter((m: any) => m.status !== 'pending');
+
+  const formatRanges = (nums: number[]) => {
+    if (nums.length === 0) return 'Pilih unit...';
+    const sorted = [...nums].sort((a, b) => a - b);
+    const ranges: string[] = [];
+    let start = sorted[0];
+    let end = sorted[0];
+
+    for (let i = 1; i < sorted.length; i++) {
+      if (sorted[i] === end + 1) {
+        end = sorted[i];
+      } else {
+        if (start === end) {
+          ranges.push(`${start}`);
+        } else {
+          ranges.push(`${start}-${end}`);
+        }
+        start = sorted[i];
+        end = sorted[i];
+      }
+    }
+    if (start === end) {
+      ranges.push(`${start}`);
+    } else {
+      ranges.push(`${start}-${end}`);
+    }
+    return ranges.join(', ');
+  };
+
+  const toggleExpand = (id: number) => {
+    if (expandedIds.includes(id)) {
+      setExpandedIds(expandedIds.filter(v => v !== id));
+    } else {
+      setExpandedIds([...expandedIds, id]);
+    }
+  };
+
+  const getSelectedIndices = (mutationId: number, unitData: any[]) => {
+    if (selectedIndicesMap[mutationId] !== undefined) {
+      return selectedIndicesMap[mutationId];
+    }
+    // Default: all pending
+    return unitData
+      .map((u, i) => ({ u, i }))
+      .filter(item => item.u.status === 'pending')
+      .map(item => item.i);
+  };
+
+  const toggleIndexSelection = (mutationId: number, index: number, unitData: any[]) => {
+    const current = getSelectedIndices(mutationId, unitData);
+    let updated;
+    if (current.includes(index)) {
+      updated = current.filter(i => i !== index);
+    } else {
+      updated = [...current, index];
+    }
+    setSelectedIndicesMap({
+      ...selectedIndicesMap,
+      [mutationId]: updated
+    });
+  };
 
   const handleApprove = (mutationId: number) => {
     setProcessing(true);
@@ -34,6 +100,49 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
     });
   };
 
+  const handleApproveUnit = (mutationId: number, idx: number) => {
+    setProcessing(true);
+    router.post(`/mutations/${mutationId}/approve`, {
+      unit_index: idx,
+      admin_notes: adminNotes
+    }, {
+      onSuccess: () => { setAdminNotes(''); setProcessing(false); },
+      onError: () => setProcessing(false),
+    });
+  };
+
+  const handleRejectUnit = (mutationId: number, idx: number) => {
+    setProcessing(true);
+    router.post(`/mutations/${mutationId}/reject`, {
+      unit_index: idx,
+      admin_notes: adminNotes || 'Ditolak.'
+    }, {
+      onSuccess: () => { setAdminNotes(''); setProcessing(false); },
+      onError: () => setProcessing(false),
+    });
+  };
+
+  const handleApproveBatchIndices = (mutationId: number, indices: number[]) => {
+    setProcessing(true);
+    router.post(`/mutations/${mutationId}/approve`, {
+      unit_indices: indices,
+      admin_notes: adminNotes
+    }, {
+      onSuccess: () => { setAdminNotes(''); setProcessing(false); },
+      onError: () => setProcessing(false),
+    });
+  };
+
+  const handleRejectRemaining = (mutationId: number) => {
+    setProcessing(true);
+    router.post(`/mutations/${mutationId}/reject`, {
+      admin_notes: adminNotes || 'Sisa ditolak.'
+    }, {
+      onSuccess: () => { setAdminNotes(''); setProcessing(false); },
+      onError: () => setProcessing(false),
+    });
+  };
+
   const handleRestore = (unitId: number) => {
     setProcessing(true);
     router.post(`/units/${unitId}/restore`, { reason: 'Dikembalikan dari arsip oleh Admin.' }, {
@@ -42,13 +151,13 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
     });
   };
 
-  const getTypeBadge = (type: string) => {
+  const getTypeBadge = (type: string, isBatch: boolean = false) => {
     const badges: Record<string, { bg: string; icon: any; label: string }> = {
-      'request_add': { bg: 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800/40', icon: Plus, label: 'TAMBAH' },
+      'request_add': { bg: 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800/40', icon: Plus, label: isBatch ? 'TAMBAH MASSAL' : 'TAMBAH' },
       'request_delete': { bg: 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/40', icon: Trash2, label: 'HAPUS' },
-      'approved_add': { bg: 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40', icon: CheckCircle, label: 'TAMBAH ✓' },
+      'approved_add': { bg: 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40', icon: CheckCircle, label: isBatch ? 'TAMBAH MASSAL ✓' : 'TAMBAH ✓' },
       'approved_delete': { bg: 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40', icon: CheckCircle, label: 'HAPUS ✓' },
-      'rejected_add': { bg: 'bg-orange-100 dark:bg-orange-900/20 text-orange-700 dark:text-orange-400 border-orange-200 dark:border-orange-800/40', icon: XCircle, label: 'TAMBAH ✗' },
+      'rejected_add': { bg: 'bg-orange-100 dark:bg-orange-900/20 text-orange-700 dark:text-orange-400 border-orange-200 dark:border-orange-800/40', icon: XCircle, label: isBatch ? 'TAMBAH MASSAL ✗' : 'TAMBAH ✗' },
       'rejected_delete': { bg: 'bg-orange-100 dark:bg-orange-900/20 text-orange-700 dark:text-orange-400 border-orange-200 dark:border-orange-800/40', icon: XCircle, label: 'HAPUS ✗' },
       'restore': { bg: 'bg-purple-100 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 border-purple-200 dark:border-purple-800/40', icon: RotateCcw, label: 'RESTORE' },
     };
@@ -101,51 +210,267 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
               <p className="text-sm text-slate-500 font-mono uppercase">Tidak ada pengajuan yang menunggu persetujuan.</p>
             </div>
           ) : (
-            pendingMutations.map((m: any) => (
-              <div key={m.id} className="glass-panel p-5 border-l-4 border-l-yellow-500 hover:shadow-lg transition-shadow">
-                <div className="flex flex-col lg:flex-row justify-between gap-4">
-                  <div className="flex-1 space-y-2">
-                    <div className="flex flex-wrap items-center gap-2">
-                      {getTypeBadge(m.type)}
-                      <span className="bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800/40 px-2 py-0.5 text-[9px] font-mono font-bold animate-pulse">MENUNGGU</span>
+            pendingMutations.map((m: any) => {
+              const isBatch = m.type === 'request_add' && Array.isArray(m.unit_data);
+              const pendingUnits = isBatch ? m.unit_data.filter((u: any) => u.status === 'pending') : [];
+              const selectedIndices = isBatch ? getSelectedIndices(m.id, m.unit_data) : [];
+
+              return (
+                <div key={m.id} className="glass-panel p-5 border-l-4 border-l-yellow-500 hover:shadow-lg transition-shadow">
+                  <div className="flex flex-col lg:flex-row justify-between gap-4">
+                    <div className="flex-1 space-y-2 w-full">
+                      <div className="flex flex-wrap items-center gap-2">
+                        {getTypeBadge(m.type, isBatch)}
+                        <span className="bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800/40 px-2 py-0.5 text-[9px] font-mono font-bold animate-pulse">MENUNGGU</span>
+                      </div>
+                      
+                      {isBatch ? (
+                        <div>
+                          <p className="text-sm font-bold text-slate-800 dark:text-white uppercase">
+                            PENGAJUAN TAMBAH MASSAL ({m.unit_data.length} UNIT)
+                          </p>
+                          <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400">
+                            Diajukan: {m.created_at} oleh {m.requested_by}
+                          </p>
+                        </div>
+                      ) : (
+                        <div>
+                          <p className="text-sm font-bold text-slate-800 dark:text-white uppercase">
+                            [{m.unit_data?.nomor_seri || '-'}] {m.unit_data?.nama_dart || '-'}
+                          </p>
+                          <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400">
+                            {m.unit_data?.jenis_dart} — {m.unit_data?.asal_satuan} | Diajukan: {m.created_at} oleh {m.requested_by}
+                          </p>
+                        </div>
+                      )}
+
+                      {m.reason && (
+                        <p className="text-xs text-slate-700 dark:text-slate-200 italic bg-slate-50 dark:bg-slate-800/50 p-2 border-l-2 border-cighra-gold">"{m.reason}"</p>
+                      )}
+                      {m.document_path && (
+                        <a href={m.document_path} target="_blank" rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-[10px] font-mono text-cighra-primary dark:text-cighra-gold hover:underline mt-1">
+                          <FileText size={12} /> LIHAT SURAT PENDUKUNG <ExternalLink size={10} />
+                        </a>
+                      )}
+
+                      {isBatch && (
+                        <div className="pt-2">
+                          <button
+                            type="button"
+                            onClick={() => toggleExpand(m.id)}
+                            className="text-xs text-cighra-primary dark:text-cighra-gold font-mono hover:underline font-bold"
+                          >
+                            {expandedIds.includes(m.id) ? 'SEMBUNYIKAN RINCIAN ▲' : `LIHAT RINCIAN UNIT (${pendingUnits.length} pending) ▼`}
+                          </button>
+                        </div>
+                      )}
                     </div>
-                    <p className="text-sm font-bold text-slate-800 dark:text-white uppercase">
-                      [{m.unit_data?.nomor_seri || '-'}] {m.unit_data?.nama_dart || '-'}
-                    </p>
-                    <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400">
-                      {m.unit_data?.jenis_dart} — {m.unit_data?.asal_satuan} | Diajukan: {m.created_at} oleh {m.requested_by}
-                    </p>
-                    {m.reason && (
-                      <p className="text-xs text-slate-700 dark:text-slate-200 italic bg-slate-50 dark:bg-slate-800/50 p-2 border-l-2 border-cighra-gold">"{m.reason}"</p>
-                    )}
-                    {m.document_path && (
-                      <a href={m.document_path} target="_blank" rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-[10px] font-mono text-cighra-primary dark:text-cighra-gold hover:underline mt-1">
-                        <FileText size={12} /> LIHAT SURAT PENDUKUNG <ExternalLink size={10} />
-                      </a>
-                    )}
+
+                    {/* Actions */}
+                    <div className="flex flex-col gap-2 shrink-0 lg:w-56">
+                      <textarea placeholder="Catatan Admin (opsional)..." value={reviewingMutation === m.id ? adminNotes : ''}
+                        onChange={(e) => { setReviewingMutation(m.id); setAdminNotes(e.target.value); }}
+                        onFocus={() => setReviewingMutation(m.id)}
+                        className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-2 py-1.5 text-[10px] font-mono resize-none h-16 focus:border-cighra-gold outline-none text-slate-800 dark:text-white" />
+                      <div className="flex gap-2">
+                        {isBatch ? (
+                          <>
+                            <button onClick={() => handleApprove(m.id)} disabled={processing || pendingUnits.length === 0}
+                              className="flex-1 py-2 bg-green-600 text-white font-tactical text-[10px] tracking-widest hover:bg-green-700 transition-all flex items-center justify-center gap-1 disabled:opacity-50"
+                              title="Setujui seluruh sisa unit yang pending">
+                              <CheckCircle size={12} /> TERIMA SEMUA
+                            </button>
+                            <button onClick={() => handleReject(m.id)} disabled={processing || pendingUnits.length === 0}
+                              className="flex-1 py-2 bg-red-600 text-white font-tactical text-[10px] tracking-widest hover:bg-red-700 transition-all flex items-center justify-center gap-1 disabled:opacity-50"
+                              title="Tolak seluruh sisa unit yang pending">
+                              <XCircle size={12} /> TOLAK SEMUA
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button onClick={() => handleApprove(m.id)} disabled={processing}
+                              className="flex-1 py-2 bg-green-600 text-white font-tactical text-[10px] tracking-widest hover:bg-green-700 transition-all flex items-center justify-center gap-1 disabled:opacity-50">
+                              <CheckCircle size={12} /> SETUJUI
+                            </button>
+                            <button onClick={() => handleReject(m.id)} disabled={processing}
+                              className="flex-1 py-2 bg-red-600 text-white font-tactical text-[10px] tracking-widest hover:bg-red-700 transition-all flex items-center justify-center gap-1 disabled:opacity-50">
+                              <XCircle size={12} /> TOLAK
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Actions */}
-                  <div className="flex flex-col gap-2 shrink-0 lg:w-56">
-                    <textarea placeholder="Catatan Admin (opsional)..." value={reviewingMutation === m.id ? adminNotes : ''}
-                      onChange={(e) => { setReviewingMutation(m.id); setAdminNotes(e.target.value); }}
-                      onFocus={() => setReviewingMutation(m.id)}
-                      className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-2 py-1.5 text-[10px] font-mono resize-none h-16 focus:border-cighra-gold outline-none text-slate-800 dark:text-white" />
-                    <div className="flex gap-2">
-                      <button onClick={() => handleApprove(m.id)} disabled={processing}
-                        className="flex-1 py-2 bg-green-600 text-white font-tactical text-[10px] tracking-widest hover:bg-green-700 transition-all flex items-center justify-center gap-1 disabled:opacity-50">
-                        <CheckCircle size={12} /> SETUJUI
-                      </button>
-                      <button onClick={() => handleReject(m.id)} disabled={processing}
-                        className="flex-1 py-2 bg-red-600 text-white font-tactical text-[10px] tracking-widest hover:bg-red-700 transition-all flex items-center justify-center gap-1 disabled:opacity-50">
-                        <XCircle size={12} /> TOLAK
-                      </button>
+                  {/* Batch Details Expanded Panel */}
+                  {isBatch && expandedIds.includes(m.id) && (
+                    <div className="mt-4 border-t border-slate-200 dark:border-slate-700 pt-4 space-y-4">
+                      {/* Canva Range Action Header */}
+                      <div className="flex flex-wrap items-center gap-3 bg-slate-100 dark:bg-slate-800/40 p-3 rounded-sm">
+                        <span className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400">RANGE PENGESAHAN:</span>
+                        
+                        {/* Canva-style select dropdown */}
+                        <div className="relative inline-block text-left">
+                          <button
+                            type="button"
+                            onClick={() => setOpenDropdownId(openDropdownId === m.id ? null : m.id)}
+                            className="px-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-mono rounded-sm flex items-center gap-2 hover:border-cighra-gold cursor-pointer"
+                          >
+                            <span>Unit {formatRanges(selectedIndices.map(i => i + 1))}</span>
+                            <span className="text-slate-400">▼</span>
+                          </button>
+                          
+                          {openDropdownId === m.id && (
+                            <>
+                              {/* Overlay to close when clicking outside */}
+                              <div className="fixed inset-0 z-[190]" onClick={() => setOpenDropdownId(null)} />
+                              <div className="absolute left-0 mt-1 w-64 bg-slate-950 border border-slate-700 shadow-2xl rounded-sm z-[200] p-3 space-y-3 animate-in fade-in zoom-in-95 duration-100 text-slate-200">
+                                <label className="flex items-center gap-3 p-1.5 rounded-sm text-xs font-mono cursor-pointer hover:bg-slate-800">
+                                  <input
+                                    type="checkbox"
+                                    checked={selectedIndices.length === pendingUnits.length && pendingUnits.length > 0}
+                                    onChange={() => {
+                                      const allPending = m.unit_data
+                                        .map((u: any, i: number) => ({ u, i }))
+                                        .filter((item: any) => item.u.status === 'pending')
+                                        .map((item: any) => item.i);
+                                      if (selectedIndices.length === allPending.length) {
+                                        setSelectedIndicesMap({ ...selectedIndicesMap, [m.id]: [] });
+                                      } else {
+                                        setSelectedIndicesMap({ ...selectedIndicesMap, [m.id]: allPending });
+                                      }
+                                    }}
+                                    className="w-4 h-4 cursor-pointer accent-cighra-gold"
+                                  />
+                                  <span className="font-bold text-cighra-gold">Pilih Semua</span>
+                                </label>
+                                
+                                <div className="border-t border-slate-800 my-1" />
+                                
+                                <div className="max-h-48 overflow-y-auto custom-scrollbar space-y-1">
+                                  {m.unit_data.map((u: any, idx: number) => {
+                                    const isItemPending = u.status === 'pending';
+                                    const isSelected = selectedIndices.includes(idx);
+                                    return (
+                                      <label key={idx} className={`flex items-center gap-3 p-1.5 rounded-sm text-xs font-mono ${isItemPending ? 'cursor-pointer hover:bg-slate-800 text-slate-200' : 'text-slate-500 opacity-60'}`}>
+                                        <input
+                                          type="checkbox"
+                                          checked={isSelected}
+                                          disabled={!isItemPending}
+                                          onChange={() => {
+                                            if (isItemPending) {
+                                              toggleIndexSelection(m.id, idx, m.unit_data);
+                                            }
+                                          }}
+                                          className="w-4 h-4 cursor-pointer accent-cighra-gold"
+                                        />
+                                        <span className="flex-1 truncate">
+                                          Unit {idx + 1}: {u.nomor_seri} {u.status !== 'pending' ? `(${u.status.toUpperCase()})` : ''}
+                                        </span>
+                                      </label>
+                                    );
+                                  })}
+                                </div>
+                                
+                                <button
+                                  type="button"
+                                  onClick={() => setOpenDropdownId(null)}
+                                  className="w-full py-2 bg-cighra-primary dark:bg-cighra-gold text-white dark:text-slate-900 rounded-sm font-tactical font-bold text-xs tracking-widest hover:bg-cighra-primary/95 dark:hover:bg-cighra-gold/95 transition-all text-center uppercase cursor-pointer"
+                                >
+                                  Selesai
+                                </button>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                        
+                        <button
+                          type="button"
+                          disabled={processing || selectedIndices.length === 0}
+                          onClick={() => handleApproveBatchIndices(m.id, selectedIndices)}
+                          className="px-3 py-2 bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white font-tactical text-xs tracking-widest rounded-sm transition-colors cursor-pointer"
+                        >
+                          SETUJUI UNIT TERPILIH
+                        </button>
+                        
+                        <button
+                          type="button"
+                          disabled={processing || pendingUnits.length === 0}
+                          onClick={() => handleRejectRemaining(m.id)}
+                          className="px-3 py-2 bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white font-tactical text-xs tracking-widest rounded-sm transition-colors cursor-pointer"
+                        >
+                          TOLAK SISA UNIT
+                        </button>
+                      </div>
+
+                      {/* Detail Table */}
+                      <div className="overflow-x-auto border border-slate-200 dark:border-slate-700 bg-white dark:bg-cighra-darkcard/50 rounded-sm">
+                        <table className="w-full text-left font-sans text-xs">
+                          <thead className="bg-slate-800 text-slate-100 font-tactical tracking-wider uppercase border-b border-slate-700">
+                            <tr>
+                              <th className="p-3 w-12 text-center">NO</th>
+                              <th className="p-3">NOMOR SERI</th>
+                              <th className="p-3">KETERANGAN DART</th>
+                              <th className="p-3">JENIS</th>
+                              <th className="p-3">ASAL SATUAN</th>
+                              <th className="p-3 text-center">STATUS</th>
+                              <th className="p-3 text-right">AKSI CEPAT</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-200 dark:divide-slate-700/50 text-slate-800 dark:text-slate-200">
+                            {m.unit_data.map((u: any, idx: number) => {
+                              const isItemPending = u.status === 'pending';
+                              return (
+                                <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-800/30">
+                                  <td className="p-3 font-mono text-center">{idx + 1}</td>
+                                  <td className="p-3 font-mono font-bold text-cighra-primary dark:text-cighra-gold">{u.nomor_seri}</td>
+                                  <td className="p-3 uppercase font-bold">{u.nama_dart}</td>
+                                  <td className="p-3 uppercase font-mono text-[10px]">{u.jenis_dart}</td>
+                                  <td className="p-3 uppercase">{u.asal_satuan}</td>
+                                  <td className="p-3 text-center">
+                                    <span className={`px-2 py-0.5 text-[9px] font-mono font-bold border rounded-sm
+                                      ${u.status === 'approved' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40' :
+                                        u.status === 'rejected' ? 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/40' :
+                                        'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800/40 animate-pulse'
+                                      }
+                                    `}>
+                                      {u.status === 'approved' ? 'DISETUJUI' : u.status === 'rejected' ? 'DITOLAK' : 'MENUNGGU'}
+                                    </span>
+                                  </td>
+                                  <td className="p-3 text-right">
+                                    <div className="flex gap-2 justify-end">
+                                      <button
+                                        type="button"
+                                        disabled={processing || !isItemPending}
+                                        onClick={() => handleApproveUnit(m.id, idx)}
+                                        className="px-2 py-1 bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white font-mono text-[10px] rounded-sm transition-colors cursor-pointer"
+                                        title="Setujui unit ini saja"
+                                      >
+                                        Terima
+                                      </button>
+                                      <button
+                                        type="button"
+                                        disabled={processing || !isItemPending}
+                                        onClick={() => handleRejectUnit(m.id, idx)}
+                                        className="px-2 py-1 bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white font-mono text-[10px] rounded-sm transition-colors cursor-pointer"
+                                        title="Tolak unit ini saja"
+                                      >
+                                        Tolak
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       )}
@@ -181,7 +506,7 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                       <td className="p-4 text-slate-500 dark:text-slate-400 font-mono text-[10px]">{u.deleted_at}</td>
                       <td className="p-4 text-right">
                         <button onClick={() => setRestoreModal({ isOpen: true, unit: u })}
-                          className="px-3 py-1.5 bg-purple-600 text-white font-tactical text-[10px] tracking-widest hover:bg-purple-700 transition-all flex items-center gap-1 ml-auto">
+                          className="px-3 py-1.5 bg-purple-600 text-white font-tactical text-[10px] tracking-widest hover:bg-purple-700 transition-all flex items-center gap-1 ml-auto cursor-pointer">
                           <RotateCcw size={12} /> KEMBALIKAN
                         </button>
                       </td>
@@ -206,37 +531,104 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
             historyMutations.filter((m: any) => {
               if (!searchQuery) return true;
               const q = searchQuery.toLowerCase();
+              const isBatch = Array.isArray(m.unit_data);
+              if (isBatch) {
+                return m.unit_data.some((u: any) =>
+                  u.nomor_seri?.toLowerCase().includes(q) || u.nama_dart?.toLowerCase().includes(q)
+                ) || m.requested_by?.toLowerCase().includes(q);
+              }
               return m.unit_data?.nomor_seri?.toLowerCase().includes(q) || m.unit_data?.nama_dart?.toLowerCase().includes(q) || m.requested_by?.toLowerCase().includes(q);
-            }).map((m: any) => (
-              <div key={m.id} className={`glass-panel p-4 border-l-4 ${m.status === 'approved' ? 'border-l-green-500' : 'border-l-red-500'}`}>
-                <div className="flex flex-col md:flex-row justify-between gap-3">
-                  <div className="flex-1 space-y-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      {getTypeBadge(m.type)}
-                      <span className={`px-2 py-0.5 text-[9px] font-mono font-bold border ${m.status === 'approved' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40' : 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/40'}`}>
-                        {m.status === 'approved' ? 'DISETUJUI' : 'DITOLAK'}
-                      </span>
+            }).map((m: any) => {
+              const isBatch = Array.isArray(m.unit_data);
+              return (
+                <div key={m.id} className={`glass-panel p-4 border-l-4 ${m.status === 'approved' ? 'border-l-green-500' : 'border-l-red-500'}`}>
+                  <div className="flex flex-col md:flex-row justify-between gap-3">
+                    <div className="flex-1 space-y-1 w-full">
+                      <div className="flex flex-wrap items-center gap-2">
+                        {getTypeBadge(m.type, isBatch)}
+                        <span className={`px-2 py-0.5 text-[9px] font-mono font-bold border ${m.status === 'approved' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40' : 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/40'}`}>
+                          {m.status === 'approved' ? 'DISETUJUI' : 'DITOLAK'}
+                        </span>
+                      </div>
+                      
+                      {isBatch ? (
+                        <div className="w-full">
+                          <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700/50 pb-2 mb-2">
+                            <p className="text-sm font-bold text-slate-800 dark:text-white uppercase">
+                              PENGAJUAN TAMBAH MASSAL ({m.unit_data.length} UNIT)
+                            </p>
+                            <button
+                              type="button"
+                              onClick={() => toggleExpand(m.id)}
+                              className="text-xs text-cighra-primary dark:text-cighra-gold font-mono hover:underline font-bold cursor-pointer"
+                            >
+                              {expandedIds.includes(m.id) ? 'SEMBUNYIKAN RINCIAN ▲' : 'LIHAT RINCIAN ▼'}
+                            </button>
+                          </div>
+                          
+                          {expandedIds.includes(m.id) && (
+                            <div className="mt-3 overflow-x-auto border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-cighra-darkcard/50 rounded-sm">
+                              <table className="w-full text-left font-sans text-xs">
+                                <thead className="bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-tactical tracking-wider uppercase border-b border-slate-300 dark:border-slate-700">
+                                  <tr>
+                                    <th className="p-2 w-10 text-center">NO</th>
+                                    <th className="p-2">NOMOR SERI</th>
+                                    <th className="p-2">KETERANGAN</th>
+                                    <th className="p-2">JENIS</th>
+                                    <th className="p-2">SATUAN</th>
+                                    <th className="p-2 text-right">STATUS</th>
+                                  </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-200 dark:divide-slate-700/50 text-slate-800 dark:text-slate-300">
+                                  {m.unit_data.map((u: any, uIdx: number) => (
+                                    <tr key={uIdx} className="hover:bg-slate-100 dark:hover:bg-slate-800/30">
+                                      <td className="p-2 font-mono text-center">{uIdx + 1}</td>
+                                      <td className="p-2 font-mono font-bold text-cighra-primary dark:text-cighra-gold">{u.nomor_seri}</td>
+                                      <td className="p-2 uppercase font-bold text-[10px]">{u.nama_dart}</td>
+                                      <td className="p-2 uppercase text-[10px]">{u.jenis_dart}</td>
+                                      <td className="p-2 uppercase text-[10px]">{u.asal_satuan}</td>
+                                      <td className="p-2 text-right">
+                                        <span className={`px-2 py-0.5 text-[9px] font-mono font-bold border rounded-sm
+                                          ${u.status === 'approved' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40' :
+                                            u.status === 'rejected' ? 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/40' :
+                                            'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800/40'
+                                          }
+                                        `}>
+                                          {u.status === 'approved' ? 'DISETUJUI' : u.status === 'rejected' ? 'DITOLAK' : 'MENUNGGU'}
+                                        </span>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <p className="text-sm font-bold text-slate-800 dark:text-white uppercase">[{m.unit_data?.nomor_seri || '-'}] {m.unit_data?.nama_dart || '-'}</p>
+                      )}
+
+                      {m.reason && <p className="text-xs text-slate-600 dark:text-slate-300 italic">"{m.reason}"</p>}
+                      {m.admin_notes && <p className="text-xs text-blue-700 dark:text-blue-400"><strong>Admin:</strong> {m.admin_notes}</p>}
                     </div>
-                    <p className="text-sm font-bold text-slate-800 dark:text-white uppercase">[{m.unit_data?.nomor_seri || '-'}] {m.unit_data?.nama_dart || '-'}</p>
-                    {m.reason && <p className="text-xs text-slate-600 dark:text-slate-300 italic">"{m.reason}"</p>}
-                    {m.admin_notes && <p className="text-xs text-blue-700 dark:text-blue-400"><strong>Admin:</strong> {m.admin_notes}</p>}
-                  </div>
-                  <div className="text-right text-[10px] font-mono text-slate-500 dark:text-slate-400 shrink-0 space-y-0.5">
-                    <p>Diajukan: {m.created_at}</p>
-                    <p>Oleh: {m.requested_by}</p>
-                    {m.approved_by && <p>Diproses: {m.approved_by}</p>}
-                    {m.document_path && (
-                      <a href={m.document_path} target="_blank" rel="noopener noreferrer" className="text-cighra-primary dark:text-cighra-gold hover:underline flex items-center gap-1 justify-end">
-                        <FileText size={10} /> SURAT
-                      </a>
-                    )}
+                    <div className="text-right text-[10px] font-mono text-slate-500 dark:text-slate-400 shrink-0 space-y-0.5">
+                      <p>Diajukan: {m.created_at}</p>
+                      <p>Oleh: {m.requested_by}</p>
+                      {m.approved_by && <p>Diproses: {m.approved_by}</p>}
+                      {m.document_path && (
+                        <a href={m.document_path} target="_blank" rel="noopener noreferrer" className="text-cighra-primary dark:text-cighra-gold hover:underline flex items-center gap-1 justify-end">
+                          <FileText size={10} /> SURAT
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       )}
+
       {/* Restore Confirmation Modal */}
       {restoreModal.isOpen && (
         <div className="fixed inset-0 z-[130] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" onClick={() => setRestoreModal({ isOpen: false, unit: null })}>
@@ -269,7 +661,7 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                 <button
                   onClick={() => handleRestore(restoreModal.unit?.db_id)}
                   disabled={processing}
-                  className="flex-1 py-3 bg-purple-600 text-white font-tactical font-bold tracking-widest hover:bg-purple-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="flex-1 py-3 bg-purple-600 text-white font-tactical font-bold tracking-widest hover:bg-purple-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
                 >
                   <RotateCcw size={14} /> YA, KEMBALIKAN
                 </button>

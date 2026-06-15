@@ -98,6 +98,19 @@ const UnitModal: React.FC<UnitModalProps> = ({
                 placeholder="MISAL: PUSKOMLEKAD"
               />
             </div>
+            {isAddMode && (
+              <div className="col-span-2">
+                <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Surat Pendukung (PDF/PNG/JPG/JPEG) *</label>
+                <input
+                  type="file"
+                  onChange={(e) => setData('document', e.target.files?.[0] || null)}
+                  className={`w-full bg-white dark:bg-cighra-darkcard border ${errors.document ? 'border-red-500' : 'border-gray-400 dark:border-slate-600'} p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none text-slate-800 dark:text-white`}
+                  required
+                  accept=".pdf,.png,.jpg,.jpeg"
+                />
+                {errors.document && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.document}</p>}
+              </div>
+            )}
           </div>
           <div className="pt-4 flex gap-2">
             <button
