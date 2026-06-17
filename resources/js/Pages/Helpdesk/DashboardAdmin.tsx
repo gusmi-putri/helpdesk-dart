@@ -259,7 +259,7 @@ const DashboardAdmin = (props: any) => {
 
   const confirmRejectUser = () => {
     if (userToReject) {
-      router.delete(`/users/${userToReject.db_id}`, {
+      router.post(`/users/${userToReject.db_id}/reject`, {}, {
         onSuccess: () => {
           setIsRejectModalOpen(false);
           setUserToReject(null);
@@ -350,11 +350,8 @@ const DashboardAdmin = (props: any) => {
             {activeMenu === 'USERS' && (
               <UsersTable
                 dbUsers={dbUsers}
-                handleAddUser={handleAddUser}
                 handleToggleUserStatus={handleToggleUserStatus}
                 handleShowDetail={handleShowDetail}
-                handleEditUser={handleEditUser}
-                handleDeleteUser={handleDeleteUser}
               />
             )}
             {activeMenu === 'LOGS' && (
@@ -370,8 +367,6 @@ const DashboardAdmin = (props: any) => {
                 dbUnits={dbUnits}
                 unitSearch={unitSearch}
                 setUnitSearch={setUnitSearch}
-                handleAddUnit={handleAddUnit}
-                onImportBatch={() => setIsAdminBatchModalOpen(true)}
                 unitSortConfig={unitSortConfig}
                 handleUnitSort={(key) => {
                   let direction: 'asc' | 'desc' = 'asc';
@@ -381,7 +376,6 @@ const DashboardAdmin = (props: any) => {
                   setUnitSortConfig({ key, direction });
                 }}
                 handleShowUnitHistory={handleShowUnitHistory}
-                handleEditUnit={handleEditUnit}
               />
             )}
             {activeMenu === 'APPROVAL' && (
