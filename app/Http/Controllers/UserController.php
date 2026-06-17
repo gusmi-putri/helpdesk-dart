@@ -103,11 +103,18 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         $user = User::findOrFail($id);
+        
+        $adminRoleId = \App\Models\Role::where('nama_role', 'Admin')->first()?->id;
+        $currentUser = auth()->user();
+
+        if ($user->role_id === $adminRoleId && $currentUser->role_id !== $adminRoleId) {
+            return redirect()->back()->with('error', 'Akses ditolak: Staf tidak diizinkan menghapus akun Admin.');
+        }
+
         $userName = $user->nama_lengkap;
         $user->delete();
 
-        $admin = auth()->user();
-        \App\Models\SystemLog::log('ALERT', $admin->id, "Menghapus akses personel dari sistem: {$userName}");
+        \App\Models\SystemLog::log('ALERT', $currentUser->id, "Menghapus akses personel dari sistem: {$userName}");
 
         return redirect()->back()->with('message', 'User deleted successfully.');
     }
