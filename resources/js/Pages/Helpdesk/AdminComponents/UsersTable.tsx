@@ -3,11 +3,11 @@ import { Users, Search, Plus, Eye, Edit, Trash2, Power } from 'lucide-react';
 
 interface UsersTableProps {
   dbUsers: any[];
-  handleAddUser: () => void;
-  handleToggleUserStatus: (user: any) => void;
+  handleAddUser?: () => void;
+  handleToggleUserStatus?: (user: any) => void;
   handleShowDetail: (user: any) => void;
-  handleEditUser: (user: any) => void;
-  handleDeleteUser: (user: any) => void;
+  handleEditUser?: (user: any) => void;
+  handleDeleteUser?: (user: any) => void;
 }
 
 const UsersTable: React.FC<UsersTableProps> = ({
@@ -50,12 +50,14 @@ const UsersTable: React.FC<UsersTableProps> = ({
               className="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 pl-9 pr-4 py-2 text-sm font-mono text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:border-cighra-gold transition-colors w-64 uppercase shadow-sm"
             />
           </div>
-          <button
-            onClick={handleAddUser}
-            className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-cighra-primary dark:border-cighra-gold shadow-lg uppercase"
-          >
-            <Plus className="w-4 h-4" /> TAMBAH USER
-          </button>
+          {handleAddUser && (
+            <button
+              onClick={handleAddUser}
+              className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-cighra-primary dark:border-cighra-gold shadow-lg uppercase"
+            >
+              <Plus className="w-4 h-4" /> TAMBAH USER
+            </button>
+          )}
         </div>
       </div>
       <div className="overflow-x-auto">
@@ -103,29 +105,35 @@ const UsersTable: React.FC<UsersTableProps> = ({
                   </div>
                 </td>
                 <td className="p-4 flex gap-2 justify-end">
-                  <button 
-                    onClick={() => handleToggleUserStatus(u)} 
-                    disabled={u.role === 'Admin'}
-                    className={`p-2 transition-all border rounded-sm ${
-                      u.role === 'Admin' 
-                        ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 border-slate-200 dark:border-slate-700 cursor-not-allowed opacity-50' 
-                        : u.status === 'Aktif'
-                          ? 'bg-slate-50 dark:bg-slate-700 text-green-600 dark:text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 border-slate-200 dark:border-slate-600'
-                          : 'bg-slate-50 dark:bg-slate-700 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-600 border-slate-200 dark:border-slate-600'
-                    }`}
-                    title={u.role === 'Admin' ? 'Status Admin tidak dapat diubah' : (u.status === 'Aktif' ? 'Nonaktifkan User' : 'Aktifkan User')}
-                  >
-                    <Power className="w-4 h-4" />
-                  </button>
+                  {handleToggleUserStatus && (
+                    <button 
+                      onClick={() => handleToggleUserStatus(u)} 
+                      disabled={u.role === 'Admin'}
+                      className={`p-2 transition-all border rounded-sm ${
+                        u.role === 'Admin' 
+                          ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 border-slate-200 dark:border-slate-700 cursor-not-allowed opacity-50' 
+                          : u.status === 'Aktif'
+                            ? 'bg-slate-50 dark:bg-slate-700 text-green-600 dark:text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 border-slate-200 dark:border-slate-600'
+                            : 'bg-slate-50 dark:bg-slate-700 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-600 border-slate-200 dark:border-slate-600'
+                      }`}
+                      title={u.role === 'Admin' ? 'Status Admin tidak dapat diubah' : (u.status === 'Aktif' ? 'Nonaktifkan User' : 'Aktifkan User')}
+                    >
+                      <Power className="w-4 h-4" />
+                    </button>
+                  )}
                   <button onClick={() => handleShowDetail(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 text-slate-500 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Detail">
                     <Eye className="w-4 h-4" />
                   </button>
-                  <button onClick={() => handleEditUser(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 text-slate-500 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Edit">
-                    <Edit className="w-4 h-4" />
-                  </button>
-                  <button onClick={() => handleDeleteUser(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-500 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Hapus">
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                  {handleEditUser && (
+                    <button onClick={() => handleEditUser(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 text-slate-500 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Edit">
+                      <Edit className="w-4 h-4" />
+                    </button>
+                  )}
+                  {handleDeleteUser && (
+                    <button onClick={() => handleDeleteUser(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-500 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Hapus">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}

@@ -52,13 +52,13 @@ class UserController extends Controller
             'asal_satuan' => $request->asal_satuan,
             'no_wa' => $request->no_wa,
             'spesialisasi' => $request->spesialisasi,
-            'is_approved' => true, // Manual add by admin is auto-approved
+            'is_approved' => false, // Requires admin approval
         ]);
 
         $admin = auth()->user();
-        \App\Models\SystemLog::log('INFO', $admin->id, "Mendaftarkan personel baru: {$request->nama_lengkap} ({$request->username})");
+        \App\Models\SystemLog::log('INFO', $admin->id, "Mendaftarkan personel baru: {$request->nama_lengkap} ({$request->username}) (Menunggu Persetujuan)");
 
-        return redirect()->back()->with('message', 'Personel baru berhasil didaftarkan ke sistem.');
+        return redirect()->back()->with('message', 'Personel baru berhasil didaftarkan dan sedang menunggu persetujuan Admin.');
     }
 
     /**
@@ -89,12 +89,15 @@ class UserController extends Controller
             $updateData['role_id'] = $request->role_id;
         }
 
-        $user->update($updateData);
+        $user->update([
+            'pending_action' => 'edit',
+            'pending_changes' => $updateData
+        ]);
 
         $admin = auth()->user();
-        \App\Models\SystemLog::log('INFO', $admin->id, "Memperbarui data personel: {$user->nama_lengkap}");
+        \App\Models\SystemLog::log('INFO', $admin->id, "Mengajukan edit data personel: {$user->nama_lengkap}");
 
-        return redirect()->back()->with('message', 'Data personel telah diperbarui.');
+        return redirect()->back()->with('message', 'Pengajuan edit data personel telah dikirim ke Admin untuk disetujui.');
     }
 
     /**
@@ -103,13 +106,14 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         $user = User::findOrFail($id);
-        $userName = $user->nama_lengkap;
-        $user->delete();
+        $user->update([
+            'pending_action' => 'delete'
+        ]);
 
         $admin = auth()->user();
-        \App\Models\SystemLog::log('ALERT', $admin->id, "Menghapus akses personel dari sistem: {$userName}");
+        \App\Models\SystemLog::log('INFO', $admin->id, "Mengajukan penghapusan personel: {$user->nama_lengkap}");
 
-        return redirect()->back()->with('message', 'User deleted successfully.');
+        return redirect()->back()->with('message', 'Pengajuan hapus personel telah dikirim ke Admin untuk disetujui.');
     }
 
     public function toggleStatus(string $id)
@@ -128,11 +132,49 @@ class UserController extends Controller
     public function approve(string $id)
     {
         $user = User::findOrFail($id);
-        $user->update(['is_approved' => true]);
-
         $admin = auth()->user();
-        \App\Models\SystemLog::log('SUCCESS', $admin->id, "Menyetujui pendaftaran personel baru: {$user->nama_lengkap}");
 
-        return redirect()->back()->with('message', 'Personel telah disetujui dan sekarang dapat login.');
+        if ($user->pending_action === 'edit') {
+            $updateData = $user->pending_changes ?? [];
+            $updateData['pending_action'] = null;
+            $updateData['pending_changes'] = null;
+            $user->update($updateData);
+            \App\Models\SystemLog::log('SUCCESS', $admin->id, "Menyetujui perubahan data personel: {$user->nama_lengkap}");
+            $msg = 'Perubahan profil personel telah disetujui.';
+        } elseif ($user->pending_action === 'delete') {
+            $userName = $user->nama_lengkap;
+            $user->delete();
+            \App\Models\SystemLog::log('ALERT', $admin->id, "Menyetujui penghapusan personel: {$userName}");
+            $msg = 'Penghapusan personel telah disetujui.';
+        } else {
+            $user->update(['is_approved' => true]);
+            \App\Models\SystemLog::log('SUCCESS', $admin->id, "Menyetujui pendaftaran personel baru: {$user->nama_lengkap}");
+            $msg = 'Personel telah disetujui dan sekarang dapat login.';
+        }
+
+        return redirect()->back()->with('message', $msg);
+    }
+
+    public function reject(string $id)
+    {
+        $user = User::findOrFail($id);
+        $admin = auth()->user();
+
+        if ($user->pending_action === 'edit' || $user->pending_action === 'delete') {
+            $action = $user->pending_action;
+            $user->update([
+                'pending_action' => null,
+                'pending_changes' => null
+            ]);
+            \App\Models\SystemLog::log('WARN', $admin->id, "Menolak pengajuan {$action} personel: {$user->nama_lengkap}");
+            $msg = "Pengajuan {$action} personel telah ditolak.";
+        } else {
+            $userName = $user->nama_lengkap;
+            $user->delete();
+            \App\Models\SystemLog::log('WARN', $admin->id, "Menolak pendaftaran personel baru: {$userName}");
+            $msg = 'Pendaftaran personel telah ditolak.';
+        }
+
+        return redirect()->back()->with('message', $msg);
     }
 }

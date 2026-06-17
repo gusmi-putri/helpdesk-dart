@@ -411,7 +411,6 @@ const DashboardStaf = (props: any) => {
               <UsersTable
                 dbUsers={dbAllUsers}
                 handleAddUser={handleAddUser}
-                handleToggleUserStatus={handleToggleUserStatus}
                 handleShowDetail={handleShowDetail}
                 handleEditUser={handleEditUser}
                 handleDeleteUser={handleDeleteUser}
