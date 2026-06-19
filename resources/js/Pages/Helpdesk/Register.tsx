@@ -65,7 +65,11 @@ const Register: React.FC = () => {
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
-    post('/register');
+    post('/register', {
+      onError: () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
   };
 
   return (
@@ -140,7 +144,7 @@ const Register: React.FC = () => {
                     <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 group-focus-within:w-full transition-all duration-300" />
                   </div>
                   <div className="flex justify-between items-center px-1">
-                    <span className="text-[9px] text-slate-500 dark:text-slate-300 font-mono italic">Minimal 4 karakter, harus berbeda dari yang lain.</span>
+                    <span className="text-[9px] text-slate-500 dark:text-slate-300 font-mono italic">Minimal 4 karakter</span>
                     {errors.username && <span className="text-[9px] text-cighra-primary dark:text-cighra-gold font-mono uppercase font-bold">{errors.username}</span>}
                   </div>
                 </div>

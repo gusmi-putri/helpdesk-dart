@@ -67,6 +67,7 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
     keterangan_anggaran: '',
     klasifikasi: '',
     file_bukti: [] as File[],
+    tautan_video: '',
   });
 
   // Auto-polling
