@@ -28,7 +28,8 @@ class ReportController extends Controller
             'dokumen_anggaran.*' => 'file|mimes:pdf,doc,docx,jpg,jpeg,png|max:20480',
             'klasifikasi' => 'nullable|in:RINGAN,SEDANG,DARURAT',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:20480',
-            'file_bukti.*' => 'nullable|file|mimes:jpg,jpeg,png,gif,mp4,mov,avi,webm|max:20480',
+            'file_bukti.*' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:20480',
+            'tautan_video' => 'required|url',
         ]);
 
         $fotoPath = null;
@@ -63,6 +64,7 @@ class ReportController extends Controller
             'lokasi_laporan' => $request->user()->asal_satuan,
             'klasifikasi' => $request->klasifikasi ?? strtoupper($request->tingkat_kerusakan),
             'file_bukti' => !empty($filePaths) ? json_encode($filePaths) : $fotoPath,
+            'tautan_video' => $request->tautan_video,
             'jenis_perbaikan' => $request->jenis_perbaikan,
             'dokumen_anggaran' => !empty($dokumenAnggaranPaths) ? json_encode($dokumenAnggaranPaths) : null,
             'keterangan_anggaran' => $request->keterangan_anggaran,
@@ -117,7 +119,7 @@ class ReportController extends Controller
             'catatan' => 'required|string',
             'metode' => 'required|in:Online,Offline',
             'foto_selesai' => 'required|image|mimes:jpeg,png,jpg|max:20480',
-            'video_selesai' => 'nullable|file|mimes:mp4,mov,avi,webm|max:51200',
+            'tautan_video_selesai' => 'required|url',
         ]);
 
         $fotoSelesai = $report->file_bukti_selesai;
@@ -128,18 +130,10 @@ class ReportController extends Controller
             $fotoSelesai = $filename;
         }
 
-        $videoSelesai = $report->file_bukti_selesai_video;
-        if ($request->hasFile('video_selesai')) {
-            $file = $request->file('video_selesai');
-            $filename = 'video_done_' . time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('reports', $filename, 'public');
-            $videoSelesai = $filename;
-        }
-
         $report->catatan_teknisi = $request->catatan;
         $report->metode_perbaikan = $request->metode;
         $report->file_bukti_selesai = $fotoSelesai;
-        $report->file_bukti_selesai_video = $videoSelesai;
+        $report->tautan_video_selesai = $request->tautan_video_selesai;
         $report->tgl_selesai = now();
         $report->status_laporan = 'Selesai'; // transitions immediately to Selesai!
 
