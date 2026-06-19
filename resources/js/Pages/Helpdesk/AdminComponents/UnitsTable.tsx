@@ -6,12 +6,12 @@ interface UnitsTableProps {
   dbUnits: any[];
   unitSearch: string;
   setUnitSearch: (s: string) => void;
-  handleAddUnit: () => void;
-  onImportBatch: () => void;
+  handleAddUnit?: () => void;
+  onImportBatch?: () => void;
   unitSortConfig: { key: string, direction: 'asc' | 'desc' } | null;
   handleUnitSort: (key: string) => void;
   handleShowUnitHistory: (unit: any) => void;
-  handleEditUnit: (unit: any) => void;
+  handleEditUnit?: (unit: any) => void;
 }
 
 const UnitsTable: React.FC<UnitsTableProps> = ({
@@ -93,18 +93,22 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
             <Package className="text-cighra-gold w-6 h-6" /> DATA INVENTARIS UNIT
           </h3>
           <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-            <button
-              onClick={onImportBatch}
-              className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-blue-600 shadow-lg uppercase cursor-pointer"
-            >
-              <Upload className="w-4 h-4" /> IMPORT CSV
-            </button>
-            <button
-              onClick={handleAddUnit}
-              className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-cighra-primary dark:border-cighra-gold shadow-lg uppercase cursor-pointer"
-            >
-              <Plus className="w-4 h-4" /> TAMBAH UNIT
-            </button>
+            {onImportBatch && (
+              <button
+                onClick={onImportBatch}
+                className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-blue-600 shadow-lg uppercase cursor-pointer"
+              >
+                <Upload className="w-4 h-4" /> IMPORT CSV
+              </button>
+            )}
+            {handleAddUnit && (
+              <button
+                onClick={handleAddUnit}
+                className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-cighra-primary dark:border-cighra-gold shadow-lg uppercase cursor-pointer"
+              >
+                <Plus className="w-4 h-4" /> TAMBAH UNIT
+              </button>
+            )}
           </div>
         </div>
 
@@ -205,9 +209,11 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
                       <button onClick={() => handleShowUnitHistory(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 text-slate-500 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Riwayat">
                         <History className="w-4 h-4" />
                       </button>
-                      <button onClick={() => handleEditUnit(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 text-slate-500 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Edit">
-                        <Edit className="w-4 h-4" />
-                      </button>
+                      {handleEditUnit && (
+                        <button onClick={() => handleEditUnit(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 text-slate-500 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Edit">
+                          <Edit className="w-4 h-4" />
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))

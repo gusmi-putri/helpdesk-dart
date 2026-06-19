@@ -45,7 +45,8 @@ const ReportForm: React.FC<ReportFormProps> = ({
     const newErrors: any = {};
     if (!data.jenis_perbaikan) newErrors.jenis_perbaikan = 'Jenis perbaikan wajib dipilih.';
     if (!data.unit_id) newErrors.unit_id = 'Nomor Seri DART wajib dipilih.';
-    if (!data.file_bukti || data.file_bukti.length === 0) newErrors.file_bukti = 'Wajib mengunggah minimal 1 bukti kendala (Foto/Video).';
+    if (!data.file_bukti || data.file_bukti.length === 0) newErrors.file_bukti = 'Wajib mengunggah minimal 1 bukti kendala (Foto).';
+    if (!data.tautan_video || !data.tautan_video.startsWith('http')) newErrors.tautan_video = 'Wajib menyertakan Link G-Drive valid.';
     if (isNonSwadaya && (!data.dokumen_anggaran || data.dokumen_anggaran.length === 0)) newErrors.dokumen_anggaran = 'Dokumen pendukung perintah dan anggaran wajib diunggah.';
     if (isNonSwadaya && !data.keterangan_anggaran?.trim()) newErrors.keterangan_anggaran = 'Keterangan dana anggaran perbaikan wajib diisi.';
     
@@ -286,9 +287,9 @@ const ReportForm: React.FC<ReportFormProps> = ({
         </div>
 
         <div className="glass-panel p-6 border-l-4 border-l-olive bg-white dark:bg-cighra-darkcard/80 shadow-xl border border-slate-200 dark:border-slate-600">
-          <label className="block text-xs font-bold text-slate-500 dark:text-slate-300 mb-2 uppercase tracking-wider">Upload Bukti Kendala <span className="text-cighra-primary dark:text-cighra-gold">*</span></label>
-          <p className="text-xs text-slate-500 dark:text-slate-300 mb-4">Maksimum 5 file (Gambar atau Video). Ukuran maks 20 MB per file.</p>
-          <input type="file" ref={fileInputRef} onChange={handleFileSelect} accept="image/*,video/*" multiple className="hidden" />
+          <label className="block text-xs font-bold text-slate-500 dark:text-slate-300 mb-2 uppercase tracking-wider">Upload Foto Kendala <span className="text-cighra-primary dark:text-cighra-gold">*</span></label>
+          <p className="text-xs text-slate-500 dark:text-slate-300 mb-4">Maksimum 5 file (Hanya Gambar). Ukuran maks 20 MB per file.</p>
+          <input type="file" ref={fileInputRef} onChange={handleFileSelect} accept="image/*" multiple className="hidden" />
           <button type="button" onClick={() => fileInputRef.current?.click()} disabled={data.file_bukti.length >= 5}
             className="flex items-center gap-2 px-5 py-2.5 border-2 border-dashed border-cighra-primary dark:border-cighra-gold/40 text-cighra-primary dark:text-cighra-gold font-semibold text-sm rounded-sm hover:bg-cighra-primary/10 dark:bg-cighra-gold/10 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
             <Upload size={18} /> Unggah File Baru
@@ -309,6 +310,15 @@ const ReportForm: React.FC<ReportFormProps> = ({
             </div>
           )}
           {(errors.file_bukti || localErrors.file_bukti) && <p className="text-[10px] text-red-500 dark:text-cighra-gold mt-3 font-mono font-bold uppercase bg-red-50 dark:bg-cighra-gold/10 p-2 border border-red-200 dark:border-cighra-gold/30 rounded-sm shadow-sm">{errors.file_bukti || localErrors.file_bukti}</p>}
+        </div>
+
+        <div className="glass-panel p-6 border-l-4 border-l-olive bg-white dark:bg-cighra-darkcard/80 shadow-xl border border-slate-200 dark:border-slate-600">
+          <label className="block text-xs font-bold text-slate-500 dark:text-slate-300 mb-2 uppercase tracking-wider">Tautan Video G-Drive <span className="text-cighra-primary dark:text-cighra-gold">*</span></label>
+          <p className="text-xs text-slate-500 dark:text-slate-300 mb-4">Unggah video dokumentasi kerusakan ke Google Drive dan tempel/link tautannya di bawah ini. Pastikan akses tautan bersifat publik (Anyone with the link).</p>
+          <input type="url" value={data.tautan_video || ''} onChange={(e) => { setData('tautan_video', e.target.value); setLocalErrors((prev: any) => ({ ...prev, tautan_video: null })); }} required
+            className={`w-full bg-cighra-light/50 dark:bg-cighra-darkcard/80 border ${errors.tautan_video || localErrors.tautan_video ? 'border-red-500 shadow-[0_0_10px_rgba(239,68,68,0.3)]' : 'border-slate-300 dark:border-slate-600'} px-4 py-3 text-sm text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:border-cighra-gold transition-all rounded-sm`}
+            placeholder="https://drive.google.com/file/d/..." />
+          {(errors.tautan_video || localErrors.tautan_video) && <p className="text-[10px] text-red-500 dark:text-cighra-gold mt-3 font-mono font-bold uppercase">{errors.tautan_video || localErrors.tautan_video}</p>}
         </div>
 
         <div className="glass-panel p-6 border-l-4 border-l-olive bg-white dark:bg-cighra-darkcard/80 shadow-xl border border-slate-200 dark:border-slate-600">
