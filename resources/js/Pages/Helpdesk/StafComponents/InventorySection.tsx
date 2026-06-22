@@ -33,7 +33,16 @@ const InventorySection: React.FC<InventorySectionProps> = ({
   onRequestDeleteBatch,
 }) => {
   const [selectedUnitIds, setSelectedUnitIds] = useState<number[]>([]);
-  const jenisOptions = ['ALL', ...new Set(dbUnits.map((u: any) => u.jenis))];
+  const baseJenisOptions = [
+    'DART STD',
+    'DART STK',
+    'DART Portabel - Swing',
+    'DART Portabel - Pop',
+    'DART Portabel - Flip',
+    'DART Marathon Target',
+    'Moving Target'
+  ];
+  const jenisOptions = ['ALL', ...new Set([...baseJenisOptions, ...dbUnits.map((u: any) => u.jenis)])];
   const satuanOptions = ['ALL', ...new Set(dbUnits.map((u: any) => u.asal_satuan))];
 
   const handleSort = (key: string) => {

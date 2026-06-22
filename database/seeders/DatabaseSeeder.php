@@ -143,7 +143,7 @@ class DatabaseSeeder extends Seeder
             'user_id' => $pelapor->id,
             'tanggal_lapor' => now()->subDays(3),
             'lokasi_laporan' => 'YONIF 315/GARUDA',
-            'klasifikasi' => 'SKE',
+            'klasifikasi' => 'S',
             'tingkat_kerusakan' => 'RINGAN',
             'urgensi' => 'Pemeliharaan Rutin',
             'deskripsi_kerusakan' => 'Laporan uji coba saja, tidak ada kerusakan riil.',

@@ -31,7 +31,16 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
   const [filterJenis, setFilterJenis] = React.useState('ALL');
   const [filterSatuan, setFilterSatuan] = React.useState('ALL');
 
-  const jenisOptions = ['ALL', ...new Set(dbUnits.map((u: any) => u.jenis))];
+  const baseJenisOptions = [
+    'DART STD',
+    'DART STK',
+    'DART Portabel - Swing',
+    'DART Portabel - Pop',
+    'DART Portabel - Flip',
+    'DART Marathon Target',
+    'Moving Target'
+  ];
+  const jenisOptions = ['ALL', ...new Set([...baseJenisOptions, ...dbUnits.map((u: any) => u.jenis)])];
   const satuanOptions = ['ALL', ...new Set(dbUnits.map((u: any) => u.asal_satuan))];
 
   // Read flash data from Inertia
@@ -57,7 +66,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
 
   const filteredUnits = dbUnits.filter((u: any) => {
     const matchesSearch = u.nomor_seri.toLowerCase().includes(unitSearch.toLowerCase()) ||
-                          u.asal_satuan.toLowerCase().includes(unitSearch.toLowerCase());
+      u.asal_satuan.toLowerCase().includes(unitSearch.toLowerCase());
     const matchesJenis = filterJenis === 'ALL' || u.jenis === filterJenis;
     const matchesSatuan = filterSatuan === 'ALL' || u.asal_satuan === filterSatuan;
     return matchesSearch && matchesJenis && matchesSatuan;
@@ -198,7 +207,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
                         ${u.status_unit === 'Beroperasi' ? 'bg-camogreen/10 text-camogreen border-camogreen/30' :
                           u.status_unit === 'Rusak' ? 'bg-cighra-primary/10 dark:bg-cighra-gold/10 text-cighra-primary dark:text-cighra-gold border-cighra-primary dark:border-cighra-gold/30' :
                             u.status_unit === 'Perbaikan' ? 'bg-blue-900/10 text-blue-500 border-blue-800/30' :
-                            'bg-slate-900/10 text-slate-500 border-slate-800/30'}
+                              'bg-slate-900/10 text-slate-500 border-slate-800/30'}
                       `}>
                         {u.status_unit === 'Perbaikan' ? 'Dalam Perbaikan' : u.status_unit}
                       </span>
