@@ -33,6 +33,8 @@ class UserController extends Controller
     public function store(StoreUserRequest $request)
     {
         DB::transaction(function () use ($request) {
+            $isAdmin = auth()->user()->role->nama_role === 'Admin';
+
             User::create([
                 'username' => $request->username,
                 'password' => bcrypt($request->password),
@@ -42,12 +44,20 @@ class UserController extends Controller
                 'asal_satuan' => $request->asal_satuan,
                 'no_wa' => $request->no_wa,
                 'spesialisasi' => $request->spesialisasi,
-                'is_approved' => false, // Requires admin approval
+                'is_approved' => $isAdmin, // Admin bypasses approval
             ]);
 
-            $admin = auth()->user();
-            \App\Models\SystemLog::log('INFO', $admin->id, "Mendaftarkan personel baru: {$request->nama_lengkap} ({$request->username}) (Menunggu Persetujuan)");
+            $currentUser = auth()->user();
+            if ($isAdmin) {
+                \App\Models\SystemLog::log('SUCCESS', $currentUser->id, "Menambahkan personel baru secara langsung: {$request->nama_lengkap} ({$request->username})");
+            } else {
+                \App\Models\SystemLog::log('INFO', $currentUser->id, "Mendaftarkan personel baru: {$request->nama_lengkap} ({$request->username}) (Menunggu Persetujuan)");
+            }
         });
+
+        if (auth()->user()->role->nama_role === 'Admin') {
+            return redirect()->back()->with('message', 'Personel baru berhasil ditambahkan.');
+        }
 
         return redirect()->back()->with('message', 'Personel baru berhasil didaftarkan dan sedang menunggu persetujuan Admin.');
     }
@@ -66,16 +76,26 @@ class UserController extends Controller
             $updateData['role_id'] = $request->role_id;
         }
 
-        DB::transaction(function () use ($user, $updateData) {
-            $user->update([
-                'pending_action' => 'edit',
-                'pending_changes' => $updateData
-            ]);
+        $isAdmin = auth()->user()->role->nama_role === 'Admin';
 
-            $admin = auth()->user();
-            \App\Models\SystemLog::log('INFO', $admin->id, "Mengajukan edit data personel: {$user->nama_lengkap}");
+        DB::transaction(function () use ($user, $updateData, $isAdmin) {
+            $currentUser = auth()->user();
+
+            if ($isAdmin) {
+                $user->update($updateData);
+                \App\Models\SystemLog::log('SUCCESS', $currentUser->id, "Mengubah data personel secara langsung: {$user->nama_lengkap}");
+            } else {
+                $user->update([
+                    'pending_action' => 'edit',
+                    'pending_changes' => $updateData
+                ]);
+                \App\Models\SystemLog::log('INFO', $currentUser->id, "Mengajukan edit data personel: {$user->nama_lengkap}");
+            }
         });
 
+        if ($isAdmin) {
+            return redirect()->back()->with('message', 'Data personel berhasil diubah.');
+        }
         return redirect()->back()->with('message', 'Pengajuan edit data personel telah dikirim ke Admin untuk disetujui.');
     }
 
@@ -92,13 +112,22 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'Akses ditolak: Staf tidak diizinkan menghapus akun Admin.');
         }
 
-        DB::transaction(function () use ($user, $currentUser) {
-            $user->update([
-                'pending_action' => 'delete'
-            ]);
-            \App\Models\SystemLog::log('INFO', $currentUser->id, "Mengajukan penghapusan personel: {$user->nama_lengkap}");
+        DB::transaction(function () use ($user, $currentUser, $adminRoleId) {
+            if ($currentUser->role_id === $adminRoleId) {
+                $userName = $user->nama_lengkap;
+                $user->delete();
+                \App\Models\SystemLog::log('ALERT', $currentUser->id, "Menghapus personel secara langsung: {$userName}");
+            } else {
+                $user->update([
+                    'pending_action' => 'delete'
+                ]);
+                \App\Models\SystemLog::log('INFO', $currentUser->id, "Mengajukan penghapusan personel: {$user->nama_lengkap}");
+            }
         });
 
+        if ($currentUser->role_id === $adminRoleId) {
+            return redirect()->back()->with('message', 'Personel berhasil dihapus.');
+        }
         return redirect()->back()->with('message', 'Pengajuan hapus personel telah dikirim ke Admin untuk disetujui.');
     }
 
