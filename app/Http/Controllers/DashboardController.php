@@ -114,12 +114,15 @@ class DashboardController extends Controller
 
         $archivedUnits = UnitResource::collection(Unit::onlyTrashed()->get());
 
+        $satuans = \App\Models\Satuan::all();
+
         return Inertia::render('Helpdesk/DashboardAdmin', [
             'dbCases' => $cases,
             'dbUsers' => $users,
             'dbLogs' => $logs,
             'dbRoles' => $roles,
             'dbUnits' => $units,
+            'dbSatuans' => $satuans,
             'dbFeedbacks' => $feedbacks,
             'dbMutations' => $mutations,
             'dbArchivedUnits' => $archivedUnits,

@@ -189,6 +189,7 @@ class UnitController extends Controller
                         $idx = (int)$unitIndex;
                         if (isset($unitData[$idx]) && $unitData[$idx]['status'] === 'pending') {
                             $u = $unitData[$idx];
+                            \App\Models\Satuan::firstOrCreate(['nama_satuan' => strtoupper($u['asal_satuan'])]);
                             $unit = Unit::create([
                                 'nomor_seri' => $u['nomor_seri'],
                                 'jenis' => $u['jenis'],
@@ -423,6 +424,8 @@ class UnitController extends Controller
                     $status_unit = 'Beroperasi';
                 }
 
+                \App\Models\Satuan::firstOrCreate(['nama_satuan' => strtoupper($asal_satuan)]);
+
                 $unit = Unit::create([
                     'nomor_seri' => $nomor_seri,
                     'jenis' => $jenis,
@@ -457,6 +460,8 @@ class UnitController extends Controller
 
             SystemLog::log('INFO', auth()->id(), "Import massal DART: {$imported} berhasil ditambahkan, {$skipped} duplikat dilewati.");
         });
+
+        fclose($handle);
 
         return redirect()->back()->with('import_result', json_encode([
             'success' => true,

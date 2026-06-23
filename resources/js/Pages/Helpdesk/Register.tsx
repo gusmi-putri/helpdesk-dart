@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm, Link } from '@inertiajs/react';
-import { Eye, EyeOff, UserPlus, ShieldCheck, ArrowLeft, User, Mail, Lock, IdCard, MapPin, Phone, Info } from 'lucide-react';
+import { Combobox, ComboboxInput, ComboboxOptions, ComboboxOption, ComboboxButton } from '@headlessui/react';
+import { Eye, EyeOff, UserPlus, ShieldCheck, ArrowLeft, User, Mail, Lock, IdCard, MapPin, Phone, Info, ChevronDown } from 'lucide-react';
+import axios from 'axios';
 
 interface RegisterData {
   username: string;
@@ -25,6 +27,19 @@ const Register: React.FC = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [waWarning, setWaWarning] = useState('');
+  
+  const [satuans, setSatuans] = useState<any[]>([]);
+  const [satuanQuery, setSatuanQuery] = useState('');
+
+  useEffect(() => {
+    axios.get('/api/satuans').then(res => setSatuans(res.data)).catch(console.error);
+  }, []);
+
+  const filteredSatuans = satuanQuery === ''
+    ? satuans
+    : satuans.filter((satuan) =>
+        satuan.nama_satuan.toLowerCase().includes(satuanQuery.toLowerCase())
+      );
 
   // Strict numeric input handler
   const handleNumericInput = (field: keyof RegisterData, value: string) => {
@@ -259,14 +274,50 @@ const Register: React.FC = () => {
                     <MapPin className="w-3 h-3" /> Asal Satuan Kerja
                   </label>
                   <div className="group relative">
-                    <input
-                      type="text"
-                      value={data.asal_satuan}
-                      onChange={(e) => handleUppercaseInput('asal_satuan', e.target.value)}
-                      className={`w-full bg-soft-sand/30 dark:bg-cighra-dark/50 border ${errors.asal_satuan ? 'border-cighra-primary dark:border-cighra-gold' : 'border-cighra-primary dark:border-cighra-gold/40 dark:border-cighra-primary dark:border-cighra-gold/60'} group-hover:border-camogreen focus:border-camogreen text-slate-800 dark:text-white px-4 py-3 focus:outline-none transition-all font-mono text-sm rounded-sm`}
-                      placeholder="CONTOH: SATUAN KERJA A"
-                      required
-                    />
+                    <Combobox value={data.asal_satuan} onChange={(val: string) => setData('asal_satuan', val)}>
+                      <div className="relative">
+                        <ComboboxInput
+                          className={`w-full bg-soft-sand/30 dark:bg-cighra-dark/50 border ${errors.asal_satuan ? 'border-cighra-primary dark:border-cighra-gold' : 'border-cighra-primary dark:border-cighra-gold/40 dark:border-cighra-primary dark:border-cighra-gold/60'} group-hover:border-camogreen focus:border-camogreen text-slate-800 dark:text-white px-4 py-3 pr-10 focus:outline-none transition-all font-mono text-sm rounded-sm`}
+                          placeholder="PILIH ATAU KETIK SATUAN BARU..."
+                          displayValue={(item: string) => item}
+                          onChange={(event) => {
+                            setSatuanQuery(event.target.value);
+                            setData('asal_satuan', event.target.value.toUpperCase());
+                          }}
+                          required
+                        />
+                        <ComboboxButton className="absolute inset-y-0 right-0 flex items-center pr-2">
+                          <ChevronDown className="h-4 w-4 text-slate-400" aria-hidden="true" />
+                        </ComboboxButton>
+                      </div>
+                      <ComboboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-sm bg-white dark:bg-slate-800 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm font-mono border border-slate-200 dark:border-slate-700">
+                        {filteredSatuans.length === 0 && satuanQuery !== '' ? (
+                          <div className="relative cursor-default select-none py-2 px-4 text-slate-700 dark:text-slate-300">
+                            Tekan Enter untuk menambah "{satuanQuery.toUpperCase()}"
+                          </div>
+                        ) : (
+                          filteredSatuans.map((satuan) => (
+                            <ComboboxOption
+                              key={satuan.id}
+                              value={satuan.nama_satuan}
+                              className="group relative cursor-default select-none py-2 pl-3 pr-9 text-slate-900 dark:text-slate-100 data-focus:bg-cighra-primary data-focus:text-white dark:data-focus:bg-cighra-gold dark:data-focus:text-slate-900 cursor-pointer"
+                            >
+                              <span className="block truncate font-normal group-data-selected:font-semibold">
+                                {satuan.nama_satuan}
+                              </span>
+                            </ComboboxOption>
+                          ))
+                        )}
+                        {satuanQuery !== '' && !filteredSatuans.some(s => s.nama_satuan.toLowerCase() === satuanQuery.toLowerCase()) && (
+                           <ComboboxOption
+                             value={satuanQuery.toUpperCase()}
+                             className="group relative cursor-default select-none py-2 pl-3 pr-9 text-cighra-primary font-bold dark:text-cighra-gold data-focus:bg-cighra-primary data-focus:text-white dark:data-focus:bg-cighra-gold dark:data-focus:text-slate-900 cursor-pointer border-t border-slate-100 dark:border-slate-700 mt-1"
+                           >
+                             + Tambahkan Satuan "{satuanQuery.toUpperCase()}"
+                           </ComboboxOption>
+                        )}
+                      </ComboboxOptions>
+                    </Combobox>
                   </div>
                   {errors.asal_satuan && <p className="text-[9px] text-cighra-primary dark:text-cighra-gold font-mono uppercase italic">{errors.asal_satuan}</p>}
                 </div>
