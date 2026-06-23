@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Menu, X, ShieldAlert, Sun, Moon } from 'lucide-react';
+import { Menu, X, Sun, Moon } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { router, usePage } from '@inertiajs/react';
 import { useStore } from '../store/useStore';
