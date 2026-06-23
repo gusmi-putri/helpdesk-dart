@@ -12,6 +12,7 @@ interface UnitsTableProps {
   handleUnitSort: (key: string) => void;
   handleShowUnitHistory: (unit: any) => void;
   handleEditUnit?: (unit: any) => void;
+  handleDeleteUnit?: (unit: any) => void;
 }
 
 const UnitsTable: React.FC<UnitsTableProps> = ({
@@ -23,7 +24,8 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
   unitSortConfig,
   handleUnitSort,
   handleShowUnitHistory,
-  handleEditUnit
+  handleEditUnit,
+  handleDeleteUnit
 }) => {
   const [importResult, setImportResult] = React.useState<any>(null);
 
@@ -221,6 +223,11 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
                       {handleEditUnit && (
                         <button onClick={() => handleEditUnit(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 text-slate-500 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Edit">
                           <Edit className="w-4 h-4" />
+                        </button>
+                      )}
+                      {handleDeleteUnit && (
+                        <button onClick={() => handleDeleteUnit(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-500 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Hapus">
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       )}
                     </td>

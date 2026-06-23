@@ -191,11 +191,14 @@ class DashboardController extends Controller
             ];
         });
 
+        $satuans = \App\Models\Satuan::all();
+
         return Inertia::render('Helpdesk/DashboardStaf', [
             'dbCases' => $cases,
             'dbUsers' => $technicians,
             'dbAllUsers' => $allUsers,
             'dbUnits' => $units,
+            'dbSatuans' => $satuans,
             'dbMutations' => $mutations,
             'dbRoles' => $roles,
         ]);

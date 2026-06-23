@@ -9,16 +9,18 @@ import UnitsTable from './AdminComponents/UnitsTable';
 import AdminUnitBatchModal from './AdminComponents/AdminUnitBatchModal';
 import LogsTable from './AdminComponents/LogsTable';
 import ReportsSection from './AdminComponents/ReportsSection';
-import ApprovalTable from './AdminComponents/ApprovalTable';
+import ApprovalCenter from './AdminComponents/ApprovalCenter';
 import FeedbackTable from './AdminComponents/FeedbackTable';
 import MonitoringMap from './AdminComponents/MonitoringMap';
-import MutationApproval from './AdminComponents/MutationApproval';
 import UserDetailModal from './AdminComponents/UserDetailModal';
 import UserDeleteModal from './AdminComponents/UserDeleteModal';
 import UserEditModal from './AdminComponents/UserEditModal';
 import UnitModal from './AdminComponents/UnitModal';
 import UnitDeleteModal from './AdminComponents/UnitDeleteModal';
 import UnitHistoryModal from './AdminComponents/UnitHistoryModal';
+import SatuansTable from './AdminComponents/SatuansTable';
+import SatuanModal from './AdminComponents/SatuanModal';
+import SatuanDeleteModal from './AdminComponents/SatuanDeleteModal';
 import RecapModal from './AdminComponents/RecapModal';
 import RejectConfirmModal from './AdminComponents/RejectConfirmModal';
 import LogoutConfirmModal from '@/Components/LogoutConfirmModal';
@@ -26,7 +28,7 @@ import { useStore } from '@/store/useStore';
 import { router, useForm, usePage, Link } from '@inertiajs/react';
 
 type SubMenuReport = 'KERUSAKAN' | 'PERBAIKAN';
-type MenuTab = 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SETTINGS' | 'APPROVAL' | 'FEEDBACK' | 'MUTATIONS';
+type MenuTab = 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER' | 'FEEDBACK';
 
 const DashboardAdmin = (props: any) => {
   const { dbCases = [], dbUsers = [], dbLogs = [], dbRoles = [], dbUnits = [], dbSatuans = [], dbFeedbacks = [], dbMutations = [], dbArchivedUnits = [] } = props;
@@ -97,6 +99,18 @@ const DashboardAdmin = (props: any) => {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [userToReject, setUserToReject] = useState<any>(null);
+
+  // Satuan States
+  const [isSatuanModalOpen, setIsSatuanModalOpen] = useState(false);
+  const [isSatuanAddMode, setIsSatuanAddMode] = useState(true);
+  const [editingSatuan, setEditingSatuan] = useState<any>(null);
+  const [isSatuanDeleteModalOpen, setIsSatuanDeleteModalOpen] = useState(false);
+  const [satuanToDelete, setSatuanToDelete] = useState<any>(null);
+  const satuanForm = useForm({
+    nama_satuan: '',
+    latitude: '',
+    longitude: ''
+  });
 
   // Handlers
   const handlePrintCasePDF = (caseData: any) => {
@@ -259,7 +273,7 @@ const DashboardAdmin = (props: any) => {
 
   const confirmRejectUser = () => {
     if (userToReject) {
-      router.post(`/users/${userToReject.db_id}/reject`, {}, {
+      router.post(`/users/${userToReject.db_id}/reject`, { reason: 'Ditolak oleh Admin' }, {
         onSuccess: () => {
           setIsRejectModalOpen(false);
           setUserToReject(null);
@@ -293,6 +307,48 @@ const DashboardAdmin = (props: any) => {
     setIsRecapModalOpen(false);
   };
 
+  // --- Satuan Handlers ---
+  const handleAddSatuan = () => {
+    setIsSatuanAddMode(true);
+    setEditingSatuan(null);
+    satuanForm.clearErrors();
+    satuanForm.reset();
+    setIsSatuanModalOpen(true);
+  };
+
+  const handleEditSatuan = (satuan: any) => {
+    setIsSatuanAddMode(false);
+    setEditingSatuan(satuan);
+    satuanForm.clearErrors();
+    satuanForm.setData({
+      nama_satuan: satuan.nama_satuan,
+      latitude: satuan.latitude || '',
+      longitude: satuan.longitude || ''
+    });
+    setIsSatuanModalOpen(true);
+  };
+
+  const handleDeleteSatuan = (satuan: any) => {
+    setSatuanToDelete(satuan);
+    setIsSatuanDeleteModalOpen(true);
+  };
+
+  const handleSatuanSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isSatuanAddMode) {
+      satuanForm.post('/satuans', {
+        onSuccess: () => {
+          setIsSatuanModalOpen(false);
+          satuanForm.reset();
+        }
+      });
+    } else {
+      satuanForm.put(`/satuans/${editingSatuan.id}`, {
+        onSuccess: () => setIsSatuanModalOpen(false)
+      });
+    }
+  };
+
   // VIEW RENDERERS - MOVED TO AdminComponents/
 
 
@@ -316,9 +372,10 @@ const DashboardAdmin = (props: any) => {
         isMobileMenuOpen={isMobileMenuOpen}
         setIsMobileMenuOpen={setIsMobileMenuOpen}
         activeMenu={activeMenu}
-        handleMenuClick={handleMenuClick}
+        handleMenuClick={setActiveMenu}
         dbUsers={dbUsers}
         dbMutations={dbMutations}
+        dbSatuans={dbSatuans}
         handleLogout={handleLogout}
       />
 
@@ -350,6 +407,9 @@ const DashboardAdmin = (props: any) => {
             {activeMenu === 'USERS' && (
               <UsersTable
                 dbUsers={dbUsers}
+                handleAddUser={handleAddUser}
+                handleEditUser={handleEditUser}
+                handleDeleteUser={handleDeleteUser}
                 handleToggleUserStatus={handleToggleUserStatus}
                 handleShowDetail={handleShowDetail}
               />
@@ -376,17 +436,30 @@ const DashboardAdmin = (props: any) => {
                   setUnitSortConfig({ key, direction });
                 }}
                 handleShowUnitHistory={handleShowUnitHistory}
+                handleAddUnit={handleAddUnit}
+                handleEditUnit={handleEditUnit}
+                handleDeleteUnit={handleDeleteUnit}
               />
             )}
-            {activeMenu === 'APPROVAL' && (
-              <ApprovalTable
+            {activeMenu === 'SATUANS' && (
+              <SatuansTable
+                dbSatuans={dbSatuans}
+                handleAddSatuan={handleAddSatuan}
+                handleEditSatuan={handleEditSatuan}
+                handleDeleteSatuan={handleDeleteSatuan}
+              />
+            )}
+            {activeMenu === 'APPROVAL_CENTER' && (
+              <ApprovalCenter
                 dbUsers={dbUsers}
+                dbMutations={dbMutations}
+                dbSatuans={dbSatuans}
+                dbArchivedUnits={dbArchivedUnits}
                 handleApproveUser={handleApproveUser}
                 handleRejectUser={handleRejectUser}
               />
             )}
             {activeMenu === 'FEEDBACK' && <FeedbackTable dbFeedbacks={dbFeedbacks} />}
-            {activeMenu === 'MUTATIONS' && <MutationApproval dbMutations={dbMutations} dbArchivedUnits={dbArchivedUnits} />}
           </div>
         </div>
       </main>
@@ -469,6 +542,23 @@ const DashboardAdmin = (props: any) => {
         onClose={() => { setIsRejectModalOpen(false); setUserToReject(null); }}
         onConfirm={confirmRejectUser}
         userName={userToReject?.name || ''}
+      />
+
+      <SatuanModal
+        isOpen={isSatuanModalOpen}
+        onClose={() => setIsSatuanModalOpen(false)}
+        onSubmit={handleSatuanSubmit}
+        data={satuanForm.data}
+        setData={satuanForm.setData}
+        errors={satuanForm.errors}
+        processing={satuanForm.processing}
+        isAddMode={isSatuanAddMode}
+      />
+
+      <SatuanDeleteModal
+        isOpen={isSatuanDeleteModalOpen}
+        onClose={() => setIsSatuanDeleteModalOpen(false)}
+        satuan={satuanToDelete}
       />
 
       <LogoutConfirmModal

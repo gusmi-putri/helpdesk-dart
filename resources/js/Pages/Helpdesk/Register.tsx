@@ -274,7 +274,7 @@ const Register: React.FC = () => {
                     <MapPin className="w-3 h-3" /> Asal Satuan Kerja
                   </label>
                   <div className="group relative">
-                    <Combobox value={data.asal_satuan} onChange={(val: string) => setData('asal_satuan', val)}>
+                    <Combobox value={data.asal_satuan} onChange={(val: string | null) => val && setData('asal_satuan', val)}>
                       <div className="relative">
                         <ComboboxInput
                           className={`w-full bg-soft-sand/30 dark:bg-cighra-dark/50 border ${errors.asal_satuan ? 'border-cighra-primary dark:border-cighra-gold' : 'border-cighra-primary dark:border-cighra-gold/40 dark:border-cighra-primary dark:border-cighra-gold/60'} group-hover:border-camogreen focus:border-camogreen text-slate-800 dark:text-white px-4 py-3 pr-10 focus:outline-none transition-all font-mono text-sm rounded-sm`}

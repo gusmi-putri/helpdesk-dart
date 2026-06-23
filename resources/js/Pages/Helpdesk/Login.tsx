@@ -121,6 +121,11 @@ const Login: React.FC = () => {
                 {errors.password}
               </p>
             )}
+            <div className="mt-2 text-right">
+              <Link href="/forgot-password" className="text-[10px] font-mono font-bold text-slate-500 hover:text-cighra-primary dark:text-slate-400 dark:hover:text-cighra-gold uppercase tracking-widest transition-colors">
+                Lupa Kata Sandi?
+              </Link>
+            </div>
           </div>
 
           <button

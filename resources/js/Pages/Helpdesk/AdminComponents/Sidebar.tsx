@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import {
-  Radar, Users, UserCheck, Package,
+  Radar, Users, Package, MapPin, CheckSquare,
   ChevronDown, ChevronRight, Database, MessageSquare,
-  Activity, LogOut, Map as MapIcon, GitPullRequest
+  Activity, LogOut, Map as MapIcon, Layers
 } from 'lucide-react';
 
 interface SidebarProps {
   isMobileMenuOpen: boolean;
   setIsMobileMenuOpen: (open: boolean) => void;
-  activeMenu: 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SETTINGS' | 'APPROVAL' | 'FEEDBACK' | 'MUTATIONS';
-  handleMenuClick: (menu: 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SETTINGS' | 'APPROVAL' | 'FEEDBACK' | 'MUTATIONS') => void;
+  activeMenu: 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER' | 'FEEDBACK';
+  handleMenuClick: (menu: 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER' | 'FEEDBACK') => void;
   dbUsers: any[];
   dbMutations?: any[];
+  dbSatuans?: any[];
   handleLogout: () => void;
 }
 
@@ -22,14 +23,18 @@ const Sidebar: React.FC<SidebarProps> = ({
   handleMenuClick,
   dbUsers,
   dbMutations = [],
+  dbSatuans = [],
   handleLogout
 }) => {
   // Collapsible menu states
-  const [isPersonelExpanded, setIsPersonelExpanded] = useState<boolean>(true);
-  const [isInventarisExpanded, setIsInventarisExpanded] = useState<boolean>(true);
+  const [isDataMasterExpanded, setIsDataMasterExpanded] = useState<boolean>(true);
 
-  const pendingApprovalsCount = dbUsers.filter((u: any) => !u.is_approved).length;
+  const pendingPersonelCount = dbUsers.filter((u: any) => !u.is_approved).length;
   const pendingMutationsCount = dbMutations.filter((m: any) => m.status === 'pending').length;
+  const pendingSatuansCount = dbSatuans.filter((s: any) => s.pending_action !== null).length;
+  const totalPending = pendingPersonelCount + pendingMutationsCount + pendingSatuansCount;
+
+  const isMasterDataActive = activeMenu === 'USERS' || activeMenu === 'UNITS' || activeMenu === 'SATUANS';
 
   return (
     <>
@@ -75,99 +80,64 @@ const Sidebar: React.FC<SidebarProps> = ({
             <Activity size={18} /> ANALISIS DATA
           </button>
 
-          {/* 3. DATA PERSONEL (Collapsible) */}
+          {/* 3. DATA MASTER (Collapsible) */}
           <div>
             <button
               onClick={() => {
-                handleMenuClick('USERS');
-                setIsPersonelExpanded(!isPersonelExpanded);
+                setIsDataMasterExpanded(!isDataMasterExpanded);
               }}
               className={`w-full flex items-center justify-between px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4
-                ${activeMenu === 'USERS' || activeMenu === 'APPROVAL' ? 'bg-cighra-gold/5 text-cighra-gold border-cighra-gold/40' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}
+                ${isMasterDataActive ? 'bg-cighra-gold/5 text-cighra-gold border-cighra-gold/40' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}
               `}
             >
               <div className="flex items-center gap-3">
-                <Users size={18} /> DATA PERSONEL
+                <Layers size={18} /> DATA MASTER
               </div>
               <div className="flex items-center gap-2">
-                {pendingApprovalsCount > 0 && (
-                  <span className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse">
-                    {pendingApprovalsCount}
-                  </span>
-                )}
-                {isPersonelExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                {isDataMasterExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
               </div>
             </button>
 
-            {isPersonelExpanded && (
+            {isDataMasterExpanded && (
               <div className="bg-slate-50 dark:bg-cighra-darkcard/20 py-1 border-l-4 border-cighra-primary dark:border-cighra-gold/20">
                 <button
                   onClick={() => handleMenuClick('USERS')}
-                  className={`w-full text-left pl-[54px] py-2.5 text-xs font-tactical tracking-widest transition-colors ${activeMenu === 'USERS' ? 'text-cighra-primary dark:text-cighra-gold font-bold' : 'text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
+                  className={`w-full text-left pl-[54px] py-2.5 flex items-center gap-2 text-xs font-tactical tracking-widest transition-colors ${activeMenu === 'USERS' ? 'text-cighra-primary dark:text-cighra-gold font-bold' : 'text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
                 >
-                  » DAFTAR PERSONEL
+                  <Users size={14} /> » PERSONEL
                 </button>
-                <button
-                  onClick={() => handleMenuClick('APPROVAL')}
-                  className={`w-full text-left flex items-center justify-between pl-[54px] pr-4 py-2.5 text-xs font-tactical tracking-widest transition-colors ${activeMenu === 'APPROVAL' ? 'text-cighra-primary dark:text-cighra-gold font-bold' : 'text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
-                >
-                  <span className="truncate mr-2">» PERSETUJUAN BARU</span>
-                  {pendingApprovalsCount > 0 && (
-                    <span className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
-                      {pendingApprovalsCount}
-                    </span>
-                  )}
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* 4. DATA INVENTARIS (Collapsible) */}
-          <div>
-            <button
-              onClick={() => {
-                handleMenuClick('UNITS');
-                setIsInventarisExpanded(!isInventarisExpanded);
-              }}
-              className={`w-full flex items-center justify-between px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4
-                ${activeMenu === 'UNITS' || activeMenu === 'MUTATIONS' ? 'bg-cighra-gold/5 text-cighra-gold border-cighra-gold/40' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}
-              `}
-            >
-              <div className="flex items-center gap-3">
-                <Package size={18} /> DATA INVENTARIS
-              </div>
-              <div className="flex items-center gap-2">
-                {pendingMutationsCount > 0 && (
-                  <span className="bg-orange-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse">
-                    {pendingMutationsCount}
-                  </span>
-                )}
-                {isInventarisExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-              </div>
-            </button>
-
-            {isInventarisExpanded && (
-              <div className="bg-slate-50 dark:bg-cighra-darkcard/20 py-1 border-l-4 border-cighra-primary dark:border-cighra-gold/20">
                 <button
                   onClick={() => handleMenuClick('UNITS')}
-                  className={`w-full text-left pl-[54px] py-2.5 text-xs font-tactical tracking-widest transition-colors ${activeMenu === 'UNITS' ? 'text-cighra-primary dark:text-cighra-gold font-bold' : 'text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
+                  className={`w-full text-left pl-[54px] py-2.5 flex items-center gap-2 text-xs font-tactical tracking-widest transition-colors ${activeMenu === 'UNITS' ? 'text-cighra-primary dark:text-cighra-gold font-bold' : 'text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
                 >
-                  » DAFTAR INVENTARIS
+                  <Package size={14} /> » INVENTARIS
                 </button>
                 <button
-                  onClick={() => handleMenuClick('MUTATIONS')}
-                  className={`w-full text-left flex items-center justify-between pl-[54px] pr-4 py-2.5 text-xs font-tactical tracking-widest transition-colors ${activeMenu === 'MUTATIONS' ? 'text-cighra-primary dark:text-cighra-gold font-bold' : 'text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
+                  onClick={() => handleMenuClick('SATUANS')}
+                  className={`w-full text-left pl-[54px] py-2.5 flex items-center gap-2 text-xs font-tactical tracking-widest transition-colors ${activeMenu === 'SATUANS' ? 'text-cighra-primary dark:text-cighra-gold font-bold' : 'text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
                 >
-                  <span className="truncate mr-2">» MUTASI INVENTARIS</span>
-                  {pendingMutationsCount > 0 && (
-                    <span className="bg-orange-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
-                      {pendingMutationsCount}
-                    </span>
-                  )}
+                  <MapPin size={14} /> » SATUAN KERJA
                 </button>
               </div>
             )}
           </div>
+
+          {/* 4. PUSAT PERSETUJUAN */}
+          <button
+            onClick={() => handleMenuClick('APPROVAL_CENTER')}
+            className={`w-full flex items-center justify-between px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4
+              ${activeMenu === 'APPROVAL_CENTER' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}
+            `}
+          >
+            <div className="flex items-center gap-3">
+              <CheckSquare size={18} /> PUSAT PERSETUJUAN
+            </div>
+            {totalPending > 0 && (
+              <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse shadow-md">
+                {totalPending}
+              </span>
+            )}
+          </button>
 
           {/* 5. DATA LAPORAN */}
           <button
