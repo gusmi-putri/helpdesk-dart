@@ -19,15 +19,24 @@ L.Marker.prototype.options.icon = DefaultIcon;
 interface MonitoringMapProps {
     dbUnits: any[];
     dbCases: any[];
+    dbSatuans?: any[];
 }
 
-import { getCoordinatesForSatuan, INDONESIA_BOUNDS } from './MapCoordinates';
+import { INDONESIA_BOUNDS } from './MapCoordinates';
+import { router } from '@inertiajs/react';
 
-const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases }) => {
+const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatuans = [] }) => {
     const [mapCenter] = useState<[number, number]>([-2.5489, 118.0149]); // Center of Indonesia
     const [zoom] = useState(5);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedGroup, setSelectedGroup] = useState<any>(null);
+
+    // Filter pending satuans
+    const pendingSatuans = dbSatuans.filter(s => s.latitude === null || s.longitude === null);
+    const [showPendingModal, setShowPendingModal] = useState(false);
+    const [pendingSatuanEdit, setPendingSatuanEdit] = useState<any>(null);
+    const [latInput, setLatInput] = useState('');
+    const [lngInput, setLngInput] = useState('');
 
     // Filter units based on search
     const filteredUnits = dbUnits.filter(unit => 
@@ -39,10 +48,17 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases }) => {
     // Group units by Satuan to show on map
     const satuanGroups = filteredUnits.reduce((acc, unit) => {
         const satuan = unit.asal_satuan || 'Umum';
+        
+        // Lookup coordinates from dbSatuans
+        const satuanData = dbSatuans.find(s => s.nama_satuan === satuan);
+        const coords = satuanData && satuanData.latitude !== null && satuanData.longitude !== null 
+            ? [parseFloat(satuanData.latitude), parseFloat(satuanData.longitude)] 
+            : null;
+
         if (!acc[satuan]) {
             acc[satuan] = {
                 name: satuan,
-                coords: getCoordinatesForSatuan(satuan),
+                coords: coords,
                 units: [],
                 hasDamage: false
             };
@@ -57,6 +73,35 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases }) => {
         
         return acc;
     }, {} as Record<string, any>);
+
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+    const handleSaveCoordinate = () => {
+        if (!pendingSatuanEdit) return;
+        router.put(`/api/admin/satuans/${pendingSatuanEdit.id}`, {
+            nama_satuan: pendingSatuanEdit.nama_satuan,
+            latitude: latInput,
+            longitude: lngInput
+        }, {
+            onSuccess: () => {
+                setPendingSatuanEdit(null);
+                setLatInput('');
+                setLngInput('');
+                if (pendingSatuans.length <= 1) setShowPendingModal(false);
+            }
+        });
+    };
+
+    const handleDeleteSatuan = () => {
+        if (!pendingSatuanEdit) return;
+        router.delete(`/api/admin/satuans/${pendingSatuanEdit.id}`, {
+            onSuccess: () => {
+                setShowDeleteConfirm(false);
+                setPendingSatuanEdit(null);
+                if (pendingSatuans.length <= 1) setShowPendingModal(false);
+            }
+        });
+    };
 
     const createCustomIcon = (hasDamage: boolean) => {
         return L.divIcon({
@@ -92,6 +137,25 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases }) => {
                     />
                 </div>
             </div>
+
+            {/* Pending Satuans Alert */}
+            {pendingSatuans.length > 0 && (
+                <div className="bg-orange-500/10 border border-orange-500/50 p-4 rounded-sm flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <AlertTriangle className="text-orange-500" />
+                        <div>
+                            <h3 className="text-sm font-bold font-tactical tracking-widest text-orange-600 dark:text-orange-400">PERHATIAN: ADA {pendingSatuans.length} SATUAN BARU TANPA KOORDINAT</h3>
+                            <p className="text-xs text-slate-600 dark:text-slate-400">Satuan dan unitnya tidak akan muncul di Peta Monitor sebelum koordinat ditambahkan.</p>
+                        </div>
+                    </div>
+                    <button 
+                        onClick={() => setShowPendingModal(true)}
+                        className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 text-xs font-bold font-tactical tracking-widest rounded-sm transition-colors"
+                    >
+                        TETAPKAN KOORDINAT
+                    </button>
+                </div>
+            )}
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                 {/* Legenda & Status List */}
@@ -160,8 +224,8 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases }) => {
                                     {Object.values(satuanGroups).map((group: any) => (
                                         <div 
                                             key={group.name} 
-                                            onClick={() => setSelectedGroup(group)}
-                                            className={`p-3 border rounded-sm transition-all cursor-pointer hover:shadow-md ${group.hasDamage ? 'bg-orange-500/5 border-orange-500/30 hover:border-orange-500/60' : 'bg-slate-50 dark:bg-cighra-dark/30 border-slate-200 dark:border-slate-700 hover:border-cighra-gold/50'}`}
+                                            onClick={() => group.coords && setSelectedGroup(group)}
+                                            className={`p-3 border rounded-sm transition-all ${group.coords ? 'cursor-pointer hover:shadow-md' : 'opacity-50 cursor-not-allowed bg-slate-100 dark:bg-cighra-dark/60 border-slate-300 dark:border-slate-600 border-dashed'} ${group.hasDamage && group.coords ? 'bg-orange-500/5 border-orange-500/30 hover:border-orange-500/60' : (group.coords ? 'bg-slate-50 dark:bg-cighra-dark/30 border-slate-200 dark:border-slate-700 hover:border-cighra-gold/50' : '')}`}
                                         >
                                             <div className="flex justify-between items-start mb-1">
                                                 <span className="text-xs font-bold font-tactical tracking-wider truncate max-w-[120px] uppercase">{group.name}</span>
@@ -169,8 +233,8 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases }) => {
                                             </div>
                                             <div className="flex justify-between items-center">
                                                 <span className="text-[10px] text-slate-500 uppercase">{group.units.length} Unit</span>
-                                                <span className={`text-[10px] font-bold ${group.hasDamage ? 'text-orange-500' : 'text-green-500'}`}>
-                                                    {group.hasDamage ? 'PERLU ATENSI' : 'NORMAL'}
+                                                <span className={`text-[10px] font-bold ${!group.coords ? 'text-slate-400' : (group.hasDamage ? 'text-orange-500' : 'text-green-500')}`}>
+                                                    {!group.coords ? 'TANPA KOORDINAT' : (group.hasDamage ? 'PERLU ATENSI' : 'NORMAL')}
                                                 </span>
                                             </div>
                                         </div>
@@ -207,21 +271,127 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases }) => {
                         <ZoomControl position="bottomright" />
 
                         {Object.values(satuanGroups).map((group: any) => (
-                            <Marker 
-                                key={group.name} 
-                                position={group.coords} 
-                                icon={createCustomIcon(group.hasDamage)}
-                                eventHandlers={{
-                                    click: () => {
-                                        setSelectedGroup(group);
-                                    }
-                                }}
-                            >
-                            </Marker>
+                            group.coords && (
+                                <Marker 
+                                    key={group.name} 
+                                    position={group.coords} 
+                                    icon={createCustomIcon(group.hasDamage)}
+                                    eventHandlers={{
+                                        click: () => {
+                                            setSelectedGroup(group);
+                                        }
+                                    }}
+                                >
+                                </Marker>
+                            )
                         ))}
                     </MapContainer>
                 </div>
             </div>
+
+            {/* Pending Satuans Modal */}
+            {showPendingModal && (
+                <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+                    <div className="bg-cighra-light dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full max-w-2xl shadow-xl animate-in zoom-in-95 duration-200">
+                        <div className="p-4 border-b border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 flex justify-between items-center">
+                            <h3 className="font-tactical font-bold text-cighra-primary dark:text-cighra-gold">PENGATURAN KOORDINAT SATUAN BARU</h3>
+                            <button onClick={() => { setShowPendingModal(false); setPendingSatuanEdit(null); }} className="text-slate-500 hover:text-red-500">✕</button>
+                        </div>
+                        <div className="p-6 flex flex-col md:flex-row gap-6">
+                            <div className="flex-1 border-r border-slate-200 dark:border-slate-700 pr-6">
+                                <h4 className="text-xs font-bold uppercase mb-4 opacity-70">DAFTAR SATUAN BARU:</h4>
+                                <div className="space-y-2 max-h-[300px] overflow-y-auto custom-scrollbar">
+                                    {pendingSatuans.map(s => (
+                                        <div 
+                                            key={s.id} 
+                                            onClick={() => { setPendingSatuanEdit(s); setLatInput(''); setLngInput(''); }}
+                                            className={`p-3 border rounded-sm cursor-pointer transition-colors ${pendingSatuanEdit?.id === s.id ? 'bg-cighra-primary/10 border-cighra-primary dark:border-cighra-gold' : 'hover:bg-slate-100 dark:hover:bg-slate-800 border-slate-200 dark:border-slate-700'}`}
+                                        >
+                                            <div className="font-bold text-sm tracking-wider">{s.nama_satuan}</div>
+                                        </div>
+                                    ))}
+                                    {pendingSatuans.length === 0 && <p className="text-sm italic opacity-50">Semua satuan sudah memiliki koordinat.</p>}
+                                </div>
+                            </div>
+                            <div className="flex-1">
+                                {pendingSatuanEdit ? (
+                                    <div className="space-y-4">
+                                        <div className="flex justify-between items-center border-b border-cighra-primary/30 pb-2 mb-2">
+                                            <h4 className="text-sm font-bold text-cighra-primary dark:text-cighra-gold truncate uppercase">Edit Data Satuan</h4>
+                                            <button 
+                                                onClick={() => setShowDeleteConfirm(true)}
+                                                className="text-[10px] text-red-500 hover:underline font-mono"
+                                            >
+                                                HAPUS SATUAN
+                                            </button>
+                                        </div>
+
+                                        {showDeleteConfirm ? (
+                                            <div className="bg-red-500/10 border border-red-500/50 p-4 rounded-sm animate-in zoom-in-95 duration-200">
+                                                <p className="text-xs text-red-600 dark:text-red-400 font-bold mb-3 uppercase tracking-tighter">
+                                                    ANDA YAKIN INGIN MENGHAPUS SATUAN "{pendingSatuanEdit.nama_satuan}"? 
+                                                    <span className="block font-normal mt-1 opacity-70 italic text-[10px]">Tindakan ini tidak dapat dibatalkan.</span>
+                                                </p>
+                                                <div className="flex gap-2">
+                                                    <button 
+                                                        onClick={handleDeleteSatuan}
+                                                        className="flex-1 bg-red-600 text-white py-2 text-[10px] font-bold font-tactical tracking-widest uppercase hover:bg-red-700"
+                                                    >
+                                                        IYA, HAPUS SEKARANG
+                                                    </button>
+                                                    <button 
+                                                        onClick={() => setShowDeleteConfirm(false)}
+                                                        className="px-4 py-2 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold"
+                                                    >
+                                                        BATAL
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <div>
+                                                    <label className="block text-[10px] font-mono font-bold mb-1">NAMA SATUAN (Huruf Kapital)</label>
+                                                    <input 
+                                                        type="text" 
+                                                        value={pendingSatuanEdit.nama_satuan} 
+                                                        onChange={e => setPendingSatuanEdit({...pendingSatuanEdit, nama_satuan: e.target.value.toUpperCase()})} 
+                                                        className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm font-mono focus:border-cighra-primary uppercase" 
+                                                    />
+                                                </div>
+
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div>
+                                                        <label className="block text-[10px] font-mono font-bold mb-1">LATITUDE</label>
+                                                        <input type="number" step="0.000001" value={latInput} onChange={e => setLatInput(e.target.value)} placeholder="-6.2..." className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm font-mono" />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-[10px] font-mono font-bold mb-1">LONGITUDE</label>
+                                                        <input type="number" step="0.000001" value={lngInput} onChange={e => setLngInput(e.target.value)} placeholder="106.8..." className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm font-mono" />
+                                                    </div>
+                                                </div>
+
+                                                <div className="pt-4 flex flex-col gap-2">
+                                                    <button 
+                                                        onClick={handleSaveCoordinate}
+                                                        className="w-full py-3 bg-cighra-primary dark:bg-cighra-gold text-white dark:text-slate-900 font-tactical tracking-widest text-xs shadow-lg hover:brightness-110 active:scale-[0.98] transition-all"
+                                                    >
+                                                        SIMPAN & VERIFIKASI SEKARANG
+                                                    </button>
+                                                    <p className="text-[9px] text-center opacity-50 font-mono">Menyimpan akan membuat satuan ini muncul di pilihan pendaftaran.</p>
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center justify-center h-full text-sm font-mono opacity-50 italic text-center p-4">
+                                        Pilih satuan di samping untuk mulai mengatur koordinat.
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

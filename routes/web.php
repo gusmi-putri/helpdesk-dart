@@ -23,11 +23,17 @@ Route::get('/register', [RegisterController::class, 'index'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+// Satuan API (Guest can access for registration) - Added Throttling for security
+Route::get('/api/satuans', [\App\Http\Controllers\SatuanController::class, 'index'])->middleware('throttle:30,1');
+Route::post('/api/satuans', [\App\Http\Controllers\SatuanController::class, 'store'])->middleware('throttle:5,1');
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin', [DashboardController::class, 'admin'])->middleware('role:Admin');
     Route::get('/pelapor', [DashboardController::class, 'pelapor'])->middleware('role:Pelapor');
     Route::get('/staf', [DashboardController::class, 'staf'])->middleware('role:Staf');
     Route::get('/teknisi', [DashboardController::class, 'teknisi'])->middleware('role:Teknisi');
+
+    Route::put('/api/admin/satuans/{satuan}', [\App\Http\Controllers\SatuanController::class, 'update'])->middleware('role:Admin');
+    Route::delete('/api/admin/satuans/{satuan}', [\App\Http\Controllers\SatuanController::class, 'destroy'])->middleware('role:Admin');
 
     // Users: Staf manages (CRUD), Admin views/approves
     Route::resource('users', \App\Http\Controllers\UserController::class)->only(['index', 'show'])->middleware('role:Admin,Staf');

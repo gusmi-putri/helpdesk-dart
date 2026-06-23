@@ -8,7 +8,6 @@ interface CompletionFormProps {
   processing: boolean;
   handleSubmit: (e: React.FormEvent) => void;
   imagePreview: string | null;
-  imagePreview: string | null;
   setImagePreview: (src: string | null) => void;
 }
 

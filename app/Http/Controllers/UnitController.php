@@ -166,6 +166,7 @@ class UnitController extends Controller
                         $idx = (int)$idx;
                         if (isset($unitData[$idx]) && $unitData[$idx]['status'] === 'pending') {
                             $u = $unitData[$idx];
+                            \App\Models\Satuan::firstOrCreate(['nama_satuan' => strtoupper($u['asal_satuan'])]);
                             $unit = Unit::create([
                                 'nomor_seri' => $u['nomor_seri'],
                                 'jenis' => $u['jenis'],
@@ -421,6 +422,8 @@ class UnitController extends Controller
             if (!in_array($status_unit, $validStatus)) {
                 $status_unit = 'Beroperasi';
             }
+
+            \App\Models\Satuan::firstOrCreate(['nama_satuan' => strtoupper($asal_satuan)]);
 
             $unit = Unit::create([
                 'nomor_seri' => $nomor_seri,

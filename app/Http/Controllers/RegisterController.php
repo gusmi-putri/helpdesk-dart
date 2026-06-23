@@ -40,6 +40,9 @@ class RegisterController extends Controller
             'no_wa.regex' => 'Nomor WhatsApp harus diawali 62. Contoh: 6281234567890.',
         ]);
 
+        $satuanName = strtoupper($request->asal_satuan);
+        \App\Models\Satuan::firstOrCreate(['nama_satuan' => $satuanName]);
+
         User::create([
             'username' => $request->username,
             'email' => $request->email,
