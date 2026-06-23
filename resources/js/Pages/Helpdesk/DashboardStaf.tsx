@@ -26,11 +26,14 @@ import UsersTable from './AdminComponents/UsersTable';
 import UserDetailModal from './AdminComponents/UserDetailModal';
 import UserDeleteModal from './AdminComponents/UserDeleteModal';
 import UserEditModal from './AdminComponents/UserEditModal';
+import SatuansTable from './AdminComponents/SatuansTable';
+import SatuanModal from './AdminComponents/SatuanModal';
+import SatuanDeleteModal from './AdminComponents/SatuanDeleteModal';
 
-type MenuTab = 'MASUK' | 'SELESAI' | 'INVENTARIS' | 'MUTASI' | 'PERSONEL';
+type MenuTab = 'MASUK' | 'SELESAI' | 'INVENTARIS' | 'MUTASI' | 'PERSONEL' | 'SATUANS';
 
 const DashboardStaf = (props: any) => {
-  const { dbCases = [], dbUsers = [], dbUnits = [], dbMutations = [], dbAllUsers = [], dbRoles = [] } = props;
+  const { dbCases = [], dbUsers = [], dbUnits = [], dbMutations = [], dbAllUsers = [], dbRoles = [], dbSatuans = [] } = props;
   const [activeMenu, setActiveMenu] = useState<MenuTab>('MASUK');
   const [assigningReportId, setAssigningReportId] = useState<number | null>(null);
   const [rejectingReportId, setRejectingReportId] = useState<number | null>(null);
@@ -61,6 +64,18 @@ const DashboardStaf = (props: any) => {
   const [isAddBatchModalOpen, setIsAddBatchModalOpen] = useState(false);
   const [isDeleteBatchModalOpen, setIsDeleteBatchModalOpen] = useState(false);
   const [selectedUnitsForDelete, setSelectedUnitsForDelete] = useState<any[]>([]);
+
+  // Satuan States
+  const [isSatuanModalOpen, setIsSatuanModalOpen] = useState(false);
+  const [isSatuanAddMode, setIsSatuanAddMode] = useState(true);
+  const [editingSatuan, setEditingSatuan] = useState<any>(null);
+  const [isSatuanDeleteModalOpen, setIsSatuanDeleteModalOpen] = useState(false);
+  const [satuanToDelete, setSatuanToDelete] = useState<any>(null);
+  const satuanForm = useForm({
+    nama_satuan: '',
+    latitude: '',
+    longitude: ''
+  });
 
   // Personel States
   const [isUserDetailModalOpen, setIsUserDetailModalOpen] = useState(false);
@@ -234,6 +249,52 @@ const DashboardStaf = (props: any) => {
         addNotification('Gagal mengirim pengajuan penghapusan massal.', 'error');
       }
     });
+  };
+
+  // === Satuan Handlers ===
+  const handleAddSatuan = () => {
+    setIsSatuanAddMode(true);
+    setEditingSatuan(null);
+    satuanForm.clearErrors();
+    satuanForm.reset();
+    setIsSatuanModalOpen(true);
+  };
+
+  const handleEditSatuan = (satuan: any) => {
+    setIsSatuanAddMode(false);
+    setEditingSatuan(satuan);
+    satuanForm.clearErrors();
+    satuanForm.setData({
+      nama_satuan: satuan.nama_satuan,
+      latitude: satuan.latitude || '',
+      longitude: satuan.longitude || ''
+    });
+    setIsSatuanModalOpen(true);
+  };
+
+  const handleDeleteSatuan = (satuan: any) => {
+    setSatuanToDelete(satuan);
+    setIsSatuanDeleteModalOpen(true);
+  };
+
+  const handleSatuanSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isSatuanAddMode) {
+      satuanForm.post('/satuans', {
+        onSuccess: () => {
+          setIsSatuanModalOpen(false);
+          satuanForm.reset();
+          addNotification('Pengajuan penambahan Satuan Kerja dikirim.');
+        }
+      });
+    } else {
+      satuanForm.put(`/satuans/${editingSatuan.id}`, {
+        onSuccess: () => {
+          setIsSatuanModalOpen(false);
+          addNotification('Pengajuan perubahan Satuan Kerja dikirim.');
+        }
+      });
+    }
   };
 
   // === Personel Handlers ===
@@ -416,6 +477,15 @@ const DashboardStaf = (props: any) => {
                 handleDeleteUser={handleDeleteUser}
               />
             )}
+
+            {activeMenu === 'SATUANS' && (
+              <SatuansTable
+                dbSatuans={dbSatuans}
+                handleAddSatuan={handleAddSatuan}
+                handleEditSatuan={handleEditSatuan}
+                handleDeleteSatuan={handleDeleteSatuan}
+              />
+            )}
           </div>
         </div>
       </main>
@@ -521,6 +591,23 @@ const DashboardStaf = (props: any) => {
         processing={userForm.processing}
         isAddMode={isAddUserMode}
         dbRoles={dbRoles}
+      />
+
+      <SatuanModal
+        isOpen={isSatuanModalOpen}
+        onClose={() => setIsSatuanModalOpen(false)}
+        onSubmit={handleSatuanSubmit}
+        data={satuanForm.data}
+        setData={satuanForm.setData}
+        errors={satuanForm.errors}
+        processing={satuanForm.processing}
+        isAddMode={isSatuanAddMode}
+      />
+
+      <SatuanDeleteModal
+        isOpen={isSatuanDeleteModalOpen}
+        onClose={() => setIsSatuanDeleteModalOpen(false)}
+        satuan={satuanToDelete}
       />
 
     </div>

@@ -165,26 +165,28 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
     const Icon = b.icon;
     return <span className={`${b.bg} border px-2 py-0.5 text-[9px] font-mono font-bold flex items-center gap-1`}><Icon size={10} /> {b.label}</span>;
   };
-
   return (
     <div className="space-y-6 animate-in fade-in duration-700">
-      {/* Header */}
-      <div className="glass-panel border-t-4 border-t-cighra-gold p-4 flex flex-col md:flex-row justify-between items-center gap-4">
-        <div className="flex items-center gap-4">
-          <div className="p-3 bg-cighra-gold/10 text-cighra-gold rounded-sm border border-cighra-gold/20">
-            <GitPullRequest size={24} />
-          </div>
+      {/* Header wrapper for consistency with other tables */}
+      <div className="bg-white dark:bg-cighra-darkcard/70 border border-slate-200 dark:border-slate-600 shadow-xl overflow-hidden animate-in fade-in relative">
+        <div className="absolute top-0 left-0 w-full h-[2px] bg-cighra-primary dark:bg-cighra-gold"></div>
+        
+        {/* Header */}
+        <div className="p-5 border-b border-slate-200 dark:border-slate-600/50 flex flex-col md:flex-row justify-between items-start md:items-center bg-slate-800 gap-4">
           <div>
-            <h2 className="text-xl font-tactical font-bold tracking-widest uppercase text-slate-800 dark:text-white">PERSETUJUAN MUTASI INVENTARIS</h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-mono tracking-tighter uppercase">Kelola pengajuan penambahan & penghapusan unit DART</p>
+            <h3 className="text-white font-tactical font-bold text-lg tracking-widest flex items-center gap-3 uppercase">
+              <GitPullRequest className="text-cighra-gold w-6 h-6" /> PERSETUJUAN INVENTARIS
+            </h3>
+            <p className="text-slate-400 text-xs font-mono mt-1 uppercase">Kelola pengajuan penambahan & penghapusan unit DART</p>
+          </div>
+          <div className="relative w-full md:w-64">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+            <input type="text" placeholder="CARI..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-slate-700 border border-slate-600 rounded-sm py-2 pl-10 pr-4 text-xs font-tactical tracking-widest focus:ring-1 focus:ring-cighra-gold outline-none uppercase text-white placeholder-slate-400" />
           </div>
         </div>
-        <div className="relative w-full md:w-64">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-          <input type="text" placeholder="CARI..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-slate-100 dark:bg-cighra-dark border border-slate-200 dark:border-slate-700 rounded-sm py-2 pl-10 pr-4 text-xs font-tactical tracking-widest focus:ring-1 focus:ring-cighra-gold outline-none uppercase text-slate-800 dark:text-white" />
-        </div>
-      </div>
+
+        <div className="p-4 bg-slate-50 dark:bg-cighra-darkcard/30">
 
       {/* Tabs */}
       <div className="flex gap-2 flex-wrap">
@@ -676,6 +678,8 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
           </div>
         </div>
       )}
+        </div> {/* End inner padding wrapper */}
+      </div> {/* End outer wrapper */}
     </div>
   );
 };

@@ -8,76 +8,47 @@ use App\Models\Unit;
 use App\Models\User;
 use Carbon\Carbon;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
+use App\Http\Requests\StoreReportRequest;
+use App\Services\FileUploadService;
 
 class ReportController extends Controller
 {
-    public function store(Request $request)
+    protected FileUploadService $fileService;
+
+    public function __construct(FileUploadService $fileService)
     {
-        $dokumenAnggaranRules = $request->jenis_perbaikan === 'Non-Swadaya'
-            ? 'required|array|min:1|max:10'
-            : 'nullable|array|max:10';
+        $this->fileService = $fileService;
+    }
 
-        $request->validate([
-            'unit_id' => 'required|exists:units,id',
-            'deskripsi' => 'required|string',
-            'tingkat_kerusakan' => 'required|in:Ringan,Sedang,Parah',
-            'urgensi' => 'required|in:Sangat Mendesak,Bisa Menunggu,Pemeliharaan Rutin',
-            'jenis_perbaikan' => 'required|in:Swadaya,Non-Swadaya',
-            'keterangan_anggaran' => 'required_if:jenis_perbaikan,Non-Swadaya|nullable|string|max:2000',
-            'dokumen_anggaran' => $dokumenAnggaranRules,
-            'dokumen_anggaran.*' => 'file|mimes:pdf,doc,docx,jpg,jpeg,png|max:20480',
-            'klasifikasi' => 'nullable|in:RINGAN,SEDANG,DARURAT',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:20480',
-            'file_bukti.*' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:20480',
-            'tautan_video' => 'required|url',
-        ]);
+    public function store(StoreReportRequest $request)
+    {
+        $fotoPath = $this->fileService->uploadSingleFile($request->file('foto'), 'reports');
+        $filePaths = $this->fileService->uploadMultipleFiles($request->file('file_bukti'), 'bukti', 5);
+        $dokumenAnggaranPaths = $this->fileService->uploadMultipleFiles($request->file('dokumen_anggaran'), 'dokumen-anggaran', 10);
 
-        $fotoPath = null;
-        if ($request->hasFile('foto')) {
-            $file = $request->file('foto');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('reports', $filename, 'public');
-            $fotoPath = $filename;
-        }
+        DB::transaction(function () use ($request, $fotoPath, $filePaths, $dokumenAnggaranPaths) {
+            Report::create([
+                'unit_id' => $request->unit_id,
+                'user_id' => $request->user()->id,
+                'lokasi_laporan' => $request->user()->asal_satuan,
+                'klasifikasi' => $request->klasifikasi ?? strtoupper($request->tingkat_kerusakan),
+                'file_bukti' => !empty($filePaths) ? json_encode($filePaths) : $fotoPath,
+                'tautan_video' => $request->tautan_video,
+                'jenis_perbaikan' => $request->jenis_perbaikan,
+                'dokumen_anggaran' => !empty($dokumenAnggaranPaths) ? json_encode($dokumenAnggaranPaths) : null,
+                'keterangan_anggaran' => $request->keterangan_anggaran,
+                'tanggal_lapor' => now(),
+                'deskripsi_kerusakan' => $request->deskripsi,
+                'tingkat_kerusakan' => $request->tingkat_kerusakan,
+                'urgensi' => $request->urgensi,
+                'status_laporan' => 'Pending'
+            ]);
 
-        // Handle file uploads (max 5 files)
-        $filePaths = [];
-        if ($request->hasFile('file_bukti')) {
-            $files = array_slice($request->file('file_bukti'), 0, 5);
-            foreach ($files as $file) {
-                $path = $file->store('bukti', 'public');
-                $filePaths[] = $path;
-            }
-        }
+            Unit::find($request->unit_id)->syncStatus();
 
-        $dokumenAnggaranPaths = [];
-        if ($request->hasFile('dokumen_anggaran')) {
-            $dokumenFiles = array_slice($request->file('dokumen_anggaran'), 0, 10);
-            foreach ($dokumenFiles as $file) {
-                $dokumenAnggaranPaths[] = $file->store('dokumen-anggaran', 'public');
-            }
-        }
-
-        Report::create([
-            'unit_id' => $request->unit_id,
-            'user_id' => $request->user()->id,
-            'lokasi_laporan' => $request->user()->asal_satuan,
-            'klasifikasi' => $request->klasifikasi ?? strtoupper($request->tingkat_kerusakan),
-            'file_bukti' => !empty($filePaths) ? json_encode($filePaths) : $fotoPath,
-            'tautan_video' => $request->tautan_video,
-            'jenis_perbaikan' => $request->jenis_perbaikan,
-            'dokumen_anggaran' => !empty($dokumenAnggaranPaths) ? json_encode($dokumenAnggaranPaths) : null,
-            'keterangan_anggaran' => $request->keterangan_anggaran,
-            'tanggal_lapor' => now(),
-            'deskripsi_kerusakan' => $request->deskripsi,
-            'tingkat_kerusakan' => $request->tingkat_kerusakan,
-            'urgensi' => $request->urgensi,
-            'status_laporan' => 'Pending'
-        ]);
-
-        Unit::find($request->unit_id)->syncStatus();
-
-        \App\Models\SystemLog::log('WARN', $request->user()->id, "Mengirimkan laporan kerusakan baru di lokasi: {$request->user()->asal_satuan}");
+            \App\Models\SystemLog::log('WARN', $request->user()->id, "Mengirimkan laporan kerusakan baru di lokasi: {$request->user()->asal_satuan}");
+        });
 
         return redirect()->back()->with('message', 'Laporan anda telah berhasil terkirim');
     }
@@ -124,10 +95,7 @@ class ReportController extends Controller
 
         $fotoSelesai = $report->file_bukti_selesai;
         if ($request->hasFile('foto_selesai')) {
-            $file = $request->file('foto_selesai');
-            $filename = 'done_' . time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('reports', $filename, 'public');
-            $fotoSelesai = $filename;
+            $fotoSelesai = $this->fileService->uploadSingleFile($request->file('foto_selesai'), 'reports', 'done_');
         }
 
         $report->catatan_teknisi = $request->catatan;
