@@ -29,7 +29,7 @@ type SubMenuReport = 'KERUSAKAN' | 'PERBAIKAN';
 type MenuTab = 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SETTINGS' | 'APPROVAL' | 'FEEDBACK' | 'MUTATIONS';
 
 const DashboardAdmin = (props: any) => {
-  const { dbCases = [], dbUsers = [], dbLogs = [], dbRoles = [], dbUnits = [], dbFeedbacks = [], dbMutations = [], dbArchivedUnits = [] } = props;
+  const { dbCases = [], dbUsers = [], dbLogs = [], dbRoles = [], dbUnits = [], dbSatuans = [], dbFeedbacks = [], dbMutations = [], dbArchivedUnits = [] } = props;
   const [activeMenu, setActiveMenu] = useState<MenuTab>('ANALYTICS');
   const [activeSubReport, setActiveSubReport] = useState<SubMenuReport>('KERUSAKAN');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
@@ -259,7 +259,7 @@ const DashboardAdmin = (props: any) => {
 
   const confirmRejectUser = () => {
     if (userToReject) {
-      router.delete(`/users/${userToReject.db_id}`, {
+      router.post(`/users/${userToReject.db_id}/reject`, {}, {
         onSuccess: () => {
           setIsRejectModalOpen(false);
           setUserToReject(null);
@@ -335,7 +335,7 @@ const DashboardAdmin = (props: any) => {
         <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar z-10">
           <div className="max-w-[1400px] mx-auto">
             {activeMenu === 'ANALYTICS' && <AnalyticsSection dbCases={dbCases} />}
-            {activeMenu === 'MAP' && <MonitoringMap dbUnits={dbUnits} dbCases={dbCases} />}
+            {activeMenu === 'MAP' && <MonitoringMap dbUnits={dbUnits} dbCases={dbCases} dbSatuans={dbSatuans} />}
             {activeMenu === 'REPORTS' && (
               <ReportsSection
                 dbCases={dbCases}
@@ -350,11 +350,8 @@ const DashboardAdmin = (props: any) => {
             {activeMenu === 'USERS' && (
               <UsersTable
                 dbUsers={dbUsers}
-                handleAddUser={handleAddUser}
                 handleToggleUserStatus={handleToggleUserStatus}
                 handleShowDetail={handleShowDetail}
-                handleEditUser={handleEditUser}
-                handleDeleteUser={handleDeleteUser}
               />
             )}
             {activeMenu === 'LOGS' && (
@@ -370,8 +367,6 @@ const DashboardAdmin = (props: any) => {
                 dbUnits={dbUnits}
                 unitSearch={unitSearch}
                 setUnitSearch={setUnitSearch}
-                handleAddUnit={handleAddUnit}
-                onImportBatch={() => setIsAdminBatchModalOpen(true)}
                 unitSortConfig={unitSortConfig}
                 handleUnitSort={(key) => {
                   let direction: 'asc' | 'desc' = 'asc';
@@ -381,7 +376,6 @@ const DashboardAdmin = (props: any) => {
                   setUnitSortConfig({ key, direction });
                 }}
                 handleShowUnitHistory={handleShowUnitHistory}
-                handleEditUnit={handleEditUnit}
               />
             )}
             {activeMenu === 'APPROVAL' && (

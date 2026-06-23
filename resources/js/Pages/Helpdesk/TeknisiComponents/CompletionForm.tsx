@@ -9,8 +9,6 @@ interface CompletionFormProps {
   handleSubmit: (e: React.FormEvent) => void;
   imagePreview: string | null;
   setImagePreview: (src: string | null) => void;
-  videoPreview: string | null;
-  setVideoPreview: (src: string | null) => void;
 }
 
 const CompletionForm: React.FC<CompletionFormProps> = ({
@@ -20,9 +18,7 @@ const CompletionForm: React.FC<CompletionFormProps> = ({
   processing,
   handleSubmit,
   imagePreview,
-  setImagePreview,
-  videoPreview,
-  setVideoPreview
+  setImagePreview
 }) => {
   return (
     <>
@@ -88,41 +84,21 @@ const CompletionForm: React.FC<CompletionFormProps> = ({
             {errors.foto_selesai && <p className="text-[9px] text-cighra-primary dark:text-cighra-gold mt-1 font-mono uppercase">{errors.foto_selesai}</p>}
           </div>
 
-          {/* Video Upload (Optional) */}
-          <div className={`border-2 border-dashed ${errors.video_selesai ? 'border-red-500 dark:border-red-500 bg-red-50 dark:bg-red-900/10' : 'border-slate-300 dark:border-slate-600 bg-cighra-light dark:bg-cighra-darkcard/10'} p-4 text-center hover:border-blue-500 transition-all group cursor-pointer relative flex flex-col justify-center min-h-[140px]`}>
+          {/* Video Upload (Required Link) */}
+          <div className="flex flex-col justify-center">
+            <label className="block text-slate-600 dark:text-slate-300 text-xs font-mono font-bold mb-2 tracking-widest uppercase">
+              Tautan Video G-Drive (WAJIB) <span className="text-cighra-primary dark:text-cighra-gold">*</span>
+            </label>
             <input
-              type="file"
-              accept="video/*"
-              className="absolute inset-0 opacity-0 cursor-pointer z-10"
-              onChange={(e) => {
-                const file = e.target.files ? e.target.files[0] : null;
-                setData('video_selesai', file);
-                if (file) {
-                  setVideoPreview(file.name);
-                } else {
-                  setVideoPreview(null);
-                }
-              }}
+              type="url"
+              value={data.tautan_video_selesai || ''}
+              onChange={(e) => setData('tautan_video_selesai', e.target.value)}
+              required
+              className={`w-full bg-white dark:bg-cighra-darkcard/80 border ${errors.tautan_video_selesai ? 'border-red-500 shadow-[0_0_10px_rgba(239,68,68,0.3)]' : 'border-slate-300 dark:border-slate-600'} text-slate-800 dark:text-white px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors font-sans text-sm rounded-sm`}
+              placeholder="https://drive.google.com/file/d/..."
             />
-            <div className="flex flex-col items-center justify-center gap-3">
-              {videoPreview ? (
-                <div className="relative w-full max-w-[200px] h-32 border-2 border-dashed border-blue-500 flex flex-col items-center justify-center bg-slate-800/30 p-2">
-                  <span className="text-[10px] text-blue-500 font-bold font-mono block text-center truncate w-full">{videoPreview}</span>
-                  <span className="text-[9px] text-slate-400 font-mono mt-2">VIDEO TERPILIH (OPSIONAL)</span>
-                </div>
-              ) : (
-                <div className="flex flex-col items-center gap-1">
-                  <div className="flex items-center gap-3">
-                    <Activity className="w-5 h-5 text-slate-500 group-hover:text-blue-500 transition-colors" />
-                    <span className="text-xs font-mono text-slate-500 dark:text-slate-300 group-hover:text-blue-500 uppercase font-bold">
-                      VIDEO DOKUMENTASI (OPSIONAL)
-                    </span>
-                  </div>
-                  <span className="text-[9px] font-mono text-slate-500 dark:text-slate-400 uppercase">Klik untuk unggah video hasil perbaikan</span>
-                </div>
-              )}
-            </div>
-            {errors.video_selesai && <p className="text-[9px] text-cighra-primary dark:text-cighra-gold mt-1 font-mono uppercase">{errors.video_selesai}</p>}
+            <p className="text-[9px] font-mono text-slate-500 mt-2">Pastikan video memiliki akses publik 'Anyone with the link'.</p>
+            {errors.tautan_video_selesai && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.tautan_video_selesai}</p>}
           </div>
         </div>
 

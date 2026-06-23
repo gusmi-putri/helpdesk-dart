@@ -42,7 +42,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
     catatan: '',
     metode: '',
     foto_selesai: null as File | null,
-    video_selesai: null as File | null,
+    tautan_video_selesai: '',
   });
 
   // Auto-polling
@@ -189,8 +189,6 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
                       handleSubmit={handleSubmitLaporan}
                       imagePreview={imagePreview}
                       setImagePreview={setImagePreview}
-                      videoPreview={videoPreview}
-                      setVideoPreview={setVideoPreview}
                     />
                   )
                 ) : null}

@@ -23,20 +23,29 @@ Route::get('/register', [RegisterController::class, 'index'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+// Satuan API (Guest can access for registration) - Added Throttling for security
+Route::get('/api/satuans', [\App\Http\Controllers\SatuanController::class, 'index'])->middleware('throttle:30,1');
+Route::post('/api/satuans', [\App\Http\Controllers\SatuanController::class, 'store'])->middleware('throttle:5,1');
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin', [DashboardController::class, 'admin'])->middleware('role:Admin');
     Route::get('/pelapor', [DashboardController::class, 'pelapor'])->middleware('role:Pelapor');
     Route::get('/staf', [DashboardController::class, 'staf'])->middleware('role:Staf');
     Route::get('/teknisi', [DashboardController::class, 'teknisi'])->middleware('role:Teknisi');
 
-    // Users: Admin & Staf can manage
-    Route::resource('users', \App\Http\Controllers\UserController::class)->middleware('role:Admin,Staf');
-    Route::post('/users/{id}/toggle-status', [\App\Http\Controllers\UserController::class, 'toggleStatus'])->middleware('role:Admin,Staf')->name('users.toggle-status');
-    Route::post('/users/{id}/approve', [\App\Http\Controllers\UserController::class, 'approve'])->middleware('role:Admin')->name('users.approve');
+    Route::put('/api/admin/satuans/{satuan}', [\App\Http\Controllers\SatuanController::class, 'update'])->middleware('role:Admin');
+    Route::delete('/api/admin/satuans/{satuan}', [\App\Http\Controllers\SatuanController::class, 'destroy'])->middleware('role:Admin');
 
-    // Units: Admin & Staf can manage
-    Route::post('units/import', [\App\Http\Controllers\UnitController::class, 'import'])->middleware('role:Admin')->name('units.import');
-    Route::resource('units', \App\Http\Controllers\UnitController::class)->middleware('role:Admin,Staf');
+    // Users: Staf manages (CRUD), Admin views/approves
+    Route::resource('users', \App\Http\Controllers\UserController::class)->only(['index', 'show'])->middleware('role:Admin,Staf');
+    Route::resource('users', \App\Http\Controllers\UserController::class)->except(['index', 'show'])->middleware('role:Staf');
+    Route::post('/users/{id}/toggle-status', [\App\Http\Controllers\UserController::class, 'toggleStatus'])->middleware('role:Admin')->name('users.toggle-status');
+    Route::post('/users/{id}/approve', [\App\Http\Controllers\UserController::class, 'approve'])->middleware('role:Admin')->name('users.approve');
+    Route::post('/users/{id}/reject', [\App\Http\Controllers\UserController::class, 'reject'])->middleware('role:Admin')->name('users.reject');
+
+    // Units: Staf manages (CRUD), Admin views/approves mutations
+    Route::post('units/import', [\App\Http\Controllers\UnitController::class, 'import'])->middleware('role:Staf')->name('units.import');
+    Route::resource('units', \App\Http\Controllers\UnitController::class)->only(['index', 'show'])->middleware('role:Admin,Staf');
+    Route::resource('units', \App\Http\Controllers\UnitController::class)->except(['index', 'show'])->middleware('role:Staf');
 
     // Unit Mutations: request delete (Staf), approve/reject (Admin), restore (Admin)
     Route::post('/units/request-add-batch', [\App\Http\Controllers\UnitController::class, 'requestAddBatch'])->middleware('role:Staf')->name('units.request-add-batch');

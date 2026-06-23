@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Info } from 'lucide-react';
 
 interface UserEditModalProps {
   isOpen: boolean;
@@ -23,7 +24,42 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
   isAddMode,
   dbRoles
 }) => {
+  const [waWarning, setWaWarning] = useState('');
+
   if (!isOpen) return null;
+
+  // Strict numeric input handler
+  const handleNumericInput = (field: string, value: string) => {
+    const numericValue = value.replace(/\D/g, '');
+    setData(field, numericValue);
+  };
+
+  // WhatsApp number handler — must start with 62
+  const handleWaInput = (value: string) => {
+    const numericValue = value.replace(/\D/g, '');
+    let finalValue = numericValue;
+    if (numericValue.startsWith('0')) {
+      finalValue = '62' + numericValue.slice(1);
+    }
+    setData('no_wa', finalValue);
+
+    if (finalValue.length === 0) {
+      setWaWarning('');
+    } else if (!finalValue.startsWith('62')) {
+      setWaWarning('Nomor harus diawali dengan 62.');
+    } else if (finalValue.length < 10) {
+      setWaWarning('Nomor terlalu pendek, minimal 10 digit.');
+    } else if (finalValue.length > 15) {
+      setWaWarning('Nomor terlalu panjang, maksimal 15 digit.');
+    } else {
+      setWaWarning('');
+    }
+  };
+
+  // Uppercase handler for asal_satuan
+  const handleUppercaseInput = (field: string, value: string) => {
+    setData(field, value.toUpperCase());
+  };
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
@@ -41,12 +77,14 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
               <input
                 type="text"
                 value={data.nrp_nip}
-                onChange={(e) => setData('nrp_nip', e.target.value)}
+                onChange={(e) => handleNumericInput('nrp_nip', e.target.value)}
+                maxLength={20}
                 className={`w-full bg-white dark:bg-cighra-darkcard border ${errors.nrp_nip ? 'border-red-500' : 'border-gray-400 dark:border-slate-600'} p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none uppercase`}
-                placeholder="MASUKKAN NRP/NIP"
+                placeholder="HANYA ANGKA, 8-20 DIGIT"
                 required
                 minLength={8}
               />
+              <p className="text-[9px] text-slate-400 mt-1 font-mono">Hanya angka, 8-20 digit.</p>
               {errors.nrp_nip && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.nrp_nip}</p>}
             </div>
 
@@ -59,7 +97,10 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
                     value={data.username}
                     onChange={(e) => setData('username', e.target.value)}
                     className={`w-full bg-white dark:bg-cighra-darkcard border ${errors.username ? 'border-red-500' : 'border-gray-400 dark:border-slate-600'} p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none uppercase`}
+                    placeholder="MINIMAL 4 KARAKTER"
                     required
+                    minLength={4}
+                    maxLength={50}
                     autoComplete="off"
                   />
                   {errors.username && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.username}</p>}
@@ -74,7 +115,11 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
                     required={isAddMode}
                     autoComplete="new-password"
                     minLength={8}
+                    placeholder="MIN. 8 KARAKTER"
                   />
+                  <p className="text-[9px] text-slate-400 mt-1 font-mono flex items-center gap-1">
+                    <Info className="w-3 h-3 shrink-0" /> Min. 8 karakter, harus ada huruf dan angka.
+                  </p>
                   {errors.password && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.password}</p>}
                 </div>
               </>
@@ -92,6 +137,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
                 onChange={(e) => setData('nama_lengkap', e.target.value)}
                 className={`w-full bg-white dark:bg-cighra-darkcard border ${errors.nama_lengkap ? 'border-red-500' : 'border-gray-400 dark:border-slate-600'} p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none`}
                 required
+                maxLength={100}
               />
               {errors.nama_lengkap && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.nama_lengkap}</p>}
             </div>
@@ -119,21 +165,34 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
             )}
             <div>
               <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">No. WhatsApp</label>
-              <input
-                type="text"
-                value={data.no_wa}
-                onChange={(e) => setData('no_wa', e.target.value)}
-                className="w-full bg-white dark:bg-cighra-darkcard border border-gray-400 dark:border-slate-600 p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none"
-                placeholder="08..."
-              />
+              <div className="relative">
+                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-slate-400 font-mono text-sm font-bold pointer-events-none">+</span>
+                <input
+                  type="text"
+                  value={data.no_wa}
+                  onChange={(e) => handleWaInput(e.target.value)}
+                  maxLength={15}
+                  className={`w-full bg-white dark:bg-cighra-darkcard border ${errors.no_wa || waWarning ? 'border-yellow-500' : 'border-gray-400 dark:border-slate-600'} pl-6 pr-2 py-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none`}
+                  placeholder="6281234567890"
+                />
+              </div>
+              {waWarning && (
+                <p className="text-[9px] text-yellow-600 dark:text-yellow-400 font-mono font-bold flex items-center gap-1 mt-1">
+                  <Info className="w-3 h-3 shrink-0" /> {waWarning}
+                </p>
+              )}
+              <p className="text-[9px] text-slate-400 mt-1 font-mono">Awali 62, hanya angka, 10-15 digit.</p>
+              {errors.no_wa && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.no_wa}</p>}
             </div>
             <div>
               <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Asal Satuan</label>
               <input
                 type="text"
                 value={data.asal_satuan}
-                onChange={(e) => setData('asal_satuan', e.target.value)}
-                className="w-full bg-white dark:bg-cighra-darkcard border border-gray-400 dark:border-slate-600 p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none"
+                onChange={(e) => handleUppercaseInput('asal_satuan', e.target.value)}
+                className="w-full bg-white dark:bg-cighra-darkcard border border-gray-400 dark:border-slate-600 p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none uppercase"
+                placeholder="CONTOH: SATUAN KERJA A"
+                maxLength={100}
               />
             </div>
             <div>
@@ -147,6 +206,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
                 disabled={dbRoles?.find((r: any) => r.id == data.role_id)?.name !== 'Teknisi'}
                 className={`w-full bg-white dark:bg-cighra-darkcard border border-gray-400 dark:border-slate-600 p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none ${dbRoles?.find((r: any) => r.id == data.role_id)?.name !== 'Teknisi' ? 'opacity-50 cursor-not-allowed' : ''}`}
                 placeholder={dbRoles?.find((r: any) => r.id == data.role_id)?.name !== 'Teknisi' ? 'NON-TEKNISI' : 'MISAL: JARINGAN / HARDWARE'}
+                maxLength={100}
               />
             </div>
           </div>
@@ -169,3 +229,4 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
 };
 
 export default UserEditModal;
+

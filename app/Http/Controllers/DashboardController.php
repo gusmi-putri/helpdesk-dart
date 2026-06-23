@@ -132,7 +132,9 @@ class DashboardController extends Controller
                 'role_id' => $u->role_id,
                 'is_active' => $u->is_active,
                 'status' => !$u->is_approved ? 'Menunggu' : ($u->is_active ? 'Aktif' : 'Nonaktif'),
-                'lastLogin' => 'Baru saja'
+                'lastLogin' => 'Baru saja',
+                'pending_action' => $u->pending_action,
+                'pending_changes' => $u->pending_changes,
             ];
         });
         $logs = SystemLog::with('user')->get()->map(function($l) {
@@ -206,12 +208,15 @@ class DashboardController extends Controller
             ];
         });
 
+        $satuans = \App\Models\Satuan::all();
+
         return Inertia::render('Helpdesk/DashboardAdmin', [
             'dbCases' => $cases,
             'dbUsers' => $users,
             'dbLogs' => $logs,
             'dbRoles' => $roles,
             'dbUnits' => $units,
+            'dbSatuans' => $satuans,
             'dbFeedbacks' => $feedbacks,
             'dbMutations' => $mutations,
             'dbArchivedUnits' => $archivedUnits,
@@ -295,7 +300,9 @@ class DashboardController extends Controller
                 'role_id' => $u->role_id,
                 'is_active' => $u->is_active,
                 'status' => !$u->is_approved ? 'Menunggu' : ($u->is_active ? 'Aktif' : 'Nonaktif'),
-                'lastLogin' => 'Baru saja'
+                'lastLogin' => 'Baru saja',
+                'pending_action' => $u->pending_action,
+                'pending_changes' => $u->pending_changes,
             ];
         });
 
