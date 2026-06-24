@@ -112,6 +112,7 @@ const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
         )}
         {activeTab === 'SATUAN' && (
           <div className="animate-in fade-in relative bg-white dark:bg-cighra-darkcard/50 rounded-md">
+            <div className="overflow-x-auto">
               <table className="w-full text-left font-sans text-sm">
                 <thead className="border-b border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-transparent text-slate-600 dark:text-slate-400 font-tactical tracking-widest text-xs">
                   <tr>
