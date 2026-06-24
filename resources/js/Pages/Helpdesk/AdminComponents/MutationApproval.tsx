@@ -171,40 +171,29 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
   };
   return (
     <div className="space-y-6 animate-in fade-in duration-700">
-      {/* Header wrapper for consistency with other tables */}
-      <div className="bg-white dark:bg-cighra-darkcard/70 border border-slate-200 dark:border-slate-600 shadow-xl overflow-hidden animate-in fade-in relative">
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-cighra-primary dark:bg-cighra-gold"></div>
-        
-        {/* Header */}
-        <div className="p-5 border-b border-slate-200 dark:border-slate-600/50 flex flex-col md:flex-row justify-between items-start md:items-center bg-slate-800 gap-4">
-          <div>
-            <h3 className="text-white font-tactical font-bold text-lg tracking-widest flex items-center gap-3 uppercase">
-              <GitPullRequest className="text-cighra-gold w-6 h-6" /> PERSETUJUAN INVENTARIS
-            </h3>
-            <p className="text-slate-400 text-xs font-mono mt-1 uppercase">Kelola pengajuan penambahan & penghapusan unit DART</p>
-          </div>
-          <div className="relative w-full md:w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-            <input type="text" placeholder="CARI..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-slate-700 border border-slate-600 rounded-sm py-2 pl-10 pr-4 text-xs font-tactical tracking-widest focus:ring-1 focus:ring-cighra-gold outline-none uppercase text-white placeholder-slate-400" />
-          </div>
-        </div>
-
-        <div className="p-4 bg-slate-50 dark:bg-cighra-darkcard/30">
+      <div className="animate-in fade-in relative bg-white dark:bg-cighra-darkcard/50 rounded-md">
+        <div className="p-4">
 
       {/* Tabs */}
-      <div className="flex gap-2 flex-wrap">
-        {[
-          { key: 'pending', label: `PENGAJUAN MASUK (${pendingMutations.length})`, icon: Clock },
-          { key: 'archive', label: `ARSIP UNIT (${dbArchivedUnits.length})`, icon: Archive },
-          { key: 'history', label: `RIWAYAT (${historyMutations.length})`, icon: FileText },
-        ].map((tab) => (
-          <button key={tab.key} onClick={() => setActiveTab(tab.key as any)}
-            className={`px-4 py-2 font-tactical text-xs tracking-widest border transition-all flex items-center gap-2
-              ${activeTab === tab.key ? 'bg-cighra-primary dark:bg-cighra-gold text-white dark:text-slate-900 border-cighra-primary dark:border-cighra-gold' : 'bg-white dark:bg-cighra-darkcard border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:border-cighra-gold'}`}>
-            <tab.icon size={14} /> {tab.label}
-          </button>
-        ))}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+        <div className="flex gap-2 flex-wrap">
+          {[
+            { key: 'pending', label: `PENGAJUAN MASUK (${pendingMutations.length})`, icon: Clock },
+            { key: 'archive', label: `ARSIP UNIT (${dbArchivedUnits.length})`, icon: Archive },
+            { key: 'history', label: `RIWAYAT (${historyMutations.length})`, icon: FileText },
+          ].map((tab) => (
+            <button key={tab.key} onClick={() => setActiveTab(tab.key as any)}
+              className={`px-4 py-2 font-tactical text-xs tracking-widest border transition-all flex items-center gap-2
+                ${activeTab === tab.key ? 'bg-cighra-primary dark:bg-cighra-gold text-white dark:text-slate-900 border-cighra-primary dark:border-cighra-gold' : 'bg-white dark:bg-cighra-darkcard border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:border-cighra-gold'}`}>
+              <tab.icon size={14} /> {tab.label}
+            </button>
+          ))}
+        </div>
+        <div className="relative w-full md:w-64">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+          <input type="text" placeholder="CARI RIWAYAT..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-sm py-2 pl-10 pr-4 text-xs font-tactical tracking-widest focus:ring-1 focus:ring-cighra-gold outline-none uppercase text-slate-800 dark:text-white placeholder-slate-400" />
+        </div>
       </div>
 
       {/* Tab: Pending */}

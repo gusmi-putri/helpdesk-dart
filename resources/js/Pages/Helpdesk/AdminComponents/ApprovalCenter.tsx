@@ -45,20 +45,19 @@ const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
   };
 
   return (
-    <div className="bg-white dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600 shadow-xl overflow-hidden animate-in fade-in relative mt-6">
-      <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-cighra-primary via-cighra-gold to-transparent"></div>
+    <div className="animate-in fade-in relative mt-6 space-y-4">
       
-      <div className="p-5 border-b border-slate-200 dark:border-slate-600 bg-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
-          <h3 className="text-white font-tactical font-bold text-lg tracking-widest flex items-center gap-3 uppercase">
-            <CheckSquare className="text-cighra-gold w-6 h-6" /> PUSAT PERSETUJUAN
+          <h3 className="text-slate-800 dark:text-white font-tactical font-bold text-xl tracking-widest uppercase">
+            PUSAT PERSETUJUAN
           </h3>
-          <p className="text-slate-400 text-xs font-mono mt-1 uppercase">Manajemen Persetujuan Data Master</p>
+          <p className="text-slate-500 dark:text-slate-400 text-xs font-mono mt-1 uppercase">Beranda / Pusat Persetujuan / <span className="text-cighra-primary dark:text-cighra-gold">{activeTab}</span></p>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
+      <div className="flex border-b border-slate-200 dark:border-slate-700">
         <button
           onClick={() => setActiveTab('PERSONEL')}
           className={`flex-1 py-4 px-6 text-sm font-tactical tracking-widest uppercase transition-all border-b-2 flex items-center justify-center gap-2 ${
@@ -69,7 +68,7 @@ const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
         >
           <Users className="w-4 h-4" /> PERSONEL
           {pendingPersonelCount > 0 && (
-            <span className="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full ml-2 animate-pulse">{pendingPersonelCount}</span>
+            <span className="bg-cighra-gold text-slate-900 font-bold text-[10px] px-1.5 py-0.5 rounded-full ml-1">{pendingPersonelCount}</span>
           )}
         </button>
         <button
@@ -82,7 +81,7 @@ const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
         >
           <Package className="w-4 h-4" /> INVENTARIS
           {pendingMutationsCount > 0 && (
-            <span className="bg-orange-500 text-white text-[10px] px-1.5 py-0.5 rounded-full ml-2 animate-pulse">{pendingMutationsCount}</span>
+            <span className="bg-cighra-gold text-slate-900 font-bold text-[10px] px-1.5 py-0.5 rounded-full ml-1">{pendingMutationsCount}</span>
           )}
         </button>
         <button
@@ -95,12 +94,12 @@ const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
         >
           <MapPin className="w-4 h-4" /> SATUAN KERJA
           {pendingSatuansCount > 0 && (
-            <span className="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full ml-2 animate-pulse">{pendingSatuansCount}</span>
+            <span className="bg-cighra-gold text-slate-900 font-bold text-[10px] px-1.5 py-0.5 rounded-full ml-1">{pendingSatuansCount}</span>
           )}
         </button>
       </div>
 
-      <div className="p-4 bg-slate-100 dark:bg-transparent">
+      <div className="pt-2">
         {activeTab === 'PERSONEL' && (
           <ApprovalTable
             dbUsers={dbUsers}
@@ -112,29 +111,17 @@ const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
           <MutationApproval dbMutations={dbMutations} dbArchivedUnits={dbArchivedUnits} />
         )}
         {activeTab === 'SATUAN' && (
-          <div className="bg-white dark:bg-cighra-darkcard/70 border border-slate-200 dark:border-slate-600 shadow-xl overflow-hidden animate-in fade-in relative">
-            <div className="absolute top-0 left-0 w-full h-[2px] bg-cighra-primary dark:bg-cighra-gold"></div>
-            
-            <div className="p-5 border-b border-slate-200 dark:border-slate-600/50 flex justify-between items-center bg-slate-800">
-              <h3 className="text-white font-tactical font-bold text-lg tracking-widest flex items-center gap-3 uppercase">
-                <MapPin className="text-cighra-gold w-6 h-6" /> PERSETUJUAN SATUAN KERJA
-              </h3>
-              <span className="bg-cighra-gold text-slate-900 text-[10px] font-mono font-bold px-3 py-1 tracking-widest uppercase">
-                {pendingSatuans.length} MENUNGGU VERIFIKASI
-              </span>
-            </div>
-
-            <div className="overflow-x-auto">
+          <div className="animate-in fade-in relative bg-white dark:bg-cighra-darkcard/50 rounded-md">
               <table className="w-full text-left font-sans text-sm">
-                <thead className="bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-slate-700">
+                <thead className="border-b border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-transparent text-slate-600 dark:text-slate-400 font-tactical tracking-widest text-xs">
                   <tr>
-                    <th className="p-4">SATUAN KERJA</th>
-                    <th className="p-4">JENIS PENGAJUAN</th>
-                    <th className="p-4">DETAIL PERUBAHAN</th>
-                    <th className="p-4 text-right">AKSI VERIFIKASI</th>
+                    <th className="p-4 uppercase">SATUAN KERJA</th>
+                    <th className="p-4 uppercase">JENIS PENGAJUAN</th>
+                    <th className="p-4 uppercase">DETAIL PERUBAHAN</th>
+                    <th className="p-4 text-right uppercase">AKSI VERIFIKASI</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-300 dark:divide-gray-800 bg-white dark:bg-cighra-dark/30">
+                <tbody className="divide-y divide-gray-300 dark:divide-gray-800 bg-transparent">
                 {pendingSatuans.length === 0 ? (
                   <tr>
                     <td colSpan={4} className="p-20 text-center text-slate-500 italic font-mono uppercase tracking-widest">

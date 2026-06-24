@@ -25,19 +25,10 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
   };
 
   return (
-    <div className="bg-white dark:bg-cighra-darkcard/70 border border-slate-200 dark:border-slate-600 shadow-xl overflow-hidden animate-in fade-in relative">
-      <div className="absolute top-0 left-0 w-full h-[2px] bg-cighra-primary dark:bg-cighra-gold"></div>
-      <div className="p-5 border-b border-slate-200 dark:border-slate-600/50 flex justify-between items-center bg-slate-800">
-        <h3 className="text-white font-tactical font-bold text-lg tracking-widest flex items-center gap-3 uppercase">
-          <UserCheck className="text-cighra-gold w-6 h-6" /> PERSETUJUAN PERSONEL
-        </h3>
-        <span className="bg-cighra-gold text-slate-900 text-[10px] font-mono font-bold px-3 py-1 tracking-widest uppercase">
-          {pendingUsers.length} MENUNGGU VERIFIKASI
-        </span>
-      </div>
+    <div className="animate-in fade-in relative bg-white dark:bg-cighra-darkcard/50 rounded-md">
       <div className="overflow-x-auto">
         <table className="w-full text-left font-sans text-sm">
-          <thead className="bg-slate-800 border-b border-slate-700">
+          <thead className="border-b border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-transparent text-slate-600 dark:text-slate-400 font-tactical tracking-widest text-xs">
             <tr>
               <SortableHeader label="TIPE MUTASI" sortKey="pending_action" currentSort={sortConfig} onSort={handleSort} />
               <SortableHeader label="USERNAME / ROLE" sortKey="username" currentSort={sortConfig} onSort={handleSort} />
@@ -46,7 +37,7 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
               <SortableHeader label="AKSI VERIFIKASI" />
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-300 dark:divide-gray-800 bg-white dark:bg-cighra-dark/30">
+          <tbody className="divide-y divide-gray-300 dark:divide-gray-800 bg-transparent">
             {pendingUsers.length === 0 ? (
               <tr>
                 <td colSpan={5} className="p-20 text-center text-slate-500 italic font-mono uppercase tracking-widest">
