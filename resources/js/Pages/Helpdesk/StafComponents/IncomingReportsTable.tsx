@@ -1,5 +1,7 @@
 import React from 'react';
 import { AlertTriangle, Clock, Activity, ShieldAlert, Eye, XCircle, CheckCircle, Wallet } from 'lucide-react';
+import { useTableSort } from '@/hooks/useTableSort';
+import SortableHeader from '@/Components/Table/SortableHeader';
 
 interface IncomingReportsTableProps {
   reports: any[];
@@ -21,6 +23,8 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
   const pendingCount = reports.filter((r: any) => r.status === 'PENDING').length;
   const activeCount = reports.filter((r: any) => r.status !== 'PENDING').length;
 
+  const { sortedItems: sortedReports, sortConfig, handleSort } = useTableSort(reports, { key: 'caseId', direction: 'desc' });
+
   return (
     <div className="animate-in fade-in space-y-6 mt-6">
       <div className="flex gap-4">
@@ -40,14 +44,14 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
         </div>
         <div className="overflow-x-auto p-2">
           <table className="w-full text-left font-sans">
-            <thead className="bg-slate-800 text-slate-100 border-b border-slate-700 font-tactical tracking-widest text-xs">
+            <thead className="bg-slate-800 border-b border-slate-700">
               <tr>
-                <th className="p-4">ID TIKET</th>
-                <th className="p-4">PELAPOR & WAKTU</th>
-                <th className="p-4">PRIORITAS & JENIS</th>
-                <th className="p-4">STATUS</th>
-                <th className="p-4">KETERANGAN & LOKASI</th>
-                <th className="p-4 text-center">TINDAKAN</th>
+                <SortableHeader label="ID TIKET" sortKey="caseId" currentSort={sortConfig} onSort={handleSort} />
+                <SortableHeader label="PELAPOR & WAKTU" />
+                <SortableHeader label="PRIORITAS & JENIS" />
+                <SortableHeader label="STATUS" sortKey="status" currentSort={sortConfig} onSort={handleSort} />
+                <SortableHeader label="KETERANGAN & LOKASI" />
+                <SortableHeader label="TINDAKAN" />
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-600 bg-white dark:bg-transparent">
@@ -58,10 +62,10 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
                   </td>
                 </tr>
               )}
-              {reports.map((report: any) => {
+              {sortedReports.map((report: any) => {
                 return (
                   <tr key={report.db_id} className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors text-slate-800 dark:text-white">
-                    <td className="p-4">
+                    <td className="p-4 text-center">
                       <button
                         onClick={() => onSelectReport(report.db_id)}
                         className="font-mono font-bold text-sm bg-white dark:bg-cighra-darkcard px-2 py-1 border border-slate-300 dark:border-slate-600 block text-center w-fit hover:border-cighra-primary dark:border-cighra-gold hover:text-cighra-primary dark:text-cighra-gold transition-colors group/tid"
@@ -69,14 +73,14 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
                         {report.caseId}
                       </button>
                     </td>
-                    <td className="p-4">
-                      <div className="font-bold text-sm">{report.kerusakan.pelapor}</div>
-                      <div className="text-slate-500 dark:text-slate-300 text-xs font-mono mt-1 flex items-center gap-1">
+                    <td className="p-4 text-center">
+                      <div className="font-bold text-sm text-slate-800 dark:text-white">{report.kerusakan.pelapor}</div>
+                      <div className="text-slate-500 dark:text-slate-300 text-xs font-mono mt-1 flex items-center justify-center gap-1">
                         <Clock className="w-3 h-3" /> {report.kerusakan.tanggal}
                       </div>
                     </td>
-                    <td className="p-4">
-                      <div className="flex flex-col gap-1.5">
+                    <td className="p-4 text-center">
+                      <div className="flex flex-col items-center gap-1.5">
                         <span className={`text-[9px] font-mono font-bold px-2 py-0.5 w-fit border shadow-sm uppercase ${
                           report.kerusakan.urgensi === 'Sangat Mendesak'
                             ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-500 border-red-200 dark:border-red-800'
@@ -107,7 +111,7 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
                         </span>
                       </div>
                     </td>
-                    <td className="p-4">
+                    <td className="p-4 text-center">
                       {report.status === 'PENDING' && (
                         <span className="bg-red-50 dark:bg-red-900/10 text-red-600 dark:text-red-500 border border-red-200 dark:border-red-800/30 text-[10px] font-bold px-2 py-1 font-mono tracking-widest w-fit flex items-center gap-1 shadow-sm">
                           <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse block"></span> PENDING (VERIFIKASI)
@@ -129,9 +133,9 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
                         </span>
                       )}
                     </td>
-                    <td className="p-4">
-                      <div className="font-bold mb-1">{report.unit?.nomor_seri || report.kerusakan.barangRusak || 'UNIT TIDAK DIKENAL'}</div>
-                      <div className="text-slate-400 dark:text-slate-300 text-[10px] font-mono uppercase">LOK: {report.kerusakan.lokasi}</div>
+                    <td className="p-4 text-center">
+                      <div className="font-bold mb-1 text-slate-800 dark:text-white">{report.unit?.nomor_seri || report.kerusakan.barangRusak || 'UNIT TIDAK DIKENAL'}</div>
+                      <div className="text-slate-500 dark:text-slate-400 text-[10px] font-mono uppercase">LOK: {report.kerusakan.lokasi}</div>
                     </td>
                     <td className="p-4 text-center">
                       <div className="flex flex-col gap-2 max-w-[200px] mx-auto">

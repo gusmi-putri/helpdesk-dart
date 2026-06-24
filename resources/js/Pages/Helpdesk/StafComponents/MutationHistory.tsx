@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { GitPullRequest, Clock, CheckCircle, XCircle, FileText, ExternalLink, Plus, Trash2 } from 'lucide-react';
+import SortableHeader from '@/Components/Table/SortableHeader';
 
 interface MutationHistoryProps {
   dbMutations: any[];
@@ -147,25 +148,25 @@ const MutationHistory: React.FC<MutationHistoryProps> = ({ dbMutations }) => {
                         {expandedIds.includes(m.id) && (
                           <div className="mt-3 overflow-x-auto border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-cighra-darkcard/50 rounded-sm">
                             <table className="w-full text-left font-sans text-xs">
-                              <thead className="bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-tactical tracking-wider uppercase border-b border-slate-300 dark:border-slate-700">
+                              <thead className="bg-slate-800 border-b border-slate-700">
                                 <tr>
-                                  <th className="p-2 w-10">NO</th>
-                                  <th className="p-2">NOMOR SERI</th>
-                                  <th className="p-2">NAMA DART</th>
-                                  <th className="p-2">JENIS</th>
-                                  <th className="p-2">SATUAN</th>
-                                  <th className="p-2 text-right">STATUS</th>
+                                  <SortableHeader label="NO" />
+                                  <SortableHeader label="NOMOR SERI" />
+                                  <SortableHeader label="NAMA DART" />
+                                  <SortableHeader label="JENIS" />
+                                  <SortableHeader label="SATUAN" />
+                                  <SortableHeader label="STATUS" />
                                 </tr>
                               </thead>
                               <tbody className="divide-y divide-slate-200 dark:divide-slate-700/50 text-slate-800 dark:text-slate-300">
                                 {m.unit_data.map((u: any, uIdx: number) => (
                                   <tr key={uIdx} className="hover:bg-slate-100 dark:hover:bg-slate-800/30">
-                                    <td className="p-2 font-mono">{uIdx + 1}</td>
-                                    <td className="p-2 font-mono font-bold text-cighra-primary dark:text-cighra-gold">{u.nomor_seri}</td>
-
-                                    <td className="p-2 uppercase text-[10px]">{u.jenis}</td>
-                                    <td className="p-2 uppercase text-[10px]">{u.asal_satuan}</td>
-                                    <td className="p-2 text-right">
+                                    <td className="p-2 font-mono text-center">{uIdx + 1}</td>
+                                    <td className="p-2 font-mono font-bold text-slate-800 dark:text-white text-center">{u.nomor_seri}</td>
+                                    <td className="p-2 uppercase text-slate-800 dark:text-white text-center text-[10px]">{u.nama_satuan || '-'}</td>
+                                    <td className="p-2 uppercase text-[10px] text-center text-slate-800 dark:text-white">{u.jenis}</td>
+                                    <td className="p-2 uppercase text-[10px] text-center text-slate-800 dark:text-white">{u.asal_satuan}</td>
+                                    <td className="p-2 text-center">
                                       <span className={`px-2 py-0.5 text-[9px] font-mono font-bold border rounded-sm
                                         ${u.status === 'approved' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40' :
                                           u.status === 'rejected' ? 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/40' :
