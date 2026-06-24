@@ -111,12 +111,38 @@ class SatuanSeeder extends Seeder
             ['nama_satuan' => 'YON ARHANUD 10', 'latitude' => -6.2588, 'longitude' => 106.8228],
         ];
 
+        $kodeCounter = 1;
         foreach ($satuans as $s) {
+            // Generate dummy code
+            $kodeSatuan = 'SAT-' . str_pad($kodeCounter, 3, '0', STR_PAD_LEFT);
+            $kodeCounter++;
+
+            // Basic Address Mapping
+            $alamat = 'Markas ' . ucwords(strtolower($s['nama_satuan'])) . ', Indonesia';
+            if (strpos($s['nama_satuan'], 'JAKARTA') !== false || strpos($s['nama_satuan'], 'MAKOSTRAD') !== false || strpos($s['nama_satuan'], 'MARINIR') !== false) {
+                $alamat = 'Jl. Medan Merdeka, Jakarta Pusat, DKI Jakarta';
+            } elseif (strpos($s['nama_satuan'], 'KOPASSUS') !== false && strpos($s['nama_satuan'], 'MAKO') !== false) {
+                $alamat = 'Cijantung, Kec. Ps. Rebo, Kota Jakarta Timur, DKI Jakarta';
+            } elseif (strpos($s['nama_satuan'], 'DIVIF 1') !== false) {
+                $alamat = 'Cilodong, Kota Depok, Jawa Barat';
+            } elseif (strpos($s['nama_satuan'], 'DIVIF 2') !== false) {
+                $alamat = 'Singosari, Kabupaten Malang, Jawa Timur';
+            } elseif (strpos($s['nama_satuan'], 'DIVIF 3') !== false) {
+                $alamat = 'Pakatto, Kabupaten Gowa, Sulawesi Selatan';
+            } elseif (strpos($s['nama_satuan'], 'AKMIL') !== false) {
+                $alamat = 'Jl. Gatot Subroto, Magelang Tengah, Kota Magelang, Jawa Tengah';
+            } elseif (strpos($s['nama_satuan'], 'SILIWANGI') !== false || strpos($s['nama_satuan'], 'BANDUNG') !== false) {
+                $alamat = 'Kota Bandung, Jawa Barat';
+            }
+
             Satuan::updateOrCreate(
                 ['nama_satuan' => $s['nama_satuan']],
                 [
+                    'kode_satuan' => $kodeSatuan,
+                    'alamat' => $alamat,
                     'latitude' => $s['latitude'],
-                    'longitude' => $s['longitude']
+                    'longitude' => $s['longitude'],
+                    'is_verified' => true
                 ]
             );
         }

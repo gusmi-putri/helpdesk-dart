@@ -44,7 +44,7 @@ class RegisterController extends Controller
 
         DB::transaction(function () use ($request) {
             $satuanName = strtoupper($request->asal_satuan);
-            \App\Models\Satuan::firstOrCreate(['nama_satuan' => $satuanName]);
+            $satuan = \App\Models\Satuan::firstOrCreate(['nama_satuan' => $satuanName]);
 
             User::create([
                 'username' => $request->username,
@@ -52,6 +52,7 @@ class RegisterController extends Controller
                 'password' => Hash::make($request->password),
                 'nama_lengkap' => $request->nama_lengkap,
                 'nrp_nip' => $request->nrp_nip,
+                'satuan_id' => $satuan->id,
                 'asal_satuan' => strtoupper($request->asal_satuan),
                 'no_wa' => $request->no_wa,
                 'role_id' => 4, // Pelapor

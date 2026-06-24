@@ -8,11 +8,16 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Unit extends Model
 {
     use SoftDeletes;
-    protected $fillable = ['nomor_seri',  'jenis', 'asal_satuan', 'status_unit'];
+    protected $fillable = ['nomor_seri',  'jenis', 'asal_satuan', 'satuan_id', 'status_unit'];
 
     public function reports()
     {
         return $this->hasMany(Report::class);
+    }
+
+    public function satuan()
+    {
+        return $this->belongsTo(Satuan::class);
     }
 
     public function syncStatus()
