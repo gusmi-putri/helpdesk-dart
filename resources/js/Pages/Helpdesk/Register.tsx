@@ -35,11 +35,18 @@ const Register: React.FC = () => {
     axios.get('/api/satuans').then(res => setSatuans(res.data)).catch(console.error);
   }, []);
 
+  const normalizeString = (str: string) => {
+    return str.toLowerCase().replace(/[^a-z0-9]/g, '').replace(/(.)\1+/g, '$1');
+  };
+
   const filteredSatuans = satuanQuery === ''
     ? satuans
-    : satuans.filter((satuan) =>
-        satuan.nama_satuan.toLowerCase().includes(satuanQuery.toLowerCase())
-      );
+    : satuans.filter((satuan) => {
+        const normalizedSatuan = normalizeString(satuan.nama_satuan);
+        const normalizedQuery = normalizeString(satuanQuery);
+        return normalizedSatuan.includes(normalizedQuery) || 
+               satuan.nama_satuan.toLowerCase().includes(satuanQuery.toLowerCase());
+      });
 
   // Strict numeric input handler
   const handleNumericInput = (field: keyof RegisterData, value: string) => {
