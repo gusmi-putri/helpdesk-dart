@@ -4,6 +4,8 @@ import ApprovalTable from './ApprovalTable';
 import MutationApproval from './MutationApproval';
 import { useStore } from '@/store/useStore';
 import { router } from '@inertiajs/react';
+import { useTableSort } from '@/hooks/useTableSort';
+import SortableHeader from '@/Components/Table/SortableHeader';
 
 interface ApprovalCenterProps {
   dbUsers: any[];
@@ -29,6 +31,8 @@ const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
   const pendingMutationsCount = dbMutations.filter((m: any) => m.status === 'pending').length;
   const pendingSatuans = dbSatuans.filter((s: any) => s.pending_action !== null);
   const pendingSatuansCount = pendingSatuans.length;
+  
+  const { sortedItems: sortedPendingSatuans, sortConfig: satuanSortConfig, handleSort: handleSatuanSort } = useTableSort(pendingSatuans, { key: 'nama_satuan', direction: 'asc' });
 
   // `handleApproveUser` and `handleRejectUser` are now passed down via props
 
@@ -116,23 +120,23 @@ const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
               <table className="w-full text-left font-sans text-sm">
                 <thead className="bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-slate-700 text-xs">
                   <tr>
-                    <th className="p-4 uppercase">SATUAN KERJA</th>
-                    <th className="p-4 uppercase">JENIS PENGAJUAN</th>
-                    <th className="p-4 uppercase">DETAIL PERUBAHAN</th>
-                    <th className="p-4 text-right uppercase">AKSI VERIFIKASI</th>
+                    <SortableHeader label="SATUAN KERJA" sortKey="nama_satuan" currentSort={satuanSortConfig} onSort={handleSatuanSort} />
+                    <SortableHeader label="JENIS PENGAJUAN" sortKey="pending_action" currentSort={satuanSortConfig} onSort={handleSatuanSort} />
+                    <SortableHeader label="DETAIL PERUBAHAN" />
+                    <SortableHeader label="AKSI VERIFIKASI" />
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-300 dark:divide-gray-800 bg-transparent">
-                {pendingSatuans.length === 0 ? (
+                {pendingSatuansCount === 0 ? (
                   <tr>
                     <td colSpan={4} className="p-20 text-center text-slate-500 italic font-mono uppercase tracking-widest">
                       Tidak ada pengajuan persetujuan Satuan Kerja.
                     </td>
                   </tr>
-                ) : pendingSatuans.map((satuan: any) => (
-                  <tr key={satuan.id} className="hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors group">
-                    <td className="p-4 font-mono text-slate-600 dark:text-slate-300 font-bold">{satuan.nama_satuan}</td>
-                    <td className="p-4">
+                ) : sortedPendingSatuans.map((satuan: any) => (
+                  <tr key={satuan.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/60 transition-colors group text-slate-800 dark:text-slate-200">
+                    <td className="p-4 text-center font-mono font-bold">{satuan.nama_satuan}</td>
+                    <td className="p-4 text-center">
                       <span className={`px-2 py-1 text-[10px] font-mono font-bold border rounded-sm uppercase ${
                         satuan.pending_action === 'create' ? 'bg-green-100 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800' :
                         satuan.pending_action === 'edit' ? 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800' :
@@ -141,14 +145,16 @@ const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
                         {satuan.pending_action === 'create' ? 'Tambah' : satuan.pending_action === 'edit' ? 'Edit' : 'Hapus'}
                       </span>
                     </td>
-                    <td className="p-4 font-mono text-[10px] text-slate-500 dark:text-slate-400">
-                      {satuan.pending_action === 'edit' && satuan.pending_changes ? (
-                        <div className="whitespace-pre-wrap">{JSON.stringify(JSON.parse(satuan.pending_changes), null, 2)}</div>
-                      ) : (
-                        <span>-</span>
-                      )}
+                    <td className="p-4">
+                      <div className="text-[10px] font-mono text-slate-800 dark:text-white">
+                        {satuan.pending_action === 'edit' && satuan.pending_changes ? (
+                          <div className="whitespace-pre-wrap">{JSON.stringify(JSON.parse(satuan.pending_changes), null, 2)}</div>
+                        ) : (
+                          <span className="text-slate-500">-</span>
+                        )}
+                      </div>
                     </td>
-                    <td className="p-4 flex gap-3 justify-end items-center h-full mt-2">
+                    <td className="p-4 flex gap-3 justify-center items-center h-full mt-2">
                       <button onClick={() => handleApproveSatuan(satuan)} className="flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-4 py-2 text-[10px] font-tactical font-bold tracking-widest transition-all shadow-lg">
                         <CheckSquare className="w-4 h-4" /> SETUJUI
                       </button>
