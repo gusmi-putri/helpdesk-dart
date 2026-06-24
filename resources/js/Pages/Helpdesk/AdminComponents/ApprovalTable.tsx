@@ -28,7 +28,7 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
     <div className="animate-in fade-in relative bg-white dark:bg-cighra-darkcard/50 rounded-md">
       <div className="overflow-x-auto">
         <table className="w-full text-left font-sans text-sm">
-          <thead className="border-b border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-transparent text-slate-600 dark:text-slate-400 font-tactical tracking-widest text-xs">
+          <thead className="bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-slate-700 text-xs">
             <tr>
               <SortableHeader label="TIPE MUTASI" sortKey="pending_action" currentSort={sortConfig} onSort={handleSort} />
               <SortableHeader label="USERNAME / ROLE" sortKey="username" currentSort={sortConfig} onSort={handleSort} />

@@ -402,7 +402,7 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                       {/* Detail Table */}
                       <div className="overflow-x-auto border border-slate-200 dark:border-slate-700 bg-white dark:bg-cighra-darkcard/50 rounded-sm">
                         <table className="w-full text-left font-sans text-xs">
-                          <thead className="bg-slate-800 border-b border-slate-700">
+                          <thead className="bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-slate-700 text-xs">
                             <tr>
                               <SortableHeader label="NO" />
                               <SortableHeader label="NOMOR SERI" />
@@ -481,7 +481,7 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-slate-800 border-b border-slate-700">
+                <thead className="bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-slate-700 text-xs">
                   <tr>
                     <SortableHeader label="NOMOR SERI" sortKey="nomor_seri" currentSort={archiveSort} onSort={handleArchiveSort} />
                     <SortableHeader label="NAMA DART" sortKey="nama_satuan" currentSort={archiveSort} onSort={handleArchiveSort} />
@@ -564,7 +564,7 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                           {expandedIds.includes(m.id) && (
                             <div className="mt-3 overflow-x-auto border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-cighra-darkcard/50 rounded-sm">
                               <table className="w-full text-left font-sans text-xs">
-                                <thead className="bg-slate-800 border-b border-slate-700">
+                                <thead className="bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-slate-700 text-xs">
                                   <tr>
                                     <SortableHeader label="NO" />
                                     <SortableHeader label="NOMOR SERI" />

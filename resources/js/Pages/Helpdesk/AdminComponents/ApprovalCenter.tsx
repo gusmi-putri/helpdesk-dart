@@ -114,7 +114,7 @@ const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
           <div className="animate-in fade-in relative bg-white dark:bg-cighra-darkcard/50 rounded-md">
             <div className="overflow-x-auto">
               <table className="w-full text-left font-sans text-sm">
-                <thead className="border-b border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-transparent text-slate-600 dark:text-slate-400 font-tactical tracking-widest text-xs">
+                <thead className="bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-slate-700 text-xs">
                   <tr>
                     <th className="p-4 uppercase">SATUAN KERJA</th>
                     <th className="p-4 uppercase">JENIS PENGAJUAN</th>
