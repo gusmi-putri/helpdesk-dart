@@ -65,7 +65,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
     handleSubmit(syntheticEvent);
   };
 
-  const selectedUnit = dbUnits.find((u: any) => u.id?.toString() === data.unit_id?.toString());
+  const selectedUnit = dbUnits.find((u: any) => (u.db_id || u.id)?.toString() === data.unit_id?.toString());
 
   const handleRepairTypeChange = (type: 'Swadaya' | 'Non-Swadaya') => {
     setData('jenis_perbaikan', type);
@@ -196,9 +196,9 @@ const ReportForm: React.FC<ReportFormProps> = ({
             label="Nomor Seri DART"
             placeholder="Ketik nomor seri atau keterangan DART..."
             options={dbUnits
-              .filter((unit: any) => unit.asal_satuan === authUser.asal_satuan)
+              .filter((unit: any) => unit.asal_satuan === authUser?.asal_satuan)
               .map((unit: any) => ({
-                id: unit.id,
+                id: unit.db_id || unit.id,
                 label: unit.nomor_seri,
                 sublabel: unit.nomor_seri,
                 tag: `${unit.jenis} | ${unit.asal_satuan}`
