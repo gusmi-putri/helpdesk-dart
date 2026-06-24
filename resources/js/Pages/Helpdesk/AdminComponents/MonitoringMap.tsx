@@ -47,29 +47,29 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
 
     // Group units by Satuan to show on map
     const satuanGroups = filteredUnits.reduce((acc, unit) => {
-        const satuan = unit.asal_satuan || 'Umum';
+        const satuanName = unit.satuan ? unit.satuan.nama_satuan : (unit.asal_satuan || 'Umum');
         
         // Lookup coordinates from dbSatuans
-        const satuanData = dbSatuans.find(s => s.nama_satuan === satuan);
+        const satuanData = unit.satuan || dbSatuans.find(s => s.nama_satuan === satuanName);
         const coords = satuanData && satuanData.latitude !== null && satuanData.longitude !== null 
             ? [parseFloat(satuanData.latitude), parseFloat(satuanData.longitude)] 
             : null;
 
-        if (!acc[satuan]) {
-            acc[satuan] = {
-                name: satuan,
+        if (!acc[satuanName]) {
+            acc[satuanName] = {
+                name: satuanName,
                 coords: coords,
                 units: [],
                 hasDamage: false
             };
         }
-        acc[satuan].units.push(unit);
+        acc[satuanName].units.push(unit);
         
         // Check if this unit has an active case
         const hasActiveCase = dbCases.some(c => 
             c.unit_id === unit.db_id && (c.status !== 'SELESAI' && c.status !== 'DITOLAK')
         );
-        if (hasActiveCase) acc[satuan].hasDamage = true;
+        if (hasActiveCase) acc[satuanName].hasDamage = true;
         
         return acc;
     }, {} as Record<string, any>);
@@ -78,7 +78,7 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
 
     const handleSaveCoordinate = () => {
         if (!pendingSatuanEdit) return;
-        router.put(`/api/admin/satuans/${pendingSatuanEdit.id}`, {
+        router.put(`/satuans/${pendingSatuanEdit.id}`, {
             nama_satuan: pendingSatuanEdit.nama_satuan,
             latitude: latInput,
             longitude: lngInput
@@ -94,7 +94,7 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
 
     const handleDeleteSatuan = () => {
         if (!pendingSatuanEdit) return;
-        router.delete(`/api/admin/satuans/${pendingSatuanEdit.id}`, {
+        router.delete(`/satuans/${pendingSatuanEdit.id}`, {
             onSuccess: () => {
                 setShowDeleteConfirm(false);
                 setPendingSatuanEdit(null);

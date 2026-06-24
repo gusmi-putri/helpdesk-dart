@@ -11,6 +11,7 @@ interface UnitModalProps {
   processing: boolean;
   isAddMode: boolean;
   editingUnit?: any;
+  dbSatuans?: any[];
 }
 
 const UnitModal: React.FC<UnitModalProps> = ({
@@ -22,7 +23,8 @@ const UnitModal: React.FC<UnitModalProps> = ({
   errors,
   processing,
   isAddMode,
-  editingUnit
+  editingUnit,
+  dbSatuans
 }) => {
   if (!isOpen) return null;
 
@@ -83,14 +85,22 @@ const UnitModal: React.FC<UnitModalProps> = ({
             </div>
             <div className="col-span-2">
               <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Asal Satuan / Lokasi</label>
-              <input
-                type="text"
-                value={data.asal_satuan}
-                onChange={(e) => setData('asal_satuan', e.target.value)}
-                className={`w-full bg-white dark:bg-cighra-darkcard border ${errors.asal_satuan ? 'border-red-500' : 'border-gray-400 dark:border-slate-600'} p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none`}
+              <select
+                value={data.satuan_id || ''}
+                onChange={(e) => {
+                   setData('satuan_id', e.target.value);
+                   const selectedSatuan = dbSatuans?.find((s: any) => s.id == e.target.value);
+                   if (selectedSatuan) setData('asal_satuan', selectedSatuan.nama_satuan);
+                }}
+                className={`w-full bg-white dark:bg-cighra-darkcard border ${errors.satuan_id ? 'border-red-500' : 'border-gray-400 dark:border-slate-600'} p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none uppercase`}
                 required
-                placeholder="MISAL: PUSKOMLEKAD"
-              />
+              >
+                <option value="">PILIH SATUAN</option>
+                {dbSatuans?.map((satuan: any) => (
+                  <option key={satuan.id} value={satuan.id}>{satuan.nama_satuan.toUpperCase()}</option>
+                ))}
+              </select>
+              {errors.satuan_id && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.satuan_id}</p>}
             </div>
             {isAddMode && (
               <div className="col-span-2">

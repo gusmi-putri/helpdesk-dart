@@ -1,24 +1,35 @@
 import React, { useState } from 'react';
-import { Search, Plus, MapPin, CheckCircle, Clock, Edit2, Trash2 } from 'lucide-react';
+import { Search, Plus, MapPin, CheckCircle, Clock, Edit2, Trash2, Eye } from 'lucide-react';
+import { useTableSort } from '@/hooks/useTableSort';
+import SortableHeader from '@/Components/Table/SortableHeader';
 
 interface SatuansTableProps {
   dbSatuans: any[];
+  dbUnits?: any[];
   handleAddSatuan: () => void;
   handleEditSatuan: (satuan: any) => void;
   handleDeleteSatuan: (satuan: any) => void;
+  handleShowDetailSatuan?: (satuan: any) => void;
+  handleViewOnMap?: (satuan: any) => void;
 }
 
 const SatuansTable: React.FC<SatuansTableProps> = ({
   dbSatuans,
+  dbUnits,
   handleAddSatuan,
   handleEditSatuan,
-  handleDeleteSatuan
+  handleDeleteSatuan,
+  handleShowDetailSatuan,
+  handleViewOnMap
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredSatuans = dbSatuans.filter((s: any) =>
-    s.nama_satuan.toLowerCase().includes(searchTerm.toLowerCase())
+  const filtered = dbSatuans.filter((s: any) =>
+    s.nama_satuan.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    (s.kode_satuan && s.kode_satuan.toLowerCase().includes(searchTerm.toLowerCase()))
   );
+
+  const { sortedItems: filteredSatuans, sortConfig, handleSort } = useTableSort(filtered, { key: 'nama_satuan', direction: 'asc' });
 
   return (
     <div className="bg-white dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600 shadow-2xl overflow-hidden relative mt-6 animate-in fade-in duration-500">
@@ -60,14 +71,15 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
       {/* Table */}
       <div className="overflow-x-auto">
         <table className="w-full text-left font-sans text-sm">
-          <thead className="bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-slate-700">
+          <thead className="bg-slate-800 border-b border-slate-700">
             <tr>
-              <th className="p-4">NO</th>
-              <th className="p-4">NAMA SATUAN KERJA</th>
-              <th className="p-4">KOORDINAT (LAT, LNG)</th>
-              <th className="p-4">STATUS</th>
-              <th className="p-4">STATUS PENGAJUAN</th>
-              <th className="p-4 text-right">OPSI</th>
+              <SortableHeader label="KODE SATUAN" sortKey="kode_satuan" currentSort={sortConfig} onSort={handleSort} />
+              <SortableHeader label="NAMA SATUAN KERJA" sortKey="nama_satuan" currentSort={sortConfig} onSort={handleSort} />
+              <SortableHeader label="ALAMAT / LOKASI" sortKey="alamat" currentSort={sortConfig} onSort={handleSort} />
+              <SortableHeader label="KOORDINAT" sortKey="latitude" currentSort={sortConfig} onSort={handleSort} />
+              <SortableHeader label="TOTAL DART" />
+              <SortableHeader label="STATUS LOKASI" />
+              <SortableHeader label="AKSI" />
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200 dark:divide-slate-700/50">
@@ -78,56 +90,56 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
                 </td>
               </tr>
             ) : (
-              filteredSatuans.map((satuan: any, idx: number) => (
+              filteredSatuans.map((satuan: any) => (
                 <tr key={satuan.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group bg-white dark:bg-transparent">
-                  <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
-                    {idx + 1}
+                  <td className="p-4 text-sm font-mono text-slate-800 dark:text-white truncate max-w-[150px]" title={satuan.kode_satuan || '-'}>
+                    {satuan.kode_satuan || '-'}
                   </td>
-                  <td className="p-4 font-mono font-bold text-cighra-primary dark:text-cighra-gold border-l-2 border-transparent group-hover:border-cighra-primary dark:border-cighra-gold">
+                  <td className="p-4 font-mono font-bold text-slate-800 dark:text-white truncate max-w-[200px]" title={satuan.nama_satuan}>
                     {satuan.nama_satuan}
                   </td>
-                  <td className="p-4 text-xs font-mono text-slate-600 dark:text-slate-300">
+                  <td className="p-4 text-sm font-mono text-slate-800 dark:text-white truncate max-w-[250px]" title={satuan.alamat || '-'}>
+                    {satuan.alamat || '-'}
+                  </td>
+                  <td className="p-4 text-xs font-mono text-slate-800 dark:text-white text-center">
                     {satuan.latitude && satuan.longitude 
                       ? `${satuan.latitude}, ${satuan.longitude}`
                       : <span className="text-slate-400 italic">Belum diset</span>}
                   </td>
-                  <td className="p-4">
-                    {satuan.is_verified ? (
-                      <span className="px-2 py-0.5 border text-[9px] font-bold tracking-widest uppercase bg-camogreen/10 text-camogreen border-camogreen/30">
-                        <CheckCircle className="w-3.5 h-3.5 inline mr-1" /> Terverifikasi
+                  <td className="p-4 font-tactical text-slate-800 dark:text-white text-center">
+                    {dbUnits ? dbUnits.filter(u => u.satuan_id === satuan.id).length : 0}
+                  </td>
+                  <td className="p-4 text-center">
+                    {satuan.latitude && satuan.longitude ? (
+                      <span className="px-2 py-0.5 border text-[9px] font-bold tracking-widest uppercase bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40">
+                        Siap Ditampilkan
                       </span>
                     ) : (
-                      <span className="px-2 py-0.5 border text-[9px] font-bold tracking-widest uppercase bg-yellow-500/10 text-yellow-600 border-yellow-500/30">
-                        <Clock className="w-3.5 h-3.5 inline mr-1" /> Belum Terverifikasi
+                      <span className="px-2 py-0.5 border text-[9px] font-bold tracking-widest uppercase bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800/40">
+                        Belum Lengkap
                       </span>
                     )}
                   </td>
-                  <td className="p-4">
-                    {satuan.pending_action ? (
-                      <span className={`px-2 py-0.5 border text-[9px] font-bold tracking-widest uppercase ${
-                        satuan.pending_action === 'create' ? 'bg-green-100 text-green-700 border-green-200' :
-                        satuan.pending_action === 'edit' ? 'bg-blue-100 text-blue-700 border-blue-200' :
-                        'bg-red-100 text-red-700 border-red-200'
-                      }`}>
-                        {satuan.pending_action === 'create' ? 'Pengajuan Tambah' :
-                         satuan.pending_action === 'edit' ? 'Pengajuan Edit' :
-                         satuan.pending_action === 'delete' ? 'Pengajuan Hapus' : 'Pending'}
-                      </span>
-                    ) : (
-                      <span className="text-slate-400 text-xs italic">-</span>
+                  <td className="p-4 flex gap-2 justify-center">
+                    {handleShowDetailSatuan && (
+                      <button
+                        onClick={() => handleShowDetailSatuan(satuan)}
+                        className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm"
+                        title="Lihat Detail"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </button>
                     )}
-                  </td>
-                  <td className="p-4 flex gap-2 justify-end">
                     <button
                       onClick={() => handleEditSatuan(satuan)}
-                      className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 text-slate-500 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm"
+                      className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm"
                       title="Edit Satuan"
                     >
                       <Edit2 className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => handleDeleteSatuan(satuan)}
-                      className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-500 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm"
+                      className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-600 dark:text-white hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm"
                       title="Hapus Satuan"
                     >
                       <Trash2 className="w-4 h-4" />

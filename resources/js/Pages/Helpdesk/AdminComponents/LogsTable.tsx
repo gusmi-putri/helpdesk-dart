@@ -1,5 +1,7 @@
 import React from 'react';
 import { Database, Info } from 'lucide-react';
+import { useTableSort } from '@/hooks/useTableSort';
+import SortableHeader from '@/Components/Table/SortableHeader';
 
 interface LogsTableProps {
   dbLogs: any[];
@@ -14,9 +16,11 @@ const LogsTable: React.FC<LogsTableProps> = ({
   setLogFilter,
   setSelectedLogPayload
 }) => {
-  const filteredLogs = logFilter === 'ALL'
+  const filtered = logFilter === 'ALL'
     ? dbLogs
     : dbLogs.filter((l: any) => l.level === logFilter);
+
+  const { sortedItems: filteredLogs, sortConfig, handleSort } = useTableSort(filtered, { key: 'time', direction: 'desc' });
 
   return (
     <div className="space-y-4 animate-in fade-in duration-500">
@@ -55,12 +59,12 @@ const LogsTable: React.FC<LogsTableProps> = ({
         </div>
         <div className="overflow-x-auto max-h-[600px] overflow-y-auto custom-scrollbar">
           <table className="w-full text-left font-mono text-xs border-collapse">
-            <thead className="bg-slate-800 text-slate-100 font-bold sticky top-0 z-10 border-b border-slate-700">
+            <thead className="bg-slate-800 border-b border-slate-700 sticky top-0 z-10">
               <tr>
-                <th className="p-3 w-44 tracking-widest uppercase">Timestamp</th>
-                <th className="p-3 w-28 tracking-widest uppercase text-center">Severity</th>
-                <th className="p-3 w-56 tracking-widest uppercase">Operator</th>
-                <th className="p-3 tracking-widest uppercase">Action Payload</th>
+                <SortableHeader label="TIMESTAMP" sortKey="time" currentSort={sortConfig} onSort={handleSort} className="w-44 uppercase" />
+                <SortableHeader label="SEVERITY" sortKey="level" currentSort={sortConfig} onSort={handleSort} className="w-28 uppercase" />
+                <SortableHeader label="OPERATOR" sortKey="user" currentSort={sortConfig} onSort={handleSort} className="w-56 uppercase" />
+                <SortableHeader label="ACTION PAYLOAD" sortKey="activity" currentSort={sortConfig} onSort={handleSort} className="uppercase" />
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-gray-800 bg-white dark:bg-cighra-dark">
@@ -71,24 +75,24 @@ const LogsTable: React.FC<LogsTableProps> = ({
               ) : (
                 filteredLogs.map((log: any) => (
                   <tr key={log.id} className="hover:bg-slate-50 dark:hover:bg-yellow-500/5 transition-colors group">
-                    <td className="p-3 text-slate-400 border-l-2 border-transparent group-hover:border-cighra-gold whitespace-nowrap">{log.time}</td>
+                    <td className="p-3 text-slate-800 dark:text-white border-l-2 border-transparent group-hover:border-cighra-gold whitespace-nowrap text-center">{log.time}</td>
                     <td className="p-3 text-center">
                       <span className={`px-2 py-0.5 text-[10px] font-bold border rounded-sm inline-block min-w-[70px]
-                        ${log.level === 'SUCCESS' ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-500 border-green-200 dark:border-green-800' : ''}
-                        ${log.level === 'ALERT' ? 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-cighra-gold border-red-200 dark:border-red-800 animate-pulse' : ''}
-                        ${log.level === 'WARN' ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-500 border-yellow-200 dark:border-yellow-800' : ''}
-                        ${log.level === 'INFO' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800' : ''}
+                        ${log.level === 'SUCCESS' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-500 border-green-200 dark:border-green-800/40' : ''}
+                        ${log.level === 'ALERT' ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/40 animate-pulse' : ''}
+                        ${log.level === 'WARN' ? 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-500 border-yellow-200 dark:border-yellow-800/40' : ''}
+                        ${log.level === 'INFO' ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800/40' : ''}
                       `}>
                         {log.level}
                       </span>
                     </td>
-                    <td className="p-3 text-slate-700 dark:text-white font-bold flex items-center gap-2">
-                      <div className="w-5 h-5 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-[10px] text-slate-400">
+                    <td className="p-3 text-slate-800 dark:text-white font-bold flex items-center justify-center gap-2">
+                      <div className="w-5 h-5 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-[10px] text-slate-500 dark:text-slate-400">
                         {log.user?.charAt(0) || 'S'}
                       </div>
                       {log.user}
                     </td>
-                    <td className="p-3">
+                    <td className="p-3 text-center">
                       <div className="flex items-center gap-3">
                         <span className="text-slate-600 dark:text-slate-300 line-clamp-1 flex-1">{log.activity}</span>
                         <button

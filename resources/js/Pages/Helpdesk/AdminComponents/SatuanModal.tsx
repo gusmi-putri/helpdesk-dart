@@ -67,6 +67,50 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-tactical tracking-widest text-slate-600 dark:text-slate-300 mb-2 uppercase">
+                Kode Satuan
+              </label>
+              <input
+                type="text"
+                value={data.kode_satuan}
+                onChange={(e) => setData('kode_satuan', e.target.value.toUpperCase())}
+                placeholder="Cth: SBRM-01"
+                className="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-cighra-primary dark:focus:ring-cighra-gold focus:border-transparent transition-all uppercase"
+              />
+              {errors.kode_satuan && <p className="text-red-500 text-xs mt-1 font-medium">{errors.kode_satuan}</p>}
+            </div>
+
+            <div>
+              <label className="block text-xs font-tactical tracking-widest text-slate-600 dark:text-slate-300 mb-2 uppercase">
+                Kotama
+              </label>
+              <input
+                type="text"
+                value={data.kotama}
+                onChange={(e) => setData('kotama', e.target.value.toUpperCase())}
+                placeholder="Cth: KODAM III/SILIWANGI"
+                className="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-cighra-primary dark:focus:ring-cighra-gold focus:border-transparent transition-all uppercase"
+              />
+              {errors.kotama && <p className="text-red-500 text-xs mt-1 font-medium">{errors.kotama}</p>}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-tactical tracking-widest text-slate-600 dark:text-slate-300 mb-2 uppercase">
+              Alamat Lengkap
+            </label>
+            <textarea
+              value={data.alamat}
+              onChange={(e) => setData('alamat', e.target.value)}
+              placeholder="Alamat lengkap satuan..."
+              rows={2}
+              className="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-cighra-primary dark:focus:ring-cighra-gold focus:border-transparent transition-all"
+            />
+            {errors.alamat && <p className="text-red-500 text-xs mt-1 font-medium">{errors.alamat}</p>}
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-tactical tracking-widest text-slate-600 dark:text-slate-300 mb-2 uppercase">
                 Latitude (Garis Lintang)
               </label>
               <div className="relative">

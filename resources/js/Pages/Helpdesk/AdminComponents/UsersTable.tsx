@@ -1,5 +1,7 @@
 import React from 'react';
 import { Users, Search, Plus, Eye, Edit, Trash2, Power } from 'lucide-react';
+import { useTableSort } from '@/hooks/useTableSort';
+import SortableHeader from '@/Components/Table/SortableHeader';
 
 interface UsersTableProps {
   dbUsers: any[];
@@ -20,7 +22,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
 }) => {
   const [userSearch, setUserSearch] = React.useState('');
 
-  const filteredUsers = dbUsers.filter((u: any) => u.is_approved).filter((u: any) => {
+  const filtered = dbUsers.filter((u: any) => u.is_approved).filter((u: any) => {
     if (!userSearch) return true;
     const q = userSearch.toLowerCase();
     return (
@@ -28,9 +30,11 @@ const UsersTable: React.FC<UsersTableProps> = ({
       (u.nrp_nip || '').toLowerCase().includes(q) ||
       (u.role || '').toLowerCase().includes(q) ||
       (u.email || '').toLowerCase().includes(q) ||
-      (u.id || '').toLowerCase().includes(q)
+      (u.id || '').toString().toLowerCase().includes(q)
     );
   });
+
+  const { sortedItems: filteredUsers, sortConfig, handleSort } = useTableSort(filtered, { key: 'name', direction: 'asc' });
 
   return (
     <div className="bg-white dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600 shadow-xl overflow-hidden animate-in fade-in relative">
@@ -62,15 +66,15 @@ const UsersTable: React.FC<UsersTableProps> = ({
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-left font-sans text-sm">
-          <thead className="bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-slate-700">
+          <thead className="bg-slate-800 border-b border-slate-700">
             <tr>
-              <th className="p-4">ID PERSONEL</th>
-              <th className="p-4">NRP / NIP</th>
-              <th className="p-4">NAMA LENGKAP</th>
-              <th className="p-4">EMAIL</th>
-              <th className="p-4">HAK AKSES</th>
-              <th className="p-4">STATUS AKTIF</th>
-              <th className="p-4 text-right">TINDAKAN</th>
+              <SortableHeader label="ID PERSONEL" sortKey="id" currentSort={sortConfig} onSort={handleSort} />
+              <SortableHeader label="NRP / NIP" sortKey="nrp_nip" currentSort={sortConfig} onSort={handleSort} />
+              <SortableHeader label="NAMA LENGKAP" sortKey="name" currentSort={sortConfig} onSort={handleSort} />
+              <SortableHeader label="EMAIL" sortKey="email" currentSort={sortConfig} onSort={handleSort} />
+              <SortableHeader label="HAK AKSES" sortKey="role" currentSort={sortConfig} onSort={handleSort} />
+              <SortableHeader label="STATUS AKTIF" sortKey="status" currentSort={sortConfig} onSort={handleSort} />
+              <SortableHeader label="TINDAKAN" />
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50 bg-white dark:bg-transparent">
@@ -82,29 +86,42 @@ const UsersTable: React.FC<UsersTableProps> = ({
               </tr>
             ) : filteredUsers.map((u: any) => (
               <tr key={u.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
-                <td className="p-4 font-mono text-slate-600 dark:text-slate-300 border-l-2 border-transparent group-hover:border-cighra-primary dark:group-hover:border-cighra-gold">{u.id}</td>
-                <td className="p-4 font-mono text-xs text-slate-500 dark:text-slate-400">{u.nrp_nip || '-'}</td>
-                <td className="p-4 text-slate-800 dark:text-white font-bold">{u.name}</td>
-                <td className="p-4 font-mono text-xs text-slate-500 dark:text-slate-400 lowercase">{u.email}</td>
-                <td className="p-4">
+                <td className="p-4 font-mono text-slate-800 dark:text-white text-center">{u.id}</td>
+                <td className="p-4 font-mono text-xs text-slate-800 dark:text-white text-center">{u.nrp_nip || '-'}</td>
+                <td className="p-4 text-slate-800 dark:text-white font-bold text-center">{u.name}</td>
+                <td className="p-4 font-mono text-xs text-slate-800 dark:text-white lowercase text-center">{u.email}</td>
+                <td className="p-4 text-center">
                   <span className={`px-3 py-1 text-[10px] font-mono font-bold tracking-widest border
-                    ${u.role === 'Admin' ? 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-cighra-gold border-red-200 dark:border-red-800' :
-                      u.role === 'Staf' ? 'bg-olive/10 dark:bg-cighra-gold/20 text-olive dark:text-[#b5cb5c] border-olive/30 dark:border-cighra-gold/50' :
-                        u.role === 'Teknisi' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800' :
-                          'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600'}
+                    ${u.role === 'Admin' ? 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800/40' :
+                      u.role === 'Staf' ? 'bg-olive/10 dark:bg-green-900/20 text-olive dark:text-green-400 border-olive/30 dark:border-green-800/40' :
+                        u.role === 'Teknisi' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800/40' :
+                          'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-300 dark:border-slate-600'}
                   `}>
                     {u.role.toUpperCase()}
                   </span>
                 </td>
-                <td className="p-4">
-                  <div className="flex items-center gap-2">
+                <td className="p-4 text-center">
+                  <div className="flex items-center justify-center gap-2">
                     <span className={`w-2 h-2 rounded-full ${u.status === 'Aktif' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-pulse' : 'bg-slate-300 dark:bg-slate-600'}`}></span>
                     <span className={`text-[10px] font-bold tracking-widest uppercase ${u.status === 'Aktif' ? 'text-green-600 dark:text-green-500' : 'text-slate-400 dark:text-slate-500'}`}>
                       {u.status}
                     </span>
                   </div>
                 </td>
-                <td className="p-4 flex gap-2 justify-end">
+                <td className="p-4 flex gap-2 justify-center">
+                  <button onClick={() => handleShowDetail(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Detail">
+                    <Eye className="w-4 h-4" />
+                  </button>
+                  {handleEditUser && (
+                    <button onClick={() => handleEditUser(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Edit">
+                      <Edit className="w-4 h-4" />
+                    </button>
+                  )}
+                  {handleDeleteUser && (
+                    <button onClick={() => handleDeleteUser(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-600 dark:text-white hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Hapus">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
                   {handleToggleUserStatus && (
                     <button 
                       onClick={() => handleToggleUserStatus(u)} 
@@ -119,19 +136,6 @@ const UsersTable: React.FC<UsersTableProps> = ({
                       title={u.role === 'Admin' ? 'Status Admin tidak dapat diubah' : (u.status === 'Aktif' ? 'Nonaktifkan User' : 'Aktifkan User')}
                     >
                       <Power className="w-4 h-4" />
-                    </button>
-                  )}
-                  <button onClick={() => handleShowDetail(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 text-slate-500 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Detail">
-                    <Eye className="w-4 h-4" />
-                  </button>
-                  {handleEditUser && (
-                    <button onClick={() => handleEditUser(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 text-slate-500 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Edit">
-                      <Edit className="w-4 h-4" />
-                    </button>
-                  )}
-                  {handleDeleteUser && (
-                    <button onClick={() => handleDeleteUser(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-500 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Hapus">
-                      <Trash2 className="w-4 h-4" />
                     </button>
                   )}
                 </td>

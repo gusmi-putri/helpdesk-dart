@@ -20,6 +20,7 @@ import UnitDeleteModal from './AdminComponents/UnitDeleteModal';
 import UnitHistoryModal from './AdminComponents/UnitHistoryModal';
 import SatuansTable from './AdminComponents/SatuansTable';
 import SatuanModal from './AdminComponents/SatuanModal';
+import SatuanDetailModal from './AdminComponents/SatuanDetailModal';
 import SatuanDeleteModal from './AdminComponents/SatuanDeleteModal';
 import RecapModal from './AdminComponents/RecapModal';
 import RejectConfirmModal from './AdminComponents/RejectConfirmModal';
@@ -101,13 +102,18 @@ const DashboardAdmin = (props: any) => {
   const [userToReject, setUserToReject] = useState<any>(null);
 
   // Satuan States
+  const [isSatuanDetailModalOpen, setIsSatuanDetailModalOpen] = useState(false);
+  const [selectedSatuan, setSelectedSatuan] = useState<any>(null);
   const [isSatuanModalOpen, setIsSatuanModalOpen] = useState(false);
   const [isSatuanAddMode, setIsSatuanAddMode] = useState(true);
   const [editingSatuan, setEditingSatuan] = useState<any>(null);
   const [isSatuanDeleteModalOpen, setIsSatuanDeleteModalOpen] = useState(false);
   const [satuanToDelete, setSatuanToDelete] = useState<any>(null);
   const satuanForm = useForm({
+    kode_satuan: '',
     nama_satuan: '',
+    kotama: '',
+    alamat: '',
     latitude: '',
     longitude: ''
   });
@@ -308,6 +314,11 @@ const DashboardAdmin = (props: any) => {
   };
 
   // --- Satuan Handlers ---
+  const handleShowDetailSatuan = (satuan: any) => {
+    setSelectedSatuan(satuan);
+    setIsSatuanDetailModalOpen(true);
+  };
+
   const handleAddSatuan = () => {
     setIsSatuanAddMode(true);
     setEditingSatuan(null);
@@ -321,7 +332,10 @@ const DashboardAdmin = (props: any) => {
     setEditingSatuan(satuan);
     satuanForm.clearErrors();
     satuanForm.setData({
+      kode_satuan: satuan.kode_satuan || '',
       nama_satuan: satuan.nama_satuan,
+      kotama: satuan.kotama || '',
+      alamat: satuan.alamat || '',
       latitude: satuan.latitude || '',
       longitude: satuan.longitude || ''
     });
@@ -444,9 +458,14 @@ const DashboardAdmin = (props: any) => {
             {activeMenu === 'SATUANS' && (
               <SatuansTable
                 dbSatuans={dbSatuans}
+                dbUnits={dbUnits}
                 handleAddSatuan={handleAddSatuan}
                 handleEditSatuan={handleEditSatuan}
                 handleDeleteSatuan={handleDeleteSatuan}
+                handleShowDetailSatuan={handleShowDetailSatuan}
+                handleViewOnMap={(satuan) => {
+                  setActiveMenu('MAP');
+                }}
               />
             )}
             {activeMenu === 'APPROVAL_CENTER' && (
@@ -509,6 +528,7 @@ const DashboardAdmin = (props: any) => {
         processing={processing}
         isAddMode={isAddMode}
         dbRoles={dbRoles}
+        dbSatuans={dbSatuans}
       />
 
       <UnitModal
@@ -521,6 +541,7 @@ const DashboardAdmin = (props: any) => {
         processing={unitForm.processing}
         isAddMode={isUnitAddMode}
         editingUnit={editingUnit}
+        dbSatuans={dbSatuans}
       />
 
       <AdminUnitBatchModal
@@ -553,6 +574,15 @@ const DashboardAdmin = (props: any) => {
         errors={satuanForm.errors}
         processing={satuanForm.processing}
         isAddMode={isSatuanAddMode}
+      />
+
+      <SatuanDetailModal
+        isOpen={isSatuanDetailModalOpen}
+        onClose={() => setIsSatuanDetailModalOpen(false)}
+        satuan={selectedSatuan}
+        dbUnits={dbUnits}
+        dbUsers={dbUsers}
+        dbCases={dbCases}
       />
 
       <SatuanDeleteModal

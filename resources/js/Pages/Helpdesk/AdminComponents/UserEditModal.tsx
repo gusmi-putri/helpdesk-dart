@@ -11,6 +11,7 @@ interface UserEditModalProps {
   processing: boolean;
   isAddMode: boolean;
   dbRoles: any[];
+  dbSatuans?: any[];
 }
 
 const UserEditModal: React.FC<UserEditModalProps> = ({
@@ -22,7 +23,8 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
   errors,
   processing,
   isAddMode,
-  dbRoles
+  dbRoles,
+  dbSatuans
 }) => {
   const [waWarning, setWaWarning] = useState('');
 
@@ -186,14 +188,25 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
             </div>
             <div>
               <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Asal Satuan</label>
-              <input
-                type="text"
-                value={data.asal_satuan}
-                onChange={(e) => handleUppercaseInput('asal_satuan', e.target.value)}
-                className="w-full bg-white dark:bg-cighra-darkcard border border-gray-400 dark:border-slate-600 p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none uppercase"
-                placeholder="CONTOH: SATUAN KERJA A"
-                maxLength={100}
-              />
+              <select
+                value={data.satuan_id || ''}
+                onChange={(e) => {
+                   setData('satuan_id', e.target.value);
+                   const selectedSatuan = dbSatuans?.find((s: any) => s.id == e.target.value);
+                   if (selectedSatuan) {
+                       // Optional fallback
+                       // setData('asal_satuan', selectedSatuan.nama_satuan);
+                   }
+                }}
+                className={`w-full bg-white dark:bg-cighra-darkcard border ${errors.satuan_id ? 'border-red-500' : 'border-gray-400 dark:border-slate-600'} p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none`}
+                required
+              >
+                <option value="">PILIH SATUAN</option>
+                {dbSatuans?.map((satuan: any) => (
+                  <option key={satuan.id} value={satuan.id}>{satuan.nama_satuan.toUpperCase()}</option>
+                ))}
+              </select>
+              {errors.satuan_id && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.satuan_id}</p>}
             </div>
             <div>
               <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">
