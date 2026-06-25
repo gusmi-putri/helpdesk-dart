@@ -69,6 +69,7 @@ const DashboardAdmin = (props: any) => {
     nama_lengkap: '',
     nrp_nip: '',
     role_id: '',
+    satuan_id: '',
     asal_satuan: '',
     no_wa: '',
     spesialisasi: ''
@@ -148,6 +149,7 @@ const DashboardAdmin = (props: any) => {
       nama_lengkap: user.name,
       nrp_nip: user.nrp_nip || '',
       role_id: user.role_id || '',
+      satuan_id: user.satuan_id || '',
       asal_satuan: user.asal_satuan || '',
       no_wa: user.no_wa || '',
       spesialisasi: user.spesialisasi || ''

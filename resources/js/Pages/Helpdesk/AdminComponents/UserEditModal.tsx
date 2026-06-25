@@ -208,8 +208,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
                    setData('satuan_id', e.target.value);
                    const selectedSatuan = dbSatuans?.find((s: any) => s.id == e.target.value);
                    if (selectedSatuan) {
-                       // Optional fallback
-                       // setData('asal_satuan', selectedSatuan.nama_satuan);
+                       setData('asal_satuan', selectedSatuan.nama_satuan);
                    }
                 }}
                 className={`w-full bg-white dark:bg-cighra-darkcard border ${errors.satuan_id ? 'border-red-500' : 'border-gray-400 dark:border-slate-600'} p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none`}
