@@ -8,13 +8,15 @@ interface SatuanDeleteModalProps {
   onClose: () => void;
   satuan: any;
   onSuccess?: () => void;
+  isPengajuan?: boolean;
 }
 
 const SatuanDeleteModal: React.FC<SatuanDeleteModalProps> = ({
   isOpen,
   onClose,
   satuan,
-  onSuccess
+  onSuccess,
+  isPengajuan
 }) => {
   const [processing, setProcessing] = useState(false);
   const addNotification = useStore(state => state.addNotification);
@@ -47,10 +49,12 @@ const SatuanDeleteModal: React.FC<SatuanDeleteModalProps> = ({
           </div>
           <div>
             <h3 className="text-xl font-tactical font-bold text-red-700 dark:text-red-400 uppercase tracking-widest leading-tight">
-              Konfirmasi Hapus
+              {isPengajuan ? 'Pengajuan Hapus' : 'Konfirmasi Hapus'}
             </h3>
             <p className="text-sm text-red-600/80 dark:text-red-300/80 mt-2 font-medium">
-              Tindakan ini akan menghapus Satuan Kerja secara permanen dari sistem, atau membuat pengajuan hapus (jika Anda Staf).
+              {isPengajuan 
+                ? 'Pengajuan ini akan dikirim ke Admin untuk disetujui sebelum Satuan Kerja dihapus secara permanen.' 
+                : 'Tindakan ini akan menghapus Satuan Kerja secara permanen dari sistem.'}
             </p>
           </div>
         </div>
@@ -75,7 +79,11 @@ const SatuanDeleteModal: React.FC<SatuanDeleteModalProps> = ({
             disabled={processing}
             className="px-5 py-2.5 text-sm font-tactical tracking-wider text-white bg-red-600 hover:bg-red-700 rounded-lg shadow-lg shadow-red-500/20 transition-colors flex items-center gap-2 disabled:opacity-50"
           >
-            {processing ? 'MEMPROSES...' : (
+            {processing ? 'MEMPROSES...' : isPengajuan ? (
+              <>
+                <Trash2 className="w-4 h-4" /> AJUKAN PENGHAPUSAN
+              </>
+            ) : (
               <>
                 <Trash2 className="w-4 h-4" /> YA, HAPUS
               </>

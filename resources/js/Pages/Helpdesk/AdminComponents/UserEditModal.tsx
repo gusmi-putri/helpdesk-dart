@@ -12,6 +12,7 @@ interface UserEditModalProps {
   isAddMode: boolean;
   dbRoles: any[];
   dbSatuans?: any[];
+  isPengajuan?: boolean;
 }
 
 const UserEditModal: React.FC<UserEditModalProps> = ({
@@ -24,7 +25,8 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
   processing,
   isAddMode,
   dbRoles,
-  dbSatuans
+  dbSatuans,
+  isPengajuan
 }) => {
   const [waWarning, setWaWarning] = useState('');
 
@@ -68,7 +70,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
       <div className="bg-cighra-light dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full max-w-md shadow-[0_0_50px_rgba(75,83,32,0.3)] animate-in zoom-in-95 duration-200">
         <div className="p-4 border-b border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/10 flex justify-between items-center">
           <h3 className="font-tactical font-bold text-cighra-primary dark:text-cighra-gold tracking-widest uppercase">
-            {isAddMode ? 'TAMBAH PERSONEL BARU' : 'PENGATURAN PERSONEL'}
+            {isPengajuan ? (isAddMode ? 'PENGAJUAN PERSONEL BARU' : 'PENGAJUAN EDIT PERSONEL') : (isAddMode ? 'TAMBAH PERSONEL BARU' : 'PENGATURAN PERSONEL')}
           </h3>
           <button onClick={onClose} className="text-slate-500 hover:text-cighra-primary dark:text-cighra-gold">✕</button>
         </div>
@@ -229,7 +231,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
               disabled={processing}
               className="flex-1 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white py-2 font-tactical font-bold tracking-widest hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 transition-colors disabled:opacity-50"
             >
-              {processing ? 'MEMPROSES...' : (isAddMode ? 'DAFTARKAN PERSONEL' : 'SIMPAN PERUBAHAN')}
+              {processing ? 'MEMPROSES...' : isPengajuan ? (isAddMode ? 'AJUKAN PENDAFTARAN' : 'AJUKAN PERUBAHAN') : (isAddMode ? 'DAFTARKAN PERSONEL' : 'SIMPAN PERUBAHAN')}
             </button>
             <button type="button" onClick={onClose} className="flex-1 bg-transparent border border-gray-500 text-slate-500 py-2 font-tactical font-bold tracking-widest hover:bg-gray-500/10 transition-colors">
               BATAL

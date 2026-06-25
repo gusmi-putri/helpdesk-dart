@@ -7,7 +7,7 @@ import LogoutConfirmModal from '@/Components/LogoutConfirmModal';
 // Sub-components
 import StafSidebar from './StafComponents/StafSidebar';
 import StafTopbar from './StafComponents/StafTopbar';
-import IncomingReportsTable from './StafComponents/IncomingReportsTable';
+import TicketManager from './StafComponents/TicketManager';
 import CompletedReportsTable from './StafComponents/CompletedReportsTable';
 import InventorySection from './StafComponents/InventorySection';
 import ProofModal from './StafComponents/ProofModal';
@@ -442,9 +442,8 @@ const DashboardStaf = (props: any) => {
             </div>
 
             {activeMenu === 'MASUK' && (
-              <IncomingReportsTable
-                reports={incomingReports}
-                onSelectReport={setSelectedReportId}
+              <TicketManager
+                reports={dbCases}
                 onAssignTechnician={setAssigningReportId}
                 onViewProof={setViewingProof}
                 onVerify={handleVerify}
@@ -596,6 +595,7 @@ const DashboardStaf = (props: any) => {
         onClose={() => setIsUserDeleteModalOpen(false)}
         onConfirm={confirmDeleteUser}
         user={userToDelete}
+        isPengajuan={true}
       />
 
       <UserEditModal
@@ -609,6 +609,7 @@ const DashboardStaf = (props: any) => {
         isAddMode={isAddUserMode}
         dbRoles={dbRoles}
         dbSatuans={dbSatuans}
+        isPengajuan={true}
       />
 
       <SatuanModal
@@ -620,6 +621,7 @@ const DashboardStaf = (props: any) => {
         errors={satuanForm.errors}
         processing={satuanForm.processing}
         isAddMode={isSatuanAddMode}
+        isPengajuan={true}
       />
 
       <SatuanDetailModal
@@ -635,6 +637,7 @@ const DashboardStaf = (props: any) => {
         isOpen={isSatuanDeleteModalOpen}
         onClose={() => setIsSatuanDeleteModalOpen(false)}
         satuan={satuanToDelete}
+        isPengajuan={true}
       />
 
     </div>

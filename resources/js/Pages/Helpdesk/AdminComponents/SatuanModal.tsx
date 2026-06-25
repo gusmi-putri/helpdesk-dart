@@ -10,6 +10,7 @@ interface SatuanModalProps {
   errors: any;
   processing: boolean;
   isAddMode: boolean;
+  isPengajuan?: boolean;
 }
 
 const SatuanModal: React.FC<SatuanModalProps> = ({
@@ -20,14 +21,15 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
   setData,
   errors,
   processing,
-  isAddMode
+  isAddMode,
+  isPengajuan
 }) => {
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto">
       <div className="bg-white dark:bg-cighra-darkcard w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-700 my-auto">
-        
+
         {/* Header */}
         <div className="bg-slate-50 dark:bg-slate-800/50 p-6 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -36,7 +38,9 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
             </div>
             <div>
               <h3 className="text-xl font-tactical font-bold text-slate-800 dark:text-white uppercase tracking-widest">
-                {isAddMode ? 'Tambah Satuan Kerja' : 'Edit Satuan Kerja'}
+                {isPengajuan
+                  ? (isAddMode ? 'Pengajuan Tambah Satuan Kerja' : 'Pengajuan Edit Satuan Kerja')
+                  : (isAddMode ? 'Tambah Satuan Kerja' : 'Edit Satuan Kerja')}
               </h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                 Lengkapi informasi satuan kerja di bawah ini.
@@ -143,12 +147,20 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
               {errors.longitude && <p className="text-red-500 text-xs mt-1 font-medium">{errors.longitude}</p>}
             </div>
           </div>
-          
-          <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800/30">
-            <p className="text-xs text-blue-700 dark:text-blue-400">
-              <span className="font-bold">Info:</span> Menyimpan kordinat (latitude & longitude) akan secara otomatis <b>memverifikasi</b> satuan kerja ini.
-            </p>
-          </div>
+
+          {isPengajuan ? (
+            <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-xl border border-yellow-100 dark:border-yellow-800/30">
+              <p className="text-xs text-yellow-700 dark:text-yellow-400">
+                <span className="font-bold">Info:</span> Data satuan kerja yang Anda buat akan masuk sebagai <b>pengajuan</b> dan menunggu persetujuan Admin.
+              </p>
+            </div>
+          ) : (
+            <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800/30">
+              <p className="text-xs text-blue-700 dark:text-blue-400">
+                <span className="font-bold">Info:</span> Menyimpan kordinat (latitude & longitude) akan secara otomatis <b>memverifikasi</b> satuan kerja ini.
+              </p>
+            </div>
+          )}
 
           {/* Footer Actions */}
           <div className="flex justify-end gap-3 pt-6 border-t border-slate-200 dark:border-slate-700">
@@ -165,7 +177,7 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
               disabled={processing}
               className="px-5 py-2.5 flex items-center gap-2 text-sm font-tactical tracking-wider text-white bg-cighra-primary dark:text-slate-900 dark:bg-cighra-gold hover:opacity-90 rounded-lg shadow-lg shadow-cighra-primary/20 dark:shadow-cighra-gold/20 transition-all disabled:opacity-50"
             >
-              {processing ? 'Menyimpan...' : (
+              {processing ? 'Menyimpan...' : isPengajuan ? 'AJUKAN DATA' : (
                 <>
                   <Save className="w-4 h-4" /> SIMPAN DATA
                 </>

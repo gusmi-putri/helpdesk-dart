@@ -31,6 +31,7 @@ class ReportResource extends JsonResource
                 'pelapor' => $this->pelapor ? $this->pelapor->nama_lengkap : 'Unknown',
                 'lokasi' => $this->lokasi_laporan ?? ($this->unit ? $this->unit->asal_satuan : 'Unknown'),
                 'barangRusak' => $this->unit ? $this->unit->nomor_seri : 'Unknown',
+                'jenis_dart' => $this->unit ? $this->unit->jenis : 'Unknown',
                 'deskripsi' => $this->deskripsi_kerusakan,
                 'klasifikasi' => $this->klasifikasi ?? ($this->tingkat_kerusakan ?? 'RINGAN'),
                 'tingkatKerusakan' => $this->tingkat_kerusakan ?? ($this->klasifikasi ?? '-'),
