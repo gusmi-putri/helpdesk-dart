@@ -202,3 +202,4 @@ const PelaporReportDetailModal: React.FC<PelaporReportDetailModalProps> = ({ isO
 };
 
 export default PelaporReportDetailModal;
+

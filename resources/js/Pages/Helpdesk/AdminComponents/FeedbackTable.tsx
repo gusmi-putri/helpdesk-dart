@@ -75,3 +75,4 @@ const FeedbackTable: React.FC<FeedbackTableProps> = ({ dbFeedbacks }) => {
 };
 
 export default FeedbackTable;
+

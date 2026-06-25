@@ -96,7 +96,7 @@ const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
               : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/30'
           }`}
         >
-          <MapPin className="w-4 h-4" /> SATUAN KERJA
+          <MapPin className="w-4 h-4" /> SATUAN
           {pendingSatuansCount > 0 && (
             <span className="bg-cighra-gold text-slate-900 font-bold text-[10px] px-1.5 py-0.5 rounded-full ml-1">{pendingSatuansCount}</span>
           )}
@@ -120,7 +120,7 @@ const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
               <table className="w-full text-left font-sans text-sm">
                 <thead className="bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-slate-700 text-xs">
                   <tr>
-                    <SortableHeader label="SATUAN KERJA" sortKey="nama_satuan" currentSort={satuanSortConfig} onSort={handleSatuanSort} />
+                    <SortableHeader label="SATUAN" sortKey="nama_satuan" currentSort={satuanSortConfig} onSort={handleSatuanSort} />
                     <SortableHeader label="JENIS PENGAJUAN" sortKey="pending_action" currentSort={satuanSortConfig} onSort={handleSatuanSort} />
                     <SortableHeader label="DETAIL PERUBAHAN" />
                     <SortableHeader label="AKSI VERIFIKASI" />
@@ -130,7 +130,7 @@ const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
                 {pendingSatuansCount === 0 ? (
                   <tr>
                     <td colSpan={4} className="p-20 text-center text-slate-500 italic font-mono uppercase tracking-widest">
-                      Tidak ada pengajuan persetujuan Satuan Kerja.
+                      Tidak ada pengajuan persetujuan SATUAN.
                     </td>
                   </tr>
                 ) : sortedPendingSatuans.map((satuan: any) => (
@@ -175,3 +175,4 @@ const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
 };
 
 export default ApprovalCenter;
+

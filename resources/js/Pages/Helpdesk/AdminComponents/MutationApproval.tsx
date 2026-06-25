@@ -677,3 +677,4 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
 };
 
 export default MutationApproval;
+

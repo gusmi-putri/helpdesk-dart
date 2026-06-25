@@ -32,3 +32,4 @@ const Topbar: React.FC<TopbarProps> = ({ setIsMobileMenuOpen, currentUser }) => 
 };
 
 export default Topbar;
+

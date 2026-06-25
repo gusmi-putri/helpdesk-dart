@@ -397,3 +397,4 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
 };
 
 export default MonitoringMap;
+

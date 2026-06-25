@@ -138,3 +138,4 @@ const ReportHistory: React.FC<ReportHistoryProps> = ({
 };
 
 export default ReportHistory;
+

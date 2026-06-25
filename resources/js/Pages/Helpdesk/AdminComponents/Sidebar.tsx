@@ -116,7 +116,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                   onClick={() => handleMenuClick('SATUANS')}
                   className={`w-full text-left pl-[54px] py-2.5 flex items-center gap-2 text-xs font-tactical tracking-widest transition-colors ${activeMenu === 'SATUANS' ? 'text-cighra-primary dark:text-cighra-gold font-bold' : 'text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
                 >
-                  <MapPin size={14} /> » SATUAN KERJA
+                  <MapPin size={14} /> » SATUAN
                 </button>
               </div>
             )}
@@ -182,3 +182,4 @@ const Sidebar: React.FC<SidebarProps> = ({
 };
 
 export default Sidebar;
+

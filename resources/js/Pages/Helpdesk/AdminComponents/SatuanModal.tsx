@@ -39,11 +39,11 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
             <div>
               <h3 className="text-xl font-tactical font-bold text-slate-800 dark:text-white uppercase tracking-widest">
                 {isPengajuan
-                  ? (isAddMode ? 'Pengajuan Tambah Satuan Kerja' : 'Pengajuan Edit Satuan Kerja')
-                  : (isAddMode ? 'Tambah Satuan Kerja' : 'Edit Satuan Kerja')}
+                  ? (isAddMode ? 'Pengajuan Tambah SATUAN' : 'Pengajuan Edit SATUAN')
+                  : (isAddMode ? 'Tambah SATUAN' : 'Edit SATUAN')}
               </h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                Lengkapi informasi satuan kerja di bawah ini.
+                Lengkapi informasi SATUAN di bawah ini.
               </p>
             </div>
           </div>
@@ -56,7 +56,7 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
           {/* Form Fields */}
           <div>
             <label className="block text-xs font-tactical tracking-widest text-slate-600 dark:text-slate-300 mb-2 uppercase">
-              Nama Satuan Kerja <span className="text-red-500">*</span>
+              Nama SATUAN <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -151,13 +151,13 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
           {isPengajuan ? (
             <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-xl border border-yellow-100 dark:border-yellow-800/30">
               <p className="text-xs text-yellow-700 dark:text-yellow-400">
-                <span className="font-bold">Info:</span> Data satuan kerja yang Anda buat akan masuk sebagai <b>pengajuan</b> dan menunggu persetujuan Admin.
+                <span className="font-bold">Info:</span> Data SATUAN yang Anda buat akan masuk sebagai <b>pengajuan</b> dan menunggu persetujuan Admin.
               </p>
             </div>
           ) : (
             <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800/30">
               <p className="text-xs text-blue-700 dark:text-blue-400">
-                <span className="font-bold">Info:</span> Menyimpan kordinat (latitude & longitude) akan secara otomatis <b>memverifikasi</b> satuan kerja ini.
+                <span className="font-bold">Info:</span> Menyimpan kordinat (latitude & longitude) akan secara otomatis <b>memverifikasi</b> SATUAN ini.
               </p>
             </div>
           )}
@@ -191,3 +191,4 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
 };
 
 export default SatuanModal;
+

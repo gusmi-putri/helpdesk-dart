@@ -77,3 +77,4 @@ const ReportRejectModal: React.FC<ReportRejectModalProps> = ({ isOpen, onClose, 
 };
 
 export default ReportRejectModal;
+

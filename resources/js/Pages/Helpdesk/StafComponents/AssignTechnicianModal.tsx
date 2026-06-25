@@ -74,3 +74,4 @@ const AssignTechnicianModal: React.FC<AssignTechnicianModalProps> = ({
 };
 
 export default AssignTechnicianModal;
+

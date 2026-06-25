@@ -135,3 +135,4 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
 };
 
 export default CompletedReportsTable;
+

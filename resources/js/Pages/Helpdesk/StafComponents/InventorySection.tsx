@@ -192,7 +192,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
             </select>
           </div>
           <div className="w-full md:w-56">
-            <label className="block text-[9px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">SATUAN KERJA</label>
+            <label className="block text-[9px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">SATUAN</label>
             <select
               value={filterSatuan}
               onChange={(e) => setFilterSatuan(e.target.value)}
@@ -274,3 +274,4 @@ const InventorySection: React.FC<InventorySectionProps> = ({
 };
 
 export default InventorySection;
+

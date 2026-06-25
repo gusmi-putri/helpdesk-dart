@@ -127,3 +127,4 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({ selectedTask, activeT
 };
 
 export default TaskDetailPanel;
+

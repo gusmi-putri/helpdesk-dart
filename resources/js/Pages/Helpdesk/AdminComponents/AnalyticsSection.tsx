@@ -128,3 +128,4 @@ const AnalyticsSection: React.FC<AnalyticsSectionProps> = ({ dbCases }) => {
 };
 
 export default AnalyticsSection;
+

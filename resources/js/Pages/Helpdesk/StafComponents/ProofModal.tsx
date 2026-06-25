@@ -49,3 +49,4 @@ const ProofModal: React.FC<ProofModalProps> = ({ isOpen, onClose, viewingProof }
 };
 
 export default ProofModal;
+

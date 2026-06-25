@@ -139,3 +139,4 @@ const SatuanDetailModal: React.FC<SatuanDetailModalProps> = ({
 };
 
 export default SatuanDetailModal;
+

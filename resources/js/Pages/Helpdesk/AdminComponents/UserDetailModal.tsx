@@ -77,3 +77,4 @@ const UserDetailModal: React.FC<UserDetailModalProps> = ({ isOpen, onClose, user
 };
 
 export default UserDetailModal;
+

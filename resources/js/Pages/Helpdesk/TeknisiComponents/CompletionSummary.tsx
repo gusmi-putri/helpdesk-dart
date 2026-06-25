@@ -56,3 +56,4 @@ const CompletionSummary: React.FC<CompletionSummaryProps> = ({ selectedTask, onB
 };
 
 export default CompletionSummary;
+

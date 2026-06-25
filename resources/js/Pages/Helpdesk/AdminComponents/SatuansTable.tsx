@@ -38,7 +38,7 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
       {/* Header */}
       <div className="p-5 border-b border-slate-200 dark:border-slate-600 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-800">
         <h3 className="text-white font-tactical font-bold text-lg tracking-widest flex items-center gap-3 uppercase">
-          <MapPin className="text-cighra-gold w-6 h-6" /> DATA SATUAN KERJA
+          <MapPin className="text-cighra-gold w-6 h-6" /> DATA SATUAN
         </h3>
 
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
@@ -74,7 +74,7 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
           <thead className="bg-slate-800 border-b border-slate-700">
             <tr>
               <SortableHeader label="KODE SATUAN" sortKey="kode_satuan" currentSort={sortConfig} onSort={handleSort} />
-              <SortableHeader label="NAMA SATUAN KERJA" sortKey="nama_satuan" currentSort={sortConfig} onSort={handleSort} />
+              <SortableHeader label="NAMA SATUAN" sortKey="nama_satuan" currentSort={sortConfig} onSort={handleSort} />
               <SortableHeader label="ALAMAT / LOKASI" sortKey="alamat" currentSort={sortConfig} onSort={handleSort} />
               <SortableHeader label="KOORDINAT" sortKey="latitude" currentSort={sortConfig} onSort={handleSort} />
               <SortableHeader label="TOTAL DART" />
@@ -86,7 +86,7 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
             {filteredSatuans.length === 0 ? (
               <tr>
                 <td colSpan={6} className="p-10 text-center text-slate-500 dark:text-slate-400 font-mono italic uppercase tracking-widest">
-                  Tidak ada data satuan kerja yang ditemukan.
+                  Tidak ada data SATUAN yang ditemukan.
                 </td>
               </tr>
             ) : (
@@ -156,3 +156,4 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
 };
 
 export default SatuansTable;
+

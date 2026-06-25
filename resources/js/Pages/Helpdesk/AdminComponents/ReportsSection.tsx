@@ -244,3 +244,4 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
 };
 
 export default ReportsSection;
+

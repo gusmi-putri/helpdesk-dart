@@ -28,7 +28,7 @@ const SatuanDeleteModal: React.FC<SatuanDeleteModalProps> = ({
     router.delete(`/satuans/${satuan.id}`, {
       onSuccess: () => {
         setProcessing(false);
-        addNotification('Satuan Kerja berhasil dihapus/diajukan hapus.');
+        addNotification('SATUAN berhasil dihapus/diajukan hapus.');
         if (onSuccess) onSuccess();
         onClose();
       },
@@ -53,14 +53,14 @@ const SatuanDeleteModal: React.FC<SatuanDeleteModalProps> = ({
             </h3>
             <p className="text-sm text-red-600/80 dark:text-red-300/80 mt-2 font-medium">
               {isPengajuan 
-                ? 'Pengajuan ini akan dikirim ke Admin untuk disetujui sebelum Satuan Kerja dihapus secara permanen.' 
-                : 'Tindakan ini akan menghapus Satuan Kerja secara permanen dari sistem.'}
+                ? 'Pengajuan ini akan dikirim ke Admin untuk disetujui sebelum SATUAN dihapus secara permanen.' 
+                : 'Tindakan ini akan menghapus SATUAN secara permanen dari sistem.'}
             </p>
           </div>
         </div>
 
         <div className="p-6 bg-white dark:bg-cighra-darkcard text-center">
-          <p className="text-slate-600 dark:text-slate-400 text-sm">Satuan Kerja yang akan dihapus:</p>
+          <p className="text-slate-600 dark:text-slate-400 text-sm">SATUAN yang akan dihapus:</p>
           <div className="mt-3 p-4 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700">
             <p className="font-bold text-lg text-slate-800 dark:text-white">{satuan.nama_satuan}</p>
           </div>
@@ -96,3 +96,4 @@ const SatuanDeleteModal: React.FC<SatuanDeleteModalProps> = ({
 };
 
 export default SatuanDeleteModal;
+

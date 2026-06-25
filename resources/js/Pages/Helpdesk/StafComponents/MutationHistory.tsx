@@ -226,3 +226,4 @@ const MutationHistory: React.FC<MutationHistoryProps> = ({ dbMutations }) => {
 };
 
 export default MutationHistory;
+

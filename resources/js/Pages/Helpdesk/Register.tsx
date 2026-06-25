@@ -278,7 +278,7 @@ const Register: React.FC = () => {
                 {/* Asal Satuan */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300/80 uppercase flex items-center gap-2">
-                    <MapPin className="w-3 h-3" /> Asal Satuan Kerja
+                    <MapPin className="w-3 h-3" /> Asal SATUAN
                   </label>
                   <div className="group relative">
                     <Combobox value={data.asal_satuan} onChange={(val: string | null) => val && setData('asal_satuan', val)}>
@@ -414,3 +414,4 @@ const Register: React.FC = () => {
 };
 
 export default Register;
+

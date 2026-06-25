@@ -180,7 +180,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
               <input type="text" readOnly value={authUser?.nrp_nip || '-'} className="w-full bg-white dark:bg-cighra-darkcard/80 border border-slate-300 dark:border-slate-600 px-4 py-2.5 text-sm text-gunmetal dark:text-slate-300 cursor-not-allowed rounded-sm" />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-500 dark:text-slate-300 mb-2 uppercase tracking-wider">Satuan Kerja</label>
+              <label className="block text-xs font-bold text-slate-500 dark:text-slate-300 mb-2 uppercase tracking-wider">SATUAN</label>
               <input type="text" readOnly value={authUser?.asal_satuan || '-'} className="w-full bg-white dark:bg-cighra-darkcard/80 border border-slate-300 dark:border-slate-600 px-4 py-2.5 text-sm text-gunmetal dark:text-slate-300 cursor-not-allowed rounded-sm" />
             </div>
             <div>
@@ -409,3 +409,4 @@ const ReportForm: React.FC<ReportFormProps> = ({
 };
 
 export default ReportForm;
+

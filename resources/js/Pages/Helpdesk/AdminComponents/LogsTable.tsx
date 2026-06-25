@@ -115,3 +115,4 @@ const LogsTable: React.FC<LogsTableProps> = ({
 };
 
 export default LogsTable;
+

@@ -300,14 +300,14 @@ const DashboardStaf = (props: any) => {
         onSuccess: () => {
           setIsSatuanModalOpen(false);
           satuanForm.reset();
-          addNotification('Pengajuan penambahan Satuan Kerja dikirim.');
+          addNotification('Pengajuan penambahan SATUAN dikirim.');
         }
       });
     } else {
       satuanForm.put(`/satuans/${editingSatuan.id}`, {
         onSuccess: () => {
           setIsSatuanModalOpen(false);
-          addNotification('Pengajuan perubahan Satuan Kerja dikirim.');
+          addNotification('Pengajuan perubahan SATUAN dikirim.');
         }
       });
     }
@@ -660,3 +660,4 @@ const DashboardStaf = (props: any) => {
 };
 
 export default DashboardStaf;
+
