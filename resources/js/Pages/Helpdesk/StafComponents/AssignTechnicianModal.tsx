@@ -44,7 +44,7 @@ const AssignTechnicianModal: React.FC<AssignTechnicianModalProps> = ({
                   </div>
                 </div>
                 <button
-                  onClick={() => onAssign(tek.id)}
+                  onClick={() => onAssign(tek.db_id)}
                   className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-6 py-2 text-xs font-tactical font-bold tracking-widest transition-colors flex items-center justify-center gap-2 uppercase"
                 >
                   <ShieldAlert className="w-4 h-4" /> TUGASKAN
