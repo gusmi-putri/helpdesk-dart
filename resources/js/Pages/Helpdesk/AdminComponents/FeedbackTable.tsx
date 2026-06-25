@@ -1,11 +1,15 @@
 import React from 'react';
 import { MessageSquare } from 'lucide-react';
+import { useTableSort } from '@/hooks/useTableSort';
+import SortableHeader from '@/Components/Table/SortableHeader';
 
 interface FeedbackTableProps {
   dbFeedbacks: any[];
 }
 
 const FeedbackTable: React.FC<FeedbackTableProps> = ({ dbFeedbacks }) => {
+  const { sortedItems: sortedFeedbacks, sortConfig, handleSort } = useTableSort(dbFeedbacks, { key: 'tanggal', direction: 'desc' });
+
   return (
     <div className="bg-white dark:bg-cighra-darkcard/70 border border-slate-200 dark:border-slate-600 shadow-xl overflow-hidden animate-in fade-in relative">
       <div className="absolute top-0 left-0 w-full h-[2px] bg-yellow-500"></div>
@@ -19,12 +23,12 @@ const FeedbackTable: React.FC<FeedbackTableProps> = ({ dbFeedbacks }) => {
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-left font-sans text-sm">
-          <thead className="bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-slate-700">
+          <thead className="bg-slate-800 border-b border-slate-700">
             <tr>
-              <th className="p-4 w-48">PENGIRIM</th>
-              <th className="p-4 w-32">KATEGORI</th>
-              <th className="p-4 w-32 text-center">RATING</th>
-              <th className="p-4">RINCIAN EVALUASI</th>
+              <SortableHeader label="PENGIRIM" sortKey="nama_pengirim" currentSort={sortConfig} onSort={handleSort} className="w-48" />
+              <SortableHeader label="KATEGORI" sortKey="kategori" currentSort={sortConfig} onSort={handleSort} className="w-32" />
+              <SortableHeader label="RATING" sortKey="rating" currentSort={sortConfig} onSort={handleSort} className="w-32" />
+              <SortableHeader label="RINCIAN EVALUASI" />
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 dark:divide-gray-800 bg-white dark:bg-transparent">
@@ -35,13 +39,13 @@ const FeedbackTable: React.FC<FeedbackTableProps> = ({ dbFeedbacks }) => {
                 </td>
               </tr>
             ) : (
-              dbFeedbacks.map((f: any) => (
-                <tr key={f.id} className="hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors group">
-                  <td className="p-4">
+              sortedFeedbacks.map((f: any) => (
+                <tr key={f.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/60 transition-colors group text-slate-800 dark:text-slate-200">
+                  <td className="p-4 text-center">
                     <div className="font-bold text-slate-800 dark:text-white uppercase">{f.nama_pengirim}</div>
                     <div className="text-[10px] font-mono text-slate-500">{f.tanggal}</div>
                   </td>
-                  <td className="p-4">
+                  <td className="p-4 text-center">
                     <span className="px-2 py-1 text-[10px] font-mono font-bold bg-gray-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-600 tracking-tighter uppercase">
                       {f.kategori}
                     </span>
@@ -55,8 +59,8 @@ const FeedbackTable: React.FC<FeedbackTableProps> = ({ dbFeedbacks }) => {
                       ))}
                     </div>
                   </td>
-                  <td className="p-4">
-                    <div className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-mono">
+                  <td className="p-4 text-center">
+                    <div className="text-xs text-slate-800 dark:text-white leading-relaxed font-mono">
                       "{f.pesan}"
                     </div>
                   </td>

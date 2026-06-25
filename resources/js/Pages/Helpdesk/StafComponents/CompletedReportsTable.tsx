@@ -1,5 +1,7 @@
 import React from 'react';
 import { CheckCircle, Image, CheckSquare, XCircle } from 'lucide-react';
+import { useTableSort } from '@/hooks/useTableSort';
+import SortableHeader from '@/Components/Table/SortableHeader';
 
 interface CompletedReportsTableProps {
   reports: any[];
@@ -12,6 +14,8 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
   onSelectReport,
   onViewProof
 }) => {
+  const { sortedItems: sortedReports, sortConfig, handleSort } = useTableSort(reports, { key: 'caseId', direction: 'desc' });
+
   return (
     <div className="animate-in fade-in space-y-6 mt-6">
       <div className="bg-white/60 dark:bg-cighra-darkcard/70 border border-slate-300 dark:border-slate-600 rounded-sm overflow-hidden shadow-xl">
@@ -20,13 +24,13 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
         </div>
         <div className="overflow-x-auto p-2">
           <table className="w-full text-left font-sans">
-            <thead className="bg-slate-800 text-slate-100 border-b border-slate-600 font-tactical tracking-widest text-xs">
+            <thead className="bg-slate-800 border-b border-slate-600">
               <tr>
-                <th className="p-4 w-32">ID TIKET</th>
-                <th className="p-4">DETAIL KERUSAKAN</th>
-                <th className="p-4">TEKNISI PELAKSANA</th>
-                <th className="p-4">CATATAN PERBAIKAN</th>
-                <th className="p-4 text-center">DOKUMENTASI</th>
+                <SortableHeader label="ID TIKET" sortKey="caseId" currentSort={sortConfig} onSort={handleSort} className="w-32" />
+                <SortableHeader label="DETAIL KERUSAKAN" />
+                <SortableHeader label="TEKNISI PELAKSANA" />
+                <SortableHeader label="CATATAN PERBAIKAN" />
+                <SortableHeader label="DOKUMENTASI" />
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-soft-sand/5 bg-white dark:bg-transparent text-slate-800 dark:text-white">
@@ -37,41 +41,41 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                   </td>
                 </tr>
               )}
-              {reports.map((report: any) => (
+              {sortedReports.map((report: any) => (
                 <tr key={report.db_id} className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
-                  <td className="p-4">
+                  <td className="p-4 text-center">
                     <button
                       onClick={() => onSelectReport(report.db_id)}
-                      className="font-mono text-slate-600 dark:text-slate-300 text-sm bg-white dark:bg-cighra-darkcard px-2 py-1 border border-slate-300 dark:border-slate-600 block w-fit hover:border-cighra-primary dark:hover:border-cighra-gold hover:text-cighra-primary dark:hover:text-cighra-gold transition-colors"
+                      className="font-mono text-slate-800 dark:text-slate-300 text-sm bg-white dark:bg-cighra-darkcard px-2 py-1 border border-slate-300 dark:border-slate-600 block w-fit mx-auto hover:border-cighra-primary dark:hover:border-cighra-gold hover:text-cighra-primary dark:hover:text-cighra-gold transition-colors font-bold"
                     >
                       {report.caseId}
                     </button>
                     {report.status === 'SELESAI' ? (
-                      <div className="mt-2 text-white dark:text-green-400 text-[10px] font-mono font-bold flex items-center gap-1 bg-camogreen dark:bg-camogreen/20 px-1.5 py-0.5 border border-camogreen dark:border-camogreen/30 w-fit">
+                      <div className="mt-2 text-white dark:text-green-400 text-[10px] font-mono font-bold flex justify-center items-center gap-1 bg-camogreen dark:bg-camogreen/20 px-1.5 py-0.5 border border-camogreen dark:border-camogreen/30 w-fit mx-auto">
                         <CheckCircle className="w-3 h-3" /> TUNTAS
                       </div>
                     ) : (
-                      <div className="mt-2 text-red-600 text-[10px] font-mono font-bold flex items-center gap-1 bg-red-50 dark:bg-red-900/20 px-1.5 py-0.5 border border-red-200 dark:border-red-900/30 w-fit">
+                      <div className="mt-2 text-red-600 text-[10px] font-mono font-bold flex justify-center items-center gap-1 bg-red-50 dark:bg-red-900/20 px-1.5 py-0.5 border border-red-200 dark:border-red-900/30 w-fit mx-auto">
                         <XCircle className="w-3 h-3" /> DITOLAK
                       </div>
                     )}
                   </td>
-                  <td className="p-4">
-                    <div className="font-bold text-sm mb-1 uppercase">{report.kerusakan.barangRusak}</div>
-                    <div className="text-slate-500 dark:text-slate-300 text-xs font-mono w-full max-w-sm uppercase">
+                  <td className="p-4 text-center">
+                    <div className="font-bold text-sm mb-1 uppercase text-slate-800 dark:text-white">{report.kerusakan.barangRusak}</div>
+                    <div className="text-slate-500 dark:text-slate-300 text-xs font-mono w-full max-w-sm uppercase mx-auto">
                       Masuk: {report.kerusakan.tanggal} <br />
                       Selesai: <span className="text-slate-800 dark:text-white font-bold">{report.perbaikan.tanggalSelesai || '-'}</span>
                     </div>
                   </td>
-                  <td className="p-4">
-                    <div className="text-sm font-bold uppercase text-slate-700 dark:text-white">
+                  <td className="p-4 text-center">
+                    <div className="text-sm font-bold uppercase text-slate-800 dark:text-white">
                       {report.perbaikan.teknisi}
                     </div>
-                    <div className="text-slate-400 dark:text-slate-400 text-[10px] font-mono mt-1 uppercase">
+                    <div className="text-slate-500 dark:text-slate-400 text-[10px] font-mono mt-1 uppercase">
                       KODE OP: {report.db_id}
                     </div>
                   </td>
-                  <td className="p-4">
+                  <td className="p-4 text-center">
                     {report.status === 'DITOLAK' ? (
                       <div className="bg-red-50 dark:bg-red-950/20 p-4 border-l-4 border-red-600 text-sm text-slate-600 dark:text-slate-300 shadow-sm">
                         <span className="font-bold text-red-600 dark:text-red-500 block mb-1 uppercase text-xs">Alasan Penolakan:</span>

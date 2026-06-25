@@ -19,6 +19,8 @@ class UnitResource extends JsonResource
             'nomor_seri' => $this->nomor_seri,
             'jenis' => $this->jenis,
             'asal_satuan' => $this->asal_satuan,
+            'satuan_id' => $this->satuan_id,
+            'satuan' => $this->whenLoaded('satuan'),
             'status_unit' => $this->status_unit,
             'last_maintenance' => clone $this->updated_at ? $this->updated_at->format('d M Y') : null,
             'deleted_at' => $this->when($this->deleted_at, function () {

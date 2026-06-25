@@ -11,6 +11,8 @@ interface UserEditModalProps {
   processing: boolean;
   isAddMode: boolean;
   dbRoles: any[];
+  dbSatuans?: any[];
+  isPengajuan?: boolean;
 }
 
 const UserEditModal: React.FC<UserEditModalProps> = ({
@@ -22,7 +24,9 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
   errors,
   processing,
   isAddMode,
-  dbRoles
+  dbRoles,
+  dbSatuans,
+  isPengajuan
 }) => {
   const [waWarning, setWaWarning] = useState('');
 
@@ -66,7 +70,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
       <div className="bg-cighra-light dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full max-w-md shadow-[0_0_50px_rgba(75,83,32,0.3)] animate-in zoom-in-95 duration-200">
         <div className="p-4 border-b border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/10 flex justify-between items-center">
           <h3 className="font-tactical font-bold text-cighra-primary dark:text-cighra-gold tracking-widest uppercase">
-            {isAddMode ? 'TAMBAH PERSONEL BARU' : 'PENGATURAN PERSONEL'}
+            {isPengajuan ? (isAddMode ? 'PENGAJUAN PERSONEL BARU' : 'PENGAJUAN EDIT PERSONEL') : (isAddMode ? 'TAMBAH PERSONEL BARU' : 'PENGATURAN PERSONEL')}
           </h3>
           <button onClick={onClose} className="text-slate-500 hover:text-cighra-primary dark:text-cighra-gold">✕</button>
         </div>
@@ -186,14 +190,25 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
             </div>
             <div>
               <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Asal Satuan</label>
-              <input
-                type="text"
-                value={data.asal_satuan}
-                onChange={(e) => handleUppercaseInput('asal_satuan', e.target.value)}
-                className="w-full bg-white dark:bg-cighra-darkcard border border-gray-400 dark:border-slate-600 p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none uppercase"
-                placeholder="CONTOH: SATUAN KERJA A"
-                maxLength={100}
-              />
+              <select
+                value={data.satuan_id || ''}
+                onChange={(e) => {
+                   setData('satuan_id', e.target.value);
+                   const selectedSatuan = dbSatuans?.find((s: any) => s.id == e.target.value);
+                   if (selectedSatuan) {
+                       // Optional fallback
+                       // setData('asal_satuan', selectedSatuan.nama_satuan);
+                   }
+                }}
+                className={`w-full bg-white dark:bg-cighra-darkcard border ${errors.satuan_id ? 'border-red-500' : 'border-gray-400 dark:border-slate-600'} p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none`}
+                required
+              >
+                <option value="">PILIH SATUAN</option>
+                {dbSatuans?.map((satuan: any) => (
+                  <option key={satuan.id} value={satuan.id}>{satuan.nama_satuan.toUpperCase()}</option>
+                ))}
+              </select>
+              {errors.satuan_id && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.satuan_id}</p>}
             </div>
             <div>
               <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">
@@ -216,7 +231,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
               disabled={processing}
               className="flex-1 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white py-2 font-tactical font-bold tracking-widest hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 transition-colors disabled:opacity-50"
             >
-              {processing ? 'MEMPROSES...' : (isAddMode ? 'DAFTARKAN PERSONEL' : 'SIMPAN PERUBAHAN')}
+              {processing ? 'MEMPROSES...' : isPengajuan ? (isAddMode ? 'AJUKAN PENDAFTARAN' : 'AJUKAN PERUBAHAN') : (isAddMode ? 'DAFTARKAN PERSONEL' : 'SIMPAN PERUBAHAN')}
             </button>
             <button type="button" onClick={onClose} className="flex-1 bg-transparent border border-gray-500 text-slate-500 py-2 font-tactical font-bold tracking-widest hover:bg-gray-500/10 transition-colors">
               BATAL

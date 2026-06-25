@@ -1,6 +1,7 @@
 import React from 'react';
-import { Package, Search, Plus, Filter, ArrowUp, ArrowDown, History, Edit, Trash2, Upload, CheckCircle, AlertTriangle, X, Download } from 'lucide-react';
+import { Package, Search, Plus, History, Edit, Trash2, Upload, CheckCircle, AlertTriangle, X, Download } from 'lucide-react';
 import { router, usePage } from '@inertiajs/react';
+import SortableHeader from '@/Components/Table/SortableHeader';
 
 interface UnitsTableProps {
   dbUnits: any[];
@@ -166,31 +167,24 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
 
         <div className="overflow-x-auto">
           <table className="w-full text-left font-sans text-sm">
-            <thead className="bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-slate-700">
+            <thead className="bg-slate-800 border-b border-slate-700">
               <tr>
                 {[
                   { label: 'NOMOR SERI', key: 'nomor_seri' },
                   { label: 'JENIS', key: 'jenis' },
-                  { label: 'ASAL SATUAN / LOKASI', key: 'asal_satuan' },
+                  { label: 'ASAL SATUAN', key: 'asal_satuan' },
                   { label: 'STATUS', key: 'status_unit' },
                   { label: 'MAINTENANCE', key: 'last_maintenance' },
-
                 ].map((col) => (
-                  <th
-                    key={col.key}
-                    className="p-4 cursor-pointer hover:text-cighra-primary dark:text-cighra-gold transition-colors"
-                    onClick={() => handleUnitSort(col.key)}
-                  >
-                    <div className="flex items-center gap-2">
-                      {col.label}
-                      <Filter className="w-3 h-3 opacity-30" />
-                      {unitSortConfig?.key === col.key && (
-                        unitSortConfig.direction === 'asc' ? <ArrowUp className="w-3 h-3 text-cighra-primary dark:text-cighra-gold" /> : <ArrowDown className="w-3 h-3 text-cighra-primary dark:text-cighra-gold" />
-                      )}
-                    </div>
-                  </th>
+                  <SortableHeader 
+                    key={col.key} 
+                    label={col.label} 
+                    sortKey={col.key} 
+                    currentSort={unitSortConfig} 
+                    onSort={handleUnitSort} 
+                  />
                 ))}
-                <th className="p-4 text-right">OPSI</th>
+                <SortableHeader label="OPSI" />
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700/50">
@@ -201,32 +195,32 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
               ) : (
                 filteredUnits.map((u: any) => (
                   <tr key={u.db_id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group bg-white dark:bg-transparent">
-                    <td className="p-4 font-mono font-bold text-cighra-primary dark:text-cighra-gold border-l-2 border-transparent group-hover:border-cighra-primary dark:border-cighra-gold">{u.nomor_seri}</td>
-                    <td className="p-4 font-mono text-xs text-slate-500 dark:text-slate-300 uppercase">{u.jenis}</td>
-                    <td className="p-4 text-gunmetal dark:text-slate-300 uppercase">{u.asal_satuan}</td>
-                    <td className="p-4">
+                    <td className="p-4 font-mono font-bold text-slate-800 dark:text-white text-center truncate max-w-[150px]" title={u.nomor_seri}>{u.nomor_seri}</td>
+                    <td className="p-4 font-mono text-xs text-slate-800 dark:text-white uppercase text-center truncate max-w-[150px]" title={u.jenis}>{u.jenis}</td>
+                    <td className="p-4 font-mono text-xs text-slate-800 dark:text-white uppercase text-center truncate max-w-[200px]" title={u.asal_satuan}>{u.asal_satuan}</td>
+                    <td className="p-4 text-center">
                       <span className={`px-2 py-0.5 border text-[9px] font-bold tracking-widest uppercase
-                        ${u.status_unit === 'Beroperasi' ? 'bg-camogreen/10 text-camogreen border-camogreen/30' :
-                          u.status_unit === 'Rusak' ? 'bg-cighra-primary/10 dark:bg-cighra-gold/10 text-cighra-primary dark:text-cighra-gold border-cighra-primary dark:border-cighra-gold/30' :
-                            u.status_unit === 'Perbaikan' ? 'bg-blue-900/10 text-blue-500 border-blue-800/30' :
-                              'bg-slate-900/10 text-slate-500 border-slate-800/30'}
+                        ${u.status_unit === 'Beroperasi' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40' :
+                          u.status_unit === 'Rusak' ? 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/40' :
+                            u.status_unit === 'Perbaikan' ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800/40' :
+                              'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-300 dark:border-slate-600'}
                       `}>
                         {u.status_unit === 'Perbaikan' ? 'Dalam Perbaikan' : u.status_unit}
                       </span>
                     </td>
-                    <td className="p-4 font-mono text-[10px] text-slate-500 dark:text-slate-400">{u.last_maintenance}</td>
+                    <td className="p-4 font-mono text-[10px] text-slate-800 dark:text-white text-center">{u.last_maintenance}</td>
 
-                    <td className="p-4 flex gap-2 justify-end">
-                      <button onClick={() => handleShowUnitHistory(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 text-slate-500 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Riwayat">
+                    <td className="p-4 flex gap-2 justify-center">
+                      <button onClick={() => handleShowUnitHistory(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Riwayat">
                         <History className="w-4 h-4" />
                       </button>
                       {handleEditUnit && (
-                        <button onClick={() => handleEditUnit(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 text-slate-500 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Edit">
+                        <button onClick={() => handleEditUnit(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Edit">
                           <Edit className="w-4 h-4" />
                         </button>
                       )}
                       {handleDeleteUnit && (
-                        <button onClick={() => handleDeleteUnit(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-500 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Hapus">
+                        <button onClick={() => handleDeleteUnit(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-600 dark:text-white hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Hapus">
                           <Trash2 className="w-4 h-4" />
                         </button>
                       )}

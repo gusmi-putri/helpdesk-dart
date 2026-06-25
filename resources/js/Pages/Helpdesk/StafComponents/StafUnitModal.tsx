@@ -8,30 +8,14 @@ interface StafUnitModalProps {
   onClose: () => void;
   onSubmit: (formData: FormData) => void;
   processing: boolean;
+  processing: boolean;
+  dbSatuans?: any[];
 }
 
-const StafUnitModal: React.FC<StafUnitModalProps> = ({ isOpen, onClose, onSubmit, processing }) => {
+const StafUnitModal: React.FC<StafUnitModalProps> = ({ isOpen, onClose, onSubmit, processing, dbSatuans = [] }) => {
   const [nomorSeri, setNomorSeri] = useState('');
   const [jenisDart, setJenisDart] = useState('DART STD');
-  const [asalSatuan, setAsalSatuan] = useState('');
-  const [statusUnit, setStatusUnit] = useState('Beroperasi');
-  const [reason, setReason] = useState('');
-  const [document, setDocument] = useState<File | null>(null);
-
-  const [satuans, setSatuans] = useState<any[]>([]);
-  const [satuanQuery, setSatuanQuery] = useState('');
-
-  React.useEffect(() => {
-    if (isOpen) {
-      axios.get('/api/satuans').then(res => setSatuans(res.data)).catch(console.error);
-    }
-  }, [isOpen]);
-
-  const filteredSatuans = satuanQuery === ''
-    ? satuans
-    : satuans.filter((satuan) =>
-        satuan.nama_satuan.toLowerCase().includes(satuanQuery.toLowerCase())
-      );
+  const [satuanId, setSatuanId] = useState('');
 
   if (!isOpen) return null;
 
@@ -42,7 +26,13 @@ const StafUnitModal: React.FC<StafUnitModalProps> = ({ isOpen, onClose, onSubmit
     formData.append('nomor_seri', nomorSeri);
 
     formData.append('jenis', jenisDart);
-    formData.append('asal_satuan', asalSatuan);
+    formData.append('satuan_id', satuanId);
+    
+    // Also pass asal_satuan for backend fallback
+    const selectedSatuan = dbSatuans.find(s => s.id == satuanId);
+    if (selectedSatuan) {
+      formData.append('asal_satuan', selectedSatuan.nama_satuan);
+    }
     formData.append('status_unit', statusUnit);
     formData.append('reason', reason || 'Pengajuan penambahan unit baru.');
     formData.append('document', document);
@@ -52,7 +42,7 @@ const StafUnitModal: React.FC<StafUnitModalProps> = ({ isOpen, onClose, onSubmit
   const handleClose = () => {
     setNomorSeri('');
     setJenisDart('DART STD');
-    setAsalSatuan('');
+    setSatuanId('');
     setStatusUnit('Beroperasi');
     setReason('');
     setDocument(null);
@@ -113,41 +103,17 @@ const StafUnitModal: React.FC<StafUnitModalProps> = ({ isOpen, onClose, onSubmit
 
           <div>
             <label className="block text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Asal Satuan *</label>
-            <div className="relative z-50">
-              <Combobox value={asalSatuan} onChange={(val: string) => setAsalSatuan(val)}>
-                <div className="relative">
-                  <ComboboxInput
-                    className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-3 py-2 pr-10 text-sm font-mono focus:border-cighra-primary dark:focus:border-cighra-gold outline-none text-slate-800 dark:text-white"
-                    placeholder="PILIH SATUAN..."
-                    displayValue={(item: string) => item}
-                    onChange={(event) => setSatuanQuery(event.target.value)}
-                    required
-                  />
-                  <ComboboxButton className="absolute inset-y-0 right-0 flex items-center pr-2">
-                    <ChevronDown className="h-4 w-4 text-slate-400" aria-hidden="true" />
-                  </ComboboxButton>
-                </div>
-                <ComboboxOptions className="absolute z-[100] mt-1 max-h-48 w-full overflow-auto rounded-sm bg-white dark:bg-slate-800 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm font-mono border border-slate-200 dark:border-slate-700">
-                  {filteredSatuans.length === 0 && satuanQuery !== '' ? (
-                    <div className="relative cursor-default select-none py-2 px-4 text-slate-700 dark:text-slate-300">
-                      Satuan tidak ditemukan di database. Hubungi Admin.
-                    </div>
-                  ) : (
-                    filteredSatuans.map((satuan) => (
-                      <ComboboxOption
-                        key={satuan.id}
-                        value={satuan.nama_satuan}
-                        className="group relative cursor-default select-none py-2 pl-3 pr-9 text-slate-900 dark:text-slate-100 data-focus:bg-cighra-primary data-focus:text-white dark:data-focus:bg-cighra-gold dark:data-focus:text-slate-900 cursor-pointer"
-                      >
-                        <span className="block truncate font-normal group-data-selected:font-semibold">
-                          {satuan.nama_satuan}
-                        </span>
-                      </ComboboxOption>
-                    ))
-                  )}
-                </ComboboxOptions>
-              </Combobox>
-            </div>
+            <select
+                value={satuanId}
+                onChange={(e) => setSatuanId(e.target.value)}
+                className={`w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none uppercase`}
+                required
+              >
+                <option value="">PILIH SATUAN</option>
+                {dbSatuans?.map((satuan: any) => (
+                  <option key={satuan.id} value={satuan.id}>{satuan.nama_satuan.toUpperCase()}</option>
+                ))}
+            </select>
           </div>
 
           <div>

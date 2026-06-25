@@ -1,5 +1,7 @@
 import React from 'react';
 import { Radar, FileArchive, AlertTriangle, Wrench, Download } from 'lucide-react';
+import { useTableSort } from '@/hooks/useTableSort';
+import SortableHeader from '@/Components/Table/SortableHeader';
 
 interface ReportsSectionProps {
   dbCases: any[];
@@ -27,10 +29,12 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
     DITOLAK: dbCases.filter((c: any) => c.status === 'DITOLAK').length,
   };
 
-  const filteredCases = dbCases.filter((c: any) => {
+  const filtered = dbCases.filter((c: any) => {
     if (reportStatusFilter === 'ALL') return true;
     return c.status === reportStatusFilter;
   });
+
+  const { sortedItems: filteredCases, sortConfig, handleSort } = useTableSort(filtered, { key: 'caseId', direction: 'desc' });
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
@@ -127,22 +131,22 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
         {/* 5. Main Table (Row 4) */}
         <div className="overflow-x-auto">
           <table className="w-full text-left font-sans text-sm break-words">
-            <thead className="bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-slate-700">
+            <thead className="bg-slate-800 border-b border-slate-700">
               <tr>
-                <th className="p-4 w-40">KODE KASUS</th>
+                <SortableHeader label="KODE KASUS" sortKey="caseId" currentSort={sortConfig} onSort={handleSort} className="w-40" />
                 {activeSubReport === 'KERUSAKAN' ? (
                   <>
-                    <th className="p-4">PELAPOR & WAKTU LAPOR</th>
-                    <th className="p-4 w-1/3">DETAIL KERUSAKAN</th>
+                    <SortableHeader label="PELAPOR & WAKTU" />
+                    <SortableHeader label="DETAIL KERUSAKAN" className="w-1/3" />
                   </>
                 ) : (
                   <>
-                    <th className="p-4">TEKNISI & WAKTU PENANGANAN</th>
-                    <th className="p-4 w-1/3">TINDAKAN & WAKTU SELESAI</th>
+                    <SortableHeader label="TEKNISI & PENANGANAN" />
+                    <SortableHeader label="TINDAKAN & WAKTU" className="w-1/3" />
                   </>
                 )}
-                <th className="p-4">STATUS KASUS</th>
-                <th className="p-4 text-center">PDF</th>
+                <SortableHeader label="STATUS KASUS" sortKey="status" currentSort={sortConfig} onSort={handleSort} />
+                <SortableHeader label="UNDUH BERKAS" />
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-gray-800 bg-white dark:bg-transparent">
@@ -155,7 +159,7 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
               ) : (
                 filteredCases.map((c: any) => (
                   <tr key={c.caseId} className="hover:bg-slate-50 dark:hover:bg-slate-700/60 transition-colors group text-slate-800 dark:text-slate-200">
-                    <td className="p-4 font-mono text-cighra-primary dark:text-cighra-gold font-bold border-l-2 border-transparent group-hover:border-cighra-primary dark:border-cighra-gold">
+                    <td className="p-4 font-mono text-slate-800 dark:text-white font-bold text-center">
                       {c.caseId}
                     </td>
 
@@ -209,12 +213,12 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
                       </>
                     )}
 
-                    <td className="p-4">
+                    <td className="p-4 text-center">
                       <span className={`px-3 py-1.5 font-mono text-[10px] font-bold tracking-widest border shadow-sm uppercase
-                    ${c.status === 'SELESAI' ? 'bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-500 border-green-200 dark:border-green-800' :
-                      c.status === 'DITOLAK' ? 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-500 border-red-200 dark:border-red-800' :
-                      c.status === 'PENDING' ? 'bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-500 border-yellow-200 dark:border-yellow-800 animate-pulse' :
-                        'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-500 border-blue-200 dark:border-blue-800'}
+                    ${c.status === 'SELESAI' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40' :
+                      c.status === 'DITOLAK' ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/40' :
+                      c.status === 'PENDING' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800/40 animate-pulse' :
+                        'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800/40'}
                   `}>
                         {c.status}
                       </span>

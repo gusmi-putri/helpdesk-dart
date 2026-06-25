@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { GitPullRequest, CheckCircle, XCircle, Archive, RotateCcw, FileText, ExternalLink, Plus, Trash2, Clock, Search, Eye, X } from 'lucide-react';
+import { useTableSort } from '@/hooks/useTableSort';
+import SortableHeader from '@/Components/Table/SortableHeader';
 import { router } from '@inertiajs/react';
 
 interface MutationApprovalProps {
@@ -22,6 +24,8 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
 
   const pendingMutations = dbMutations.filter((m: any) => m.status === 'pending');
   const historyMutations = dbMutations.filter((m: any) => m.status !== 'pending');
+
+  const { sortedItems: sortedArchivedUnits, sortConfig: archiveSort, handleSort: handleArchiveSort } = useTableSort(dbArchivedUnits, { key: 'deleted_at', direction: 'desc' });
 
   const formatRanges = (nums: number[]) => {
     if (nums.length === 0) return 'Pilih unit...';
@@ -167,40 +171,29 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
   };
   return (
     <div className="space-y-6 animate-in fade-in duration-700">
-      {/* Header wrapper for consistency with other tables */}
-      <div className="bg-white dark:bg-cighra-darkcard/70 border border-slate-200 dark:border-slate-600 shadow-xl overflow-hidden animate-in fade-in relative">
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-cighra-primary dark:bg-cighra-gold"></div>
-        
-        {/* Header */}
-        <div className="p-5 border-b border-slate-200 dark:border-slate-600/50 flex flex-col md:flex-row justify-between items-start md:items-center bg-slate-800 gap-4">
-          <div>
-            <h3 className="text-white font-tactical font-bold text-lg tracking-widest flex items-center gap-3 uppercase">
-              <GitPullRequest className="text-cighra-gold w-6 h-6" /> PERSETUJUAN INVENTARIS
-            </h3>
-            <p className="text-slate-400 text-xs font-mono mt-1 uppercase">Kelola pengajuan penambahan & penghapusan unit DART</p>
-          </div>
-          <div className="relative w-full md:w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-            <input type="text" placeholder="CARI..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-slate-700 border border-slate-600 rounded-sm py-2 pl-10 pr-4 text-xs font-tactical tracking-widest focus:ring-1 focus:ring-cighra-gold outline-none uppercase text-white placeholder-slate-400" />
-          </div>
-        </div>
-
-        <div className="p-4 bg-slate-50 dark:bg-cighra-darkcard/30">
+      <div className="animate-in fade-in relative bg-white dark:bg-cighra-darkcard/50 rounded-md">
+        <div className="p-4">
 
       {/* Tabs */}
-      <div className="flex gap-2 flex-wrap">
-        {[
-          { key: 'pending', label: `PENGAJUAN MASUK (${pendingMutations.length})`, icon: Clock },
-          { key: 'archive', label: `ARSIP UNIT (${dbArchivedUnits.length})`, icon: Archive },
-          { key: 'history', label: `RIWAYAT (${historyMutations.length})`, icon: FileText },
-        ].map((tab) => (
-          <button key={tab.key} onClick={() => setActiveTab(tab.key as any)}
-            className={`px-4 py-2 font-tactical text-xs tracking-widest border transition-all flex items-center gap-2
-              ${activeTab === tab.key ? 'bg-cighra-primary dark:bg-cighra-gold text-white dark:text-slate-900 border-cighra-primary dark:border-cighra-gold' : 'bg-white dark:bg-cighra-darkcard border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:border-cighra-gold'}`}>
-            <tab.icon size={14} /> {tab.label}
-          </button>
-        ))}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+        <div className="flex gap-2 flex-wrap">
+          {[
+            { key: 'pending', label: `PENGAJUAN MASUK (${pendingMutations.length})`, icon: Clock },
+            { key: 'archive', label: `ARSIP UNIT (${dbArchivedUnits.length})`, icon: Archive },
+            { key: 'history', label: `RIWAYAT (${historyMutations.length})`, icon: FileText },
+          ].map((tab) => (
+            <button key={tab.key} onClick={() => setActiveTab(tab.key as any)}
+              className={`px-4 py-2 font-tactical text-xs tracking-widest border transition-all flex items-center gap-2
+                ${activeTab === tab.key ? 'bg-cighra-primary dark:bg-cighra-gold text-white dark:text-slate-900 border-cighra-primary dark:border-cighra-gold' : 'bg-white dark:bg-cighra-darkcard border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:border-cighra-gold'}`}>
+              <tab.icon size={14} /> {tab.label}
+            </button>
+          ))}
+        </div>
+        <div className="relative w-full md:w-64">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+          <input type="text" placeholder="CARI RIWAYAT..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-sm py-2 pl-10 pr-4 text-xs font-tactical tracking-widest focus:ring-1 focus:ring-cighra-gold outline-none uppercase text-slate-800 dark:text-white placeholder-slate-400" />
+        </div>
       </div>
 
       {/* Tab: Pending */}
@@ -409,15 +402,15 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                       {/* Detail Table */}
                       <div className="overflow-x-auto border border-slate-200 dark:border-slate-700 bg-white dark:bg-cighra-darkcard/50 rounded-sm">
                         <table className="w-full text-left font-sans text-xs">
-                          <thead className="bg-slate-800 text-slate-100 font-tactical tracking-wider uppercase border-b border-slate-700">
+                          <thead className="bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-slate-700 text-xs">
                             <tr>
-                              <th className="p-3 w-12 text-center">NO</th>
-                              <th className="p-3">NOMOR SERI</th>
-                              <th className="p-3">KETERANGAN DART</th>
-                              <th className="p-3">JENIS</th>
-                              <th className="p-3">ASAL SATUAN</th>
-                              <th className="p-3 text-center">STATUS</th>
-                              <th className="p-3 text-right">AKSI CEPAT</th>
+                              <SortableHeader label="NO" />
+                              <SortableHeader label="NOMOR SERI" />
+                              <SortableHeader label="KETERANGAN DART" />
+                              <SortableHeader label="JENIS" />
+                              <SortableHeader label="ASAL SATUAN" />
+                              <SortableHeader label="STATUS" />
+                              <SortableHeader label="AKSI CEPAT" />
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-slate-200 dark:divide-slate-700/50 text-slate-800 dark:text-slate-200">
@@ -426,10 +419,10 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                               return (
                                 <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-800/30">
                                   <td className="p-3 font-mono text-center">{idx + 1}</td>
-                                  <td className="p-3 font-mono font-bold text-cighra-primary dark:text-cighra-gold">{u.nomor_seri}</td>
+                                  <td className="p-3 font-mono font-bold text-slate-800 dark:text-white text-center">{u.nomor_seri}</td>
 
-                                  <td className="p-3 uppercase font-mono text-[10px]">{u.jenis}</td>
-                                  <td className="p-3 uppercase">{u.asal_satuan}</td>
+                                  <td className="p-3 uppercase font-mono text-[10px] text-center text-slate-800 dark:text-white">{u.jenis}</td>
+                                  <td className="p-3 uppercase text-center text-slate-800 dark:text-white">{u.asal_satuan}</td>
                                   <td className="p-3 text-center">
                                     <span className={`px-2 py-0.5 text-[9px] font-mono font-bold border rounded-sm
                                       ${u.status === 'approved' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40' :
@@ -440,8 +433,8 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                                       {u.status === 'approved' ? 'DISETUJUI' : u.status === 'rejected' ? 'DITOLAK' : 'MENUNGGU'}
                                     </span>
                                   </td>
-                                  <td className="p-3 text-right">
-                                    <div className="flex gap-2 justify-end">
+                                  <td className="p-3 text-center">
+                                    <div className="flex gap-2 justify-center">
                                       <button
                                         type="button"
                                         disabled={processing || !isItemPending}
@@ -488,27 +481,27 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-slate-800 text-slate-100 font-tactical tracking-widest">
+                <thead className="bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-slate-700 text-xs">
                   <tr>
-                    <th className="p-4">NOMOR SERI</th>
-                    <th className="p-4">NAMA DART</th>
-                    <th className="p-4">JENIS</th>
-                    <th className="p-4">SATUAN</th>
-                    <th className="p-4">DIHAPUS PADA</th>
-                    <th className="p-4 text-right">AKSI</th>
+                    <SortableHeader label="NOMOR SERI" sortKey="nomor_seri" currentSort={archiveSort} onSort={handleArchiveSort} />
+                    <SortableHeader label="NAMA DART" sortKey="nama_satuan" currentSort={archiveSort} onSort={handleArchiveSort} />
+                    <SortableHeader label="JENIS" sortKey="jenis" currentSort={archiveSort} onSort={handleArchiveSort} />
+                    <SortableHeader label="SATUAN" sortKey="asal_satuan" currentSort={archiveSort} onSort={handleArchiveSort} />
+                    <SortableHeader label="DIHAPUS PADA" sortKey="deleted_at" currentSort={archiveSort} onSort={handleArchiveSort} />
+                    <SortableHeader label="AKSI" />
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-700 bg-white dark:bg-transparent text-slate-800 dark:text-white">
-                  {dbArchivedUnits.map((u: any) => (
+                  {sortedArchivedUnits.map((u: any) => (
                     <tr key={u.db_id} className="hover:bg-slate-50 dark:hover:bg-black/30 transition-colors">
-                      <td className="p-4 font-mono font-bold text-cighra-primary dark:text-cighra-gold">{u.nomor_seri}</td>
-
-                      <td className="p-4 uppercase text-slate-500 dark:text-slate-400">{u.jenis}</td>
-                      <td className="p-4 uppercase text-slate-500 dark:text-slate-400">{u.asal_satuan}</td>
-                      <td className="p-4 text-slate-500 dark:text-slate-400 font-mono text-[10px]">{u.deleted_at}</td>
-                      <td className="p-4 text-right">
+                      <td className="p-4 font-mono font-bold text-slate-800 dark:text-white text-center">{u.nomor_seri}</td>
+                      <td className="p-4 uppercase text-slate-800 dark:text-white text-center">{u.nama_satuan || '-'}</td>
+                      <td className="p-4 uppercase text-slate-800 dark:text-white text-center">{u.jenis}</td>
+                      <td className="p-4 uppercase text-slate-800 dark:text-white text-center">{u.asal_satuan}</td>
+                      <td className="p-4 text-slate-800 dark:text-white font-mono text-[10px] text-center">{u.deleted_at}</td>
+                      <td className="p-4 text-center">
                         <button onClick={() => setRestoreModal({ isOpen: true, unit: u })}
-                          className="px-3 py-1.5 bg-purple-600 text-white font-tactical text-[10px] tracking-widest hover:bg-purple-700 transition-all flex items-center gap-1 ml-auto cursor-pointer">
+                          className="px-3 py-1.5 bg-purple-600 text-white font-tactical text-[10px] tracking-widest hover:bg-purple-700 transition-all flex items-center gap-1 mx-auto cursor-pointer">
                           <RotateCcw size={12} /> KEMBALIKAN
                         </button>
                       </td>
@@ -571,25 +564,24 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                           {expandedIds.includes(m.id) && (
                             <div className="mt-3 overflow-x-auto border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-cighra-darkcard/50 rounded-sm">
                               <table className="w-full text-left font-sans text-xs">
-                                <thead className="bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-tactical tracking-wider uppercase border-b border-slate-300 dark:border-slate-700">
+                                <thead className="bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-slate-700 text-xs">
                                   <tr>
-                                    <th className="p-2 w-10 text-center">NO</th>
-                                    <th className="p-2">NOMOR SERI</th>
-                                    <th className="p-2">KETERANGAN</th>
-                                    <th className="p-2">JENIS</th>
-                                    <th className="p-2">SATUAN</th>
-                                    <th className="p-2 text-right">STATUS</th>
+                                    <SortableHeader label="NO" />
+                                    <SortableHeader label="NOMOR SERI" />
+                                    <SortableHeader label="KETERANGAN" />
+                                    <SortableHeader label="JENIS" />
+                                    <SortableHeader label="SATUAN" />
+                                    <SortableHeader label="STATUS" />
                                   </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-200 dark:divide-slate-700/50 text-slate-800 dark:text-slate-300">
                                   {m.unit_data.map((u: any, uIdx: number) => (
                                     <tr key={uIdx} className="hover:bg-slate-100 dark:hover:bg-slate-800/30">
                                       <td className="p-2 font-mono text-center">{uIdx + 1}</td>
-                                      <td className="p-2 font-mono font-bold text-cighra-primary dark:text-cighra-gold">{u.nomor_seri}</td>
-
-                                      <td className="p-2 uppercase text-[10px]">{u.jenis}</td>
-                                      <td className="p-2 uppercase text-[10px]">{u.asal_satuan}</td>
-                                      <td className="p-2 text-right">
+                                      <td className="p-2 font-mono font-bold text-slate-800 dark:text-white text-center">{u.nomor_seri}</td>
+                                      <td className="p-2 uppercase text-[10px] text-center text-slate-800 dark:text-white">{u.jenis}</td>
+                                      <td className="p-2 uppercase text-[10px] text-center text-slate-800 dark:text-white">{u.asal_satuan}</td>
+                                      <td className="p-2 text-center">
                                         <span className={`px-2 py-0.5 text-[9px] font-mono font-bold border rounded-sm
                                           ${u.status === 'approved' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40' :
                                             u.status === 'rejected' ? 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/40' :

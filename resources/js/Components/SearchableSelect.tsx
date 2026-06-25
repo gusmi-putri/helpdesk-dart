@@ -29,7 +29,7 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const selectedOption = options.find(opt => opt.id.toString() === value.toString());
+  const selectedOption = options.find(opt => opt.id?.toString() === value?.toString());
 
   const filteredOptions = options.filter(opt =>
     opt.label.toLowerCase().includes(searchQuery.toLowerCase()) ||

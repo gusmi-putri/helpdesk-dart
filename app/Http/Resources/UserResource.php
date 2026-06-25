@@ -23,6 +23,8 @@ class UserResource extends JsonResource
             'nrp_nip' => $this->nrp_nip,
             'no_wa' => $this->no_wa,
             'asal_satuan' => $this->asal_satuan,
+            'satuan_id' => $this->satuan_id,
+            'satuan' => $this->whenLoaded('satuan'),
             'spesialisasi' => $this->spesialisasi,
             'is_approved' => $this->is_approved,
             'role' => $this->role ? $this->role->nama_role : 'No Role',

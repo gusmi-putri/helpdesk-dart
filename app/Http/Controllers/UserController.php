@@ -42,6 +42,7 @@ class UserController extends Controller
                 'nrp_nip' => $request->nrp_nip,
                 'role_id' => $request->role_id,
                 'asal_satuan' => $request->asal_satuan,
+                'satuan_id' => $request->satuan_id,
                 'no_wa' => $request->no_wa,
                 'spesialisasi' => $request->spesialisasi,
                 'is_approved' => $isAdmin, // Admin bypasses approval
@@ -71,7 +72,7 @@ class UserController extends Controller
 
         $adminRoleId = \App\Models\Role::where('nama_role', 'Admin')->first()?->id;
 
-        $updateData = $request->only('nama_lengkap', 'nrp_nip', 'asal_satuan', 'no_wa', 'spesialisasi');
+        $updateData = $request->only('nama_lengkap', 'nrp_nip', 'asal_satuan', 'satuan_id', 'no_wa', 'spesialisasi');
         if ($user->role_id !== $adminRoleId) {
             $updateData['role_id'] = $request->role_id;
         }

@@ -31,7 +31,7 @@ class UnitController extends Controller
         DB::transaction(function () use ($request, $user, $isAdmin, $documentPath) {
             if ($isAdmin) {
                 // Admin: langsung buat unit
-                $unit = Unit::create($request->only(['nomor_seri', 'jenis', 'asal_satuan', 'status_unit']));
+                $unit = Unit::create($request->only(['nomor_seri', 'jenis', 'asal_satuan', 'satuan_id', 'status_unit']));
 
                 UnitMutation::create([
                     'unit_id' => $unit->id,
@@ -41,7 +41,7 @@ class UnitController extends Controller
                     'requested_by' => $user->id,
                     'approved_by' => $user->id,
                     'status' => 'approved',
-                    'unit_data' => $request->only(['nomor_seri', 'jenis', 'asal_satuan', 'status_unit']),
+                    'unit_data' => $request->only(['nomor_seri', 'jenis', 'asal_satuan', 'satuan_id', 'status_unit']),
                 ]);
 
                 SystemLog::log('INFO', $user->id, "Admin menambahkan unit DART baru: {$request->nomor_seri}");
@@ -54,7 +54,7 @@ class UnitController extends Controller
                     'document_path' => $documentPath,
                     'requested_by' => $user->id,
                     'status' => 'pending',
-                    'unit_data' => $request->only(['nomor_seri', 'jenis', 'asal_satuan', 'status_unit']),
+                    'unit_data' => $request->only(['nomor_seri', 'jenis', 'asal_satuan', 'satuan_id', 'status_unit']),
                 ]);
 
                 SystemLog::log('INFO', $user->id, "Staf mengajukan penambahan unit DART baru: {$request->nomor_seri}");
@@ -73,7 +73,8 @@ class UnitController extends Controller
         $request->validate([
             'nomor_seri' => 'required|string|max:50|unique:units,nomor_seri,' . $unit->id,
             'jenis' => 'required|in:DART STD,DART STK,DART Portabel - Swing,DART Portabel - Pop,DART Portabel - Flip,DART Marathon Target,Moving Target',
-            'asal_satuan' => 'required|string|max:100',
+            'asal_satuan' => 'nullable|string|max:100',
+            'satuan_id' => 'required|exists:satuans,id',
             'status_unit' => 'required|in:Beroperasi,Rusak,Perbaikan,Nonaktif',
         ]);
 

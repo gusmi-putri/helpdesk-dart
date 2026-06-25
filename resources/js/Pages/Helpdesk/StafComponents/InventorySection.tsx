@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Plus, Trash2, CheckSquare, Download, Upload, Package, Filter, ArrowUp, ArrowDown } from 'lucide-react';
+import SortableHeader from '@/Components/Table/SortableHeader';
 
 interface InventorySectionProps {
   dbUnits: any[];
@@ -206,10 +207,10 @@ const InventorySection: React.FC<InventorySectionProps> = ({
 
         <div className="overflow-x-auto">
           <table className="w-full text-left font-sans text-sm">
-            <thead className="bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-slate-700">
+            <thead className="bg-slate-800 border-b border-slate-700">
               <tr>
                 {onRequestDeleteBatch && (
-                  <th className="p-4 w-10">
+                  <th className="p-4 w-10 text-center">
                     <input
                       type="checkbox"
                       onChange={toggleSelectAll}
@@ -218,29 +219,12 @@ const InventorySection: React.FC<InventorySectionProps> = ({
                     />
                   </th>
                 )}
-                {[
-                  { label: 'NOMOR SERI', key: 'nomor_seri' },
-                  { label: 'JENIS', key: 'jenis' },
-                  { label: 'ASAL SATUAN / LOKASI', key: 'asal_satuan' },
-                  { label: 'STATUS', key: 'status_unit' },
-                  { label: 'MAINTENANCE', key: 'last_maintenance' },
-
-                ].map((col) => (
-                  <th
-                    key={col.key}
-                    className="p-4 cursor-pointer hover:text-cighra-primary dark:text-cighra-gold transition-colors"
-                    onClick={() => handleSort(col.key)}
-                  >
-                    <div className="flex items-center gap-2">
-                      {col.label}
-                      <Filter className="w-3 h-3 opacity-30" />
-                      {sortConfig?.key === col.key && (
-                        sortConfig.direction === 'asc' ? <ArrowUp className="w-3 h-3 text-cighra-primary dark:text-cighra-gold" /> : <ArrowDown className="w-3 h-3 text-cighra-primary dark:text-cighra-gold" />
-                      )}
-                    </div>
-                  </th>
-                ))}
-                {onRequestDelete && <th className="p-4 text-right">OPSI</th>}
+                <SortableHeader label="NOMOR SERI" sortKey="nomor_seri" currentSort={sortConfig} onSort={handleSort} />
+                <SortableHeader label="JENIS" sortKey="jenis" currentSort={sortConfig} onSort={handleSort} />
+                <SortableHeader label="ASAL SATUAN / LOKASI" sortKey="asal_satuan" currentSort={sortConfig} onSort={handleSort} />
+                <SortableHeader label="STATUS" sortKey="status_unit" currentSort={sortConfig} onSort={handleSort} />
+                <SortableHeader label="MAINTENANCE" sortKey="last_maintenance" currentSort={sortConfig} onSort={handleSort} />
+                {onRequestDelete && <SortableHeader label="OPSI" />}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700/50">
@@ -252,15 +236,15 @@ const InventorySection: React.FC<InventorySectionProps> = ({
                 filteredUnits.map((u: any) => (
                   <tr key={u.db_id} className={`hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group bg-white dark:bg-transparent ${selectedUnitIds.includes(u.db_id) ? 'bg-red-50/50 dark:bg-red-900/10' : ''}`}>
                     {onRequestDeleteBatch && (
-                      <td className="p-4">
+                      <td className="p-4 text-center">
                         <input type="checkbox" checked={selectedUnitIds.includes(u.db_id)} onChange={() => toggleSelectUnit(u.db_id)} className="w-4 h-4 cursor-pointer accent-cighra-primary dark:accent-cighra-gold" />
                       </td>
                     )}
-                    <td className="p-4 font-mono font-bold text-cighra-primary dark:text-cighra-gold border-l-2 border-transparent group-hover:border-cighra-primary dark:border-cighra-gold">{u.nomor_seri}</td>
-                    <td className="p-4 font-mono text-xs text-slate-500 dark:text-slate-300 uppercase">{u.jenis}</td>
-                    <td className="p-4 text-gunmetal dark:text-slate-300 uppercase">{u.asal_satuan}</td>
-                    <td className="p-4">
-                      <span className={`px-2 py-0.5 border text-[9px] font-bold tracking-widest uppercase
+                    <td className="p-4 font-mono font-bold text-slate-800 dark:text-white text-center">{u.nomor_seri}</td>
+                    <td className="p-4 font-mono text-xs text-slate-500 dark:text-slate-300 uppercase text-center">{u.jenis}</td>
+                    <td className="p-4 text-gunmetal dark:text-slate-300 uppercase text-center">{u.asal_satuan}</td>
+                    <td className="p-4 text-center">
+                      <span className={`px-2 py-0.5 border text-[9px] font-bold tracking-widest uppercase inline-block mx-auto
                         ${u.status_unit === 'Beroperasi' ? 'bg-camogreen/10 text-camogreen border-camogreen/30' :
                           u.status_unit === 'Rusak' ? 'bg-cighra-primary/10 dark:bg-cighra-gold/10 text-cighra-primary dark:text-cighra-gold border-cighra-primary dark:border-cighra-gold/30' :
                             u.status_unit === 'Perbaikan' ? 'bg-blue-900/10 text-blue-500 border-blue-800/30' :
@@ -269,11 +253,11 @@ const InventorySection: React.FC<InventorySectionProps> = ({
                         {u.status_unit === 'Perbaikan' ? 'Dalam Perbaikan' : u.status_unit}
                       </span>
                     </td>
-                    <td className="p-4 font-mono text-[10px] text-slate-500 dark:text-slate-400">{u.last_maintenance}</td>
+                    <td className="p-4 font-mono text-[10px] text-slate-500 dark:text-slate-400 text-center">{u.last_maintenance}</td>
 
                     {onRequestDelete && (
-                      <td className="p-4 text-right">
-                        <button onClick={() => onRequestDelete(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-500 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm cursor-pointer" title="Ajukan Penghapusan">
+                      <td className="p-4 text-center">
+                        <button onClick={() => onRequestDelete(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-500 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm cursor-pointer mx-auto block" title="Ajukan Penghapusan">
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </td>

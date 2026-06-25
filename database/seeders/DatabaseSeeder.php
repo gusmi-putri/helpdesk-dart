@@ -15,6 +15,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(SatuanSeeder::class);
+
         // 1. Seed Roles
         $adminRole = \App\Models\Role::firstOrCreate(['nama_role' => 'Admin']);
         $stafRole = \App\Models\Role::create(['nama_role' => 'Staf']);
@@ -26,6 +28,9 @@ class DatabaseSeeder extends Seeder
             'username' => 'admin',
             'password' => \Illuminate\Support\Facades\Hash::make('password'),
             'nama_lengkap' => 'Komandan Pusat',
+            'email' => 'admin@pusat.mil.id',
+            'nrp_nip' => '1100223344',
+            'no_wa' => '081234567890',
             'role_id' => $adminRole->id,
             'is_approved' => true,
         ]);
@@ -34,6 +39,9 @@ class DatabaseSeeder extends Seeder
             'username' => 'staf1',
             'password' => \Illuminate\Support\Facades\Hash::make('password'),
             'nama_lengkap' => 'Staf Komando 01',
+            'email' => 'staf1@komando.mil.id',
+            'nrp_nip' => '2200334455',
+            'no_wa' => '082345678901',
             'role_id' => $stafRole->id,
             'is_approved' => true,
         ]);
@@ -42,28 +50,36 @@ class DatabaseSeeder extends Seeder
             'username' => 'teknisi1',
             'password' => \Illuminate\Support\Facades\Hash::make('password'),
             'nama_lengkap' => 'Teknisi Alfa',
+            'email' => 'teknisi1@bengpus.mil.id',
+            'nrp_nip' => '3300445566',
+            'no_wa' => '083456789012',
             'role_id' => $teknisiRole->id,
-            'spesialisasi' => 'Mekanik & Elektronik',
+            'spesialisasi' => 'Mekanik, Elektronik & Jaringan Komunikasi',
             'is_approved' => true,
         ]);
 
+        $satuanAkmil = \App\Models\Satuan::where('nama_satuan', 'AKMIL')->first();
         $pelapor = \App\Models\User::create([
             'username' => 'pelapor1',
             'password' => \Illuminate\Support\Facades\Hash::make('password'),
             'nama_lengkap' => 'Operator Satkai AKMIL',
+            'email' => 'operator@akmil.ac.id',
+            'nrp_nip' => '4400556677',
+            'no_wa' => '084567890123',
             'role_id' => $pelaporRole->id,
             'asal_satuan' => 'AKMIL',
+            'satuan_id' => $satuanAkmil ? $satuanAkmil->id : null,
             'is_approved' => true,
         ]);
 
-        // 3. Seed Units via UnitSeeder
+        // 3. Seed Data Master
         $this->call(UnitSeeder::class);
-        $unit1 = \App\Models\Unit::where('nomor_seri', 'DRT-001')->first();
-        $unit2 = \App\Models\Unit::where('nomor_seri', 'DRT-003')->first();
-        $unit4 = \App\Models\Unit::where('nomor_seri', 'DRT-004')->first();
-        $unit12 = \App\Models\Unit::where('nomor_seri', 'DRT-012')->first();
-        $unit15 = \App\Models\Unit::where('nomor_seri', 'DRT-015')->first();
-        $unit22 = \App\Models\Unit::where('nomor_seri', 'DRT-022')->first();
+        $unit1 = \App\Models\Unit::where('nomor_seri', 'PU - 42 - 001 - 2025')->first();
+        $unit2 = \App\Models\Unit::where('nomor_seri', 'FL - 42 - 001 - 2025')->first();
+        $unit4 = \App\Models\Unit::where('nomor_seri', 'PU - 42 - 003 - 2025')->first();
+        $unit12 = \App\Models\Unit::where('nomor_seri', 'PU - 42 - 006 - 2025')->first();
+        $unit15 = \App\Models\Unit::where('nomor_seri', 'MV - 42 - 003 - 2025')->first();
+        $unit22 = \App\Models\Unit::where('nomor_seri', 'FL - 42 - 005 - 2025')->first();
 
         // 4. Seed Reports
         \App\Models\Report::create([

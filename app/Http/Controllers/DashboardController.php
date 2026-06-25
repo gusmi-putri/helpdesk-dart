@@ -74,8 +74,8 @@ class DashboardController extends Controller
 
     public function admin()
     {
-        $cases = ReportResource::collection(Report::with(['unit', 'pelapor', 'teknisi'])->get());
-        $users = UserResource::collection(User::with('role')->get());
+        $cases = ReportResource::collection(Report::with(['unit.satuan', 'pelapor.satuan', 'teknisi'])->get());
+        $users = UserResource::collection(User::with(['role', 'satuan'])->get());
         $logs = SystemLog::with('user')->get()->map(function($l) {
             return [
                 'id' => $l->id,
@@ -93,7 +93,7 @@ class DashboardController extends Controller
             ];
         });
 
-        $units = UnitResource::collection(\App\Models\Unit::all());
+        $units = UnitResource::collection(\App\Models\Unit::with('satuan')->get());
         $feedbacks = \App\Models\Feedback::orderBy('created_at', 'desc')->get()->map(function($f) {
             return [
                 'id' => $f->id,
@@ -112,7 +112,7 @@ class DashboardController extends Controller
                 ->get()
         );
 
-        $archivedUnits = UnitResource::collection(Unit::onlyTrashed()->get());
+        $archivedUnits = UnitResource::collection(Unit::with('satuan')->onlyTrashed()->get());
 
         $satuans = \App\Models\Satuan::all();
 
@@ -131,9 +131,28 @@ class DashboardController extends Controller
 
     public function pelapor()
     {
-        $cases = ReportResource::collection(Report::with(['unit', 'pelapor', 'teknisi'])->get());
-        $units = UnitResource::collection(\App\Models\Unit::all());
-        $users = UserResource::collection(User::all());
+        $auth = auth()->user();
+
+        $cases = ReportResource::collection(Report::with(['unit.satuan', 'pelapor', 'teknisi'])
+            ->whereHas('unit', function($q) use ($auth) {
+                if ($auth->satuan_id) {
+                    $q->where('satuan_id', $auth->satuan_id);
+                }
+            })->get());
+            
+        $units = UnitResource::collection(\App\Models\Unit::with('satuan')
+            ->where(function($q) use ($auth) {
+                if ($auth->satuan_id) {
+                    $q->where('satuan_id', $auth->satuan_id);
+                }
+            })->get());
+            
+        $users = UserResource::collection(User::with('satuan')
+            ->where(function($q) use ($auth) {
+                if ($auth->satuan_id) {
+                    $q->where('satuan_id', $auth->satuan_id);
+                }
+            })->get());
 
         // Kirim data profil user yang sedang login untuk auto-fill form
         $auth = auth()->user();
@@ -143,6 +162,8 @@ class DashboardController extends Controller
             'nama_lengkap' => $auth->nama_lengkap,
             'nrp_nip' => $auth->nrp_nip ?? '',
             'asal_satuan' => $auth->asal_satuan ?? '',
+            'satuan_id' => $auth->satuan_id,
+            'satuan' => $auth->satuan,
             'no_wa' => $auth->no_wa ?? '',
         ] : null;
         
@@ -157,7 +178,7 @@ class DashboardController extends Controller
     public function teknisi()
     {
         // Teknisi hanya melihat tugas yang diberikan kepadanya
-        $cases = ReportResource::collection(Report::with(['unit', 'pelapor', 'teknisi'])->where('teknisi_id', auth()->id())->get());
+        $cases = ReportResource::collection(Report::with(['unit.satuan', 'pelapor', 'teknisi'])->where('teknisi_id', auth()->id())->get());
         
         return Inertia::render('Helpdesk/DashboardTeknisi', [
             'dbCases' => $cases
@@ -166,17 +187,16 @@ class DashboardController extends Controller
 
     public function staf()
     {
-        $cases = ReportResource::collection(Report::with(['unit', 'pelapor', 'teknisi'])->get());
+        $cases = ReportResource::collection(Report::with(['unit.satuan', 'pelapor', 'teknisi'])->get());
         
         // Ambil semua teknisi untuk ditugaskan (tetap diperlukan untuk AssignTechnicianModal)
         $technicians = UserResource::collection(User::whereHas('role', function($q) {
             $q->where('nama_role', 'Teknisi');
         })->with('reportsDitangani')->get());
 
-        // Ambil semua users untuk data personel
-        $allUsers = UserResource::collection(User::with('role')->get());
+        $allUsers = UserResource::collection(User::with(['role', 'satuan'])->get());
 
-        $units = UnitResource::collection(Unit::all());
+        $units = UnitResource::collection(Unit::with('satuan')->get());
 
         $mutations = UnitMutationResource::collection(
             \App\Models\UnitMutation::with(['unit', 'requester', 'approver'])
