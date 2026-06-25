@@ -45,7 +45,7 @@ const SatuanDetailModal: React.FC<SatuanDetailModalProps> = ({
                 {satuan.nama_satuan}
               </h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 font-mono uppercase">
-                KODE: {satuan.kode_satuan || '-'} | KOTAMA: {satuan.kotama || '-'}
+                KODE: {satuan.kode_satuan || '-'}
               </p>
             </div>
           </div>

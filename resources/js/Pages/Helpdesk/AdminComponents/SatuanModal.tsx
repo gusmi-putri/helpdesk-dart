@@ -68,7 +68,7 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
             {errors.nama_satuan && <p className="text-red-500 text-xs mt-1 font-medium">{errors.nama_satuan}</p>}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4">
             <div>
               <label className="block text-xs font-tactical tracking-widest text-slate-600 dark:text-slate-300 mb-2 uppercase">
                 Kode Satuan
@@ -81,20 +81,6 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
                 className="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-cighra-primary dark:focus:ring-cighra-gold focus:border-transparent transition-all uppercase"
               />
               {errors.kode_satuan && <p className="text-red-500 text-xs mt-1 font-medium">{errors.kode_satuan}</p>}
-            </div>
-
-            <div>
-              <label className="block text-xs font-tactical tracking-widest text-slate-600 dark:text-slate-300 mb-2 uppercase">
-                Kotama
-              </label>
-              <input
-                type="text"
-                value={data.kotama}
-                onChange={(e) => setData('kotama', e.target.value.toUpperCase())}
-                placeholder="Cth: KODAM III/SILIWANGI"
-                className="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-cighra-primary dark:focus:ring-cighra-gold focus:border-transparent transition-all uppercase"
-              />
-              {errors.kotama && <p className="text-red-500 text-xs mt-1 font-medium">{errors.kotama}</p>}
             </div>
           </div>
 

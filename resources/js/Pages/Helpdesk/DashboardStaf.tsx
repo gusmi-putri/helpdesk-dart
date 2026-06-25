@@ -77,7 +77,6 @@ const DashboardStaf = (props: any) => {
   const satuanForm = useForm({
     kode_satuan: '',
     nama_satuan: '',
-    kotama: '',
     alamat: '',
     latitude: '',
     longitude: ''
@@ -280,7 +279,6 @@ const DashboardStaf = (props: any) => {
     satuanForm.setData({
       kode_satuan: satuan.kode_satuan || '',
       nama_satuan: satuan.nama_satuan,
-      kotama: satuan.kotama || '',
       alamat: satuan.alamat || '',
       latitude: satuan.latitude || '',
       longitude: satuan.longitude || ''
