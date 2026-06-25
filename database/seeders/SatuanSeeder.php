@@ -54,20 +54,7 @@ class SatuanSeeder extends Seeder
             ['nama_satuan' => 'KODAM VI/MULAWARMAN', 'latitude' => -1.242, 'longitude' => 116.852],
             ['nama_satuan' => 'KODAM IX/UDAYANA', 'latitude' => -8.670, 'longitude' => 115.212],
 
-            // KOTA-KOTA UMUM (FALLBACK)
-            ['nama_satuan' => 'JAKARTA', 'latitude' => -6.2088, 'longitude' => 106.8456],
-            ['nama_satuan' => 'BANDUNG', 'latitude' => -6.9147, 'longitude' => 107.6098],
-            ['nama_satuan' => 'SEMARANG', 'latitude' => -7.048, 'longitude' => 110.409],
-            ['nama_satuan' => 'SURABAYA', 'latitude' => -7.289, 'longitude' => 112.721],
-            ['nama_satuan' => 'MEDAN', 'latitude' => 3.595, 'longitude' => 98.672],
-            ['nama_satuan' => 'MAKASSAR', 'latitude' => -5.147, 'longitude' => 119.432],
-            ['nama_satuan' => 'JAYAPURA', 'latitude' => -2.591, 'longitude' => 140.669],
-            ['nama_satuan' => 'BALIKPAPAN', 'latitude' => -1.242, 'longitude' => 116.852],
-            ['nama_satuan' => 'DENPASAR', 'latitude' => -8.670, 'longitude' => 115.212],
-            ['nama_satuan' => 'BOGOR', 'latitude' => -6.5950, 'longitude' => 106.8166],
-            ['nama_satuan' => 'DEPOK', 'latitude' => -6.4025, 'longitude' => 106.7942],
-            ['nama_satuan' => 'TANGERANG', 'latitude' => -6.1702, 'longitude' => 106.6403],
-            ['nama_satuan' => 'BEKASI', 'latitude' => -6.2383, 'longitude' => 106.9756],
+
 
             // DUMMY DATA FROM SEEDER
             ['nama_satuan' => 'AKMIL', 'latitude' => -7.4789, 'longitude' => 110.2170],

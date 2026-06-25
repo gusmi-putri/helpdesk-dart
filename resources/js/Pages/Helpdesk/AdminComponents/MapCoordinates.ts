@@ -55,20 +55,7 @@ export const SATUAN_COORDINATES: Record<string, [number, number]> = {
     'KODAM IX/UDAYANA': [-8.670, 115.212], // Denpasar
     'KODAM IX': [-8.670, 115.212], 
 
-    // KOTA-KOTA UMUM (FALLBACK)
-    'JAKARTA': [-6.2088, 106.8456],
-    'BANDUNG': [-6.9147, 107.6098],
-    'SEMARANG': [-7.048, 110.409],
-    'SURABAYA': [-7.289, 112.721],
-    'MEDAN': [3.595, 98.672],
-    'MAKASSAR': [-5.147, 119.432],
-    'JAYAPURA': [-2.591, 140.669],
-    'BALIKPAPAN': [-1.242, 116.852],
-    'DENPASAR': [-8.670, 115.212],
-    'BOGOR': [-6.5950, 106.8166],
-    'DEPOK': [-6.4025, 106.7942],
-    'TANGERANG': [-6.1702, 106.6403],
-    'BEKASI': [-6.2383, 106.9756],
+
 
     // DUMMY DATA FROM SEEDER
     'AKMIL': [-7.4789, 110.2170], // Magelang
