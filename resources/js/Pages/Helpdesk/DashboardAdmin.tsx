@@ -129,7 +129,18 @@ const DashboardAdmin = (props: any) => {
     setIsAddMode(true);
     setEditingUser(null);
     clearErrors();
-    reset();
+    setData({
+      username: '',
+      password: '',
+      email: '',
+      nama_lengkap: '',
+      nrp_nip: '',
+      role_id: '',
+      satuan_id: '',
+      asal_satuan: '',
+      no_wa: '',
+      spesialisasi: ''
+    });
     setIsEditModalOpen(true);
   };
 

@@ -318,7 +318,18 @@ const DashboardStaf = (props: any) => {
     setIsAddUserMode(true);
     setEditingUser(null);
     userForm.clearErrors();
-    userForm.reset();
+    userForm.setData({
+      username: '',
+      password: '',
+      email: '',
+      nama_lengkap: '',
+      nrp_nip: '',
+      role_id: '',
+      satuan_id: '',
+      asal_satuan: '',
+      no_wa: '',
+      spesialisasi: ''
+    });
     setIsUserEditModalOpen(true);
   };
 
