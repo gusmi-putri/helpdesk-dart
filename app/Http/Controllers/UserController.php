@@ -38,6 +38,7 @@ class UserController extends Controller
             User::create([
                 'username' => $request->username,
                 'password' => bcrypt($request->password),
+                'email' => $request->email,
                 'nama_lengkap' => $request->nama_lengkap,
                 'nrp_nip' => $request->nrp_nip,
                 'role_id' => $request->role_id,
@@ -72,7 +73,7 @@ class UserController extends Controller
 
         $adminRoleId = \App\Models\Role::where('nama_role', 'Admin')->first()?->id;
 
-        $updateData = $request->only('nama_lengkap', 'nrp_nip', 'asal_satuan', 'satuan_id', 'no_wa', 'spesialisasi');
+        $updateData = $request->only('email', 'nama_lengkap', 'nrp_nip', 'asal_satuan', 'satuan_id', 'no_wa', 'spesialisasi');
         if ($user->role_id !== $adminRoleId) {
             $updateData['role_id'] = $request->role_id;
         }

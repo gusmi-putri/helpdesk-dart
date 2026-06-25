@@ -145,6 +145,18 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
               />
               {errors.nama_lengkap && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.nama_lengkap}</p>}
             </div>
+            <div className="col-span-2 md:col-span-1">
+              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Email</label>
+              <input
+                type="email"
+                value={data.email}
+                onChange={(e) => setData('email', e.target.value)}
+                className={`w-full bg-white dark:bg-cighra-darkcard border ${errors.email ? 'border-red-500' : 'border-gray-400 dark:border-slate-600'} p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none`}
+                required
+                placeholder="EMAIL AKTIF"
+              />
+              {errors.email && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.email}</p>}
+            </div>
             {data.username === 'admin' ? (
               <div className="bg-gray-100 dark:bg-gray-900/50 p-2 border border-slate-200 dark:border-slate-600/50 flex flex-col justify-center">
                 <label className="block text-[9px] font-mono text-slate-500 uppercase tracking-widest">Hak Akses (Locked)</label>

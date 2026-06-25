@@ -65,6 +65,7 @@ const DashboardAdmin = (props: any) => {
   const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
     username: '',
     password: '',
+    email: '',
     nama_lengkap: '',
     nrp_nip: '',
     role_id: '',
@@ -143,6 +144,7 @@ const DashboardAdmin = (props: any) => {
     setData({
       username: user.username || '',
       password: '',
+      email: user.email || '',
       nama_lengkap: user.name,
       nrp_nip: user.nrp_nip || '',
       role_id: user.role_id || '',

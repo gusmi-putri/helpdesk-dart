@@ -18,6 +18,7 @@ class StoreUserRequest extends FormRequest
         return [
             'username' => 'required|string|min:4|max:50|unique:users',
             'password' => ['required', 'string', 'min:8', 'regex:/[a-z]/', 'regex:/[0-9]/'],
+            'email' => 'required|email|unique:users,email',
             'nama_lengkap' => 'required|string|max:100',
             'nrp_nip' => ['required', 'string', 'min:8', 'max:20', 'regex:/^[0-9]+$/'],
             'role_id' => ['required', 'exists:roles,id', 'not_in:' . $adminRoleId],

@@ -18,6 +18,7 @@ class UpdateUserRequest extends FormRequest
         $user = \App\Models\User::find($userId);
 
         $rules = [
+            'email' => 'required|email|unique:users,email,' . $userId,
             'nama_lengkap' => 'required|string|max:100',
             'nrp_nip' => ['required', 'string', 'min:8', 'max:20', 'regex:/^[0-9]+$/'],
             'asal_satuan' => 'nullable|string|max:100',

@@ -95,6 +95,7 @@ const DashboardStaf = (props: any) => {
   const userForm = useForm({
     username: '',
     password: '',
+    email: '',
     nama_lengkap: '',
     nrp_nip: '',
     role_id: '',
@@ -332,6 +333,7 @@ const DashboardStaf = (props: any) => {
     userForm.setData({
       username: user.username || '',
       password: '',
+      email: user.email || '',
       nama_lengkap: user.name,
       nrp_nip: user.nrp_nip || '',
       role_id: user.role_id || '',
