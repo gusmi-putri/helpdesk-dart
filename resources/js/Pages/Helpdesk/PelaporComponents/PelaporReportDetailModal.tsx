@@ -145,6 +145,35 @@ const PelaporReportDetailModal: React.FC<PelaporReportDetailModalProps> = ({ isO
               </div>
             )}
 
+            {/* Dokumentasi Laporan (Kendala) */}
+            {(report.kerusakan.foto_bukti || report.kerusakan.fileBukti?.length > 0 || report.kerusakan.tautan_video) && (
+              <div className="bg-slate-100 dark:bg-cighra-darkcard/40 p-4 border border-slate-200 dark:border-slate-700/50 space-y-3 mt-4">
+                <p className="text-[9px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest font-bold">DOKUMENTASI KENDALA (DARI PELAPOR):</p>
+                
+                {report.kerusakan.tautan_video && (
+                  <div className="mb-4">
+                    <p className="text-[9px] text-slate-500 font-mono uppercase mb-1">Tautan Video G-Drive:</p>
+                    <a href={report.kerusakan.tautan_video} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:text-blue-400 underline break-all font-mono inline-block">
+                      {report.kerusakan.tautan_video}
+                    </a>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {report.kerusakan.foto_bukti && (
+                    <div className="border border-slate-300 dark:border-slate-700 rounded-sm overflow-hidden bg-black/40 flex items-center justify-center h-48">
+                      <img src={report.kerusakan.foto_bukti} alt="Foto Kendala" className="max-w-full max-h-full object-contain" />
+                    </div>
+                  )}
+                  {report.kerusakan.fileBukti?.map((foto: string, index: number) => (
+                    <div key={index} className="border border-slate-300 dark:border-slate-700 rounded-sm overflow-hidden bg-black/40 flex items-center justify-center h-48">
+                      <img src={foto} alt={`Foto Kendala ${index + 1}`} className="max-w-full max-h-full object-contain" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {report.status === 'DITOLAK' && (
               <div className="bg-red-500/10 p-4 border border-red-500/30 text-slate-855 dark:text-slate-200 animate-in fade-in">
                 <p className="text-[9px] text-red-500 font-mono uppercase tracking-widest mb-2 font-bold">ALASAN PENOLAKAN LAPORAN (FEEDBACK STAF):</p>
