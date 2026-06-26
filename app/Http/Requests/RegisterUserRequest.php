@@ -20,6 +20,7 @@ class RegisterUserRequest extends FormRequest
                 'required',
                 'string',
                 'min:8',
+                'confirmed',
                 'regex:/[a-z]/',      // must contain at least one lowercase letter
                 'regex:/[0-9]/',      // must contain at least one digit
             ],
@@ -36,6 +37,7 @@ class RegisterUserRequest extends FormRequest
             'username.min' => 'Username minimal 4 karakter.',
             'email.email' => 'Format email tidak valid.',
             'password.min' => 'Kata sandi minimal 8 karakter.',
+            'password.confirmed' => 'Konfirmasi kata sandi tidak cocok.',
             'password.regex' => 'Kata sandi harus mengandung kombinasi huruf dan angka.',
             'nrp_nip.regex' => 'NRP/NIP hanya boleh berisi angka.',
             'nrp_nip.min' => 'NRP/NIP minimal 8 digit.',
