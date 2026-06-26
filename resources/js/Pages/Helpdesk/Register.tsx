@@ -8,6 +8,7 @@ interface RegisterData {
   username: string;
   email: string;
   password: string;
+  password_confirmation: string;
   nama_lengkap: string;
   nrp_nip: string;
   asal_satuan: string;
@@ -19,6 +20,7 @@ const Register: React.FC = () => {
     username: '',
     email: '',
     password: '',
+    password_confirmation: '',
     nama_lengkap: '',
     nrp_nip: '',
     asal_satuan: '',
@@ -221,6 +223,30 @@ const Register: React.FC = () => {
                       <Info className="w-2.5 h-2.5" /> Minimal 8 karakter, harus ada huruf dan angka.
                     </span>
                     {errors.password && <span className="text-[9px] text-cighra-primary dark:text-cighra-gold font-mono uppercase font-bold">{errors.password}</span>}
+                  </div>
+                </div>
+
+                {/* Confirm Password */}
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300/80 uppercase flex items-center gap-2">
+                    <Lock className="w-3 h-3" /> Konfirmasi Kata Sandi
+                  </label>
+                  <div className="group relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      value={data.password_confirmation}
+                      onChange={(e) => setData('password_confirmation', e.target.value)}
+                      className={`w-full bg-soft-sand/30 dark:bg-cighra-dark/50 border border-cighra-primary dark:border-cighra-gold/40 group-hover:border-camogreen focus:border-camogreen text-slate-800 dark:text-white px-4 py-3 pr-12 focus:outline-none transition-all font-mono text-sm rounded-sm ${!showPassword ? 'tracking-[0.3em]' : ''}`}
+                      placeholder="••••••••••••"
+                      required
+                    />
+                    <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 group-focus-within:w-full transition-all duration-300" />
+                  </div>
+                  <div className="flex justify-between items-center px-1">
+                    <span className="text-[9px] text-slate-500 dark:text-slate-300 font-mono italic">Ulangi kata sandi Anda.</span>
+                    {data.password && data.password_confirmation && data.password !== data.password_confirmation && (
+                      <span className="text-[9px] text-cighra-primary dark:text-cighra-gold font-mono uppercase font-bold text-red-500">Kata sandi tidak cocok</span>
+                    )}
                   </div>
                 </div>
               </div>
