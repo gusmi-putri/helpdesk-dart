@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, ZoomControl } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, ZoomControl, useMap, Circle } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Shield, AlertTriangle, CheckCircle, Search, Target, Map as MapIcon, ArrowLeft } from 'lucide-react';
@@ -20,12 +20,34 @@ interface MonitoringMapProps {
     dbUnits: any[];
     dbCases: any[];
     dbSatuans?: any[];
+    initialFocusSatuan?: string | null;
 }
+
+const MapController = ({ 
+    selectedCoords, 
+    activeZoom = 12 
+}: { 
+    selectedCoords: [number, number] | null, 
+    activeZoom?: number 
+}) => {
+    const map = useMap();
+    
+    useEffect(() => {
+        if (selectedCoords) {
+            map.flyTo(selectedCoords, activeZoom, {
+                duration: 1.5,
+                easeLinearity: 0.25
+            });
+        }
+    }, [selectedCoords, map, activeZoom]);
+
+    return null;
+};
 
 import { INDONESIA_BOUNDS } from './MapCoordinates';
 import { router } from '@inertiajs/react';
 
-const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatuans = [] }) => {
+const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatuans = [], initialFocusSatuan = null }) => {
     const [mapCenter] = useState<[number, number]>([-2.5489, 118.0149]); // Center of Indonesia
     const [zoom] = useState(5);
     const [searchQuery, setSearchQuery] = useState('');
@@ -38,41 +60,65 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
     const [latInput, setLatInput] = useState('');
     const [lngInput, setLngInput] = useState('');
 
-    // Filter units based on search
-    const filteredUnits = dbUnits.filter(unit => 
-
-        unit.nomor_seri.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        unit.asal_satuan.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
     // Group units by Satuan to show on map
-    const satuanGroups = filteredUnits.reduce((acc, unit) => {
-        const satuanName = unit.satuan ? unit.satuan.nama_satuan : (unit.asal_satuan || 'Umum');
-        
-        // Lookup coordinates from dbSatuans
-        const satuanData = unit.satuan || dbSatuans.find(s => s.nama_satuan === satuanName);
-        const coords = satuanData && satuanData.latitude !== null && satuanData.longitude !== null 
-            ? [parseFloat(satuanData.latitude), parseFloat(satuanData.longitude)] 
-            : null;
+    const satuanGroups = React.useMemo(() => {
+        return dbUnits.reduce((acc, unit) => {
+            const satuanName = unit.satuan ? unit.satuan.nama_satuan : (unit.asal_satuan || 'Umum');
+            
+            // Lookup coordinates from dbSatuans
+            const satuanData = unit.satuan || dbSatuans.find(s => s.nama_satuan === satuanName);
+            const coords = satuanData && satuanData.latitude !== null && satuanData.longitude !== null 
+                ? [parseFloat(satuanData.latitude), parseFloat(satuanData.longitude)] as [number, number]
+                : null;
 
-        if (!acc[satuanName]) {
-            acc[satuanName] = {
-                name: satuanName,
-                coords: coords,
-                units: [],
-                hasDamage: false
-            };
-        }
-        acc[satuanName].units.push(unit);
-        
-        // Check if this unit has an active case
-        const hasActiveCase = dbCases.some(c => 
-            c.unit_id === unit.db_id && (c.status !== 'SELESAI' && c.status !== 'DITOLAK')
+            if (!acc[satuanName]) {
+                acc[satuanName] = {
+                    name: satuanName,
+                    coords: coords,
+                    units: [],
+                    hasDamage: false
+                };
+            }
+            acc[satuanName].units.push(unit);
+            
+            // Check if this unit has an active case
+            const hasActiveCase = dbCases.some(c => 
+                c.unit_id === unit.db_id && (c.status !== 'SELESAI' && c.status !== 'DITOLAK')
+            );
+            if (hasActiveCase) acc[satuanName].hasDamage = true;
+            
+            return acc;
+        }, {} as Record<string, any>);
+    }, [dbUnits, dbCases, dbSatuans]);
+
+    // Filter units based on search
+    const filteredSatuanGroups = React.useMemo(() => {
+        if (!searchQuery) return Object.values(satuanGroups);
+        return Object.values(satuanGroups).filter((group: any) => 
+            group.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            group.units.some((u: any) => u.nomor_seri.toLowerCase().includes(searchQuery.toLowerCase()))
         );
-        if (hasActiveCase) acc[satuanName].hasDamage = true;
-        
-        return acc;
-    }, {} as Record<string, any>);
+    }, [satuanGroups, searchQuery]);
+
+    // Auto-focus if initialFocusSatuan is provided
+    useEffect(() => {
+        if (initialFocusSatuan) {
+            const group = satuanGroups[initialFocusSatuan];
+            if (group && group.coords) {
+                setSelectedGroup(group);
+            }
+        }
+    }, [initialFocusSatuan, satuanGroups]);
+
+    // Handle Search auto-select
+    useEffect(() => {
+        if (searchQuery.length > 2) {
+            const exactMatch = Object.values(satuanGroups).find((g: any) => g.name.toLowerCase() === searchQuery.toLowerCase());
+            if (exactMatch && exactMatch.coords) {
+                setSelectedGroup(exactMatch);
+            }
+        }
+    }, [searchQuery, satuanGroups]);
 
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
@@ -133,8 +179,43 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
                         placeholder="CARI SATUAN / NO SERI..." 
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
+                        onBlur={() => setTimeout(() => {}, 200)} // Allow click to register
                         className="w-full bg-slate-100 dark:bg-cighra-dark border border-slate-200 dark:border-slate-700 rounded-sm py-2 pl-10 pr-4 text-xs font-tactical tracking-widest focus:ring-1 focus:ring-cighra-gold outline-none uppercase transition-all"
                     />
+
+                    {/* Search Results Dropdown */}
+                    {searchQuery.length > 0 && (
+                        <div className="absolute top-full left-0 w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xl z-[3000] mt-1 max-h-60 overflow-y-auto custom-scrollbar animate-in fade-in slide-in-from-top-2 duration-200">
+                            {filteredSatuanGroups.length > 0 ? (
+                                filteredSatuanGroups.map((group: any) => (
+                                    <button
+                                        key={group.name}
+                                        onClick={() => {
+                                            if (group.coords) {
+                                                setSelectedGroup(group);
+                                                setSearchQuery('');
+                                            }
+                                        }}
+                                        className={`w-full text-left p-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 border-b border-slate-100 dark:border-slate-700/50 last:border-0 transition-colors flex items-center justify-between ${!group.coords ? 'opacity-50 grayscale' : ''}`}
+                                    >
+                                        <div className="flex flex-col">
+                                            <span className="text-[10px] font-bold font-tactical tracking-wider uppercase text-slate-800 dark:text-slate-200">{group.name}</span>
+                                            <span className="text-[9px] text-slate-500 font-mono">{group.units.length} UNITS</span>
+                                        </div>
+                                        {!group.coords ? (
+                                            <span className="text-[8px] font-mono text-red-500 bg-red-500/10 px-1 border border-red-500/20">NO COORDS</span>
+                                        ) : (
+                                            group.hasDamage && <AlertTriangle size={12} className="text-orange-500" />
+                                        )}
+                                    </button>
+                                ))
+                            ) : (
+                                <div className="p-4 text-center text-[10px] font-mono text-slate-500 italic">
+                                    DATA TIDAK DITEMUKAN
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -221,11 +302,11 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
                             <div className="flex-1 flex flex-col animate-in fade-in duration-300 min-h-0">
                                 <h3 className="font-tactical font-bold text-sm tracking-widest uppercase border-b border-slate-200 dark:border-slate-700 pb-2 mb-3 shrink-0">RINGKASAN SATUAN</h3>
                                 <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-2 min-h-0">
-                                    {Object.values(satuanGroups).map((group: any) => (
+                                    {filteredSatuanGroups.map((group: any) => (
                                         <div 
                                             key={group.name} 
                                             onClick={() => group.coords && setSelectedGroup(group)}
-                                            className={`p-3 border rounded-sm transition-all ${group.coords ? 'cursor-pointer hover:shadow-md' : 'opacity-50 cursor-not-allowed bg-slate-100 dark:bg-cighra-dark/60 border-slate-300 dark:border-slate-600 border-dashed'} ${group.hasDamage && group.coords ? 'bg-orange-500/5 border-orange-500/30 hover:border-orange-500/60' : (group.coords ? 'bg-slate-50 dark:bg-cighra-dark/30 border-slate-200 dark:border-slate-700 hover:border-cighra-gold/50' : '')}`}
+                                            className={`p-3 border rounded-sm transition-all ${group.coords ? 'cursor-pointer hover:shadow-md' : 'opacity-50 cursor-not-allowed bg-slate-100 dark:bg-cighra-dark/60 border-slate-300 dark:border-slate-600 border-dashed'} ${selectedGroup?.name === group.name ? 'ring-2 ring-cighra-gold shadow-lg transform scale-[1.02] z-10' : ''} ${group.hasDamage && group.coords ? 'bg-orange-500/5 border-orange-500/30 hover:border-orange-500/60' : (group.coords ? 'bg-slate-50 dark:bg-cighra-dark/30 border-slate-200 dark:border-slate-700 hover:border-cighra-gold/50' : '')}`}
                                         >
                                             <div className="flex justify-between items-start mb-1">
                                                 <span className="text-xs font-bold font-tactical tracking-wider truncate max-w-[120px] uppercase">{group.name}</span>
@@ -269,20 +350,42 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
                         />
                         
                         <ZoomControl position="bottomright" />
+                        
+                        <MapController selectedCoords={selectedGroup?.coords || null} />
 
                         {Object.values(satuanGroups).map((group: any) => (
                             group.coords && (
-                                <Marker 
-                                    key={group.name} 
-                                    position={group.coords} 
-                                    icon={createCustomIcon(group.hasDamage)}
-                                    eventHandlers={{
-                                        click: () => {
-                                            setSelectedGroup(group);
-                                        }
-                                    }}
-                                >
-                                </Marker>
+                                <React.Fragment key={group.name}>
+                                    <Marker 
+                                        position={group.coords} 
+                                        icon={createCustomIcon(group.hasDamage)}
+                                        eventHandlers={{
+                                            click: () => {
+                                                setSelectedGroup(group);
+                                            }
+                                        }}
+                                    >
+                                        <Popup className="tactical-popup">
+                                            <div className="p-1">
+                                                <div className="font-tactical font-bold text-xs border-b border-slate-200 pb-1 mb-1 uppercase">{group.name}</div>
+                                                <div className="text-[10px] font-mono">{group.units.length} UNIT BERTAHAN</div>
+                                            </div>
+                                        </Popup>
+                                    </Marker>
+                                    {selectedGroup?.name === group.name && (
+                                        <Circle 
+                                            center={group.coords} 
+                                            radius={5000} 
+                                            pathOptions={{ 
+                                                color: group.hasDamage ? '#f97316' : '#eab308', 
+                                                fillColor: group.hasDamage ? '#f97316' : '#eab308',
+                                                fillOpacity: 0.1,
+                                                weight: 1,
+                                                dashArray: '5, 5'
+                                            }} 
+                                        />
+                                    )}
+                                </React.Fragment>
                             )
                         ))}
                     </MapContainer>
