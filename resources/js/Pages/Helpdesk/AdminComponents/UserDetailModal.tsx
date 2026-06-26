@@ -11,61 +11,65 @@ const UserDetailModal: React.FC<UserDetailModalProps> = ({ isOpen, onClose, user
   if (!isOpen || !user) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="bg-cighra-light dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full max-w-lg shadow-[0_0_50px_rgba(75,83,32,0.4)]">
-        <div className="p-4 border-b border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/10 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Shield className="w-5 h-5 text-cighra-primary dark:text-cighra-gold" />
-            <h3 className="font-tactical font-bold text-cighra-primary dark:text-cighra-gold tracking-widest uppercase">DETAIL DATA PERSONEL</h3>
+    <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 px-6 overflow-y-auto">
+      <div className="bg-white dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full max-w-2xl shadow-[0_0_100px_rgba(0,0,0,0.6)] animate-in zoom-in-95 duration-300 rounded-sm overflow-hidden">
+        <div className="p-5 border-b border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/5 flex justify-between items-center px-8">
+          <div className="flex items-center gap-4">
+            <Shield className="w-6 h-6 text-cighra-primary dark:text-cighra-gold" />
+            <h3 className="font-tactical font-bold text-cighra-primary dark:text-cighra-gold tracking-widest uppercase text-lg">DETAIL DATA PERSONEL</h3>
           </div>
-          <button onClick={onClose} className="text-slate-500 hover:text-cighra-primary dark:text-cighra-gold">✕</button>
+          <button onClick={onClose} className="text-slate-400 hover:text-red-500 transition-colors text-xl">✕</button>
         </div>
 
-        <div className="p-6">
-          <div className="grid grid-cols-2 gap-y-4 gap-x-8">
-            <div className="col-span-2 flex items-center gap-4 mb-4 pb-4 border-b border-slate-200 dark:border-slate-600/50">
-              <div className="w-16 h-16 bg-cighra-primary/20 dark:bg-cighra-gold/20 border border-cighra-primary dark:border-cighra-gold flex items-center justify-center">
-                <Users className="w-8 h-8 text-cighra-primary dark:text-cighra-gold" />
+        <div className="p-8 space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+            <div className="col-span-2 flex items-center gap-6 pb-8 border-b border-slate-200 dark:border-slate-800">
+              <div className="w-20 h-20 bg-cighra-primary/10 dark:bg-cighra-gold/10 border-2 border-cighra-primary/30 dark:border-cighra-gold/30 flex items-center justify-center p-4">
+                <Users className="w-10 h-10 text-cighra-primary dark:text-cighra-gold" />
               </div>
-              <div>
-                <p className="text-xs font-mono text-slate-500 uppercase tracking-tighter">{user.id}</p>
-                <h4 className="text-xl font-bold text-slate-800 dark:text-white uppercase">{user.name}</h4>
-                <span className="text-[10px] font-mono bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white px-2 py-0.5 tracking-widest">{user.role.toUpperCase()}</span>
+              <div className="space-y-1">
+                <p className="text-[10px] font-mono text-slate-500 dark:text-slate-500 uppercase tracking-[0.2em]">{user.id}</p>
+                <h4 className="text-2xl font-tactical font-bold text-slate-800 dark:text-white uppercase tracking-wider">{user.name}</h4>
+                <div className="inline-block bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white px-3 py-1 font-tactical font-bold text-xs tracking-[0.2em]">
+                  {user.role.toUpperCase()}
+                </div>
               </div>
             </div>
 
-            <div>
-              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-500 mb-1 tracking-widest uppercase">Username</label>
-              <p className="text-sm font-mono font-bold text-slate-800 dark:text-white">{user.username}</p>
+            <div className="space-y-1">
+              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest">Security ID / Username</label>
+              <p className="text-base font-mono font-bold text-slate-800 dark:text-slate-200">{user.username}</p>
             </div>
-            <div>
-              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-500 mb-1 tracking-widest uppercase">NRP / NIP</label>
-              <p className="text-sm font-mono font-bold text-slate-800 dark:text-white">{user.nrp_nip || '-'}</p>
+            <div className="space-y-1">
+              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest">NRP / NIP Identification</label>
+              <p className="text-base font-mono font-bold text-slate-800 dark:text-slate-200">{user.nrp_nip || '-'}</p>
             </div>
-            <div>
-              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-500 mb-1 tracking-widest uppercase">No. WhatsApp</label>
-              <p className="text-sm font-mono font-bold text-slate-800 dark:text-white">{user.no_wa || '-'}</p>
+            <div className="space-y-1">
+              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest">WhatsApp Communication</label>
+              <p className="text-base font-mono font-bold text-slate-800 dark:text-slate-200">+{user.no_wa || '-'}</p>
             </div>
-            <div className="col-span-2">
-              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-500 mb-1 tracking-widest uppercase">Email</label>
-              <p className="text-sm font-mono font-bold text-slate-800 dark:text-white lowercase">{user.email || '-'}</p>
+            <div className="space-y-1">
+              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest">Email Contact</label>
+              <p className="text-base font-mono font-bold text-slate-800 dark:text-slate-200 lowercase">{user.email || '-'}</p>
             </div>
-            <div>
-              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-500 mb-1 tracking-widest uppercase">Asal Satuan</label>
-              <p className="text-sm font-mono font-bold text-slate-800 dark:text-white uppercase">{user.asal_satuan || '-'}</p>
+            <div className="col-span-2 space-y-1">
+              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest">Military Unit / Assignment</label>
+              <p className="text-base font-mono font-bold text-slate-800 dark:text-slate-200 uppercase">{user.asal_satuan || '-'}</p>
             </div>
-            <div className="col-span-2">
-              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-500 mb-1 tracking-widest uppercase">Spesialisasi</label>
-              <p className={`text-sm font-mono font-bold p-2 bg-gray-200 dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600/50 ${user.role !== 'Teknisi' ? 'text-slate-500 italic' : 'text-gunmetal dark:text-blue-400'}`}>
-                {user.role === 'Teknisi' ? (user.spesialisasi || 'BELUM DIATUR') : 'TIDAK TERSEDIA (NON-TEKNISI)'}
-              </p>
+            <div className="col-span-2 space-y-3 pt-4">
+              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest">Technical Specialization</label>
+              <div className={`p-4 bg-slate-50 dark:bg-cighra-darkcard border ${user.role !== 'Teknisi' ? 'border-slate-200 dark:border-slate-800 italic text-slate-400' : 'border-cighra-gold/20 text-slate-800 dark:text-blue-400'}`}>
+                <p className="font-mono font-bold text-sm">
+                  {user.role === 'Teknisi' ? (user.spesialisasi || 'PENDING SPECIFICATION...') : 'FIELD ACCESS: NON-TECHNICAL PERSONNEL'}
+                </p>
+              </div>
             </div>
           </div>
 
-          <div className="mt-8 pt-4 border-t border-slate-200 dark:border-slate-600/50 flex justify-end">
+          <div className="pt-8 flex justify-end">
             <button
               onClick={onClose}
-              className="bg-gunmetal dark:bg-cighra-darkcard text-white px-8 py-2 font-tactical font-bold tracking-widest hover:bg-slate-700 transition-colors border border-slate-500"
+              className="bg-cighra-primary dark:bg-cighra-darkcard text-white px-12 py-3.5 font-tactical font-bold tracking-[0.2em] hover:bg-slate-700 dark:hover:bg-slate-800 border border-slate-700 transition-all uppercase shadow-lg active:scale-95"
             >
               TUTUP
             </button>

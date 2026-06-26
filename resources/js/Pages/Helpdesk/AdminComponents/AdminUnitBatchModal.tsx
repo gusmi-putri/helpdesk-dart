@@ -45,82 +45,82 @@ const AdminUnitBatchModal: React.FC<AdminUnitBatchModalProps> = ({ isOpen, onClo
   };
 
   return (
-    <div className="fixed inset-0 z-[130] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-      <div className="bg-cighra-light dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full max-w-lg shadow-2xl animate-in zoom-in-95 duration-200 overflow-hidden flex flex-col max-h-[90vh]">
-        <div className="p-4 border-b border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/10 flex justify-between items-center shrink-0">
-          <h3 className="font-tactical font-bold text-cighra-primary dark:text-cighra-gold tracking-widest uppercase flex items-center gap-2">
-            <Package size={18} /> IMPORT TAMBAH MASSAL (CSV)
+    <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 px-6 overflow-y-auto">
+      <div className="bg-white dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full max-w-2xl shadow-[0_0_100px_rgba(0,0,0,0.6)] animate-in zoom-in-95 duration-300 rounded-sm overflow-hidden flex flex-col max-h-[90vh]">
+        <div className="p-5 border-b border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/5 flex justify-between items-center px-8 shrink-0">
+          <h3 className="font-tactical font-bold text-cighra-primary dark:text-cighra-gold tracking-widest uppercase flex items-center gap-2 text-lg">
+            <Package size={20} /> IMPORT TAMBAH MASSAL (CSV)
           </h3>
-          <button onClick={handleClose} className="text-slate-500 hover:text-cighra-primary dark:hover:text-cighra-gold text-xl">✕</button>
+          <button onClick={handleClose} className="text-slate-400 hover:text-red-500 transition-colors text-xl">✕</button>
         </div>
 
-        <div className="overflow-y-auto custom-scrollbar p-6 space-y-4 flex-1">
-          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/40 p-3 rounded-sm space-y-2">
-            <p className="text-[10px] font-mono text-blue-700 dark:text-blue-400 uppercase leading-snug">
-              ℹ CARA PENGGUNAAN: 
-              1. Unduh template CSV.
-              2. Isi data unit tanpa mengubah judul kolom.
-              3. Unggah CSV beserta 1 file Dokumen Surat Pendukung.
+        <div className="overflow-y-auto custom-scrollbar p-8 space-y-8 flex-1">
+          <div className="bg-blue-500/5 dark:bg-blue-900/10 border-l-4 border-blue-500 p-6 space-y-4">
+            <p className="text-[10px] font-mono text-blue-700 dark:text-blue-400 uppercase tracking-widest leading-relaxed">
+              <span className="font-bold block mb-1">PROSEDUR OPERASIONAL:</span> 
+              1. UNDUH TEMPLATE STANDAR CSV DI BAWAH INI.<br />
+              2. ISIKAN DATA UNIT SESUAI FORMAT KOLOM.<br />
+              3. UNGGAH CSV DATA BESERTA 1 DOKUMEN SURAT PENDUKUNG (HASIL PEMERIKSAAN).
             </p>
-            <button type="button" onClick={downloadTemplate} className="flex items-center gap-1.5 text-[10px] font-mono font-bold bg-blue-100 dark:bg-blue-800 text-blue-700 dark:text-blue-300 px-3 py-1.5 rounded-sm hover:bg-blue-200 dark:hover:bg-blue-700 transition-colors cursor-pointer w-full justify-center">
-              <Download size={12} /> UNDUH TEMPLATE CSV
+            <button type="button" onClick={downloadTemplate} className="flex items-center gap-2 text-[10px] font-mono font-bold bg-blue-600 text-white dark:bg-blue-800 px-4 py-2 hover:bg-blue-700 transition-all cursor-pointer shadow-lg">
+              <Download size={14} /> UNDUH TEMPLATE CSV
             </button>
           </div>
 
-          <form id="adminBatchForm" onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">File CSV Data Unit *</label>
-              <div className="relative">
-                {csvFile ? (
-                  <div className="flex items-center gap-2 bg-cighra-primary/10 dark:bg-cighra-gold/10 border border-cighra-primary/30 dark:border-cighra-gold/30 px-3 py-2 rounded-sm">
-                    <FileText className="w-4 h-4 text-cighra-primary dark:text-cighra-gold" />
-                    <span className="text-xs font-mono text-cighra-primary dark:text-cighra-gold flex-1 truncate">{csvFile.name}</span>
-                    <button type="button" onClick={() => setCsvFile(null)} className="text-red-500 hover:text-red-700">
-                      <X size={14} />
-                    </button>
-                  </div>
-                ) : (
-                  <label className="flex flex-col items-center justify-center gap-2 bg-slate-50 dark:bg-cighra-darkcard border-2 border-dashed border-slate-300 dark:border-slate-600 p-6 cursor-pointer hover:border-cighra-primary dark:hover:border-cighra-gold transition-colors rounded-sm">
-                    <Upload className="w-6 h-6 text-slate-400" />
-                    <span className="text-xs font-mono text-slate-500">Pilih / Seret file .csv ke sini</span>
-                    <input type="file" accept=".csv" className="hidden" required onChange={(e) => e.target.files?.[0] && setCsvFile(e.target.files[0])} />
-                  </label>
-                )}
-              </div>
-            </div>
+          <form id="adminBatchForm" onSubmit={handleSubmit} className="space-y-8 mt-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-3">
+                    <label className="block text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">DATA UNIT (CSV ONLY) *</label>
+                    <div className="relative h-48">
+                        {csvFile ? (
+                        <div className="h-full flex flex-col items-center justify-center gap-3 bg-cighra-primary/5 dark:bg-cighra-gold/5 border border-cighra-primary dark:border-cighra-gold p-4 relative">
+                            <FileText className="w-12 h-12 text-cighra-primary dark:text-cighra-gold opacity-50" />
+                            <span className="text-xs font-mono font-bold text-cighra-primary dark:text-cighra-gold text-center break-all">{csvFile.name}</span>
+                            <button type="button" onClick={() => setCsvFile(null)} className="absolute top-2 right-2 text-red-500 hover:bg-red-50 p-1">
+                            <X size={16} />
+                            </button>
+                        </div>
+                        ) : (
+                        <label className="h-full flex flex-col items-center justify-center gap-2 bg-slate-50 dark:bg-cighra-darkcard border-2 border-dashed border-slate-300 dark:border-slate-800 p-6 cursor-pointer hover:border-cighra-primary dark:hover:border-cighra-gold transition-all group">
+                            <Upload className="w-8 h-8 text-slate-400 group-hover:text-cighra-gold transition-colors" />
+                            <span className="text-[10px] font-mono text-slate-500 text-center uppercase tracking-widest">PILIH / SERET CSV</span>
+                            <input type="file" accept=".csv" className="hidden" required onChange={(e) => e.target.files?.[0] && setCsvFile(e.target.files[0])} />
+                        </label>
+                        )}
+                    </div>
+                </div>
 
-            <div>
-              <label className="block text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Surat Pendukung (PDF/JPG/PNG) *</label>
-              <div className="relative">
-                {document ? (
-                  <div className="flex items-center gap-2 bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-800/30 px-3 py-2 rounded-sm">
-                    <FileText className="w-4 h-4 text-green-600 dark:text-green-400" />
-                    <span className="text-xs font-mono text-green-700 dark:text-green-400 flex-1 truncate">{document.name}</span>
-                    <button type="button" onClick={() => setDocument(null)} className="text-red-500 hover:text-red-700">
-                      <X size={14} />
-                    </button>
-                  </div>
-                ) : (
-                  <label className="flex items-center gap-2 bg-slate-50 dark:bg-cighra-darkcard border border-dashed border-slate-300 dark:border-slate-600 px-3 py-3 cursor-pointer hover:border-cighra-primary dark:hover:border-cighra-gold transition-colors rounded-sm">
-                    <Upload className="w-4 h-4 text-slate-400" />
-                    <span className="text-xs font-mono text-slate-500">Pilih file surat pendukung...</span>
-                    <input type="file" accept=".pdf,.png,.jpg,.jpeg" required className="hidden" onChange={(e) => e.target.files?.[0] && setDocument(e.target.files[0])} />
-                  </label>
-                )}
-              </div>
+                <div className="space-y-3">
+                    <label className="block text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">LAMPIRAN PENDUKUNG (PDF/IMG) *</label>
+                    <div className="relative h-48">
+                        {document ? (
+                        <div className="h-full flex flex-col items-center justify-center gap-3 bg-green-500/5 dark:bg-green-900/10 border border-green-500 p-4 relative">
+                            <FileText className="w-12 h-12 text-green-500 opacity-50" />
+                            <span className="text-xs font-mono font-bold text-green-700 dark:text-green-400 text-center break-all">{document.name}</span>
+                            <button type="button" onClick={() => setDocument(null)} className="absolute top-2 right-2 text-red-500 hover:bg-red-50 p-1">
+                                <X size={16} />
+                            </button>
+                        </div>
+                        ) : (
+                        <label className="h-full flex flex-col items-center justify-center gap-2 bg-slate-50 dark:bg-cighra-darkcard border-2 border-dashed border-slate-300 dark:border-slate-800 p-6 cursor-pointer hover:border-cighra-primary dark:hover:border-cighra-gold transition-all group">
+                            <Upload className="w-8 h-8 text-slate-400 group-hover:text-cighra-gold transition-colors" />
+                            <span className="text-[10px] font-mono text-slate-500 text-center uppercase tracking-widest">PILIH LAMPIRAN</span>
+                            <input type="file" accept=".pdf,.png,.jpg,.jpeg" required className="hidden" onChange={(e) => e.target.files?.[0] && setDocument(e.target.files[0])} />
+                        </label>
+                        )}
+                    </div>
+                </div>
             </div>
           </form>
-        </div>
 
-        <div className="p-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-cighra-dark/50 shrink-0">
-          <div className="flex gap-3">
+          <div className="pt-4 flex gap-4">
             <button type="button" onClick={handleClose}
-              className="flex-1 py-2.5 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 font-tactical text-xs tracking-widest hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
+              className="flex-1 py-4 border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 font-tactical font-bold tracking-[0.2em] hover:bg-slate-50 dark:hover:bg-slate-800 transition-all uppercase">
               BATAL
             </button>
             <button type="submit" form="adminBatchForm" disabled={processing || !csvFile || !document}
-              className="flex-1 py-2.5 bg-cighra-primary dark:bg-cighra-gold text-white dark:text-slate-900 font-tactical font-bold text-xs tracking-widest hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 transition-all disabled:opacity-50">
-              {processing ? 'MENGUNGGAH...' : 'TAMBAHKAN UNIT'}
+              className="flex-[2] py-4 bg-cighra-primary dark:bg-cighra-gold text-white dark:text-slate-900 font-tactical font-bold tracking-[0.2em] hover:brightness-110 transition-all disabled:opacity-40 shadow-xl uppercase active:scale-95">
+              {processing ? 'SEDANG MENGUNGGAH...' : 'PROSES TAMBAH MASSAL'}
             </button>
           </div>
         </div>

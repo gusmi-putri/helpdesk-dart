@@ -15,96 +15,106 @@ const UnitHistoryModal: React.FC<UnitHistoryModalProps> = ({ isOpen, onClose, un
   const unitHistory = dbCases.filter((c: any) => c.unit_id === unit.id || c.unit_id === unit.db_id);
 
   return (
-    <div className="fixed inset-0 z-[140] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-      <div className="bg-cighra-light dark:bg-cighra-dark border-2 border-blue-600 w-full max-w-4xl shadow-2xl animate-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
-        <div className="p-4 border-b border-blue-600 bg-blue-900/10 flex justify-between items-center">
-          <h3 className="font-tactical font-bold text-blue-500 tracking-widest uppercase flex items-center gap-2">
-            <Clock className="w-5 h-5" /> RIWAYAT PERBAIKAN: {unit.nomor_seri}
-          </h3>
-          <button onClick={onClose} className="text-slate-500 hover:text-cighra-primary dark:text-cighra-gold text-xl">✕</button>
+    <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 px-6 overflow-y-auto">
+      <div className="bg-white dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full max-w-5xl shadow-[0_0_100px_rgba(0,0,0,0.6)] animate-in zoom-in-95 duration-300 rounded-sm overflow-hidden flex flex-col max-h-[90vh]">
+        <div className="p-5 border-b border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/5 flex justify-between items-center px-8 shrink-0">
+          <div className="flex items-center gap-4">
+            <Clock className="w-6 h-6 text-cighra-primary dark:text-cighra-gold" />
+            <h3 className="font-tactical font-bold text-cighra-primary dark:text-cighra-gold tracking-widest uppercase text-lg">LOG RIWAYAT PERBAIKAN: {unit.nomor_seri}</h3>
+          </div>
+          <button onClick={onClose} className="text-slate-400 hover:text-red-500 transition-colors text-xl">✕</button>
         </div>
 
-        <div className="p-6 overflow-y-auto custom-scrollbar flex-1">
-          <div className="mb-6 grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="p-3 bg-white/70 dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600/50 shadow-sm">
-              <p className="text-[9px] font-mono text-slate-700 dark:text-slate-400 uppercase tracking-widest">Keterangan</p>
-              <p className="text-sm font-bold uppercase text-slate-900 dark:text-white"></p>
+        <div className="p-8 overflow-y-auto custom-scrollbar flex-1 space-y-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="p-4 bg-slate-50 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-12 h-12 bg-slate-200/20 dark:bg-slate-700/20 rotate-45 translate-x-6 -translate-y-6"></div>
+              <p className="text-[10px] font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest mb-1">Status Asset</p>
+              <p className={`text-sm font-bold font-mono ${unit.status_unit === 'Beroperasi' ? 'text-green-600' : 'text-red-500'}`}>{unit.status_unit?.toUpperCase()}</p>
             </div>
-            <div className="p-3 bg-white/70 dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600/50 shadow-sm">
-              <p className="text-[9px] font-mono text-slate-700 dark:text-slate-400 uppercase tracking-widest">Jenis</p>
-              <p className="text-sm font-bold uppercase text-slate-900 dark:text-white">{unit.jenis}</p>
+            <div className="p-4 bg-slate-50 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
+              <p className="text-[10px] font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest mb-1">Model / Varian</p>
+              <p className="text-sm font-bold font-mono text-slate-800 dark:text-slate-100 uppercase">{unit.jenis}</p>
             </div>
-            <div className="p-3 bg-white/70 dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600/50 shadow-sm">
-              <p className="text-[9px] font-mono text-slate-700 dark:text-slate-400 uppercase tracking-widest">Lokasi</p>
-              <p className="text-sm font-bold uppercase text-slate-900 dark:text-white">{unit.asal_satuan}</p>
+            <div className="p-4 bg-slate-50 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
+              <p className="text-[10px] font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest mb-1">Area Penempatan</p>
+              <p className="text-sm font-bold font-mono text-slate-800 dark:text-slate-100 uppercase">{unit.asal_satuan}</p>
             </div>
-            <div className="p-3 bg-white/70 dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600/50 shadow-sm">
-              <p className="text-[9px] font-mono text-slate-700 dark:text-slate-400 uppercase tracking-widest">Total Kasus</p>
-              <p className="text-sm font-bold uppercase text-blue-700 dark:text-blue-400">{unitHistory.length} ENTRI</p>
+            <div className="p-4 bg-slate-50 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
+              <p className="text-[10px] font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest mb-1">Database Records</p>
+              <p className="text-sm font-bold font-mono text-cighra-primary dark:text-cighra-gold">{unitHistory.length} ENTRI LOG</p>
             </div>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-6">
+            <h5 className="text-[10px] font-mono text-slate-500 dark:text-slate-500 uppercase tracking-[0.3em] font-bold pb-2 border-b border-slate-200 dark:border-slate-800">SEQUENCE OF HISTORICAL DATA</h5>
             {unitHistory.length === 0 ? (
-              <div className="p-10 text-center text-slate-600 dark:text-slate-400 italic font-mono uppercase tracking-widest border border-dashed border-gray-400 dark:border-slate-600 bg-white/40 dark:bg-transparent">
-                Unit ini belum memiliki catatan kerusakan/perbaikan di sistem.
+              <div className="p-16 text-center text-slate-500 dark:text-slate-500 italic font-mono uppercase tracking-[0.2em] border border-dashed border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-transparent">
+                SYSTEM MESSAGE: NO SERVICE RECORDS FOUND FOR THIS ASSET.
               </div>
             ) : (
               unitHistory.map((entry: any) => (
-                <div key={entry.caseId} className="border border-slate-200 dark:border-slate-600/50 bg-white/60 dark:bg-cighra-darkcard/80 p-4 relative group shadow-sm">
-                  <div className="absolute top-0 left-0 w-1 h-full bg-blue-600 opacity-50"></div>
-                  <div className="flex justify-between items-start mb-3">
-                    <div>
-                      <span className="text-[10px] font-mono text-blue-700 dark:text-blue-400 font-bold tracking-tighter bg-blue-900/10 dark:bg-blue-900/20 px-2 py-0.5 border border-blue-900/20 dark:border-blue-900/40">
-                        {entry.caseId}
-                      </span>
-                      <h4 className="text-sm font-bold mt-2 uppercase text-slate-900 dark:text-white">{entry.kerusakan.barangRusak}</h4>
+                <div key={entry.caseId} className="border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-cighra-darkcard/40 p-6 relative shadow-sm group hover:border-cighra-gold/30 transition-all">
+                  <div className="absolute top-0 left-0 w-1 h-full bg-cighra-primary dark:bg-cighra-gold opacity-30 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pb-4 border-b border-slate-200 dark:border-slate-800/50">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-mono text-cighra-primary dark:text-cighra-gold font-bold tracking-widest px-2 py-0.5 border border-cighra-primary/30 dark:border-cighra-gold/30 bg-white dark:bg-black/40">
+                            {entry.caseId}
+                          </span>
+                          <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                            LOGGED AT: {entry.kerusakan.tanggal}
+                          </span>
+                      </div>
+                      <h4 className="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wide">{entry.kerusakan.barangRusak}</h4>
                     </div>
-                    <span className={`px-2 py-1 text-[9px] font-mono font-bold border
-                      ${entry.status === 'SELESAI' ? 'bg-green-900/20 text-green-500 border-green-800' :
-                        entry.status === 'PROSES' ? 'bg-blue-900/20 text-blue-500 border-blue-800' :
-                          'bg-cighra-primary/20 dark:bg-cighra-gold/20 text-cighra-primary dark:text-cighra-gold border-cighra-primary dark:border-cighra-gold/50'}
+                    <span className={`px-4 py-1.5 text-[10px] font-mono font-bold border tracking-widest shadow-sm transition-all
+                      ${entry.status === 'SELESAI' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800' :
+                        entry.status === 'PROSES' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800' :
+                          'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800'}
                     `}>
                       {entry.status}
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                    <div className="space-y-2">
-                      <p className="text-[9px] font-mono text-slate-700 dark:text-slate-400 uppercase flex items-center gap-1">
-                        <AlertTriangle className="w-3 h-3 text-orange-500" /> Detail Kerusakan
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-3">
+                      <p className="text-[10px] font-mono font-bold text-orange-600 dark:text-orange-400 uppercase tracking-widest flex items-center gap-2">
+                        <AlertTriangle className="w-4 h-4" /> Issue Documentation
                       </p>
-                      <p className="text-xs text-slate-800 dark:text-slate-200 leading-relaxed italic bg-white/50 dark:bg-black/20 p-2 border-l-2 border-orange-400">
+                      <div className="p-4 bg-white dark:bg-black/30 border-l-4 border-orange-400/50 text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-mono italic">
                         "{entry.kerusakan.deskripsi}"
-                      </p>
-                      <p className="text-[10px] font-mono text-slate-600 dark:text-slate-400 mt-2">
-                        Dilaporkan oleh: {entry.kerusakan.pelapor} pada {entry.kerusakan.tanggal}
+                      </div>
+                      <p className="text-[9px] font-mono text-slate-500 dark:text-slate-500 uppercase tracking-tighter">
+                        REPORTED BY: {entry.kerusakan.pelapor.toUpperCase()}
                       </p>
                     </div>
-                    <div className="space-y-2 border-l border-slate-300 dark:border-slate-600/50 pl-4">
-                      <p className="text-[9px] font-mono text-slate-700 dark:text-slate-400 uppercase flex items-center gap-1">
-                        <Wrench className="w-3 h-3 text-blue-600 dark:text-blue-400" /> Penanganan Teknisi
+                    <div className="space-y-3">
+                      <p className="text-[10px] font-mono font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest flex items-center gap-2">
+                        <Wrench className="w-4 h-4" /> Technical Intervention
                       </p>
                       {entry.perbaikan.tindakan ? (
-                        <>
-                          <p className="text-xs text-slate-900 dark:text-slate-100 bg-white/50 dark:bg-black/20 p-2 border-l-2 border-blue-400">
+                        <div className="space-y-4">
+                          <div className="p-4 bg-white dark:bg-black/30 border-l-4 border-blue-400/50 text-xs text-slate-800 dark:text-slate-200 leading-relaxed font-mono">
                             {entry.perbaikan.tindakan}
-                          </p>
-                          <div className="flex flex-wrap gap-2 mt-2">
+                          </div>
+                          <div className="flex flex-wrap gap-2">
                             {entry.perbaikan.metodePerbaikan && (
-                              <span className="text-[8px] bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-900/40 px-1.5 py-0.5 font-mono">
-                                METODE: {entry.perbaikan.metodePerbaikan}
+                              <span className="text-[9px] bg-slate-800 dark:bg-blue-900/20 text-white dark:text-blue-400 border border-slate-700 dark:border-blue-900/40 px-2 py-1 font-tactical font-bold tracking-widest">
+                                METHOD: {entry.perbaikan.metodePerbaikan.toUpperCase()}
                               </span>
                             )}
                             {entry.perbaikan.tanggalSelesai && (
-                              <span className="text-[8px] bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-500 border border-green-200 dark:border-green-900/40 px-1.5 py-0.5 font-mono">
-                                SELESAI: {entry.perbaikan.tanggalSelesai}
+                              <span className="text-[9px] bg-green-600 dark:bg-green-900/20 text-white dark:text-green-500 border border-green-600 dark:border-green-900/40 px-2 py-1 font-tactical font-bold tracking-widest">
+                                RESOLVED: {entry.perbaikan.tanggalSelesai}
                               </span>
                             )}
                           </div>
-                        </>
+                        </div>
                       ) : (
-                        <p className="text-xs text-slate-600 dark:text-slate-400 italic">Belum ada catatan penanganan teknis.</p>
+                        <div className="p-4 border border-dashed border-slate-300 dark:border-slate-800 text-[10px] text-slate-400 font-mono italic">
+                          AWAITING TECHNICAL LOG ENTRY...
+                        </div>
                       )}
                     </div>
                   </div>

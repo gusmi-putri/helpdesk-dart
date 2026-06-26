@@ -66,16 +66,16 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="bg-cighra-light dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full max-w-md shadow-[0_0_50px_rgba(75,83,32,0.3)] animate-in zoom-in-95 duration-200">
-        <div className="p-4 border-b border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/10 flex justify-between items-center">
-          <h3 className="font-tactical font-bold text-cighra-primary dark:text-cighra-gold tracking-widest uppercase">
+    <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 px-6 overflow-y-auto">
+      <div className="bg-white dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full max-w-2xl shadow-[0_0_100px_rgba(0,0,0,0.6)] animate-in zoom-in-95 duration-300 rounded-sm overflow-hidden">
+        <div className="p-5 border-b border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/5 flex justify-between items-center px-8">
+          <h3 className="font-tactical font-bold text-cighra-primary dark:text-cighra-gold tracking-widest uppercase text-lg">
             {isPengajuan ? (isAddMode ? 'PENGAJUAN PERSONEL BARU' : 'PENGAJUAN EDIT PERSONEL') : (isAddMode ? 'TAMBAH PERSONEL BARU' : 'PENGATURAN PERSONEL')}
           </h3>
-          <button onClick={onClose} className="text-slate-500 hover:text-cighra-primary dark:text-cighra-gold">✕</button>
+          <button onClick={onClose} className="text-slate-400 hover:text-red-500 transition-colors text-xl">✕</button>
         </div>
-        <form onSubmit={onSubmit} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto custom-scrollbar">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form onSubmit={onSubmit} className="p-8 space-y-8 max-h-[85vh] overflow-y-auto custom-scrollbar">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
             <div>
               <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">NRP / NIP</label>
               <input
@@ -128,9 +128,12 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
                 </div>
               </>
             ) : (
-              <div className="bg-gray-100 dark:bg-gray-900/50 p-2 border border-slate-200 dark:border-slate-600/50 flex flex-col justify-center">
-                <label className="block text-[9px] font-mono text-slate-500 uppercase tracking-widest">Username (Locked)</label>
-                <p className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400">{data.username}</p>
+              <div className="flex flex-col">
+                <label className="block text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-1">Username (LOCKED)</label>
+                <div className="bg-slate-50 dark:bg-slate-800/80 p-2.5 border border-slate-200 dark:border-slate-800 text-sm font-mono font-bold text-slate-400 dark:text-slate-500 italic flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-700"></span>
+                  {data.username}
+                </div>
               </div>
             )}
             <div className="col-span-2">
@@ -139,28 +142,31 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
                 type="text"
                 value={data.nama_lengkap}
                 onChange={(e) => setData('nama_lengkap', e.target.value)}
-                className={`w-full bg-white dark:bg-cighra-darkcard border ${errors.nama_lengkap ? 'border-red-500' : 'border-gray-400 dark:border-slate-600'} p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none`}
+                className={`w-full bg-slate-50 dark:bg-cighra-darkcard border ${errors.nama_lengkap ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} p-3 text-sm font-mono focus:ring-1 focus:ring-cighra-gold outline-none transition-all dark:text-white`}
                 required
                 maxLength={100}
               />
               {errors.nama_lengkap && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.nama_lengkap}</p>}
             </div>
             <div className="col-span-2 md:col-span-1">
-              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Email</label>
+              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Email Address</label>
               <input
                 type="email"
                 value={data.email}
                 onChange={(e) => setData('email', e.target.value)}
-                className={`w-full bg-white dark:bg-cighra-darkcard border ${errors.email ? 'border-red-500' : 'border-gray-400 dark:border-slate-600'} p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none`}
+                className={`w-full bg-slate-50 dark:bg-cighra-darkcard border ${errors.email ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} p-3 text-sm font-mono focus:ring-1 focus:ring-cighra-gold outline-none transition-all dark:text-white`}
                 required
                 placeholder="EMAIL AKTIF"
               />
               {errors.email && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.email}</p>}
             </div>
             {data.username === 'admin' ? (
-              <div className="bg-gray-100 dark:bg-gray-900/50 p-2 border border-slate-200 dark:border-slate-600/50 flex flex-col justify-center">
-                <label className="block text-[9px] font-mono text-slate-500 uppercase tracking-widest">Hak Akses (Locked)</label>
-                <p className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400">ADMINISTRATOR</p>
+              <div className="flex flex-col">
+                <label className="block text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-1">Hak Akses (LOCKED)</label>
+                <div className="bg-slate-100 dark:bg-slate-800/80 p-3 border border-slate-200 dark:border-slate-800 text-sm font-mono font-bold text-slate-400 dark:text-slate-500 italic flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-700"></span>
+                  ADMINISTRATOR
+                </div>
               </div>
             ) : (
               <div>
@@ -168,7 +174,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
                 <select
                   value={data.role_id}
                   onChange={(e) => setData('role_id', e.target.value)}
-                  className={`w-full bg-white dark:bg-cighra-darkcard border ${errors.role_id ? 'border-red-500' : 'border-gray-400 dark:border-slate-600'} p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none`}
+                  className={`w-full bg-slate-50 dark:bg-cighra-darkcard border ${errors.role_id ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} p-3 text-sm font-mono focus:ring-1 focus:ring-cighra-gold outline-none transition-all dark:text-white`}
                   required
                 >
                   <option value="">PILIH ROLE</option>
@@ -180,28 +186,28 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
               </div>
             )}
             <div>
-              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">No. WhatsApp</label>
+              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">WhatsApp Connection</label>
               <div className="relative">
-                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-slate-400 font-mono text-sm font-bold pointer-events-none">+</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-mono text-sm font-bold pointer-events-none">+</span>
                 <input
                   type="text"
                   value={data.no_wa}
                   onChange={(e) => handleWaInput(e.target.value)}
                   maxLength={15}
-                  className={`w-full bg-white dark:bg-cighra-darkcard border ${errors.no_wa || waWarning ? 'border-yellow-500' : 'border-gray-400 dark:border-slate-600'} pl-6 pr-2 py-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none`}
+                  className={`w-full bg-slate-50 dark:bg-cighra-darkcard border ${errors.no_wa || waWarning ? 'border-yellow-500/50' : 'border-slate-300 dark:border-slate-700'} pl-8 pr-3 py-3 text-sm font-mono focus:ring-1 focus:ring-cighra-gold outline-none transition-all dark:text-white`}
                   placeholder="6281234567890"
                 />
               </div>
               {waWarning && (
-                <p className="text-[9px] text-yellow-600 dark:text-yellow-400 font-mono font-bold flex items-center gap-1 mt-1">
+                <p className="text-[9px] text-yellow-600 dark:text-yellow-500 font-mono font-bold flex items-center gap-1 mt-1">
                   <Info className="w-3 h-3 shrink-0" /> {waWarning}
                 </p>
               )}
-              <p className="text-[9px] text-slate-400 mt-1 font-mono">Awali 62, hanya angka, 10-15 digit.</p>
+              <p className="text-[9px] text-slate-400 mt-1 font-mono italic">Format: 62XXXXXXXXXXX</p>
               {errors.no_wa && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.no_wa}</p>}
             </div>
             <div>
-              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Asal Satuan</label>
+              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Asal Satuan / Komando</label>
               <select
                 value={data.satuan_id || ''}
                 onChange={(e) => {
@@ -211,7 +217,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
                        setData('asal_satuan', selectedSatuan.nama_satuan);
                    }
                 }}
-                className={`w-full bg-white dark:bg-cighra-darkcard border ${errors.satuan_id ? 'border-red-500' : 'border-gray-400 dark:border-slate-600'} p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none`}
+                className={`w-full bg-slate-50 dark:bg-cighra-darkcard border ${errors.satuan_id ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} p-3 text-sm font-mono focus:ring-1 focus:ring-cighra-gold outline-none transition-all dark:text-white`}
                 required
               >
                 <option value="">PILIH SATUAN</option>
@@ -221,30 +227,34 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
               </select>
               {errors.satuan_id && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.satuan_id}</p>}
             </div>
-            <div>
+            <div className="col-span-2">
               <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">
-                Spesialisasi {dbRoles?.find((r: any) => r.id == data.role_id)?.name !== 'Teknisi' && '(KHUSUS TEKNISI)'}
+                Specialization {dbRoles?.find((r: any) => r.id == data.role_id)?.name !== 'Teknisi' && '(TECH ONLY)'}
               </label>
               <input
                 type="text"
                 value={data.spesialisasi}
                 onChange={(e) => setData('spesialisasi', e.target.value)}
                 disabled={dbRoles?.find((r: any) => r.id == data.role_id)?.name !== 'Teknisi'}
-                className={`w-full bg-white dark:bg-cighra-darkcard border border-gray-400 dark:border-slate-600 p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none ${dbRoles?.find((r: any) => r.id == data.role_id)?.name !== 'Teknisi' ? 'opacity-50 cursor-not-allowed' : ''}`}
-                placeholder={dbRoles?.find((r: any) => r.id == data.role_id)?.name !== 'Teknisi' ? 'NON-TEKNISI' : 'MISAL: JARINGAN / HARDWARE'}
+                className={`w-full bg-slate-50 dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-700 p-3 text-sm font-mono focus:ring-1 focus:ring-cighra-gold outline-none transition-all ${dbRoles?.find((r: any) => r.id == data.role_id)?.name !== 'Teknisi' ? 'opacity-40 cursor-not-allowed italic' : 'dark:text-white'}`}
+                placeholder={dbRoles?.find((r: any) => r.id == data.role_id)?.name !== 'Teknisi' ? 'SISTEM DETEKSI: NON-TEKNISI' : 'MISAL: JARINGAN / HARDWARE'}
                 maxLength={100}
               />
             </div>
           </div>
-          <div className="pt-4 flex gap-2">
+          <div className="pt-6 flex gap-4">
             <button
               type="submit"
               disabled={processing}
-              className="flex-1 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white py-2 font-tactical font-bold tracking-widest hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 transition-colors disabled:opacity-50"
+              className="flex-[2] bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white p-3.5 font-tactical font-bold tracking-widest hover:brightness-110 active:scale-[0.98] transition-all disabled:opacity-50 shadow-lg"
             >
               {processing ? 'MEMPROSES...' : isPengajuan ? (isAddMode ? 'AJUKAN PENDAFTARAN' : 'AJUKAN PERUBAHAN') : (isAddMode ? 'DAFTARKAN PERSONEL' : 'SIMPAN PERUBAHAN')}
             </button>
-            <button type="button" onClick={onClose} className="flex-1 bg-transparent border border-gray-500 text-slate-500 py-2 font-tactical font-bold tracking-widest hover:bg-gray-500/10 transition-colors">
+            <button 
+              type="button" 
+              onClick={onClose} 
+              className="flex-1 bg-transparent border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 p-3.5 font-tactical font-bold tracking-widest hover:bg-slate-50 dark:hover:bg-slate-800 transition-all uppercase"
+            >
               BATAL
             </button>
           </div>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Plus, MapPin, CheckCircle, Clock, Edit2, Trash2, Eye } from 'lucide-react';
+import { Search, Plus, MapPin, CheckCircle, Clock, Edit, Trash2, Eye } from 'lucide-react';
 import { useTableSort } from '@/hooks/useTableSort';
 import SortableHeader from '@/Components/Table/SortableHeader';
 
@@ -135,7 +135,7 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
                       className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm"
                       title="Edit Satuan"
                     >
-                      <Edit2 className="w-4 h-4" />
+                      <Edit className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => handleDeleteSatuan(satuan)}
