@@ -42,14 +42,17 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                 </tr>
               )}
               {sortedReports.map((report: any) => (
-                <tr key={report.db_id} className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
+                <tr 
+                  key={report.db_id} 
+                  className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors cursor-pointer"
+                  onClick={() => onSelectReport(report.db_id)}
+                >
                   <td className="p-4 text-center">
-                    <button
-                      onClick={() => onSelectReport(report.db_id)}
+                    <div
                       className="font-mono text-slate-800 dark:text-slate-300 text-sm bg-white dark:bg-cighra-darkcard px-2 py-1 border border-slate-300 dark:border-slate-600 block w-fit mx-auto hover:border-cighra-primary dark:hover:border-cighra-gold hover:text-cighra-primary dark:hover:text-cighra-gold transition-colors font-bold"
                     >
                       {report.caseId}
-                    </button>
+                    </div>
                     {report.status === 'SELESAI' ? (
                       <div className="mt-2 text-white dark:text-green-400 text-[10px] font-mono font-bold flex justify-center items-center gap-1 bg-camogreen dark:bg-camogreen/20 px-1.5 py-0.5 border border-camogreen dark:border-camogreen/30 w-fit mx-auto">
                         <CheckCircle className="w-3 h-3" /> TUNTAS
@@ -97,7 +100,7 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                     <div className="flex flex-col gap-2 items-center justify-center">
                       {report.kerusakan.fileBukti && report.kerusakan.fileBukti.length > 0 && (
                         <button
-                          onClick={() => onViewProof(report.kerusakan.fileBukti)}
+                          onClick={(e) => { e.stopPropagation(); onViewProof(report.kerusakan.fileBukti); }}
                           className="w-full max-w-[140px] bg-white dark:bg-cighra-darkcard/80 hover:bg-slate-50 dark:hover:bg-black text-slate-600 dark:text-slate-300 px-2 py-1.5 text-[10px] font-mono font-bold tracking-widest transition-colors flex items-center justify-center gap-1.5 border border-slate-300 dark:border-slate-600 shadow-sm"
                         >
                           <Image className="w-3 h-3 text-red-500" /> BUKTI RUSAK
@@ -105,7 +108,7 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                       )}
                       {report.perbaikan.foto_bukti_selesai && (
                         <button
-                          onClick={() => onViewProof([report.perbaikan.foto_bukti_selesai])}
+                          onClick={(e) => { e.stopPropagation(); onViewProof([report.perbaikan.foto_bukti_selesai]); }}
                           className="w-full max-w-[140px] bg-white dark:bg-cighra-darkcard/80 hover:bg-slate-50 dark:hover:bg-black text-slate-600 dark:text-slate-300 px-2 py-1.5 text-[10px] font-mono font-bold tracking-widest transition-colors flex items-center justify-center gap-1.5 border border-slate-300 dark:border-slate-600 shadow-sm"
                         >
                           <CheckSquare className="w-3 h-3 text-camogreen" /> FOTO SELESAI
@@ -113,7 +116,7 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                       )}
                       {report.perbaikan.video_bukti_selesai && (
                         <button
-                          onClick={() => onViewProof([report.perbaikan.video_bukti_selesai])}
+                          onClick={(e) => { e.stopPropagation(); onViewProof([report.perbaikan.video_bukti_selesai]); }}
                           className="w-full max-w-[140px] bg-white dark:bg-cighra-darkcard/80 hover:bg-slate-50 dark:hover:bg-black text-slate-600 dark:text-slate-300 px-2 py-1.5 text-[10px] font-mono font-bold tracking-widest transition-colors flex items-center justify-center gap-1.5 border border-slate-300 dark:border-slate-600 shadow-sm"
                         >
                           <CheckSquare className="w-3 h-3 text-blue-500" /> VIDEO SELESAI

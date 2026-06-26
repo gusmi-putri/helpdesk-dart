@@ -37,6 +37,7 @@ const DashboardAdmin = (props: any) => {
   const [activeSubReport, setActiveSubReport] = useState<SubMenuReport>('KERUSAKAN');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [reportStatusFilter, setReportStatusFilter] = useState<'ALL' | 'PENDING' | 'DIVERIFIKASI' | 'DITERIMA TEKNISI' | 'DIPROSES' | 'SELESAI' | 'DITOLAK'>('ALL');
+  const [mapFocusSatuan, setMapFocusSatuan] = useState<string | null>(null);
 
   // Auto-polling untuk real-time sinkronisasi
   useEffect(() => {
@@ -314,6 +315,7 @@ const DashboardAdmin = (props: any) => {
   const handleMenuClick = (menu: MenuTab) => {
     setActiveMenu(menu);
     setIsMobileMenuOpen(false);
+    if (menu !== 'MAP') setMapFocusSatuan(null);
   };
 
   const handleExportRecap = () => {
@@ -419,7 +421,14 @@ const DashboardAdmin = (props: any) => {
         <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar z-10">
           <div className="max-w-[1400px] mx-auto">
             {activeMenu === 'ANALYTICS' && <AnalyticsSection dbCases={dbCases} />}
-            {activeMenu === 'MAP' && <MonitoringMap dbUnits={dbUnits} dbCases={dbCases} dbSatuans={dbSatuans} />}
+            {activeMenu === 'MAP' && (
+              <MonitoringMap 
+                dbUnits={dbUnits} 
+                dbCases={dbCases} 
+                dbSatuans={dbSatuans} 
+                initialFocusSatuan={mapFocusSatuan}
+              />
+            )}
             {activeMenu === 'REPORTS' && (
               <ReportsSection
                 dbCases={dbCases}
@@ -477,6 +486,7 @@ const DashboardAdmin = (props: any) => {
                 handleDeleteSatuan={handleDeleteSatuan}
                 handleShowDetailSatuan={handleShowDetailSatuan}
                 handleViewOnMap={(satuan) => {
+                  setMapFocusSatuan(satuan.nama_satuan);
                   setActiveMenu('MAP');
                 }}
               />
