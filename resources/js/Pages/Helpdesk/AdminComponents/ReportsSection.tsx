@@ -1,7 +1,8 @@
-import React from 'react';
-import { Radar, FileArchive, AlertTriangle, Wrench, Download } from 'lucide-react';
+import React, { useState } from 'react';
+import { Radar, FileArchive, AlertTriangle, Wrench, Download, Paperclip } from 'lucide-react';
 import { useTableSort } from '@/hooks/useTableSort';
 import SortableHeader from '@/Components/Table/SortableHeader';
+import ReportAttachmentModal from './ReportAttachmentModal';
 
 interface ReportsSectionProps {
   dbCases: any[];
@@ -22,6 +23,13 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
   setIsRecapModalOpen,
   handlePrintCasePDF
 }) => {
+  const [isAttachmentModalOpen, setIsAttachmentModalOpen] = useState(false);
+  const [selectedReportForAttachment, setSelectedReportForAttachment] = useState<any>(null);
+
+  const handleOpenLampiran = (report: any) => {
+    setSelectedReportForAttachment(report);
+    setIsAttachmentModalOpen(true);
+  };
   const counts = {
     PENDING: dbCases.filter((c: any) => c.status === 'PENDING').length,
     AKTIF: dbCases.filter((c: any) => ['DIVERIFIKASI', 'DITERIMA TEKNISI', 'DIPROSES'].includes(c.status)).length,
@@ -145,8 +153,8 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
                     <SortableHeader label="TINDAKAN & WAKTU" className="w-1/3" />
                   </>
                 )}
-                <SortableHeader label="STATUS KASUS" sortKey="status" currentSort={sortConfig} onSort={handleSort} />
-                <SortableHeader label="UNDUH BERKAS" />
+                <SortableHeader label="STATUS KASUS" sortKey="status" currentSort={sortConfig} onSort={handleSort} className="text-center" />
+                <SortableHeader label={activeSubReport === 'KERUSAKAN' ? 'LAMPIRAN' : 'UNDUH BERKAS'} className="text-center" />
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-gray-800 bg-white dark:bg-transparent">
@@ -165,16 +173,38 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
 
                     {activeSubReport === 'KERUSAKAN' ? (
                       <>
-                        <td className="p-4">
-                          <div className="font-bold">{c.kerusakan.pelapor}</div>
-                          <div className="text-xs text-slate-500 dark:text-slate-400 font-mono mt-1">{c.kerusakan.tanggal}</div>
-                          <div className="text-xs text-yellow-600 dark:text-yellow-500 mt-2 flex items-center gap-1 font-bold">
+                        <td className="p-5 align-top">
+                          <div className="font-bold text-slate-800 dark:text-white">{c.kerusakan.pelapor}</div>
+                          <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-1">{c.kerusakan.tanggal}</div>
+                          <div className="text-[11px] text-yellow-600 dark:text-yellow-500 mt-2 flex items-center gap-1 font-bold">
                             <AlertTriangle className="w-3 h-3" /> {c.kerusakan.lokasi}
                           </div>
                         </td>
-                        <td className="p-4">
-                          <div className="font-semibold mb-1">{c.kerusakan.barangRusak}</div>
-                          <div className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{c.kerusakan.deskripsi}</div>
+                        <td className="p-5 align-top">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="font-semibold text-slate-800 dark:text-white">{c.kerusakan.barangRusak}</span>
+                            <span className="px-2 py-0.5 text-[9px] font-mono font-bold border border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 rounded-sm uppercase tracking-widest">
+                              {c.kerusakan.jenisPerbaikan || 'SWADAYA'}
+                            </span>
+                          </div>
+                          <div className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-3 line-clamp-2" title={c.kerusakan.deskripsi}>
+                            {c.kerusakan.deskripsi}
+                          </div>
+                          {/* Lampiran List */}
+                          <div className="flex flex-wrap gap-2">
+                            {(() => {
+                               const fotoCount = (c.kerusakan.foto_bukti ? 1 : 0) + (c.kerusakan.fileBukti?.length || 0);
+                               const docCount = c.kerusakan.dokumenAnggaran?.length || 0;
+                               const linkCount = c.kerusakan.tautan_video ? 1 : 0;
+                               return (
+                                 <>
+                                   {fotoCount > 0 && <span className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 py-1 rounded-sm flex items-center gap-1">📷 {fotoCount} Foto</span>}
+                                   {docCount > 0 && <span className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 py-1 rounded-sm flex items-center gap-1">📄 {docCount} Dokumen</span>}
+                                   {linkCount > 0 && <span className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 py-1 rounded-sm flex items-center gap-1">🔗 {linkCount} Link</span>}
+                                 </>
+                               )
+                            })()}
+                          </div>
                         </td>
                       </>
                     ) : (
@@ -223,15 +253,24 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
                         {c.status}
                       </span>
                     </td>
-                    <td className="p-4 text-center">
-                      <button
-                        onClick={() => handlePrintCasePDF(c)}
-                        className="bg-slate-50 dark:bg-slate-700 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold border border-slate-200 dark:border-slate-600 hover:border-cighra-primary dark:border-cighra-gold p-2.5 transition-all flex items-center justify-center mx-auto group-hover:shadow-[0_0_15px_rgba(75,83,32,0.4)] relative overflow-hidden group/btn rounded-sm"
-                        title="Unduh PDF Berkas Kasus (2 Halaman)"
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-olive/10 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite]"></div>
-                        <Download className="w-5 h-5 relative z-10" />
-                      </button>
+                    <td className="p-4 text-center align-middle">
+                      {activeSubReport === 'KERUSAKAN' ? (
+                        <button
+                          onClick={() => handleOpenLampiran(c)}
+                          className="mx-auto flex items-center gap-2 px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors rounded-sm text-[10px] font-tactical tracking-widest uppercase shadow-sm"
+                        >
+                          <Paperclip className="w-3.5 h-3.5" /> Lihat Lampiran
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handlePrintCasePDF(c)}
+                          className="bg-slate-50 dark:bg-slate-700 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold border border-slate-200 dark:border-slate-600 hover:border-cighra-primary dark:border-cighra-gold p-2.5 transition-all flex items-center justify-center mx-auto group-hover:shadow-[0_0_15px_rgba(75,83,32,0.4)] relative overflow-hidden group/btn rounded-sm"
+                          title="Unduh PDF Berkas Kasus (2 Halaman)"
+                        >
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-olive/10 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite]"></div>
+                          <Download className="w-5 h-5 relative z-10" />
+                        </button>
+                      )}
                     </td>
                   </tr>
                 )))}
@@ -239,6 +278,12 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
           </table>
         </div>
       </div>
+
+      <ReportAttachmentModal
+        isOpen={isAttachmentModalOpen}
+        onClose={() => setIsAttachmentModalOpen(false)}
+        report={selectedReportForAttachment}
+      />
     </div>
   );
 };

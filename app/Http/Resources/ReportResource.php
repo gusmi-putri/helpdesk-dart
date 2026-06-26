@@ -41,6 +41,7 @@ class ReportResource extends JsonResource
                 'keteranganAnggaran' => $this->keterangan_anggaran,
                 'foto_bukti' => $this->file_bukti && !json_decode($this->file_bukti) ? asset('storage/reports/' . $this->file_bukti) : null,
                 'fileBukti' => $this->file_bukti ? collect(json_decode($this->file_bukti, true) ?? [])->map(fn($path) => asset('storage/' . $path))->toArray() : [],
+                'tautan_video' => $this->tautan_video,
             ],
             'perbaikan' => [
                 'teknisi_id' => $this->teknisi_id,
