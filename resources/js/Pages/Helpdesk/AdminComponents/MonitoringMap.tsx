@@ -113,7 +113,7 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
     // Handle Search auto-select
     useEffect(() => {
         if (searchQuery.length > 2) {
-            const exactMatch = Object.values(satuanGroups).find((g: any) => g.name.toLowerCase() === searchQuery.toLowerCase());
+            const exactMatch = Object.values(satuanGroups).find((g: any) => g.name.toLowerCase() === searchQuery.toLowerCase()) as any;
             if (exactMatch && exactMatch.coords) {
                 setSelectedGroup(exactMatch);
             }
@@ -185,7 +185,7 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
 
                     {/* Search Results Dropdown */}
                     {searchQuery.length > 0 && (
-                        <div className="absolute top-full left-0 w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xl z-[3000] mt-1 max-h-60 overflow-y-auto custom-scrollbar animate-in fade-in slide-in-from-top-2 duration-200">
+                        <div className="absolute top-full left-0 w-full bg-white dark:bg-cighra-dark border border-slate-200 dark:border-cighra-gold/30 shadow-[0_10px_40px_rgba(0,0,0,0.4)] z-[3000] mt-2 rounded-sm overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
                             {filteredSatuanGroups.length > 0 ? (
                                 filteredSatuanGroups.map((group: any) => (
                                     <button
@@ -196,11 +196,11 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
                                                 setSearchQuery('');
                                             }
                                         }}
-                                        className={`w-full text-left p-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 border-b border-slate-100 dark:border-slate-700/50 last:border-0 transition-colors flex items-center justify-between ${!group.coords ? 'opacity-50 grayscale' : ''}`}
+                                        className={`w-full text-left p-4 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 border-b border-slate-100 dark:border-slate-800 last:border-0 transition-all flex items-center justify-between ${!group.coords ? 'opacity-50 grayscale' : ''}`}
                                     >
-                                        <div className="flex flex-col">
-                                            <span className="text-[10px] font-bold font-tactical tracking-wider uppercase text-slate-800 dark:text-slate-200">{group.name}</span>
-                                            <span className="text-[9px] text-slate-500 font-mono">{group.units.length} UNITS</span>
+                                        <div className="flex flex-col gap-0.5">
+                                            <span className="text-[11px] font-bold font-tactical tracking-widest uppercase text-slate-800 dark:text-cighra-gold">{group.name}</span>
+                                            <span className="text-[9px] text-slate-500 dark:text-slate-400 font-mono tracking-tighter">OPERATIONAL ASSETS: {group.units.length} UNITS</span>
                                         </div>
                                         {!group.coords ? (
                                             <span className="text-[8px] font-mono text-red-500 bg-red-500/10 px-1 border border-red-500/20">NO COORDS</span>
@@ -394,23 +394,23 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
 
             {/* Pending Satuans Modal */}
             {showPendingModal && (
-                <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-                    <div className="bg-cighra-light dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full max-w-2xl shadow-xl animate-in zoom-in-95 duration-200">
-                        <div className="p-4 border-b border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 flex justify-between items-center">
-                            <h3 className="font-tactical font-bold text-cighra-primary dark:text-cighra-gold">PENGATURAN KOORDINAT SATUAN BARU</h3>
-                            <button onClick={() => { setShowPendingModal(false); setPendingSatuanEdit(null); }} className="text-slate-500 hover:text-red-500">✕</button>
+                <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 px-6 overflow-y-auto">
+                    <div className="bg-white dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full max-w-2xl shadow-[0_0_100px_rgba(0,0,0,0.6)] animate-in zoom-in-95 duration-300 rounded-sm overflow-hidden shadow-2xl">
+                        <div className="p-5 border-b border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/5 flex justify-between items-center px-8">
+                            <h3 className="font-tactical font-bold text-cighra-primary dark:text-cighra-gold tracking-widest uppercase text-lg">PENGATURAN KOORDINAT SATUAN BARU</h3>
+                            <button onClick={() => { setShowPendingModal(false); setPendingSatuanEdit(null); }} className="text-slate-400 hover:text-red-500 transition-colors text-xl">✕</button>
                         </div>
-                        <div className="p-6 flex flex-col md:flex-row gap-6">
-                            <div className="flex-1 border-r border-slate-200 dark:border-slate-700 pr-6">
-                                <h4 className="text-xs font-bold uppercase mb-4 opacity-70">DAFTAR SATUAN BARU:</h4>
-                                <div className="space-y-2 max-h-[300px] overflow-y-auto custom-scrollbar">
+                        <div className="p-8 flex flex-col md:flex-row gap-8">
+                            <div className="flex-1 border-r border-slate-200 dark:border-slate-800 pr-8">
+                                <h4 className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest mb-4">DAFTAR SATUAN (PENDING GEO):</h4>
+                                <div className="space-y-3 max-h-[400px] overflow-y-auto custom-scrollbar pr-2">
                                     {pendingSatuans.map(s => (
                                         <div 
                                             key={s.id} 
                                             onClick={() => { setPendingSatuanEdit(s); setLatInput(''); setLngInput(''); }}
-                                            className={`p-3 border rounded-sm cursor-pointer transition-colors ${pendingSatuanEdit?.id === s.id ? 'bg-cighra-primary/10 border-cighra-primary dark:border-cighra-gold' : 'hover:bg-slate-100 dark:hover:bg-slate-800 border-slate-200 dark:border-slate-700'}`}
+                                            className={`p-4 border transition-all cursor-pointer rounded-sm ${pendingSatuanEdit?.id === s.id ? 'bg-cighra-primary/10 border-cighra-primary dark:border-cighra-gold text-cighra-primary dark:text-cighra-gold shadow-md' : 'bg-slate-50 dark:bg-cighra-darkcard/50 border-slate-200 dark:border-slate-800 hover:border-cighra-gold/50 text-slate-600 dark:text-slate-400'}`}
                                         >
-                                            <div className="font-bold text-sm tracking-wider">{s.nama_satuan}</div>
+                                            <div className="font-tactical font-bold text-xs tracking-[0.15em] uppercase">{s.nama_satuan}</div>
                                         </div>
                                     ))}
                                     {pendingSatuans.length === 0 && <p className="text-sm italic opacity-50">Semua satuan sudah memiliki koordinat.</p>}

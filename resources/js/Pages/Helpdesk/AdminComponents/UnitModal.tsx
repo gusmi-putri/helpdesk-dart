@@ -29,35 +29,35 @@ const UnitModal: React.FC<UnitModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
-      <div className="bg-cighra-light dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full max-w-xl shadow-2xl animate-in zoom-in-95 duration-200">
-        <div className="p-4 border-b border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/10 flex justify-between items-center">
-          <h3 className="font-tactical font-bold text-cighra-primary dark:text-cighra-gold tracking-widest uppercase flex items-center gap-2">
-            <Package size={18} /> {isAddMode ? 'TAMBAH UNIT DART BARU' : `EDIT UNIT: ${editingUnit?.nomor_seri}`}
+    <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 px-6 overflow-y-auto">
+      <div className="bg-white dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full max-w-2xl shadow-[0_0_100px_rgba(0,0,0,0.6)] animate-in zoom-in-95 duration-300 rounded-sm overflow-hidden">
+        <div className="p-5 border-b border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/5 flex justify-between items-center px-8">
+          <h3 className="font-tactical font-bold text-cighra-primary dark:text-cighra-gold tracking-widest uppercase flex items-center gap-2 text-lg">
+            <Package size={20} /> {isAddMode ? 'TAMBAH UNIT DART BARU' : `EDIT UNIT: ${editingUnit?.nomor_seri}`}
           </h3>
-          <button onClick={onClose} className="text-slate-500 hover:text-cighra-primary dark:text-cighra-gold text-xl">✕</button>
+          <button onClick={onClose} className="text-slate-400 hover:text-red-500 transition-colors text-xl">✕</button>
         </div>
-        <form onSubmit={onSubmit} className="p-6 space-y-5">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <form onSubmit={onSubmit} className="p-8 space-y-8 max-h-[85vh] overflow-y-auto custom-scrollbar">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
             <div>
               <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Nomor Seri Unit</label>
               <input
                 type="text"
                 value={data.nomor_seri}
                 onChange={(e) => setData('nomor_seri', e.target.value.toUpperCase())}
-                className={`w-full bg-white dark:bg-cighra-darkcard border ${errors.nomor_seri ? 'border-red-500' : 'border-gray-400 dark:border-slate-600'} p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none`}
+                className={`w-full bg-slate-50 dark:bg-cighra-darkcard border ${errors.nomor_seri ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} p-3 text-sm font-mono focus:ring-1 focus:ring-cighra-gold outline-none transition-all dark:text-white`}
                 required
-                placeholder="MISAL: DART-001"
+                placeholder="CTH: DART-001"
               />
               {errors.nomor_seri && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.nomor_seri}</p>}
             </div>
 
             <div>
-              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Jenis</label>
+              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Jenis Unit DART</label>
               <select
                 value={data.jenis}
                 onChange={(e) => setData('jenis', e.target.value)}
-                className="w-full bg-white dark:bg-cighra-darkcard border border-gray-400 dark:border-slate-600 p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none"
+                className="w-full bg-slate-50 dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-700 p-3 text-sm font-mono focus:ring-1 focus:ring-cighra-gold outline-none transition-all dark:text-white"
                 required
               >
                 <option value="DART STD">DART STD</option>
@@ -74,7 +74,7 @@ const UnitModal: React.FC<UnitModalProps> = ({
               <select
                 value={data.status_unit}
                 onChange={(e) => setData('status_unit', e.target.value)}
-                className="w-full bg-white dark:bg-cighra-darkcard border border-gray-400 dark:border-slate-600 p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none"
+                className="w-full bg-slate-50 dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-700 p-3 text-sm font-mono focus:ring-1 focus:ring-cighra-gold outline-none transition-all dark:text-white"
                 required
               >
                 <option value="Beroperasi">BEROPERASI</option>
@@ -84,7 +84,7 @@ const UnitModal: React.FC<UnitModalProps> = ({
               </select>
             </div>
             <div className="col-span-2">
-              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Asal Satuan / Lokasi</label>
+              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Asal Satuan / Lokasi Penempatan</label>
               <select
                 value={data.satuan_id || ''}
                 onChange={(e) => {
@@ -92,7 +92,7 @@ const UnitModal: React.FC<UnitModalProps> = ({
                    const selectedSatuan = dbSatuans?.find((s: any) => s.id == e.target.value);
                    if (selectedSatuan) setData('asal_satuan', selectedSatuan.nama_satuan);
                 }}
-                className={`w-full bg-white dark:bg-cighra-darkcard border ${errors.satuan_id ? 'border-red-500' : 'border-gray-400 dark:border-slate-600'} p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none uppercase`}
+                className={`w-full bg-slate-50 dark:bg-cighra-darkcard border ${errors.satuan_id ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} p-3 text-sm font-mono focus:ring-1 focus:ring-cighra-gold outline-none transition-all dark:text-white uppercase`}
                 required
               >
                 <option value="">PILIH SATUAN</option>
@@ -104,11 +104,11 @@ const UnitModal: React.FC<UnitModalProps> = ({
             </div>
             {isAddMode && (
               <div className="col-span-2">
-                <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Surat Pendukung (PDF/PNG/JPG/JPEG) *</label>
+                <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Surat Pendukung / Dokumentasi (PDF/IMG)</label>
                 <input
                   type="file"
                   onChange={(e) => setData('document', e.target.files?.[0] || null)}
-                  className={`w-full bg-white dark:bg-cighra-darkcard border ${errors.document ? 'border-red-500' : 'border-gray-400 dark:border-slate-600'} p-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none text-slate-800 dark:text-white`}
+                  className={`w-full bg-slate-50 dark:bg-cighra-darkcard border ${errors.document ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} p-3 text-sm font-mono focus:ring-1 focus:ring-cighra-gold outline-none transition-all dark:text-white file:mr-4 file:py-1 file:px-4 file:rounded-none file:border-0 file:text-[10px] file:font-tactical file:bg-cighra-primary file:text-white dark:file:bg-cighra-gold dark:file:text-slate-900 cursor-pointer`}
                   required
                   accept=".pdf,.png,.jpg,.jpeg"
                 />
@@ -116,15 +116,19 @@ const UnitModal: React.FC<UnitModalProps> = ({
               </div>
             )}
           </div>
-          <div className="pt-4 flex gap-2">
+          <div className="pt-6 flex gap-4">
             <button
               type="submit"
               disabled={processing}
-              className="flex-1 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white py-3 font-tactical font-bold tracking-widest hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 transition-colors disabled:opacity-50"
+              className="flex-[2] bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white p-3.5 font-tactical font-bold tracking-widest hover:brightness-110 active:scale-[0.98] transition-all disabled:opacity-50 shadow-lg"
             >
               {processing ? 'MEMPROSES...' : (isAddMode ? 'TAMBAHKAN UNIT' : 'SIMPAN PERUBAHAN')}
             </button>
-            <button type="button" onClick={onClose} className="flex-1 bg-transparent border border-gray-500 text-slate-500 py-3 font-tactical font-bold tracking-widest hover:bg-gray-500/10 transition-colors">
+            <button 
+              type="button" 
+              onClick={onClose} 
+              className="flex-1 bg-transparent border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 p-3.5 font-tactical font-bold tracking-widest hover:bg-slate-50 dark:hover:bg-slate-800 transition-all uppercase"
+            >
               BATAL
             </button>
           </div>

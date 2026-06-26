@@ -8,7 +8,6 @@ interface StafUnitModalProps {
   onClose: () => void;
   onSubmit: (formData: FormData) => void;
   processing: boolean;
-  processing: boolean;
   dbSatuans?: any[];
 }
 
@@ -16,6 +15,9 @@ const StafUnitModal: React.FC<StafUnitModalProps> = ({ isOpen, onClose, onSubmit
   const [nomorSeri, setNomorSeri] = useState('');
   const [jenisDart, setJenisDart] = useState('DART STD');
   const [satuanId, setSatuanId] = useState('');
+  const [statusUnit, setStatusUnit] = useState('Beroperasi');
+  const [reason, setReason] = useState('');
+  const [document, setDocument] = useState<File | null>(null);
 
   if (!isOpen) return null;
 

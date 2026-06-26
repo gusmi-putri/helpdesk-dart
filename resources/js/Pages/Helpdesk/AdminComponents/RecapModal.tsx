@@ -31,84 +31,61 @@ const RecapModal: React.FC<RecapModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[150] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
-      <div className="bg-cighra-light dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full max-w-lg shadow-2xl animate-in zoom-in-95 duration-200">
-        <div className="p-4 border-b border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/10 flex justify-between items-center">
-          <h3 className="font-tactical font-bold text-cighra-primary dark:text-cighra-gold tracking-widest uppercase flex items-center gap-2">
-            <FileArchive className="w-5 h-5" /> EKSPOR REKAPITULASI
+    <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 px-6 overflow-y-auto">
+      <div className="bg-white dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full max-w-2xl shadow-[0_0_100px_rgba(0,0,0,0.6)] animate-in zoom-in-95 duration-300 rounded-sm overflow-hidden">
+        <div className="p-5 border-b border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/5 flex justify-between items-center px-8">
+          <h3 className="font-tactical font-bold text-cighra-primary dark:text-cighra-gold tracking-widest uppercase flex items-center gap-2 text-lg">
+            <FileArchive className="w-5 h-5" /> EKSPOR REKAPITULASI DATA
           </h3>
-          <button onClick={onClose} className="text-slate-500 hover:text-cighra-primary dark:text-cighra-gold text-xl">✕</button>
+          <button onClick={onClose} className="text-slate-400 hover:text-red-500 transition-colors text-xl">✕</button>
         </div>
 
-        <div className="p-6">
-          <p className="text-xs font-mono text-slate-500 dark:text-slate-400 mb-6 uppercase tracking-tight">
-            Pilih periode laporan untuk diekspor ke format PDF (Landscape). Laporan ini mencakup seluruh data unit, teknisi, dan status penyelesaian.
+        <div className="p-8 space-y-8">
+          <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase tracking-widest leading-relaxed border-l-4 border-cighra-primary dark:border-cighra-gold pl-4 bg-slate-50 dark:bg-slate-800/20 p-4">
+            KONFIGURASI PERIODE LAPORAN UNTUK EKSPOR FORMAT PDF (LANDSCAPE). DOKUMEN INI AKAN MENCAKUP DATA OPERASIONAL, STATUS UNIT, DAN REKAPITULASI PENANGANAN.
           </p>
 
-          <div className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-              {(['weekly', 'monthly', 'yearly'] as const).map(period => (
-                <button
-                  key={period}
-                  onClick={() => setRecapPeriod(period)}
-                  className={`p-3 border-2 transition-all flex flex-col items-center justify-center gap-1
-                    ${recapPeriod === period
-                      ? 'border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/10 text-cighra-primary dark:text-cighra-gold shadow-[0_0_10px_rgba(200,30,30,0.2)]'
-                      : 'border-slate-200 dark:border-slate-600/50 text-slate-500 hover:border-gray-400'}
-                  `}
-                >
-                  <p className="text-[10px] font-tactical font-bold uppercase tracking-widest">
-                    {period === 'weekly' ? 'Mingguan' : period === 'monthly' ? 'Bulanan' : 'Tahunan'}
-                  </p>
-                  <p className="text-[8px] font-mono italic">Berdasarkan Tgl Ini</p>
-                </button>
-              ))}
-            </div>
-
-            <div className="flex gap-2">
-              <button
-                onClick={() => setRecapPeriod('custom')}
-                className={`flex-1 p-3 border-2 transition-all flex flex-col items-center justify-center gap-1
-                  ${recapPeriod === 'custom'
-                    ? 'border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/10 text-cighra-primary dark:text-cighra-gold shadow-[0_0_10px_rgba(200,30,30,0.2)]'
-                    : 'border-slate-200 dark:border-slate-600/50 text-slate-500 hover:border-gray-400'}
-                `}
-              >
-                <p className="text-[10px] font-tactical font-bold uppercase tracking-widest">Rentang Khusus</p>
-                <p className="text-[8px] font-mono italic">Mulai - Selesai</p>
-              </button>
-              <button
-                onClick={() => setRecapPeriod('year_specific')}
-                className={`flex-1 p-3 border-2 transition-all flex flex-col items-center justify-center gap-1
-                  ${recapPeriod === 'year_specific'
-                    ? 'border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/10 text-cighra-primary dark:text-cighra-gold shadow-[0_0_10px_rgba(200,30,30,0.2)]'
-                    : 'border-slate-200 dark:border-slate-600/50 text-slate-500 hover:border-gray-400'}
-                `}
-              >
-                <p className="text-[10px] font-tactical font-bold uppercase tracking-widest">Tahun Tertentu</p>
-                <p className="text-[8px] font-mono italic">Pilih Tahun</p>
-              </button>
+          <div className="space-y-6">
+            <div className="flex flex-col gap-2">
+                <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase tracking-widest">METODE FILTER PERIODE</label>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+                    {(['weekly', 'monthly', 'yearly', 'custom', 'year_specific'] as const).map(period => (
+                        <button
+                        key={period}
+                        onClick={() => setRecapPeriod(period)}
+                        className={`p-3 border transition-all flex flex-col items-center justify-center gap-1.5 rounded-sm
+                            ${recapPeriod === period
+                            ? 'border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/10 text-cighra-primary dark:text-cighra-gold shadow-lg transform scale-105 z-10'
+                            : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-cighra-darkcard text-slate-500 hover:border-cighra-gold/50'}
+                        `}
+                        >
+                        <p className="text-[9px] font-tactical font-bold uppercase tracking-widest text-center leading-none">
+                            {period === 'weekly' ? 'Mingguan' : period === 'monthly' ? 'Bulanan' : period === 'yearly' ? 'Tahunan' : period === 'custom' ? 'Kostum' : 'Filter Tahun'}
+                        </p>
+                        </button>
+                    ))}
+                </div>
             </div>
 
             {/* Conditional Input for Custom Range */}
             {recapPeriod === 'custom' && (
-              <div className="grid grid-cols-2 gap-3 p-4 bg-gray-100 dark:bg-cighra-darkcard/30 border border-cighra-primary dark:border-cighra-gold/30 animate-in slide-in-from-top-2">
-                <div>
-                  <label className="block text-[9px] font-mono text-slate-500 uppercase mb-1">Mulai Tanggal</label>
+              <div className="grid grid-cols-2 gap-6 p-6 bg-slate-50 dark:bg-cighra-darkcard border border-cighra-gold/20 animate-in slide-in-from-top-4 duration-300">
+                <div className="space-y-2">
+                  <label className="block text-[10px] font-mono text-slate-500 uppercase tracking-widest">Mulai Tanggal</label>
                   <input
                     type="date"
                     value={recapStartDate}
                     onChange={(e) => setRecapStartDate(e.target.value)}
-                    className="w-full bg-white dark:bg-cighra-dark border border-slate-200 dark:border-slate-600 p-2 text-xs font-mono outline-none focus:border-cighra-primary dark:border-cighra-gold"
+                    className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 p-3 text-sm font-mono outline-none focus:ring-1 focus:ring-cighra-gold text-slate-800 dark:text-white transition-all"
                   />
                 </div>
-                <div>
-                  <label className="block text-[9px] font-mono text-slate-500 uppercase mb-1">Sampai Tanggal</label>
+                <div className="space-y-2">
+                  <label className="block text-[10px] font-mono text-slate-500 uppercase tracking-widest">Sampai Tanggal</label>
                   <input
                     type="date"
                     value={recapEndDate}
                     onChange={(e) => setRecapEndDate(e.target.value)}
-                    className="w-full bg-white dark:bg-cighra-dark border border-slate-200 dark:border-slate-600 p-2 text-xs font-mono outline-none focus:border-cighra-primary dark:border-cighra-gold"
+                    className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 p-3 text-sm font-mono outline-none focus:ring-1 focus:ring-cighra-gold text-slate-800 dark:text-white transition-all"
                   />
                 </div>
               </div>
@@ -116,14 +93,14 @@ const RecapModal: React.FC<RecapModalProps> = ({
 
             {/* Conditional Input for Year Specific */}
             {recapPeriod === 'year_specific' && (
-              <div className="p-4 bg-gray-100 dark:bg-cighra-darkcard/30 border border-cighra-primary dark:border-cighra-gold/30 animate-in slide-in-from-top-2">
-                <label className="block text-[9px] font-mono text-slate-500 uppercase mb-1">Pilih Tahun</label>
+              <div className="p-6 bg-slate-50 dark:bg-cighra-darkcard border border-cighra-gold/20 animate-in slide-in-from-top-4 duration-300">
+                <label className="block text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-2">TARGET TAHUN OPERASIONAL</label>
                 <select
                   value={recapYear}
                   onChange={(e) => setRecapYear(e.target.value)}
-                  className="w-full bg-white dark:bg-cighra-dark border border-slate-200 dark:border-slate-600 p-2 text-xs font-mono outline-none focus:border-cighra-primary dark:border-cighra-gold"
+                  className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 p-3 text-sm font-mono outline-none focus:ring-1 focus:ring-cighra-gold text-slate-800 dark:text-white transition-all"
                 >
-                  {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i).map(year => (
+                  {Array.from({ length: 5 }, (_, i) => (new Date().getFullYear() - i).toString()).map(year => (
                     <option key={year} value={year}>{year}</option>
                   ))}
                 </select>
@@ -131,25 +108,25 @@ const RecapModal: React.FC<RecapModalProps> = ({
             )}
           </div>
 
-          <div className="mt-8 grid grid-cols-2 gap-3">
+          <div className="pt-4 flex gap-4">
             <button
               onClick={onExport}
-              className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white py-3 font-tactical font-bold tracking-widest hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 transition-all flex items-center justify-center gap-2 shadow-lg"
+              className="flex-[2] bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white p-4 font-tactical font-bold tracking-widest hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-xl uppercase"
             >
-              <Download className="w-4 h-4" /> EKSPOR PDF
+              <Download className="w-5 h-5" /> GENERATE LAPORAN PDF
             </button>
             <button
               onClick={onClose}
-              className="bg-transparent border border-gray-500 text-slate-500 py-3 font-tactical font-bold tracking-widest hover:bg-gray-500/10 transition-all"
+              className="flex-1 bg-transparent border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 p-4 font-tactical font-bold tracking-widest hover:bg-slate-50 dark:hover:bg-slate-800 transition-all uppercase"
             >
               BATAL
             </button>
           </div>
         </div>
 
-        <div className="p-3 bg-black/20 text-center">
-          <p className="text-[8px] font-mono text-slate-500 uppercase tracking-widest">
-            Generated by Command Center Security Module
+        <div className="p-4 bg-slate-100 dark:bg-black/20 text-center border-t border-slate-200 dark:border-slate-800">
+          <p className="text-[9px] font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest">
+            COMMAND CENTER SECURITY MODULE — DART DATA SYSTEM
           </p>
         </div>
       </div>

@@ -12,43 +12,37 @@ const RejectConfirmModal: React.FC<RejectConfirmModalProps> = ({ isOpen, onClose
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
-      <div className="bg-cighra-light dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-200">
-        <div className="p-4 border-b border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/10 flex justify-between items-center">
-          <h3 className="font-tactical font-bold text-cighra-primary dark:text-cighra-gold tracking-widest uppercase flex items-center gap-2">
-            <UserX className="w-5 h-5" /> KONFIRMASI PENOLAKAN
-          </h3>
-          <button onClick={onClose} className="text-slate-600 hover:text-cighra-primary dark:text-cighra-gold transition-colors font-bold text-xl">✕</button>
+    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 px-6 overflow-y-auto">
+      <div className="bg-white dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full max-w-lg shadow-[0_0_100px_rgba(0,0,0,0.6)] animate-in zoom-in-95 duration-300 rounded-sm overflow-hidden text-center">
+        <div className="p-5 border-b border-cighra-primary dark:border-cighra-gold bg-red-500/10 dark:bg-red-900/10 flex items-center justify-center gap-4 px-8 shrink-0">
+          <UserX className="w-8 h-8 text-red-500 animate-pulse" />
+          <h3 className="font-tactical font-bold text-slate-800 dark:text-white tracking-widest uppercase text-xl">KONFIRMASI PENOLAKAN AKSES</h3>
         </div>
 
-        <div className="p-8 text-center">
-          <div className="w-16 h-16 bg-cighra-primary/10 dark:bg-cighra-gold/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-cighra-primary dark:border-cighra-gold/30">
-            <ShieldAlert className="w-8 h-8 text-cighra-primary dark:text-cighra-gold animate-pulse" />
+        <div className="p-10 space-y-8">
+          <div className="space-y-4">
+            <h4 className="text-xl font-tactical font-bold text-slate-800 dark:text-white tracking-[0.2em] uppercase">
+                TOLAK PENDAFTARAN PERSONIL?
+            </h4>
+            <p className="text-sm text-slate-600 dark:text-slate-300 font-mono leading-relaxed uppercase tracking-wider">
+                PENDAFTARAN ATAS NAMA <strong className="text-red-500 font-bold underline decoration-2 underline-offset-4">{userName}</strong> AKAN DITOLAK DAN DIHAPUS SECARA PERMANEN DARI LOG SISTEM.
+            </p>
           </div>
-          <h4 className="text-lg font-tactical font-bold text-slate-800 dark:text-white tracking-widest uppercase mb-2">
-            TOLAK PENDAFTARAN?
-          </h4>
-          <p className="text-sm text-slate-600 dark:text-slate-300 font-mono leading-relaxed">
-            Pendaftaran atas nama <strong className="text-cighra-primary dark:text-cighra-gold">{userName}</strong> akan ditolak dan dihapus secara permanen dari sistem.
-          </p>
-          <p className="text-xs text-slate-500 dark:text-slate-300 font-mono mt-3 uppercase tracking-wider">
-            Tindakan ini tidak dapat dibatalkan.
-          </p>
-        </div>
 
-        <div className="p-6 grid grid-cols-2 gap-3 bg-black/5 dark:bg-cighra-darkcard/80">
-          <button
-            onClick={onConfirm}
-            className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white py-3 font-tactical font-bold tracking-widest hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 transition-all flex items-center justify-center gap-2 shadow-lg uppercase"
-          >
-            <UserX className="w-4 h-4" /> YA, TOLAK
-          </button>
-          <button
-            onClick={onClose}
-            className="bg-transparent border border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-300 py-3 font-tactical font-bold tracking-widest hover:bg-slate-600/10 dark:hover:bg-soft-sand/5 transition-all uppercase"
-          >
-            BATALKAN
-          </button>
+          <div className="pt-4 flex gap-4">
+            <button
+                onClick={onConfirm}
+                className="flex-[2] bg-red-600 hover:bg-red-700 text-white p-4 font-tactical font-bold tracking-widest transition-all shadow-xl active:scale-95 uppercase flex items-center justify-center gap-2"
+            >
+                <UserX className="w-5 h-5" /> YA, TOLAK AKSES
+            </button>
+            <button
+                onClick={onClose}
+                className="flex-1 bg-transparent border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 p-4 font-tactical font-bold tracking-widest hover:bg-slate-50 dark:hover:bg-slate-800 transition-all uppercase"
+            >
+                BATAL
+            </button>
+          </div>
         </div>
       </div>
     </div>
