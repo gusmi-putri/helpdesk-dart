@@ -64,7 +64,7 @@ const UserMutationHistory: React.FC<UserMutationHistoryProps> = ({ dbMutations }
             <thead className="bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-slate-700 text-xs">
               <tr>
                 <SortableHeader label="TANGGAL" sortKey="created_at" currentSort={sortConfig} onSort={handleSort} />
-                <SortableHeader label="TIPE MUTASI" sortKey="type" currentSort={sortConfig} onSort={handleSort} />
+                <SortableHeader label="TIPE PENGAJUAN" sortKey="type" currentSort={sortConfig} onSort={handleSort} />
                 <SortableHeader label="TARGET PERSONEL" sortKey="name" currentSort={sortConfig} onSort={handleSort} />
                 <SortableHeader label="DETAIL PERUBAHAN" />
                 <SortableHeader label="STATUS" sortKey="status" currentSort={sortConfig} onSort={handleSort} />
@@ -74,7 +74,7 @@ const UserMutationHistory: React.FC<UserMutationHistoryProps> = ({ dbMutations }
               {sortedItems.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="p-16 text-center text-slate-500 italic font-mono uppercase tracking-widest">
-                    Tidak ada riwayat mutasi personel
+                    Tidak ada riwayat pengajuan personel
                   </td>
                 </tr>
               ) : sortedItems.map((m: any) => {

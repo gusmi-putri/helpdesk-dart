@@ -30,7 +30,7 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
         <table className="w-full text-left font-sans text-sm">
           <thead className="bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-slate-700 text-xs">
             <tr>
-              <SortableHeader label="TIPE MUTASI" sortKey="type" currentSort={sortConfig} onSort={handleSort} />
+              <SortableHeader label="TIPE PENGAJUAN" sortKey="type" currentSort={sortConfig} onSort={handleSort} />
               <SortableHeader label="USERNAME" sortKey="username" currentSort={sortConfig} onSort={handleSort} />
               <SortableHeader label="NAMA LENGKAP" sortKey="name" currentSort={sortConfig} onSort={handleSort} />
               <SortableHeader label="DETAIL PERUBAHAN" />

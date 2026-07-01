@@ -438,7 +438,7 @@ const DashboardStaf = (props: any) => {
                   {activeMenu === 'MASUK' ? 'MODUL PENUGASAN TEKNISI' :
                     activeMenu === 'SELESAI' ? 'ARSIP DOKUMEN PENYELESAIAN' :
                       activeMenu === 'INVENTARIS' ? 'DATABASE INVENTARIS' :
-                        activeMenu === 'MUTASI' ? 'PUSAT MUTASI' :
+                        activeMenu === 'MUTASI' ? 'RIWAYAT PENGAJUAN' :
                           'DATA PERSONEL'}
                 </h2>
                 <p className="text-xs font-mono text-slate-500 dark:text-slate-300 mt-1 uppercase tracking-widest">

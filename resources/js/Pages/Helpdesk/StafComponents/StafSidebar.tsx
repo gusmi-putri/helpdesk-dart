@@ -106,7 +106,7 @@ const StafSidebar: React.FC<StafSidebarProps> = ({
                 className={`w-full text-left pl-[54px] pr-4 py-2.5 flex items-center justify-between text-xs font-tactical tracking-widest transition-colors ${activeMenu === 'MUTASI' ? 'text-cighra-primary dark:text-cighra-gold font-bold' : 'text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
               >
                 <div className="flex items-center gap-2 truncate">
-                  <GitPullRequest size={14} /> » PUSAT MUTASI
+                  <GitPullRequest size={14} /> » RIWAYAT PENGAJUAN
                 </div>
                 {mutationPendingCount > 0 && (
                   <span className="bg-orange-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full ml-2 shrink-0">
