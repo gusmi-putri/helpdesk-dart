@@ -231,6 +231,14 @@ const DashboardAdmin = (props: any) => {
     setIsUnitDeleteModalOpen(true);
   };
 
+  const handleDeleteUnitBatch = (selectedUnits: any[]) => {
+    const ids = selectedUnits.map((u: any) => u.db_id);
+    const snList = selectedUnits.map((u: any) => u.nomor_seri).join(', ');
+    if (window.confirm(`APAKAH ANDA YAKIN INGIN MENGHAPUS SECARA MASSAL ${selectedUnits.length} UNIT INVENTARIS BERIKUT?\n\nDaftar Seri:\n${snList}\n\nTindakan ini akan mengarsipkan unit tersebut secara permanen.`)) {
+      router.post('/units/destroy-batch', { ids });
+    }
+  };
+
   const handleShowUnitHistory = (unit: any) => {
     setSelectedUnitForHistory(unit);
     setIsUnitHistoryModalOpen(true);
@@ -476,6 +484,7 @@ const DashboardAdmin = (props: any) => {
                 handleAddUnit={handleAddUnit}
                 handleEditUnit={handleEditUnit}
                 handleDeleteUnit={handleDeleteUnit}
+                onDeleteBatch={handleDeleteUnitBatch}
               />
             )}
             {activeMenu === 'SATUANS' && (

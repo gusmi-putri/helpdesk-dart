@@ -68,6 +68,7 @@ Route::middleware(['auth'])->group(function () {
 
     // --- Units ---
     Route::post('units/import', [UnitController::class, 'import'])->middleware('role:Admin,Staf')->name('units.import');
+    Route::post('units/destroy-batch', [UnitController::class, 'destroyBatch'])->middleware('role:Admin')->name('units.destroy-batch');
     Route::resource('units', UnitController::class)->middleware('role:Admin,Staf');
 
     // --- Unit Mutations ---

@@ -108,6 +108,40 @@ class UnitController extends Controller
         return redirect()->back()->with('message', 'Unit DART telah diarsipkan.');
     }
 
+    public function destroyBatch(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:units,id',
+        ]);
+
+        $userId = auth()->id();
+        $unitIds = $request->input('ids');
+
+        DB::transaction(function () use ($unitIds, $userId) {
+            $units = Unit::whereIn('id', $unitIds)->get();
+
+            foreach ($units as $unit) {
+                UnitMutation::create([
+                    'unit_id' => $unit->id,
+                    'type' => 'approved_delete',
+                    'reason' => 'Dihapus langsung secara massal oleh Admin.',
+                    'requested_by' => $userId,
+                    'approved_by' => $userId,
+                    'status' => 'approved',
+                    'unit_data' => $unit->toArray(),
+                ]);
+
+                $unit->delete();
+            }
+
+            $count = count($unitIds);
+            SystemLog::log('ALERT', $userId, "Admin menghapus secara massal {$count} unit DART.");
+        });
+
+        return redirect()->back()->with('message', 'Unit DART terpilih telah diarsipkan secara massal.');
+    }
+
     /**
      * Staff mengajukan penghapusan unit (pending approval).
      */
