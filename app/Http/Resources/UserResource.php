@@ -41,6 +41,8 @@ class UserResource extends JsonResource
             'tasksInProgress' => $this->whenLoaded('reportsDitangani', function () {
                 return $this->reportsDitangani->whereIn('status_laporan', ['Diterima Teknisi', 'Diproses'])->count();
             }),
+            'has_ongoing_reports' => $this->reportsDilaporkan()->whereNotIn('status_laporan', ['Selesai', 'Ditolak'])->exists() 
+                                  || $this->reportsDitangani()->whereNotIn('status_laporan', ['Selesai', 'Ditolak'])->exists(),
         ];
     }
 }

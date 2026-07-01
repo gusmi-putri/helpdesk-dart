@@ -2,6 +2,9 @@ import React from 'react';
 import { Users, Search, Plus, Eye, Edit, Trash2, Power } from 'lucide-react';
 import { useTableSort } from '@/hooks/useTableSort';
 import SortableHeader from '@/Components/Table/SortableHeader';
+import { Modal } from '@/Components/ui/Modal';
+import { Button } from '@/Components/ui/Button';
+import { AlertTriangle } from 'lucide-react';
 
 interface UsersTableProps {
   dbUsers: any[];
@@ -21,6 +24,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
   handleDeleteUser
 }) => {
   const [userSearch, setUserSearch] = React.useState('');
+  const [warningUser, setWarningUser] = React.useState<any>(null);
 
   const filtered = dbUsers.filter((u: any) => u.is_approved).filter((u: any) => {
     if (!userSearch) return true;
@@ -37,6 +41,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
   const { sortedItems: filteredUsers, sortConfig, handleSort } = useTableSort(filtered, { key: 'name', direction: 'asc' });
 
   return (
+    <>
     <div className="bg-white dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600 shadow-xl overflow-hidden animate-in fade-in relative">
       <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-olive via-camogreen to-transparent"></div>
       <div className="p-5 border-b border-slate-200 dark:border-slate-600 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-800">
@@ -118,7 +123,16 @@ const UsersTable: React.FC<UsersTableProps> = ({
                     </button>
                   )}
                   {handleDeleteUser && (
-                    <button onClick={() => handleDeleteUser(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-600 dark:text-white hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Hapus">
+                    <button 
+                      onClick={() => {
+                        if (u.has_ongoing_reports) {
+                          setWarningUser(u);
+                        } else {
+                          handleDeleteUser(u);
+                        }
+                      }} 
+                      className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-600 dark:text-white hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Hapus"
+                    >
                       <Trash2 className="w-4 h-4" />
                     </button>
                   )}
@@ -145,6 +159,30 @@ const UsersTable: React.FC<UsersTableProps> = ({
         </table>
       </div>
     </div>
+      <Modal
+        isOpen={!!warningUser}
+        onClose={() => setWarningUser(null)}
+        title="TIDAK DAPAT MENGHAPUS PERSONEL"
+        icon={<AlertTriangle className="text-amber-500" />}
+        maxWidth="md"
+        footer={
+          <Button variant="secondary" onClick={() => setWarningUser(null)} className="w-full">
+            TUTUP
+          </Button>
+        }
+      >
+        <div className="space-y-4">
+          <p className="text-sm font-mono text-slate-600 dark:text-slate-300 leading-relaxed uppercase tracking-wider">
+            SISTEM MENDETEKSI BAHWA PERSONEL <span className="font-bold text-amber-600 dark:text-amber-400">{warningUser?.name}</span> MASIH MEMILIKI LAPORAN ON GOING (SEDANG DITANGANI / BELUM SELESAI).
+          </p>
+          <div className="bg-amber-50 border-l-4 border-amber-500 p-4 dark:bg-amber-900/20">
+            <p className="text-xs font-mono text-amber-800 dark:text-amber-200 uppercase">
+              PERSONEL BARU BISA DIHAPUS SETELAH SELURUH LAPORAN DI AKUNNYA BERHASIL DISELESAIKAN ATAU DITOLAK UNTUK MENJAGA INTEGRITAS DATA.
+            </p>
+          </div>
+        </div>
+      </Modal>
+    </>
   );
 };
 

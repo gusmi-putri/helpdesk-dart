@@ -114,6 +114,15 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'Akses ditolak: Staf tidak diizinkan menghapus akun Admin.');
         }
 
+        $ongoingReportsCount = \App\Models\Report::where(function ($query) use ($user) {
+            $query->where('user_id', $user->id)
+                  ->orWhere('teknisi_id', $user->id);
+        })->whereNotIn('status_laporan', ['Selesai', 'Ditolak'])->count();
+
+        if ($ongoingReportsCount > 0) {
+            return redirect()->back()->with('error', 'Gagal: Personel masih memiliki laporan yang sedang berjalan (on going).');
+        }
+
         DB::transaction(function () use ($user, $currentUser, $adminRoleId) {
             if ($currentUser->role_id === $adminRoleId) {
                 $userName = $user->nama_lengkap;

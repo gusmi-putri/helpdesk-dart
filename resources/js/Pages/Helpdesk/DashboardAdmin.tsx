@@ -42,7 +42,7 @@ const DashboardAdmin = (props: any) => {
   // Auto-polling untuk real-time sinkronisasi
   useEffect(() => {
     const interval = setInterval(() => {
-      router.reload({ only: ['dbCases', 'dbUsers', 'dbLogs'] });
+      router.reload({ only: ['dbCases', 'dbUsers', 'dbLogs', 'dbUnits'] });
     }, 15000);
     return () => clearInterval(interval);
   }, []);

@@ -69,7 +69,7 @@ const UnitModal: React.FC<UnitModalProps> = ({
                 <option value="Moving Target">Moving Target</option>
               </select>
             </div>
-            <div>
+            <div className="col-span-2">
               <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Status Operasional</label>
               <select
                 value={data.status_unit}
