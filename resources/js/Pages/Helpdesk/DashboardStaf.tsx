@@ -437,12 +437,12 @@ const DashboardStaf = (props: any) => {
                 <h2 className="text-2xl font-tactical font-bold text-slate-800 dark:text-white tracking-widest uppercase">
                   {activeMenu === 'MASUK' ? 'MODUL PENUGASAN TEKNISI' :
                     activeMenu === 'SELESAI' ? 'ARSIP DOKUMEN PENYELESAIAN' :
-                      activeMenu === 'INVENTARIS' ? 'DATABASE INVENTARIS PERANGKAT' :
+                      activeMenu === 'INVENTARIS' ? 'DATABASE INVENTARIS' :
                         activeMenu === 'MUTASI' ? 'PUSAT MUTASI' :
                           'DATA PERSONEL'}
                 </h2>
                 <p className="text-xs font-mono text-slate-500 dark:text-slate-300 mt-1 uppercase tracking-widest">
-                  {activeMenu === 'INVENTARIS' ? 'STATUS KESIAPAN ALUTSISTA DART.' :
+                  {activeMenu === 'INVENTARIS' ? 'STATUS KESIAPAN UNIT DART.' :
                     activeMenu === 'MUTASI' ? (mutationActiveTab === 'PERSONEL' ? 'Riwayat pengajuan penambahan dan penghapusan data personel.' : 'Riwayat pengajuan penambahan dan penghapusan unit inventaris.') :
                       activeMenu === 'PERSONEL' ? 'KELOLA DATA PENGGUNA SISTEM.' :
                         'Sistem Manajemen Pelaporan Kerusakan Dart.'}
@@ -496,11 +496,11 @@ const DashboardStaf = (props: any) => {
             )}
 
             {activeMenu === 'MUTASI' && (
-              <StafMutationCenter 
-                dbMutations={dbMutations} 
-                dbUserMutations={dbUserMutations} 
-                activeTab={mutationActiveTab} 
-                setActiveTab={setMutationActiveTab} 
+              <StafMutationCenter
+                dbMutations={dbMutations}
+                dbUserMutations={dbUserMutations}
+                activeTab={mutationActiveTab}
+                setActiveTab={setMutationActiveTab}
               />
             )}
 

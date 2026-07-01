@@ -174,10 +174,12 @@ class UnitController extends Controller
                             $idx = (int)$idx;
                             if (isset($unitData[$idx]) && $unitData[$idx]['status'] === 'pending') {
                                 $u = $unitData[$idx];
+                                $satuan = \App\Models\Satuan::where('nama_satuan', strtoupper($u['asal_satuan']))->first();
                                 $unit = Unit::create([
                                     'nomor_seri' => $u['nomor_seri'],
                                     'jenis' => $u['jenis'],
                                     'asal_satuan' => strtoupper($u['asal_satuan']),
+                                    'satuan_id' => $satuan ? $satuan->id : null,
                                     'status_unit' => in_array($u['status_unit'] ?? '', ['Beroperasi', 'Rusak', 'Perbaikan', 'Nonaktif']) ? $u['status_unit'] : 'Beroperasi',
                                 ]);
                                 $unitData[$idx]['status'] = 'approved';
@@ -190,11 +192,12 @@ class UnitController extends Controller
                         $idx = (int)$unitIndex;
                         if (isset($unitData[$idx]) && $unitData[$idx]['status'] === 'pending') {
                             $u = $unitData[$idx];
-                            \App\Models\Satuan::firstOrCreate(['nama_satuan' => strtoupper($u['asal_satuan'])]);
+                            $satuan = \App\Models\Satuan::where('nama_satuan', strtoupper($u['asal_satuan']))->first();
                             $unit = Unit::create([
                                 'nomor_seri' => $u['nomor_seri'],
                                 'jenis' => $u['jenis'],
                                 'asal_satuan' => strtoupper($u['asal_satuan']),
+                                'satuan_id' => $satuan ? $satuan->id : null,
                                 'status_unit' => in_array($u['status_unit'] ?? '', ['Beroperasi', 'Rusak', 'Perbaikan', 'Nonaktif']) ? $u['status_unit'] : 'Beroperasi',
                             ]);
                             $unitData[$idx]['status'] = 'approved';
@@ -205,10 +208,12 @@ class UnitController extends Controller
                     else {
                         foreach ($unitData as $idx => $u) {
                             if ($u['status'] === 'pending') {
+                                $satuan = \App\Models\Satuan::where('nama_satuan', strtoupper($u['asal_satuan']))->first();
                                 $unit = Unit::create([
                                     'nomor_seri' => $u['nomor_seri'],
                                     'jenis' => $u['jenis'],
                                     'asal_satuan' => strtoupper($u['asal_satuan']),
+                                    'satuan_id' => $satuan ? $satuan->id : null,
                                     'status_unit' => in_array($u['status_unit'] ?? '', ['Beroperasi', 'Rusak', 'Perbaikan', 'Nonaktif']) ? $u['status_unit'] : 'Beroperasi',
                                 ]);
                                 $unitData[$idx]['status'] = 'approved';
@@ -237,10 +242,18 @@ class UnitController extends Controller
                     SystemLog::log('INFO', auth()->id(), "Admin memproses persetujuan penambahan massal unit DART.");
                 } else {
                     // Single unit request
+                    $satuanId = isset($unitData['satuan_id']) ? $unitData['satuan_id'] : null;
+                    if (!$satuanId && isset($unitData['asal_satuan'])) {
+                        $satuan = \App\Models\Satuan::where('nama_satuan', strtoupper($unitData['asal_satuan']))->first();
+                        if ($satuan) {
+                            $satuanId = $satuan->id;
+                        }
+                    }
                     $unit = Unit::create([
                         'nomor_seri' => $unitData['nomor_seri'],
                         'jenis' => $unitData['jenis'],
                         'asal_satuan' => strtoupper($unitData['asal_satuan']),
+                        'satuan_id' => $satuanId,
                         'status_unit' => in_array($unitData['status_unit'] ?? '', ['Beroperasi', 'Rusak', 'Perbaikan', 'Nonaktif']) ? $unitData['status_unit'] : 'Beroperasi',
                     ]);
 
@@ -392,20 +405,37 @@ class UnitController extends Controller
             ]));
         }
 
+        // Detect delimiter: check if it uses comma (,) or semicolon (;)
+        $firstLine = fgets($handle);
+        rewind($handle);
+        $delimiter = ",";
+        if (strpos($firstLine, ';') !== false && strpos($firstLine, ',') === false) {
+            $delimiter = ";";
+        } elseif (strpos($firstLine, ';') !== false && strpos($firstLine, ',') !== false) {
+            $commaCount = substr_count($firstLine, ',');
+            $semicolonCount = substr_count($firstLine, ';');
+            if ($semicolonCount > $commaCount) {
+                $delimiter = ";";
+            }
+        }
+
         $header = true;
         $imported = 0;
         $skipped = 0;
         $totalRows = 0;
         $importedUnitsData = [];
 
-        DB::transaction(function () use (&$imported, &$skipped, &$importedUnitsData, $handle, $documentPath) {
-            while ($row = fgetcsv($handle, 1000, ",")) {
+        DB::transaction(function () use (&$imported, &$skipped, &$importedUnitsData, $handle, $documentPath, $delimiter, &$header) {
+            while ($row = fgetcsv($handle, 1000, $delimiter)) {
+                if ($header) { $header = false; continue; }
                 if (count($row) < 4) continue;
 
                 $nomor_seri = trim($row[0]);
-                $jenis = trim($row[2]);
-                $asal_satuan = trim($row[3]);
-                $status_unit = isset($row[4]) ? trim($row[4]) : 'Beroperasi';
+                if (empty($nomor_seri) || str_starts_with($nomor_seri, '#')) continue;
+
+                $jenis_raw = trim($row[1]);
+                $asal_satuan = trim($row[2]);
+                $status_unit_raw = isset($row[3]) ? trim($row[3]) : 'Beroperasi';
 
                 if (empty($nomor_seri)) continue;
 
@@ -414,30 +444,47 @@ class UnitController extends Controller
                     continue;
                 }
 
+                // Check case-insensitive valid jenis
                 $validJenis = ['DART STD', 'DART STK', 'DART Portabel - Swing', 'DART Portabel - Pop', 'DART Portabel - Flip', 'DART Marathon Target', 'Moving Target'];
-                if (!in_array($jenis, $validJenis)) {
-                    $jenis = 'DART STD';
+                $jenis = 'DART STD';
+                foreach ($validJenis as $vj) {
+                    if (strcasecmp($jenis_raw, $vj) === 0) {
+                        $jenis = $vj;
+                        break;
+                    }
                 }
 
-                $validStatus = ['Beroperasi', 'Rusak', 'Perbaikan', 'Nonaktif'];
-                $status_unit = ucwords(strtolower($status_unit));
-                if (!in_array($status_unit, $validStatus)) {
-                    $status_unit = 'Beroperasi';
-                }
+                // Check status mapping
+                $statusMap = [
+                    'siap ops' => 'Beroperasi',
+                    'beroperasi' => 'Beroperasi',
+                    'rusak' => 'Rusak',
+                    'perbaikan' => 'Perbaikan',
+                    'nonaktif' => 'Nonaktif',
+                ];
+                $status_unit_lower = strtolower($status_unit_raw);
+                $status_unit = isset($statusMap[$status_unit_lower]) ? $statusMap[$status_unit_lower] : 'Beroperasi';
 
-                \App\Models\Satuan::firstOrCreate(['nama_satuan' => strtoupper($asal_satuan)]);
+                // Find Satuan (MUST already exist in DB)
+                $satuan = \App\Models\Satuan::where('nama_satuan', strtoupper($asal_satuan))->first();
+                if (!$satuan) {
+                    $skipped++;
+                    continue; // Skip if Satuan is not found
+                }
 
                 $unit = Unit::create([
                     'nomor_seri' => $nomor_seri,
                     'jenis' => $jenis,
-                    'asal_satuan' => strtoupper($asal_satuan),
+                    'asal_satuan' => $satuan->nama_satuan,
+                    'satuan_id' => $satuan->id,
                     'status_unit' => $status_unit
                 ]);
 
                 $importedUnitsData[] = [
                     'nomor_seri' => $nomor_seri,
                     'jenis' => $jenis,
-                    'asal_satuan' => strtoupper($asal_satuan),
+                    'asal_satuan' => $satuan->nama_satuan,
+                    'satuan_id' => $satuan->id,
                     'status_unit' => $status_unit,
                     'status' => 'approved',
                     'unit_id' => $unit->id
@@ -495,20 +542,35 @@ class UnitController extends Controller
             return redirect()->back()->with('error', 'Gagal membaca file CSV.');
         }
 
+        // Detect delimiter: check if it uses comma (,) or semicolon (;)
+        $firstLine = fgets($handle);
+        rewind($handle);
+        $delimiter = ",";
+        if (strpos($firstLine, ';') !== false && strpos($firstLine, ',') === false) {
+            $delimiter = ";";
+        } elseif (strpos($firstLine, ';') !== false && strpos($firstLine, ',') !== false) {
+            $commaCount = substr_count($firstLine, ',');
+            $semicolonCount = substr_count($firstLine, ';');
+            if ($semicolonCount > $commaCount) {
+                $delimiter = ";";
+            }
+        }
+
         $header = true;
         $requested = 0;
         $skipped = 0;
         $unitsToPropose = [];
 
-        while ($row = fgetcsv($handle, 1000, ",")) {
+        while ($row = fgetcsv($handle, 1000, $delimiter)) {
             if ($header) { $header = false; continue; }
             if (count($row) < 4) continue;
 
             $nomor_seri = trim($row[0]);
+            if (empty($nomor_seri) || str_starts_with($nomor_seri, '#')) continue;
 
-            $jenis = strtoupper(trim($row[2]));
-            $asal_satuan = strtoupper(trim($row[3]));
-            $status_unit = isset($row[4]) ? ucwords(strtolower(trim($row[4]))) : 'Beroperasi';
+            $jenis_raw = trim($row[1]);
+            $asal_satuan = trim($row[2]);
+            $status_unit_raw = isset($row[3]) ? trim($row[3]) : 'Beroperasi';
 
             if (empty($nomor_seri)) continue;
 
@@ -529,18 +591,39 @@ class UnitController extends Controller
                 continue;
             }
 
+            // Check case-insensitive valid jenis
             $validJenis = ['DART STD', 'DART STK', 'DART Portabel - Swing', 'DART Portabel - Pop', 'DART Portabel - Flip', 'DART Marathon Target', 'Moving Target'];
-            if (!in_array($jenis, $validJenis)) {
-                $jenis = 'DART STD';
+            $jenis = 'DART STD';
+            foreach ($validJenis as $vj) {
+                if (strcasecmp($jenis_raw, $vj) === 0) {
+                    $jenis = $vj;
+                    break;
+                }
             }
 
-            $validStatus = ['Beroperasi', 'Rusak', 'Perbaikan', 'Nonaktif'];
-            if (!in_array($status_unit, $validStatus)) $status_unit = 'Beroperasi';
+            // Check status mapping
+            $statusMap = [
+                'siap ops' => 'Beroperasi',
+                'beroperasi' => 'Beroperasi',
+                'rusak' => 'Rusak',
+                'perbaikan' => 'Perbaikan',
+                'nonaktif' => 'Nonaktif',
+            ];
+            $status_unit_lower = strtolower($status_unit_raw);
+            $status_unit = isset($statusMap[$status_unit_lower]) ? $statusMap[$status_unit_lower] : 'Beroperasi';
+
+            // Find Satuan (MUST already exist in DB)
+            $satuan = \App\Models\Satuan::where('nama_satuan', strtoupper($asal_satuan))->first();
+            if (!$satuan) {
+                $skipped++;
+                continue; // Skip if Satuan is not found
+            }
 
             $unitsToPropose[] = [
                 'nomor_seri' => $nomor_seri,
                 'jenis' => $jenis,
-                'asal_satuan' => $asal_satuan,
+                'asal_satuan' => $satuan->nama_satuan,
+                'satuan_id' => $satuan->id,
                 'status_unit' => $status_unit,
                 'status' => 'pending',
             ];
@@ -552,7 +635,7 @@ class UnitController extends Controller
 
         if (count($unitsToPropose) === 0) {
             SystemLog::log('INFO', auth()->id(), "Staf gagal mengajukan penambahan massal DART: 0 diajukan, {$skipped} dilewati.");
-            return redirect()->back()->with('error', 'Semua nomor seri di dalam CSV sudah terdaftar atau tidak valid.');
+            return redirect()->back()->with('error', 'Semua nomor seri di dalam CSV sudah terdaftar atau tidak valid (satuan tidak terdaftar / unit sudah terdaftar).');
         }
 
         UnitMutation::create([
