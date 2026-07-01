@@ -586,6 +586,7 @@ const DashboardAdmin = (props: any) => {
         onClose={() => { setIsRejectModalOpen(false); setUserToReject(null); }}
         onConfirm={confirmRejectUser}
         userName={userToReject?.name || ''}
+        actionType={userToReject && !userToReject.is_approved ? 'register' : (userToReject?.pending_action || 'register')}
       />
 
       <SatuanModal
