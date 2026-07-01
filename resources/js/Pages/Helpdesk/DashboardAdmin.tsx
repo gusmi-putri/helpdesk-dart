@@ -464,6 +464,7 @@ const DashboardAdmin = (props: any) => {
                 unitSearch={unitSearch}
                 setUnitSearch={setUnitSearch}
                 unitSortConfig={unitSortConfig}
+                onImportBatch={() => setIsAdminBatchModalOpen(true)}
                 handleUnitSort={(key) => {
                   let direction: 'asc' | 'desc' = 'asc';
                   if (unitSortConfig && unitSortConfig.key === key && unitSortConfig.direction === 'asc') {
