@@ -8,7 +8,7 @@ interface RejectConfirmModalProps {
   onClose: () => void;
   onConfirm: () => void;
   userName: string;
-  actionType?: 'register' | 'edit' | 'delete' | null;
+  actionType?: 'add' | 'register' | 'edit' | 'delete' | null;
 }
 
 const RejectConfirmModal: React.FC<RejectConfirmModalProps> = ({ isOpen, onClose, onConfirm, userName, actionType = 'register' }) => {
@@ -36,7 +36,7 @@ const RejectConfirmModal: React.FC<RejectConfirmModalProps> = ({ isOpen, onClose
         <h4 className="text-xl font-tactical font-bold text-slate-800 dark:text-white tracking-[0.2em] uppercase">
           {actionType === 'edit' && 'TOLAK PERUBAHAN DATA?'}
           {actionType === 'delete' && 'TOLAK PENGHAPUSAN PERSONIL?'}
-          {(actionType === 'register' || !actionType) && 'TOLAK PENDAFTARAN PERSONIL?'}
+          {(actionType === 'register' || actionType === 'add' || !actionType) && 'TOLAK PENDAFTARAN PERSONIL?'}
         </h4>
         <p className="text-sm text-slate-600 dark:text-slate-300 font-mono leading-relaxed uppercase tracking-wider">
           {actionType === 'edit' && (
@@ -45,7 +45,7 @@ const RejectConfirmModal: React.FC<RejectConfirmModalProps> = ({ isOpen, onClose
           {actionType === 'delete' && (
             <>PENGAJUAN PENGHAPUSAN ATAS NAMA <strong className="text-red-500 font-bold underline decoration-2 underline-offset-4">{userName}</strong> AKAN DITOLAK. PERSONIL TETAP AKTIF DI DALAM SISTEM.</>
           )}
-          {(actionType === 'register' || !actionType) && (
+          {(actionType === 'register' || actionType === 'add' || !actionType) && (
             <>PENDAFTARAN ATAS NAMA <strong className="text-red-500 font-bold underline decoration-2 underline-offset-4">{userName}</strong> AKAN DITOLAK DAN DIHAPUS SECARA PERMANEN DARI LOG SISTEM.</>
           )}
         </p>

@@ -4,23 +4,23 @@ import { useTableSort } from '@/hooks/useTableSort';
 import SortableHeader from '@/Components/Table/SortableHeader';
 
 interface ApprovalTableProps {
-  dbUsers: any[];
-  handleApproveUser: (user: any) => void;
-  handleRejectUser: (user: any) => void;
+  dbUserMutations: any[];
+  handleApproveUser: (mutation: any) => void;
+  handleRejectUser: (mutation: any) => void;
 }
 
 const ApprovalTable: React.FC<ApprovalTableProps> = ({
-  dbUsers,
+  dbUserMutations,
   handleApproveUser,
   handleRejectUser
 }) => {
-  const pending = dbUsers.filter((u: any) => !u.is_approved || u.pending_action !== null);
-  const { sortedItems: pendingUsers, sortConfig, handleSort } = useTableSort(pending, { key: 'name', direction: 'asc' });
+  const pending = dbUserMutations.filter((m: any) => m.status === 'pending');
+  const { sortedItems: pendingMutations, sortConfig, handleSort } = useTableSort(pending, { key: 'created_at', direction: 'desc' });
 
-  const getBadgeInfo = (u: any) => {
-    if (!u.is_approved) return { label: 'TAMBAH PERSONEL', color: 'bg-green-100 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800' };
-    if (u.pending_action === 'edit') return { label: 'UBAH PROFIL', color: 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800' };
-    if (u.pending_action === 'delete') return { label: 'HAPUS PERSONEL', color: 'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800' };
+  const getBadgeInfo = (type: string) => {
+    if (type === 'request_add') return { label: 'TAMBAH PERSONEL', color: 'bg-green-100 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800' };
+    if (type === 'request_edit') return { label: 'UBAH PROFIL', color: 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800' };
+    if (type === 'request_delete') return { label: 'HAPUS PERSONEL', color: 'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800' };
     return { label: 'UNKNOWN', color: 'bg-gray-100' };
   };
 
@@ -30,57 +30,57 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
         <table className="w-full text-left font-sans text-sm">
           <thead className="bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-slate-700 text-xs">
             <tr>
-              <SortableHeader label="TIPE MUTASI" sortKey="pending_action" currentSort={sortConfig} onSort={handleSort} />
-              <SortableHeader label="USERNAME / ROLE" sortKey="username" currentSort={sortConfig} onSort={handleSort} />
+              <SortableHeader label="TIPE MUTASI" sortKey="type" currentSort={sortConfig} onSort={handleSort} />
+              <SortableHeader label="USERNAME" sortKey="username" currentSort={sortConfig} onSort={handleSort} />
               <SortableHeader label="NAMA LENGKAP" sortKey="name" currentSort={sortConfig} onSort={handleSort} />
               <SortableHeader label="DETAIL PERUBAHAN" />
               <SortableHeader label="AKSI VERIFIKASI" />
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-300 dark:divide-gray-800 bg-transparent">
-            {pendingUsers.length === 0 ? (
+            {pendingMutations.length === 0 ? (
               <tr>
                 <td colSpan={5} className="p-20 text-center text-slate-500 italic font-mono uppercase tracking-widest">
                   Tidak ada pengajuan personel yang menunggu persetujuan.
                 </td>
               </tr>
-            ) : pendingUsers.map((u: any) => {
-              const badge = getBadgeInfo(u);
+            ) : pendingMutations.map((m: any) => {
+              const badge = getBadgeInfo(m.type);
               
-              // Get the role name
-              // If it's a new user, use u.role.
-              // If it's an edit, check if role_id changed. (To really get role name, we'd need to map role_id from pending_changes but let's just show ID or "Ubah Role" since we don't have the full roles list here).
-              let displayRole = u.role;
-              if (u.pending_action === 'edit' && u.pending_changes?.role_id && u.pending_changes.role_id !== u.role_id) {
-                  displayRole = `${u.role} ➔ ID Role Baru: ${u.pending_changes.role_id}`;
-              }
+              const targetName = m.user_data?.nama_lengkap || m.target_user?.name || '-';
+              const targetUsername = m.user_data?.username || m.target_user?.username || '-';
 
               return (
-                <tr key={u.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/60 transition-colors group text-slate-800 dark:text-slate-200">
+                <tr key={m.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/60 transition-colors group text-slate-800 dark:text-slate-200">
                   <td className="p-4 text-center">
                     <span className={`px-2 py-1 text-[10px] font-mono font-bold border rounded-sm ${badge.color}`}>
                       {badge.label}
                     </span>
-                  </td>
-                  <td className="p-4 text-center">
-                    <div className="font-mono text-slate-800 dark:text-white font-bold">{u.username}</div>
-                    <div className="text-[10px] font-mono uppercase text-slate-500 dark:text-slate-400 mt-1 bg-slate-100 dark:bg-slate-800 inline-block px-1 rounded-sm border border-slate-200 dark:border-slate-600">
-                      Role: {displayRole}
+                    <div className="text-[9px] font-mono mt-1 text-slate-500">
+                      Oleh: {m.requested_by?.name}
                     </div>
                   </td>
-                  <td className="p-4 text-slate-800 dark:text-white font-bold text-center">{u.name}</td>
-                  <td className="p-4">
-                    {!u.is_approved ? (
-                      <div className="text-[10px] font-mono text-slate-800 dark:text-white space-y-0.5">
-                        <div>NRP/NIP: {u.nrp_nip}</div>
-                        <div>Satuan: {u.asal_satuan}</div>
-                        <div>WA: {u.no_wa}</div>
+                  <td className="p-4 text-center">
+                    <div className="font-mono text-slate-800 dark:text-white font-bold">{targetUsername}</div>
+                    {m.type === 'request_edit' && m.user_data?.role_id && (
+                      <div className="text-[10px] font-mono uppercase text-slate-500 dark:text-slate-400 mt-1 bg-slate-100 dark:bg-slate-800 inline-block px-1 rounded-sm border border-slate-200 dark:border-slate-600">
+                        Ubah Role ke: {m.user_data.role_id}
                       </div>
-                    ) : u.pending_action === 'delete' ? (
+                    )}
+                  </td>
+                  <td className="p-4 text-slate-800 dark:text-white font-bold text-center">{targetName}</td>
+                  <td className="p-4">
+                    {m.type === 'request_add' ? (
+                      <div className="text-[10px] font-mono text-slate-800 dark:text-white space-y-0.5">
+                        <div>NRP/NIP: {m.user_data?.nrp_nip}</div>
+                        <div>Satuan: {m.user_data?.asal_satuan}</div>
+                        <div>WA: {m.user_data?.no_wa}</div>
+                      </div>
+                    ) : m.type === 'request_delete' ? (
                       <div className="text-[10px] font-mono text-red-500 dark:text-red-400 italic">Penghapusan akun dari sistem.</div>
                     ) : (
                       <div className="text-[10px] font-mono text-slate-800 dark:text-white">
-                        {Object.entries(u.pending_changes || {}).map(([key, val]) => (
+                        {Object.entries(m.user_data || {}).map(([key, val]) => (
                           <div key={key}><span className="text-blue-500 dark:text-blue-400 font-bold uppercase">{key}:</span> {String(val)}</div>
                         ))}
                       </div>
@@ -88,13 +88,13 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
                   </td>
                   <td className="p-4 flex gap-3 justify-center items-center h-full mt-2">
                     <button
-                      onClick={() => handleApproveUser(u)}
+                      onClick={() => handleApproveUser(m)}
                       className="flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-4 py-2 text-[10px] font-tactical font-bold tracking-widest transition-all shadow-lg"
                   >
                     <CheckCircle className="w-4 h-4" /> SETUJUI
                   </button>
                   <button
-                    onClick={() => handleRejectUser(u)}
+                    onClick={() => handleRejectUser(m)}
                     className="flex items-center gap-2 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-4 py-2 text-[10px] font-tactical font-bold tracking-widest transition-all shadow-lg"
                   >
                     <XCircle className="w-4 h-4" /> TOLAK
@@ -111,4 +111,3 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
 };
 
 export default ApprovalTable;
-

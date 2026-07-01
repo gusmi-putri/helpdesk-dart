@@ -116,6 +116,12 @@ class DashboardController extends Controller
 
         $satuans = \App\Models\Satuan::all();
 
+        $userMutations = \App\Http\Resources\UserMutationResource::collection(
+            \App\Models\UserMutation::with(['targetUser', 'requester', 'approver'])
+                ->orderBy('created_at', 'desc')
+                ->get()
+        );
+
         return Inertia::render('Helpdesk/DashboardAdmin', [
             'dbCases' => $cases,
             'dbUsers' => $users,
@@ -125,6 +131,7 @@ class DashboardController extends Controller
             'dbSatuans' => $satuans,
             'dbFeedbacks' => $feedbacks,
             'dbMutations' => $mutations,
+            'dbUserMutations' => $userMutations,
             'dbArchivedUnits' => $archivedUnits,
         ]);
     }
@@ -213,6 +220,12 @@ class DashboardController extends Controller
 
         $satuans = \App\Models\Satuan::all();
 
+        $userMutations = \App\Http\Resources\UserMutationResource::collection(
+            \App\Models\UserMutation::with(['targetUser', 'requester', 'approver'])
+                ->orderBy('created_at', 'desc')
+                ->get()
+        );
+
         return Inertia::render('Helpdesk/DashboardStaf', [
             'dbCases' => $cases,
             'dbUsers' => $technicians,
@@ -220,6 +233,7 @@ class DashboardController extends Controller
             'dbUnits' => $units,
             'dbSatuans' => $satuans,
             'dbMutations' => $mutations,
+            'dbUserMutations' => $userMutations,
             'dbRoles' => $roles,
         ]);
     }

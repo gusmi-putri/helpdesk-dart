@@ -3,39 +3,30 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\UserMutation;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreUserRequest $request)
     {
         DB::transaction(function () use ($request) {
             $isAdmin = auth()->user()->role->nama_role === 'Admin';
-
-            User::create([
+            $currentUser = auth()->user();
+            
+            $userData = [
                 'username' => $request->username,
                 'password' => bcrypt($request->password),
                 'email' => $request->email,
@@ -46,13 +37,32 @@ class UserController extends Controller
                 'satuan_id' => $request->satuan_id,
                 'no_wa' => $request->no_wa,
                 'spesialisasi' => $request->spesialisasi,
-                'is_approved' => $isAdmin, // Admin bypasses approval
-            ]);
+                'is_approved' => $isAdmin, // Always true if Admin, but Staf doesn't create user directly anymore
+            ];
 
-            $currentUser = auth()->user();
             if ($isAdmin) {
+                $user = User::create($userData);
+
+                UserMutation::create([
+                    'target_user_id' => $user->id,
+                    'type' => 'approved_add',
+                    'requested_by' => $currentUser->id,
+                    'approved_by' => $currentUser->id,
+                    'status' => 'approved',
+                    'user_data' => $userData,
+                ]);
+
                 \App\Models\SystemLog::log('SUCCESS', $currentUser->id, "Menambahkan personel baru secara langsung: {$request->nama_lengkap} ({$request->username})");
             } else {
+                // Staf just requests addition, doesn't create user in DB
+                UserMutation::create([
+                    'target_user_id' => null,
+                    'type' => 'request_add',
+                    'requested_by' => $currentUser->id,
+                    'status' => 'pending',
+                    'user_data' => $userData,
+                ]);
+
                 \App\Models\SystemLog::log('INFO', $currentUser->id, "Mendaftarkan personel baru: {$request->nama_lengkap} ({$request->username}) (Menunggu Persetujuan)");
             }
         });
@@ -61,16 +71,12 @@ class UserController extends Controller
             return redirect()->back()->with('message', 'Personel baru berhasil ditambahkan.');
         }
 
-        return redirect()->back()->with('message', 'Personel baru berhasil didaftarkan dan sedang menunggu persetujuan Admin.');
+        return redirect()->back()->with('message', 'Pengajuan penambahan personel telah dikirim dan sedang menunggu persetujuan Admin.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateUserRequest $request, string $id)
     {
         $user = User::findOrFail($id);
-
         $adminRoleId = \App\Models\Role::where('nama_role', 'Admin')->first()?->id;
 
         $updateData = $request->only('email', 'nama_lengkap', 'nrp_nip', 'asal_satuan', 'satuan_id', 'no_wa', 'spesialisasi');
@@ -79,18 +85,31 @@ class UserController extends Controller
         }
 
         $isAdmin = auth()->user()->role->nama_role === 'Admin';
+        $currentUser = auth()->user();
 
-        DB::transaction(function () use ($user, $updateData, $isAdmin) {
-            $currentUser = auth()->user();
-
+        DB::transaction(function () use ($user, $updateData, $isAdmin, $currentUser) {
             if ($isAdmin) {
                 $user->update($updateData);
+
+                UserMutation::create([
+                    'target_user_id' => $user->id,
+                    'type' => 'approved_edit',
+                    'requested_by' => $currentUser->id,
+                    'approved_by' => $currentUser->id,
+                    'status' => 'approved',
+                    'user_data' => $updateData,
+                ]);
+
                 \App\Models\SystemLog::log('SUCCESS', $currentUser->id, "Mengubah data personel secara langsung: {$user->nama_lengkap}");
             } else {
-                $user->update([
-                    'pending_action' => 'edit',
-                    'pending_changes' => $updateData
+                UserMutation::create([
+                    'target_user_id' => $user->id,
+                    'type' => 'request_edit',
+                    'requested_by' => $currentUser->id,
+                    'status' => 'pending',
+                    'user_data' => $updateData,
                 ]);
+
                 \App\Models\SystemLog::log('INFO', $currentUser->id, "Mengajukan edit data personel: {$user->nama_lengkap}");
             }
         });
@@ -101,9 +120,6 @@ class UserController extends Controller
         return redirect()->back()->with('message', 'Pengajuan edit data personel telah dikirim ke Admin untuk disetujui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $user = User::findOrFail($id);
@@ -126,12 +142,25 @@ class UserController extends Controller
         DB::transaction(function () use ($user, $currentUser, $adminRoleId) {
             if ($currentUser->role_id === $adminRoleId) {
                 $userName = $user->nama_lengkap;
+                
+                UserMutation::create([
+                    'target_user_id' => $user->id,
+                    'type' => 'approved_delete',
+                    'requested_by' => $currentUser->id,
+                    'approved_by' => $currentUser->id,
+                    'status' => 'approved',
+                ]);
+
                 $user->delete();
                 \App\Models\SystemLog::log('ALERT', $currentUser->id, "Menghapus personel secara langsung: {$userName}");
             } else {
-                $user->update([
-                    'pending_action' => 'delete'
+                UserMutation::create([
+                    'target_user_id' => $user->id,
+                    'type' => 'request_delete',
+                    'requested_by' => $currentUser->id,
+                    'status' => 'pending',
                 ]);
+
                 \App\Models\SystemLog::log('INFO', $currentUser->id, "Mengajukan penghapusan personel: {$user->nama_lengkap}");
             }
         });
@@ -157,24 +186,54 @@ class UserController extends Controller
 
     public function approve(string $id)
     {
-        $user = User::findOrFail($id);
+        $mutation = UserMutation::findOrFail($id);
+        
+        if ($mutation->status !== 'pending') {
+            return redirect()->back()->with('error', 'Pengajuan ini sudah diproses.');
+        }
+
         $admin = auth()->user();
 
-        DB::transaction(function () use ($user, $admin, &$msg) {
-            if ($user->pending_action === 'edit') {
-                $updateData = $user->pending_changes ?? [];
-                $updateData['pending_action'] = null;
-                $updateData['pending_changes'] = null;
+        DB::transaction(function () use ($mutation, $admin, &$msg) {
+            if ($mutation->type === 'request_edit') {
+                $user = User::findOrFail($mutation->target_user_id);
+                $updateData = $mutation->user_data ?? [];
                 $user->update($updateData);
+
+                $mutation->update([
+                    'status' => 'approved',
+                    'approved_by' => $admin->id,
+                    'type' => 'approved_edit',
+                ]);
+
                 \App\Models\SystemLog::log('SUCCESS', $admin->id, "Menyetujui perubahan data personel: {$user->nama_lengkap}");
                 $msg = 'Perubahan profil personel telah disetujui.';
-            } elseif ($user->pending_action === 'delete') {
+            } elseif ($mutation->type === 'request_delete') {
+                $user = User::findOrFail($mutation->target_user_id);
                 $userName = $user->nama_lengkap;
+                
+                $mutation->update([
+                    'status' => 'approved',
+                    'approved_by' => $admin->id,
+                    'type' => 'approved_delete',
+                ]);
+
                 $user->delete();
                 \App\Models\SystemLog::log('ALERT', $admin->id, "Menyetujui penghapusan personel: {$userName}");
                 $msg = 'Penghapusan personel telah disetujui.';
-            } else {
-                $user->update(['is_approved' => true]);
+            } elseif ($mutation->type === 'request_add') {
+                $userData = $mutation->user_data ?? [];
+                $userData['is_approved'] = true;
+                
+                $user = User::create($userData);
+
+                $mutation->update([
+                    'status' => 'approved',
+                    'approved_by' => $admin->id,
+                    'target_user_id' => $user->id,
+                    'type' => 'approved_add',
+                ]);
+
                 \App\Models\SystemLog::log('SUCCESS', $admin->id, "Menyetujui pendaftaran personel baru: {$user->nama_lengkap}");
                 $msg = 'Personel telah disetujui dan sekarang dapat login.';
             }
@@ -183,28 +242,41 @@ class UserController extends Controller
         return redirect()->back()->with('message', $msg);
     }
 
-    public function reject(string $id)
+    public function reject(\Illuminate\Http\Request $request, string $id)
     {
-        $user = User::findOrFail($id);
-        $admin = auth()->user();
+        $mutation = UserMutation::findOrFail($id);
+        
+        if ($mutation->status !== 'pending') {
+            return redirect()->back()->with('error', 'Pengajuan ini sudah diproses.');
+        }
 
-        DB::transaction(function () use ($user, $admin, &$msg) {
-            if ($user->pending_action === 'edit' || $user->pending_action === 'delete') {
-                $action = $user->pending_action;
-                $user->update([
-                    'pending_action' => null,
-                    'pending_changes' => null
-                ]);
-                \App\Models\SystemLog::log('WARN', $admin->id, "Menolak pengajuan {$action} personel: {$user->nama_lengkap}");
-                $msg = "Pengajuan {$action} personel telah ditolak.";
-            } else {
-                $userName = $user->nama_lengkap;
-                $user->delete();
-                \App\Models\SystemLog::log('WARN', $admin->id, "Menolak pendaftaran personel baru: {$userName}");
-                $msg = 'Pendaftaran personel telah ditolak.';
-            }
+        $admin = auth()->user();
+        $adminNotes = $request->input('admin_notes', 'Ditolak oleh Admin.');
+
+        DB::transaction(function () use ($mutation, $admin, $adminNotes, &$msg) {
+            $typeMapping = [
+                'request_add' => 'rejected_add',
+                'request_edit' => 'rejected_edit',
+                'request_delete' => 'rejected_delete',
+            ];
+
+            $newType = $typeMapping[$mutation->type] ?? $mutation->type;
+
+            $mutation->update([
+                'status' => 'rejected',
+                'approved_by' => $admin->id,
+                'admin_notes' => $adminNotes,
+                'type' => $newType,
+            ]);
+
+            $userName = $mutation->user_data['nama_lengkap'] ?? ($mutation->targetUser->nama_lengkap ?? 'Unknown');
+            $action = str_replace('request_', '', $mutation->type);
+
+            \App\Models\SystemLog::log('WARN', $admin->id, "Menolak pengajuan {$action} personel: {$userName}");
+            $msg = "Pengajuan {$action} personel telah ditolak.";
         });
 
         return redirect()->back()->with('message', $msg);
     }
 }
+

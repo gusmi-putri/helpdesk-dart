@@ -18,6 +18,8 @@ import ReportRejectModal from './StafComponents/ReportRejectModal';
 import StafUnitModal from './StafComponents/StafUnitModal';
 import RequestDeleteModal from './StafComponents/RequestDeleteModal';
 import MutationHistory from './StafComponents/MutationHistory';
+import UserMutationHistory from './StafComponents/UserMutationHistory';
+import StafMutationCenter from './StafComponents/StafMutationCenter';
 import StafUnitBatchModal from './StafComponents/StafUnitBatchModal';
 import RequestDeleteBatchModal from './StafComponents/RequestDeleteBatchModal';
 
@@ -34,7 +36,7 @@ import SatuanDeleteModal from './AdminComponents/SatuanDeleteModal';
 type MenuTab = 'MASUK' | 'SELESAI' | 'INVENTARIS' | 'MUTASI' | 'PERSONEL' | 'SATUANS';
 
 const DashboardStaf = (props: any) => {
-  const { dbCases = [], dbUsers = [], dbUnits = [], dbMutations = [], dbAllUsers = [], dbRoles = [], dbSatuans = [] } = props;
+  const { dbCases = [], dbUsers = [], dbUnits = [], dbMutations = [], dbUserMutations = [], dbAllUsers = [], dbRoles = [], dbSatuans = [] } = props;
   const [activeMenu, setActiveMenu] = useState<MenuTab>('MASUK');
   const [assigningReportId, setAssigningReportId] = useState<number | null>(null);
   const [rejectingReportId, setRejectingReportId] = useState<number | null>(null);
@@ -55,6 +57,9 @@ const DashboardStaf = (props: any) => {
   const [filterJenis, setFilterJenis] = useState('ALL');
   const [filterSatuan, setFilterSatuan] = useState('ALL');
   const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
+
+  // Mutation States
+  const [mutationActiveTab, setMutationActiveTab] = useState<'PERSONEL' | 'INVENTARIS'>('PERSONEL');
 
   // Unit Mutation States
   const [isAddUnitModalOpen, setIsAddUnitModalOpen] = useState(false);
@@ -433,12 +438,12 @@ const DashboardStaf = (props: any) => {
                   {activeMenu === 'MASUK' ? 'MODUL PENUGASAN TEKNISI' :
                     activeMenu === 'SELESAI' ? 'ARSIP DOKUMEN PENYELESAIAN' :
                       activeMenu === 'INVENTARIS' ? 'DATABASE INVENTARIS PERANGKAT' :
-                        activeMenu === 'MUTASI' ? 'MUTASI INVENTARIS' :
+                        activeMenu === 'MUTASI' ? 'PUSAT MUTASI' :
                           'DATA PERSONEL'}
                 </h2>
                 <p className="text-xs font-mono text-slate-500 dark:text-slate-300 mt-1 uppercase tracking-widest">
                   {activeMenu === 'INVENTARIS' ? 'STATUS KESIAPAN ALUTSISTA DART.' :
-                    activeMenu === 'MUTASI' ? 'RIWAYAT PENGAJUAN PENAMBAHAN & PENGHAPUSAN UNIT.' :
+                    activeMenu === 'MUTASI' ? (mutationActiveTab === 'PERSONEL' ? 'Riwayat pengajuan penambahan dan penghapusan data personel.' : 'Riwayat pengajuan penambahan dan penghapusan unit inventaris.') :
                       activeMenu === 'PERSONEL' ? 'KELOLA DATA PENGGUNA SISTEM.' :
                         'Sistem Manajemen Pelaporan Kerusakan Dart.'}
                 </p>
@@ -491,7 +496,12 @@ const DashboardStaf = (props: any) => {
             )}
 
             {activeMenu === 'MUTASI' && (
-              <MutationHistory dbMutations={dbMutations} />
+              <StafMutationCenter 
+                dbMutations={dbMutations} 
+                dbUserMutations={dbUserMutations} 
+                activeTab={mutationActiveTab} 
+                setActiveTab={setMutationActiveTab} 
+              />
             )}
 
             {activeMenu === 'PERSONEL' && (

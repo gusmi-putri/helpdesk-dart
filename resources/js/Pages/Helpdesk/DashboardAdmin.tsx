@@ -32,7 +32,7 @@ type SubMenuReport = 'KERUSAKAN' | 'PERBAIKAN';
 type MenuTab = 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER' | 'FEEDBACK';
 
 const DashboardAdmin = (props: any) => {
-  const { dbCases = [], dbUsers = [], dbLogs = [], dbRoles = [], dbUnits = [], dbSatuans = [], dbFeedbacks = [], dbMutations = [], dbArchivedUnits = [] } = props;
+  const { dbCases = [], dbUsers = [], dbLogs = [], dbRoles = [], dbUnits = [], dbSatuans = [], dbFeedbacks = [], dbMutations = [], dbUserMutations = [], dbArchivedUnits = [] } = props;
   const [activeMenu, setActiveMenu] = useState<MenuTab>('ANALYTICS');
   const [activeSubReport, setActiveSubReport] = useState<SubMenuReport>('KERUSAKAN');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
@@ -279,22 +279,22 @@ const DashboardAdmin = (props: any) => {
     });
   };
 
-  const handleApproveUser = (user: any) => {
-    router.post(`/users/${user.db_id}/approve`, {}, {
+  const handleApproveUser = (mutation: any) => {
+    router.post(`/users/${mutation.id}/approve`, {}, {
       onSuccess: () => {
         // Notification logic if any
       }
     });
   };
 
-  const handleRejectUser = (user: any) => {
-    setUserToReject(user);
+  const handleRejectUser = (mutation: any) => {
+    setUserToReject(mutation);
     setIsRejectModalOpen(true);
   };
 
-  const confirmRejectUser = () => {
+  const confirmRejectUser = (reason: string = 'Ditolak oleh Admin') => {
     if (userToReject) {
-      router.post(`/users/${userToReject.db_id}/reject`, { reason: 'Ditolak oleh Admin' }, {
+      router.post(`/users/${userToReject.id}/reject`, { admin_notes: reason }, {
         onSuccess: () => {
           setIsRejectModalOpen(false);
           setUserToReject(null);
@@ -495,6 +495,7 @@ const DashboardAdmin = (props: any) => {
               <ApprovalCenter
                 dbUsers={dbUsers}
                 dbMutations={dbMutations}
+                dbUserMutations={dbUserMutations}
                 dbSatuans={dbSatuans}
                 dbArchivedUnits={dbArchivedUnits}
                 handleApproveUser={handleApproveUser}
@@ -585,8 +586,8 @@ const DashboardAdmin = (props: any) => {
         isOpen={isRejectModalOpen}
         onClose={() => { setIsRejectModalOpen(false); setUserToReject(null); }}
         onConfirm={confirmRejectUser}
-        userName={userToReject?.name || ''}
-        actionType={userToReject && !userToReject.is_approved ? 'register' : (userToReject?.pending_action || 'register')}
+        userName={userToReject?.user_data?.nama_lengkap || userToReject?.target_user?.name || ''}
+        actionType={userToReject?.type?.replace('request_', '') || 'register'}
       />
 
       <SatuanModal
