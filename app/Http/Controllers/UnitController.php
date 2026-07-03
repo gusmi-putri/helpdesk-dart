@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Unit;
 use App\Models\UnitMutation;
 use App\Models\SystemLog;
+use App\Models\Satuan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreUnitRequest;
@@ -26,7 +27,8 @@ class UnitController extends Controller
         $user = auth()->user();
         $isAdmin = $user->role && $user->role->nama_role === 'Admin';
 
-        $documentPath = $this->fileService->uploadSingleFile($request->file('document'), 'mutations/documents');
+        $documentName = $this->fileService->uploadSingleFile($request->file('document'), 'mutations/documents');
+        $documentPath = $documentName ? 'mutations/documents/' . $documentName : null;
 
         DB::transaction(function () use ($request, $user, $isAdmin, $documentPath) {
             if ($isAdmin) {
@@ -78,11 +80,36 @@ class UnitController extends Controller
             'status_unit' => 'required|in:Beroperasi,Rusak,Perbaikan,Nonaktif',
         ]);
 
-        $unit->update($request->all());
+        $user = auth()->user();
+        $isAdmin = $user->role && $user->role->nama_role === 'Admin';
 
-        SystemLog::log('INFO', auth()->id(), "Memperbarui data unit DART: {$unit->nomor_seri}");
+        if ($isAdmin) {
+            $unit->update($request->all());
+            SystemLog::log('INFO', $user->id, "Memperbarui data unit DART secara langsung: {$unit->nomor_seri}");
+            return redirect()->back()->with('message', 'Data unit DART telah diperbarui.');
+        } else {
+            // Staf: Check if there's already a pending edit request for this unit
+            $existingPending = UnitMutation::where('unit_id', $unit->id)
+                ->where('type', 'request_edit')
+                ->where('status', 'pending')
+                ->exists();
 
-        return redirect()->back()->with('message', 'Data unit DART telah diperbarui.');
+            if ($existingPending) {
+                return redirect()->back()->with('error', 'Sudah ada pengajuan pembaruan yang menunggu persetujuan untuk unit ini.');
+            }
+
+            UnitMutation::create([
+                'unit_id' => $unit->id,
+                'type' => 'request_edit',
+                'reason' => $request->input('reason', 'Pengajuan pembaruan data unit.'),
+                'requested_by' => $user->id,
+                'status' => 'pending',
+                'unit_data' => $request->only(['nomor_seri', 'jenis', 'asal_satuan', 'satuan_id', 'status_unit']),
+            ]);
+
+            SystemLog::log('INFO', $user->id, "Staf mengajukan pembaruan unit DART: {$unit->nomor_seri}");
+            return redirect()->back()->with('message', 'Pengajuan pembaruan unit telah dikirim. Menunggu persetujuan Admin.');
+        }
     }
 
     /**
@@ -208,7 +235,7 @@ class UnitController extends Controller
                             $idx = (int)$idx;
                             if (isset($unitData[$idx]) && $unitData[$idx]['status'] === 'pending') {
                                 $u = $unitData[$idx];
-                                $satuan = \App\Models\Satuan::where('nama_satuan', strtoupper($u['asal_satuan']))->first();
+                                $satuan = Satuan::where('nama_satuan', strtoupper($u['asal_satuan']))->first();
                                 $unit = Unit::create([
                                     'nomor_seri' => $u['nomor_seri'],
                                     'jenis' => $u['jenis'],
@@ -226,7 +253,7 @@ class UnitController extends Controller
                         $idx = (int)$unitIndex;
                         if (isset($unitData[$idx]) && $unitData[$idx]['status'] === 'pending') {
                             $u = $unitData[$idx];
-                            $satuan = \App\Models\Satuan::where('nama_satuan', strtoupper($u['asal_satuan']))->first();
+                            $satuan = Satuan::where('nama_satuan', strtoupper($u['asal_satuan']))->first();
                             $unit = Unit::create([
                                 'nomor_seri' => $u['nomor_seri'],
                                 'jenis' => $u['jenis'],
@@ -242,7 +269,7 @@ class UnitController extends Controller
                     else {
                         foreach ($unitData as $idx => $u) {
                             if ($u['status'] === 'pending') {
-                                $satuan = \App\Models\Satuan::where('nama_satuan', strtoupper($u['asal_satuan']))->first();
+                                $satuan = Satuan::where('nama_satuan', strtoupper($u['asal_satuan']))->first();
                                 $unit = Unit::create([
                                     'nomor_seri' => $u['nomor_seri'],
                                     'jenis' => $u['jenis'],
@@ -278,7 +305,7 @@ class UnitController extends Controller
                     // Single unit request
                     $satuanId = isset($unitData['satuan_id']) ? $unitData['satuan_id'] : null;
                     if (!$satuanId && isset($unitData['asal_satuan'])) {
-                        $satuan = \App\Models\Satuan::where('nama_satuan', strtoupper($unitData['asal_satuan']))->first();
+                        $satuan = Satuan::where('nama_satuan', strtoupper($unitData['asal_satuan']))->first();
                         if ($satuan) {
                             $satuanId = $satuan->id;
                         }
@@ -314,6 +341,27 @@ class UnitController extends Controller
                     ]);
 
                     SystemLog::log('ALERT', auth()->id(), "Admin menyetujui penghapusan unit DART: {$unit->nomor_seri}");
+                }
+            } elseif ($mutation->type === 'request_edit') {
+                $unit = Unit::find($mutation->unit_id);
+                if ($unit) {
+                    $unitData = $mutation->unit_data;
+                    $unit->update([
+                        'nomor_seri' => $unitData['nomor_seri'],
+                        'jenis' => $unitData['jenis'],
+                        'asal_satuan' => strtoupper($unitData['asal_satuan']),
+                        'satuan_id' => $unitData['satuan_id'],
+                        'status_unit' => $unitData['status_unit'],
+                    ]);
+
+                    $mutation->update([
+                        'type' => 'approved_edit',
+                        'status' => 'approved',
+                        'approved_by' => auth()->id(),
+                        'admin_notes' => $adminNotes,
+                    ]);
+
+                    SystemLog::log('INFO', auth()->id(), "Admin menyetujui pembaruan unit DART: {$unit->nomor_seri}");
                 }
             }
         });
@@ -387,6 +435,14 @@ class UnitController extends Controller
                 'admin_notes' => $adminNotes,
             ]);
             SystemLog::log('INFO', auth()->id(), "Admin menolak pengajuan penghapusan unit DART.");
+        } elseif ($mutation->type === 'request_edit') {
+            $mutation->update([
+                'type' => 'rejected_edit',
+                'status' => 'rejected',
+                'approved_by' => auth()->id(),
+                'admin_notes' => $adminNotes,
+            ]);
+            SystemLog::log('INFO', auth()->id(), "Admin menolak pengajuan pembaruan unit DART.");
         }
 
         return redirect()->back()->with('message', 'Pengajuan telah ditolak.');
@@ -430,126 +486,80 @@ class UnitController extends Controller
 
         $file = $request->file('file');
         $documentPath = $request->file('document')->store('mutations/documents', 'public');
-        $handle = fopen($file->getPathname(), "r");
 
-        if (!$handle) {
+        $skipped = 0;
+        $parsedUnits = $this->parseUnitCsv($file->getPathname(), $skipped);
+
+        if (empty($parsedUnits) && $skipped === 0) {
             return redirect()->back()->with('import_result', json_encode([
                 'success' => false,
-                'message' => 'Gagal membaca file. Pastikan file tidak rusak.',
+                'message' => 'Gagal membaca file atau file kosong/tidak valid.',
             ]));
         }
 
-        // Detect delimiter: check if it uses comma (,) or semicolon (;)
-        $firstLine = fgets($handle);
-        rewind($handle);
-        $delimiter = ",";
-        if (strpos($firstLine, ';') !== false && strpos($firstLine, ',') === false) {
-            $delimiter = ";";
-        } elseif (strpos($firstLine, ';') !== false && strpos($firstLine, ',') !== false) {
-            $commaCount = substr_count($firstLine, ',');
-            $semicolonCount = substr_count($firstLine, ';');
-            if ($semicolonCount > $commaCount) {
-                $delimiter = ";";
-            }
-        }
-
-        $header = true;
         $imported = 0;
-        $skipped = 0;
-        $totalRows = 0;
         $importedUnitsData = [];
+        $user = auth()->user();
+        $isAdmin = $user->role && $user->role->nama_role === 'Admin';
 
-        DB::transaction(function () use (&$imported, &$skipped, &$importedUnitsData, $handle, $documentPath, $delimiter, &$header) {
-            while ($row = fgetcsv($handle, 1000, $delimiter)) {
-                if ($header) { $header = false; continue; }
-                if (count($row) < 4) continue;
+        DB::transaction(function () use ($parsedUnits, &$imported, &$importedUnitsData, $documentPath, $isAdmin, $user) {
+            foreach ($parsedUnits as $u) {
+                if ($isAdmin) {
+                    $unit = Unit::create([
+                        'nomor_seri' => $u['nomor_seri'],
+                        'jenis' => $u['jenis'],
+                        'asal_satuan' => $u['asal_satuan'],
+                        'satuan_id' => $u['satuan_id'],
+                        'status_unit' => $u['status_unit']
+                    ]);
 
-                $nomor_seri = trim($row[0]);
-                if (empty($nomor_seri) || str_starts_with($nomor_seri, '#')) continue;
-
-                $jenis_raw = trim($row[1]);
-                $asal_satuan = trim($row[2]);
-                $status_unit_raw = isset($row[3]) ? trim($row[3]) : 'Beroperasi';
-
-                if (empty($nomor_seri)) continue;
-
-                if (Unit::where('nomor_seri', $nomor_seri)->exists()) {
-                    $skipped++;
-                    continue;
+                    $importedUnitsData[] = array_merge($u, [
+                        'status' => 'approved',
+                        'unit_id' => $unit->id
+                    ]);
+                } else {
+                    $importedUnitsData[] = array_merge($u, [
+                        'status' => 'pending'
+                    ]);
                 }
-
-                // Check case-insensitive valid jenis
-                $validJenis = ['DART STD', 'DART STK', 'DART Portabel - Swing', 'DART Portabel - Pop', 'DART Portabel - Flip', 'DART Marathon Target', 'Moving Target'];
-                $jenis = 'DART STD';
-                foreach ($validJenis as $vj) {
-                    if (strcasecmp($jenis_raw, $vj) === 0) {
-                        $jenis = $vj;
-                        break;
-                    }
-                }
-
-                // Check status mapping
-                $statusMap = [
-                    'siap ops' => 'Beroperasi',
-                    'beroperasi' => 'Beroperasi',
-                    'rusak' => 'Rusak',
-                    'perbaikan' => 'Perbaikan',
-                    'nonaktif' => 'Nonaktif',
-                ];
-                $status_unit_lower = strtolower($status_unit_raw);
-                $status_unit = isset($statusMap[$status_unit_lower]) ? $statusMap[$status_unit_lower] : 'Beroperasi';
-
-                // Find Satuan (MUST already exist in DB)
-                $satuan = \App\Models\Satuan::where('nama_satuan', strtoupper($asal_satuan))->first();
-                if (!$satuan) {
-                    $skipped++;
-                    continue; // Skip if Satuan is not found
-                }
-
-                $unit = Unit::create([
-                    'nomor_seri' => $nomor_seri,
-                    'jenis' => $jenis,
-                    'asal_satuan' => $satuan->nama_satuan,
-                    'satuan_id' => $satuan->id,
-                    'status_unit' => $status_unit
-                ]);
-
-                $importedUnitsData[] = [
-                    'nomor_seri' => $nomor_seri,
-                    'jenis' => $jenis,
-                    'asal_satuan' => $satuan->nama_satuan,
-                    'satuan_id' => $satuan->id,
-                    'status_unit' => $status_unit,
-                    'status' => 'approved',
-                    'unit_id' => $unit->id
-                ];
-
                 $imported++;
             }
 
             if ($imported > 0) {
-                UnitMutation::create([
-                    'unit_id' => null,
-                    'type' => 'approved_add',
-                    'reason' => 'Import massal langsung oleh Admin.',
-                    'document_path' => $documentPath,
-                    'requested_by' => auth()->id(),
-                    'approved_by' => auth()->id(),
-                    'status' => 'approved',
-                    'unit_data' => $importedUnitsData,
-                ]);
+                if ($isAdmin) {
+                    UnitMutation::create([
+                        'unit_id' => null,
+                        'type' => 'approved_add',
+                        'reason' => 'Import massal langsung oleh Admin.',
+                        'document_path' => $documentPath,
+                        'requested_by' => $user->id,
+                        'approved_by' => $user->id,
+                        'status' => 'approved',
+                        'unit_data' => $importedUnitsData,
+                    ]);
+                    SystemLog::log('INFO', $user->id, "Import massal DART oleh Admin: {$imported} berhasil ditambahkan, {$skipped} duplikat dilewati.");
+                } else {
+                    UnitMutation::create([
+                        'unit_id' => null,
+                        'type' => 'request_add',
+                        'reason' => 'Import massal unit diajukan oleh Staf.',
+                        'document_path' => $documentPath,
+                        'requested_by' => $user->id,
+                        'status' => 'pending',
+                        'unit_data' => $importedUnitsData,
+                    ]);
+                    SystemLog::log('INFO', $user->id, "Staf mengajukan import massal DART: {$imported} unit diajukan, {$skipped} duplikat dilewati.");
+                }
             }
-
-            SystemLog::log('INFO', auth()->id(), "Import massal DART: {$imported} berhasil ditambahkan, {$skipped} duplikat dilewati.");
         });
 
-        fclose($handle);
+        $resultMsg = $isAdmin 
+            ? "Import massal selesai. {$imported} unit berhasil ditambahkan, {$skipped} dilewati." 
+            : "Pengajuan import massal {$imported} unit telah dikirim ke Admin. {$skipped} duplikat dilewati.";
 
         return redirect()->back()->with('import_result', json_encode([
             'success' => true,
-            'imported' => $imported,
-            'skipped' => $skipped,
-            'total' => $totalRows,
+            'message' => $resultMsg,
         ]));
     }
 
@@ -571,106 +581,22 @@ class UnitController extends Controller
         $reason = $request->input('reason', 'Pengajuan penambahan massal DART.');
         $file = $request->file('file');
         
-        $handle = fopen($file->getPathname(), "r");
-        if (!$handle) {
-            return redirect()->back()->with('error', 'Gagal membaca file CSV.');
-        }
-
-        // Detect delimiter: check if it uses comma (,) or semicolon (;)
-        $firstLine = fgets($handle);
-        rewind($handle);
-        $delimiter = ",";
-        if (strpos($firstLine, ';') !== false && strpos($firstLine, ',') === false) {
-            $delimiter = ";";
-        } elseif (strpos($firstLine, ';') !== false && strpos($firstLine, ',') !== false) {
-            $commaCount = substr_count($firstLine, ',');
-            $semicolonCount = substr_count($firstLine, ';');
-            if ($semicolonCount > $commaCount) {
-                $delimiter = ";";
-            }
-        }
-
-        $header = true;
-        $requested = 0;
         $skipped = 0;
-        $unitsToPropose = [];
+        $parsedUnits = $this->parseUnitCsv($file->getPathname(), $skipped);
 
-        while ($row = fgetcsv($handle, 1000, $delimiter)) {
-            if ($header) { $header = false; continue; }
-            if (count($row) < 4) continue;
-
-            $nomor_seri = trim($row[0]);
-            if (empty($nomor_seri) || str_starts_with($nomor_seri, '#')) continue;
-
-            $jenis_raw = trim($row[1]);
-            $asal_satuan = trim($row[2]);
-            $status_unit_raw = isset($row[3]) ? trim($row[3]) : 'Beroperasi';
-
-            if (empty($nomor_seri)) continue;
-
-            // Jika sudah ada di database = skip
-            if (Unit::where('nomor_seri', $nomor_seri)->exists()) {
-                $skipped++;
-                continue;
-            }
-            
-            // Jika sudah ada pengajuan pending untuk nomor seri ini = skip
-            $isPending = UnitMutation::where('type', 'request_add')
-                ->where('status', 'pending')
-                ->where('unit_data', 'like', '%' . $nomor_seri . '%')
-                ->exists();
-                
-            if ($isPending) {
-                $skipped++;
-                continue;
-            }
-
-            // Check case-insensitive valid jenis
-            $validJenis = ['DART STD', 'DART STK', 'DART Portabel - Swing', 'DART Portabel - Pop', 'DART Portabel - Flip', 'DART Marathon Target', 'Moving Target'];
-            $jenis = 'DART STD';
-            foreach ($validJenis as $vj) {
-                if (strcasecmp($jenis_raw, $vj) === 0) {
-                    $jenis = $vj;
-                    break;
-                }
-            }
-
-            // Check status mapping
-            $statusMap = [
-                'siap ops' => 'Beroperasi',
-                'beroperasi' => 'Beroperasi',
-                'rusak' => 'Rusak',
-                'perbaikan' => 'Perbaikan',
-                'nonaktif' => 'Nonaktif',
-            ];
-            $status_unit_lower = strtolower($status_unit_raw);
-            $status_unit = isset($statusMap[$status_unit_lower]) ? $statusMap[$status_unit_lower] : 'Beroperasi';
-
-            // Find Satuan (MUST already exist in DB)
-            $satuan = \App\Models\Satuan::where('nama_satuan', strtoupper($asal_satuan))->first();
-            if (!$satuan) {
-                $skipped++;
-                continue; // Skip if Satuan is not found
-            }
-
-            $unitsToPropose[] = [
-                'nomor_seri' => $nomor_seri,
-                'jenis' => $jenis,
-                'asal_satuan' => $satuan->nama_satuan,
-                'satuan_id' => $satuan->id,
-                'status_unit' => $status_unit,
-                'status' => 'pending',
-            ];
-
-            $requested++;
-        }
-
-        fclose($handle);
-
-        if (count($unitsToPropose) === 0) {
+        if (empty($parsedUnits)) {
             SystemLog::log('INFO', auth()->id(), "Staf gagal mengajukan penambahan massal DART: 0 diajukan, {$skipped} dilewati.");
             return redirect()->back()->with('error', 'Semua nomor seri di dalam CSV sudah terdaftar atau tidak valid (satuan tidak terdaftar / unit sudah terdaftar).');
         }
+
+        $unitsToPropose = [];
+        foreach ($parsedUnits as $u) {
+            $unitsToPropose[] = array_merge($u, [
+                'status' => 'pending',
+            ]);
+        }
+
+        $requested = count($unitsToPropose);
 
         UnitMutation::create([
             'unit_id' => null,
@@ -709,32 +635,34 @@ class UnitController extends Controller
         $requested = 0;
         $skipped = 0;
 
-        foreach ($unitIds as $unitId) {
-            $unit = Unit::find($unitId);
-            if (!$unit) continue;
+        DB::transaction(function () use ($unitIds, $reason, $documentPath, &$requested, &$skipped) {
+            foreach ($unitIds as $unitId) {
+                $unit = Unit::find($unitId);
+                if (!$unit) continue;
 
-            $existingPending = UnitMutation::where('unit_id', $unit->id)
-                ->where('type', 'request_delete')
-                ->where('status', 'pending')
-                ->exists();
+                $existingPending = UnitMutation::where('unit_id', $unit->id)
+                    ->where('type', 'request_delete')
+                    ->where('status', 'pending')
+                    ->exists();
 
-            if ($existingPending) {
-                $skipped++;
-                continue;
+                if ($existingPending) {
+                    $skipped++;
+                    continue;
+                }
+
+                UnitMutation::create([
+                    'unit_id' => $unit->id,
+                    'type' => 'request_delete',
+                    'reason' => $reason,
+                    'document_path' => $documentPath,
+                    'requested_by' => auth()->id(),
+                    'status' => 'pending',
+                    'unit_data' => $unit->toArray(),
+                ]);
+
+                $requested++;
             }
-
-            UnitMutation::create([
-                'unit_id' => $unit->id,
-                'type' => 'request_delete',
-                'reason' => $reason,
-                'document_path' => $documentPath,
-                'requested_by' => auth()->id(),
-                'status' => 'pending',
-                'unit_data' => $unit->toArray(),
-            ]);
-
-            $requested++;
-        }
+        });
 
         SystemLog::log('INFO', auth()->id(), "Staf mengajukan penghapusan massal DART: {$requested} diajukan.");
 
@@ -743,5 +671,108 @@ class UnitController extends Controller
         }
 
         return redirect()->back()->with('message', "{$requested} pengajuan penghapusan berhasil dikirim. Menunggu persetujuan Admin.");
+    }
+
+    /**
+     * Parse and validate CSV file for bulk unit import/mutation.
+     */
+    private function parseUnitCsv(string $path, int &$skipped): array
+    {
+        $handle = fopen($path, "r");
+        if (!$handle) {
+            return [];
+        }
+
+        // Detect delimiter
+        $firstLine = fgets($handle);
+        rewind($handle);
+        $delimiter = ",";
+        if (strpos($firstLine, ';') !== false && strpos($firstLine, ',') === false) {
+            $delimiter = ";";
+        } elseif (strpos($firstLine, ';') !== false && strpos($firstLine, ',') !== false) {
+            $commaCount = substr_count($firstLine, ',');
+            $semicolonCount = substr_count($firstLine, ';');
+            if ($semicolonCount > $commaCount) {
+                $delimiter = ";";
+            }
+        }
+
+        $header = true;
+        $units = [];
+        $validJenis = ['DART STD', 'DART STK', 'DART Portabel - Swing', 'DART Portabel - Pop', 'DART Portabel - Flip', 'DART Marathon Target', 'Moving Target'];
+        $statusMap = [
+            'siap ops' => 'Beroperasi',
+            'beroperasi' => 'Beroperasi',
+            'rusak' => 'Rusak',
+            'perbaikan' => 'Perbaikan',
+            'nonaktif' => 'Nonaktif',
+        ];
+
+        while ($row = fgetcsv($handle, 1000, $delimiter)) {
+            if ($header) {
+                $header = false;
+                continue;
+            }
+            if (count($row) < 4) {
+                continue;
+            }
+
+            $nomor_seri = trim($row[0]);
+            if (empty($nomor_seri) || str_starts_with($nomor_seri, '#')) {
+                continue;
+            }
+
+            $jenis_raw = trim($row[1]);
+            $asal_satuan = trim($row[2]);
+            $status_unit_raw = isset($row[3]) ? trim($row[3]) : 'Beroperasi';
+
+            // Check if unit number already exists in DB
+            if (Unit::where('nomor_seri', $nomor_seri)->exists()) {
+                $skipped++;
+                continue;
+            }
+
+            // Check if unit number is already in a pending add mutation request
+            $isPending = UnitMutation::where('type', 'request_add')
+                ->where('status', 'pending')
+                ->whereJsonContains('unit_data', ['nomor_seri' => $nomor_seri])
+                ->exists();
+
+            if ($isPending) {
+                $skipped++;
+                continue;
+            }
+
+            // Normalize jenis
+            $jenis = 'DART STD';
+            foreach ($validJenis as $vj) {
+                if (strcasecmp($jenis_raw, $vj) === 0) {
+                    $jenis = $vj;
+                    break;
+                }
+            }
+
+            // Normalize status
+            $status_unit_lower = strtolower($status_unit_raw);
+            $status_unit = $statusMap[$status_unit_lower] ?? 'Beroperasi';
+
+            // Find Satuan (MUST already exist in DB)
+            $satuan = Satuan::where('nama_satuan', strtoupper($asal_satuan))->first();
+            if (!$satuan) {
+                $skipped++;
+                continue;
+            }
+
+            $units[] = [
+                'nomor_seri' => $nomor_seri,
+                'jenis' => $jenis,
+                'asal_satuan' => $satuan->nama_satuan,
+                'satuan_id' => $satuan->id,
+                'status_unit' => $status_unit,
+            ];
+        }
+
+        fclose($handle);
+        return $units;
     }
 }

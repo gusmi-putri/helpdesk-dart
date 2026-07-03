@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion';
-import { Crosshair } from 'lucide-react';
 import { Link } from '@inertiajs/react';
 import bgHero from '../../img_1.jpeg';
 

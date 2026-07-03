@@ -39,7 +39,7 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
     if (filterTime === 'ALL') return true;
 
     const parseDate = (str: string) => {
-      try { return new Date(str.replace(',', '')); } catch (e) { return new Date(0); }
+      try { return new Date(str.replace(',', '')); } catch { return new Date(0); }
     };
 
     const itemDate = parseDate(item.kerusakan.tanggal);

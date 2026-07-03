@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Bot, PlaySquare, CheckCircle, ArrowRight, X, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { Bot, CheckCircle, X, AlertTriangle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface PostReportWizardProps {
@@ -13,7 +13,7 @@ interface PostReportWizardProps {
 }
 
 const PostReportWizard: React.FC<PostReportWizardProps> = ({ reportData, onClose }) => {
-  const [step, setStep] = useState<'AI' | 'VIDEO'>('AI');
+  const step = 'AI';
   const [aiResponse, setAiResponse] = useState<string | null>(null);
   const [isLoadingAi, setIsLoadingAi] = useState<boolean>(true);
   const [errorAi, setErrorAi] = useState<string | null>(null);

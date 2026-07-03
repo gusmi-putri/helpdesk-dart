@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import { Package, Upload, X, FileText, ChevronDown } from 'lucide-react';
-import { Combobox, ComboboxInput, ComboboxOptions, ComboboxOption, ComboboxButton } from '@headlessui/react';
-import axios from 'axios';
+import { Package, Upload, X, FileText } from 'lucide-react';
 
 interface StafUnitModalProps {
   isOpen: boolean;

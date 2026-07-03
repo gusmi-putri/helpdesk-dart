@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use App\Models\Unit;
 
 class StoreReportRequest extends FormRequest
 {
@@ -28,7 +28,19 @@ class StoreReportRequest extends FormRequest
             : 'nullable|array|max:10';
 
         return [
-            'unit_id' => 'required|exists:units,id',
+            'unit_id' => [
+                'required',
+                'exists:units,id,deleted_at,NULL',
+                function ($attribute, $value, $fail) {
+                    $user = auth()->user();
+                    if ($user && $user->role && $user->role->nama_role === 'Pelapor') {
+                        $unit = Unit::find($value);
+                        if ($unit && $unit->satuan_id !== $user->satuan_id) {
+                            $fail('Unit yang dilaporkan tidak terdaftar di Satuan Kerja Anda.');
+                        }
+                    }
+                }
+            ],
             'deskripsi' => 'required|string',
             'tingkat_kerusakan' => 'required|in:Ringan,Sedang,Parah',
             'urgensi' => 'required|in:Sangat Mendesak,Bisa Menunggu,Pemeliharaan Rutin',

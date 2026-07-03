@@ -18,7 +18,7 @@ interface ApprovalCenterProps {
 }
 
 const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
-  dbUsers,
+  dbUsers: _,
   dbMutations,
   dbUserMutations = [],
   dbSatuans,

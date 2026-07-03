@@ -21,7 +21,7 @@ const Navbar = () => {
       }
       // Beri jeda sedikit agar halaman beranda termuat
       setTimeout(() => {
-        let targetId = item === 'BERANDA' ? 'hero' : item.toLowerCase();
+        const targetId = item === 'BERANDA' ? 'hero' : item.toLowerCase();
         let element = document.getElementById(targetId);
 
         // Fallback jika ID menggunakan huruf besar (seperti PANDUAN)
@@ -70,6 +70,7 @@ const Navbar = () => {
                 onClick={toggleTheme}
                 className="text-slate-700 hover:text-cighra-primary dark:text-slate-200 dark:hover:text-cighra-gold transition-colors ml-4"
                 title="Ganti Tema"
+                aria-label="Ganti Tema Tampilan"
               >
                 {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
@@ -79,6 +80,8 @@ const Navbar = () => {
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="text-slate-700 dark:text-slate-300 hover:text-gunmetal dark:hover:text-cighra-gold ml-4"
+              aria-label="Toggle Menu Navigasi"
+              aria-expanded={isOpen}
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>

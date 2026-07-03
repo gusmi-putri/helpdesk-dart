@@ -36,6 +36,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
 
   React.useEffect(() => {
     if (data.file_bukti && data.file_bukti.length > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLocalErrors((prev: any) => ({ ...prev, file_bukti: null }));
     }
   }, [data.file_bukti]);
@@ -46,7 +47,8 @@ const ReportForm: React.FC<ReportFormProps> = ({
     if (!data.jenis_perbaikan) newErrors.jenis_perbaikan = 'Jenis perbaikan wajib dipilih.';
     if (!data.unit_id) newErrors.unit_id = 'Nomor Seri DART wajib dipilih.';
     if (!data.file_bukti || data.file_bukti.length === 0) newErrors.file_bukti = 'Wajib mengunggah minimal 1 bukti kendala (Foto).';
-    if (!data.tautan_video || !data.tautan_video.startsWith('http')) newErrors.tautan_video = 'Wajib menyertakan Link G-Drive valid.';
+    const isGDriveLink = /^https?:\/\/(drive|docs)\.google\.com\/[a-zA-Z0-9-_./?=&]+/.test(data.tautan_video || '');
+    if (!data.tautan_video || !isGDriveLink) newErrors.tautan_video = 'Wajib menyertakan Link Google Drive yang valid.';
     if (isNonSwadaya && (!data.dokumen_anggaran || data.dokumen_anggaran.length === 0)) newErrors.dokumen_anggaran = 'Dokumen pendukung perintah dan anggaran wajib diunggah.';
     if (isNonSwadaya && !data.keterangan_anggaran?.trim()) newErrors.keterangan_anggaran = 'Keterangan dana anggaran perbaikan wajib diisi.';
     
@@ -81,7 +83,14 @@ const ReportForm: React.FC<ReportFormProps> = ({
   const handleBudgetDocSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newFiles = Array.from(e.target.files || []);
     const currentFiles = data.dokumen_anggaran || [];
-    const nextFiles = [...currentFiles, ...newFiles].slice(0, 10);
+
+    if (currentFiles.length + newFiles.length > 10) {
+      setLocalErrors((prev: any) => ({ ...prev, dokumen_anggaran: 'Wajib mengunggah maksimum 10 dokumen pendukung.' }));
+      if (budgetDocInputRef.current) budgetDocInputRef.current.value = '';
+      return;
+    }
+
+    const nextFiles = [...currentFiles, ...newFiles];
 
     setData('dokumen_anggaran', nextFiles);
     if (nextFiles.length > 0) {

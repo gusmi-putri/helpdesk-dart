@@ -1,16 +1,28 @@
 import React, { useEffect } from 'react';
 import { useStore } from '@/store/useStore';
 import { CheckCircle, AlertCircle, Info, X } from 'lucide-react';
-import { usePage } from '@inertiajs/react';
 
 const GlobalNotification = () => {
   const notifications = useStore((state) => state.notifications);
   const removeNotification = useStore((state) => state.removeNotification);
 
-  if (notifications.length === 0) return null;
+  // Auto-dismiss notification after 5 seconds
+  useEffect(() => {
+    if (notifications.length > 0) {
+      const latestNotification = notifications[notifications.length - 1];
+      const timer = setTimeout(() => {
+        removeNotification(latestNotification.id);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [notifications, removeNotification]);
 
   return (
-    <div className="fixed bottom-8 right-8 z-[9999] flex flex-col gap-3 pointer-events-none">
+    <div 
+      className="fixed bottom-8 right-8 z-[9999] flex flex-col gap-3 pointer-events-none"
+      role="status"
+      aria-live="polite"
+    >
       {notifications.map((n) => (
         <div
           key={n.id}

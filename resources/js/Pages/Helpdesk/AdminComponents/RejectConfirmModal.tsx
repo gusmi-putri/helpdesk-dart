@@ -1,5 +1,5 @@
 import React from 'react';
-import { UserX, ShieldAlert } from 'lucide-react';
+import { UserX } from 'lucide-react';
 import { Modal } from '@/Components/ui/Modal';
 import { Button } from '@/Components/ui/Button';
 

@@ -8,17 +8,37 @@ use App\Models\Report;
 use App\Models\User;
 use App\Models\Unit;
 use App\Models\SystemLog;
+use App\Models\Role;
+use App\Models\Feedback;
+use App\Models\UnitMutation;
+use App\Models\Satuan;
+use App\Models\UserMutation;
+use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Resources\ReportResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UnitResource;
 use App\Http\Resources\UnitMutationResource;
+use App\Http\Resources\UserMutationResource;
 
 class DashboardController extends Controller
 {
     public function exportPdf($id)
     {
         $report = Report::with(['unit', 'pelapor', 'teknisi'])->findOrFail($id);
+
+        $user = auth()->user();
+        $roleName = $user->role->nama_role ?? '';
+
+        if ($roleName === 'Pelapor') {
+            if ($report->unit && $report->unit->satuan_id !== $user->satuan_id) {
+                abort(403, 'Akses Ditolak: Laporan ini bukan milik Satuan Kerja Anda.');
+            }
+        } elseif ($roleName === 'Teknisi') {
+            if ($report->teknisi_id !== $user->id) {
+                abort(403, 'Akses Ditolak: Anda tidak ditugaskan untuk laporan ini.');
+            }
+        }
 
         // Tambahkan atribut case_id secara manual untuk template
         $report->case_id = 'LPR-' . str_pad($report->id, 5, '0', STR_PAD_LEFT);
@@ -39,7 +59,7 @@ class DashboardController extends Controller
         $tanggalMulaiText = $report->created_at->format('d') . ' ' . $bulanMulai . ' ' . $report->created_at->format('Y');
         
         if ($report->tanggal_selesai_perbaikan) {
-            $tanggalSelesai = \Carbon\Carbon::parse($report->tanggal_selesai_perbaikan);
+            $tanggalSelesai = Carbon::parse($report->tanggal_selesai_perbaikan);
             $bulanSelesai = $bulanList[(int)$tanggalSelesai->format('n')];
             $tanggalSelesaiText = $tanggalSelesai->format('d') . ' ' . $bulanSelesai . ' ' . $tanggalSelesai->format('Y');
         } else {
@@ -86,15 +106,15 @@ class DashboardController extends Controller
             ];
         });
 
-        $roles = \App\Models\Role::where('nama_role', '!=', 'Admin')->get()->map(function($r) {
+        $roles = Role::where('nama_role', '!=', 'Admin')->get()->map(function($r) {
             return [
                 'id' => $r->id,
                 'name' => $r->nama_role
             ];
         });
 
-        $units = UnitResource::collection(\App\Models\Unit::with('satuan')->get());
-        $feedbacks = \App\Models\Feedback::orderBy('created_at', 'desc')->get()->map(function($f) {
+        $units = UnitResource::collection(Unit::with('satuan')->get());
+        $feedbacks = Feedback::orderBy('created_at', 'desc')->get()->map(function($f) {
             return [
                 'id' => $f->id,
                 'nama_pengirim' => $f->nama_pengirim,
@@ -107,17 +127,17 @@ class DashboardController extends Controller
         });
 
         $mutations = UnitMutationResource::collection(
-            \App\Models\UnitMutation::with(['unit', 'requester', 'approver'])
+            UnitMutation::with(['unit', 'requester', 'approver'])
                 ->orderBy('created_at', 'desc')
                 ->get()
         );
 
         $archivedUnits = UnitResource::collection(Unit::with('satuan')->onlyTrashed()->get());
 
-        $satuans = \App\Models\Satuan::all();
+        $satuans = Satuan::all();
 
-        $userMutations = \App\Http\Resources\UserMutationResource::collection(
-            \App\Models\UserMutation::with(['targetUser', 'requester', 'approver'])
+        $userMutations = UserMutationResource::collection(
+            UserMutation::with(['targetUser', 'requester', 'approver'])
                 ->orderBy('created_at', 'desc')
                 ->get()
         );
@@ -147,7 +167,7 @@ class DashboardController extends Controller
                 }
             })->get());
             
-        $units = UnitResource::collection(\App\Models\Unit::with('satuan')
+        $units = UnitResource::collection(Unit::with('satuan')
             ->where(function($q) use ($auth) {
                 if ($auth->satuan_id) {
                     $q->where('satuan_id', $auth->satuan_id);
@@ -162,7 +182,6 @@ class DashboardController extends Controller
             })->get());
 
         // Kirim data profil user yang sedang login untuk auto-fill form
-        $auth = auth()->user();
         $authUser = $auth ? [
             'id' => $auth->id,
             'username' => $auth->username,
@@ -206,22 +225,22 @@ class DashboardController extends Controller
         $units = UnitResource::collection(Unit::with('satuan')->get());
 
         $mutations = UnitMutationResource::collection(
-            \App\Models\UnitMutation::with(['unit', 'requester', 'approver'])
+            UnitMutation::with(['unit', 'requester', 'approver'])
                 ->orderBy('created_at', 'desc')
                 ->get()
         );
 
-        $roles = \App\Models\Role::where('nama_role', '!=', 'Admin')->get()->map(function($r) {
+        $roles = Role::where('nama_role', '!=', 'Admin')->get()->map(function($r) {
             return [
                 'id' => $r->id,
                 'name' => $r->nama_role
             ];
         });
 
-        $satuans = \App\Models\Satuan::all();
+        $satuans = Satuan::all();
 
-        $userMutations = \App\Http\Resources\UserMutationResource::collection(
-            \App\Models\UserMutation::with(['targetUser', 'requester', 'approver'])
+        $userMutations = UserMutationResource::collection(
+            UserMutation::with(['targetUser', 'requester', 'approver'])
                 ->orderBy('created_at', 'desc')
                 ->get()
         );

@@ -1,38 +1,54 @@
-import React from 'react';
-import { Package, Search, Plus, History, Edit, Trash2, Upload, CheckCircle, AlertTriangle, X, Download } from 'lucide-react';
-import { router, usePage } from '@inertiajs/react';
+import React, { useState } from 'react';
+import { Package, Search, Plus, History, Edit, Trash2, Upload, CheckCircle, AlertTriangle, X } from 'lucide-react';
+import { usePage, router, useForm } from '@inertiajs/react';
 import SortableHeader from '@/Components/Table/SortableHeader';
+import UnitModal from './UnitModal';
+import UnitDeleteModal from './UnitDeleteModal';
+import UnitHistoryModal from './UnitHistoryModal';
+import AdminUnitBatchModal from './AdminUnitBatchModal';
 
 interface UnitsTableProps {
   dbUnits: any[];
-  unitSearch: string;
-  setUnitSearch: (s: string) => void;
-  handleAddUnit?: () => void;
-  onImportBatch?: () => void;
-  unitSortConfig: { key: string, direction: 'asc' | 'desc' } | null;
-  handleUnitSort: (key: string) => void;
-  handleShowUnitHistory: (unit: any) => void;
-  handleEditUnit?: (unit: any) => void;
-  handleDeleteUnit?: (unit: any) => void;
-  onDeleteBatch?: (selectedUnits: any[]) => void;
+  dbSatuans?: any[];
+  dbCases?: any[];
 }
 
 const UnitsTable: React.FC<UnitsTableProps> = ({
   dbUnits,
-  unitSearch,
-  setUnitSearch,
-  handleAddUnit,
-  onImportBatch,
-  unitSortConfig,
-  handleUnitSort,
-  handleShowUnitHistory,
-  handleEditUnit,
-  handleDeleteUnit,
-  onDeleteBatch
+  dbSatuans,
+  dbCases
 }) => {
-  const [importResult, setImportResult] = React.useState<any>(null);
-  const [selectedUnitIds, setSelectedUnitIds] = React.useState<number[]>([]);
-  const [isDeleteMode, setIsDeleteMode] = React.useState<boolean>(false);
+  const [importResult, setImportResult] = useState<any>(null);
+  const [selectedUnitIds, setSelectedUnitIds] = useState<number[]>([]);
+  const [isDeleteMode, setIsDeleteMode] = useState<boolean>(false);
+
+  // Local filter states
+  const [unitSearch, setUnitSearch] = useState('');
+  const [filterJenis, setFilterJenis] = useState('ALL');
+  const [filterSatuan, setFilterSatuan] = useState('ALL');
+  const [unitSortConfig, setUnitSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
+
+  // Modal visibility states
+  const [isUnitModalOpen, setIsUnitModalOpen] = useState(false);
+  const [isUnitDeleteModalOpen, setIsUnitDeleteModalOpen] = useState(false);
+  const [isUnitHistoryModalOpen, setIsUnitHistoryModalOpen] = useState(false);
+  const [isAdminBatchModalOpen, setIsAdminBatchModalOpen] = useState(false);
+  
+  // Data states
+  const [editingUnit, setEditingUnit] = useState<any>(null);
+  const [isUnitAddMode, setIsUnitAddMode] = useState(true);
+  const [unitToDelete, setUnitToDelete] = useState<any>(null);
+  const [selectedUnitForHistory, setSelectedUnitForHistory] = useState<any>(null);
+  const [isBatchUploading, setIsBatchUploading] = useState(false);
+
+  const unitForm = useForm({
+    nomor_seri: '',
+    jenis: 'DART STD',
+    satuan_id: '',
+    asal_satuan: '',
+    status_unit: 'Beroperasi',
+    document: null as File | null,
+  });
 
   const toggleSelectUnit = (id: number) => {
     if (selectedUnitIds.includes(id)) {
@@ -41,10 +57,6 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
       setSelectedUnitIds([...selectedUnitIds, id]);
     }
   };
-
-  // Local filter states
-  const [filterJenis, setFilterJenis] = React.useState('ALL');
-  const [filterSatuan, setFilterSatuan] = React.useState('ALL');
 
   const baseJenisOptions = [
     'DART STD',
@@ -66,7 +78,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
       try {
         const result = JSON.parse(flash.import_result);
         setImportResult(result);
-      } catch (e) {
+      } catch {
         // ignore parse error
       }
     }
@@ -93,20 +105,112 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
     return 0;
   });
 
+  const handleUnitSort = (key: string) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (unitSortConfig && unitSortConfig.key === key && unitSortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setUnitSortConfig({ key, direction });
+  };
+
+  const handleAddUnit = () => {
+    setIsUnitAddMode(true);
+    setEditingUnit(null);
+    unitForm.reset();
+    unitForm.clearErrors();
+    setIsUnitModalOpen(true);
+  };
+
+  const handleEditUnit = (unit: any) => {
+    setIsUnitAddMode(false);
+    setEditingUnit(unit);
+    unitForm.clearErrors();
+    unitForm.setData({
+      nomor_seri: unit.nomor_seri,
+      jenis: unit.jenis,
+      satuan_id: unit.satuan_id || '',
+      asal_satuan: unit.asal_satuan,
+      status_unit: unit.status_unit,
+      document: null
+    });
+    setIsUnitModalOpen(true);
+  };
+
+  const handleDeleteUnit = (unit: any) => {
+    setUnitToDelete(unit);
+    setIsUnitDeleteModalOpen(true);
+  };
+
+  const handleShowUnitHistory = (unit: any) => {
+    setSelectedUnitForHistory(unit);
+    setIsUnitHistoryModalOpen(true);
+  };
+
+  const handleConfirmDeleteUnit = () => {
+    if (unitToDelete) {
+      router.delete(`/units/${unitToDelete.db_id}`, {
+        onSuccess: () => {
+          setIsUnitDeleteModalOpen(false);
+          setUnitToDelete(null);
+        }
+      });
+    }
+  };
+
+  const handleUnitSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isUnitAddMode) {
+      unitForm.post('/units', {
+        onSuccess: () => {
+          setIsUnitModalOpen(false);
+          unitForm.reset();
+        }
+      });
+    } else {
+      unitForm.put(`/units/${editingUnit.db_id}`, {
+        onSuccess: () => {
+          setIsUnitModalOpen(false);
+        }
+      });
+    }
+  };
+
+  const handleImportBatchSubmit = (formData: FormData) => {
+    setIsBatchUploading(true);
+    router.post('/units/import', formData, {
+      forceFormData: true,
+      onSuccess: () => {
+        setIsAdminBatchModalOpen(false);
+        setIsBatchUploading(false);
+      },
+      onError: () => {
+        setIsBatchUploading(false);
+      }
+    });
+  };
+
+  const handleDeleteUnitBatch = () => {
+    const ids = dbUnits.filter(u => selectedUnitIds.includes(u.db_id)).map((u: any) => u.db_id);
+    const snList = dbUnits.filter(u => selectedUnitIds.includes(u.db_id)).map((u: any) => u.nomor_seri).join(', ');
+    if (window.confirm(`APAKAH ANDA YAKIN INGIN MENGHAPUS SECARA MASSAL ${ids.length} UNIT INVENTARIS BERIKUT?\n\nDaftar Seri:\n${snList}\n\nTindakan ini akan mengarsipkan unit tersebut secara permanen.`)) {
+      router.post('/units/destroy-batch', { ids }, {
+        onSuccess: () => {
+          setSelectedUnitIds([]);
+          setIsDeleteMode(false);
+        }
+      });
+    }
+  };
+
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
-      {onDeleteBatch && selectedUnitIds.length > 0 && (
+      {selectedUnitIds.length > 0 && isDeleteMode && (
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/40 p-3 flex justify-between items-center shadow-md animate-in slide-in-from-top-2">
           <p className="text-sm font-tactical font-bold text-red-700 dark:text-red-400 uppercase tracking-widest flex items-center gap-2">
             ⚠️ {selectedUnitIds.length} UNIT TERPILIH UNTUK DIHAPUS
           </p>
           <button
-            onClick={() => {
-              const selected = dbUnits.filter(u => selectedUnitIds.includes(u.db_id));
-              onDeleteBatch(selected);
-              setSelectedUnitIds([]);
-              setIsDeleteMode(false);
-            }}
+            onClick={handleDeleteUnitBatch}
             className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 font-tactical font-bold text-xs tracking-widest transition-colors flex items-center gap-2 shadow-sm cursor-pointer border border-red-600"
           >
             <Trash2 className="w-4 h-4" /> EKSEKUSI HAPUS MASSAL
@@ -135,37 +239,31 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
             <Package className="text-cighra-gold w-6 h-6" /> DATA INVENTARIS UNIT
           </h3>
           <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-            {onDeleteBatch && (
-              <button
-                onClick={() => {
-                  setIsDeleteMode(!isDeleteMode);
-                  setSelectedUnitIds([]);
-                }}
-                className={`px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-all border shadow-lg uppercase cursor-pointer ${
-                  isDeleteMode 
-                    ? 'bg-slate-700 hover:bg-slate-600 text-white border-slate-700' 
-                    : 'bg-red-600 hover:bg-red-500 text-white border-red-600'
-                }`}
-              >
-                <Trash2 className="w-4 h-4" /> {isDeleteMode ? 'TUTUP MODE HAPUS' : 'MODE HAPUS MASSAL'}
-              </button>
-            )}
-            {onImportBatch && (
-              <button
-                onClick={onImportBatch}
-                className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-blue-600 shadow-lg uppercase cursor-pointer"
-              >
-                <Upload className="w-4 h-4" /> IMPORT CSV
-              </button>
-            )}
-            {handleAddUnit && (
-              <button
-                onClick={handleAddUnit}
-                className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-cighra-primary dark:border-cighra-gold shadow-lg uppercase cursor-pointer"
-              >
-                <Plus className="w-4 h-4" /> TAMBAH UNIT
-              </button>
-            )}
+            <button
+              onClick={() => {
+                setIsDeleteMode(!isDeleteMode);
+                setSelectedUnitIds([]);
+              }}
+              className={`px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-all border shadow-lg uppercase cursor-pointer ${
+                isDeleteMode 
+                  ? 'bg-slate-700 hover:bg-slate-600 text-white border-slate-700' 
+                  : 'bg-red-600 hover:bg-red-500 text-white border-red-600'
+              }`}
+            >
+              <Trash2 className="w-4 h-4" /> {isDeleteMode ? 'TUTUP MODE HAPUS' : 'MODE HAPUS MASSAL'}
+            </button>
+            <button
+              onClick={() => setIsAdminBatchModalOpen(true)}
+              className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-blue-600 shadow-lg uppercase cursor-pointer"
+            >
+              <Upload className="w-4 h-4" /> IMPORT CSV
+            </button>
+            <button
+              onClick={handleAddUnit}
+              className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-cighra-primary dark:border-cighra-gold shadow-lg uppercase cursor-pointer"
+            >
+              <Plus className="w-4 h-4" /> TAMBAH UNIT
+            </button>
           </div>
         </div>
 
@@ -322,30 +420,26 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
                           >
                             <History className="w-4 h-4" />
                           </button>
-                          {handleEditUnit && (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleEditUnit(u);
-                              }}
-                              className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm"
-                              title="Edit"
-                            >
-                              <Edit className="w-4 h-4" />
-                            </button>
-                          )}
-                          {handleDeleteUnit && (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDeleteUnit(u);
-                              }}
-                              className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-600 dark:text-white hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm"
-                              title="Hapus"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          )}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEditUnit(u);
+                            }}
+                            className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm"
+                            title="Edit"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteUnit(u);
+                            }}
+                            className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-600 dark:text-white hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm"
+                            title="Hapus"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         </td>
                       )}
                     </tr>
@@ -410,9 +504,43 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
           </div>
         </div>
       )}
+
+      {/* Embedded Modals */}
+      <UnitModal
+        isOpen={isUnitModalOpen}
+        onClose={() => setIsUnitModalOpen(false)}
+        onSubmit={handleUnitSubmit}
+        data={unitForm.data}
+        setData={unitForm.setData}
+        errors={unitForm.errors}
+        processing={unitForm.processing}
+        isAddMode={isUnitAddMode}
+        editingUnit={editingUnit}
+        dbSatuans={dbSatuans || []}
+      />
+
+      <UnitDeleteModal
+        isOpen={isUnitDeleteModalOpen}
+        onClose={() => setIsUnitDeleteModalOpen(false)}
+        onConfirm={handleConfirmDeleteUnit}
+        unit={unitToDelete}
+      />
+
+      <UnitHistoryModal
+        isOpen={isUnitHistoryModalOpen}
+        onClose={() => setIsUnitHistoryModalOpen(false)}
+        unit={selectedUnitForHistory}
+        dbCases={dbCases || []}
+      />
+
+      <AdminUnitBatchModal
+        isOpen={isAdminBatchModalOpen}
+        onClose={() => setIsAdminBatchModalOpen(false)}
+        onSubmit={handleImportBatchSubmit}
+        processing={isBatchUploading}
+      />
     </div>
   );
 };
 
 export default UnitsTable;
-

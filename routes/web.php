@@ -21,21 +21,21 @@ Route::get('/', function () {
     return Inertia::render('Helpdesk/Landing');
 });
 
-Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
+Route::post('/feedback', [FeedbackController::class, 'store'])->middleware('throttle:3,1')->name('feedback.store');
 
 Route::get('/login', function () {
     return Inertia::render('Helpdesk/Login');
 })->name('login');
 
-Route::post('/login', [LoginController::class, 'login']);
+Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:5,1');
 Route::get('/register', [RegisterController::class, 'index'])->name('register');
-Route::post('/register', [RegisterController::class, 'register']);
+Route::post('/register', [RegisterController::class, 'register'])->middleware('throttle:3,1');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Forgot Password Routes
 Route::get('/forgot-password', [ForgotPasswordController::class, 'index'])->name('password.request');
 Route::post('/forgot-password/send-code', [ForgotPasswordController::class, 'sendCode'])->name('password.email');
-Route::post('/forgot-password/verify-reset', [ForgotPasswordController::class, 'verifyAndReset'])->name('password.update');
+Route::post('/forgot-password/verify-reset', [ForgotPasswordController::class, 'verifyAndReset'])->middleware('throttle:5,1')->name('password.update');
 
 // Satuan API (Guest can access for registration) - Added Throttling for security
 Route::get('/api/satuans', [SatuanController::class, 'index'])->middleware('throttle:30,1');

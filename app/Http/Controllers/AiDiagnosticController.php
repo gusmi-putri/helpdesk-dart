@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\GeminiService;
+use App\Models\Unit;
 
 class AiDiagnosticController extends Controller
 {
@@ -28,11 +29,9 @@ class AiDiagnosticController extends Controller
 
         // Find the unit name (optional, for better prompt context)
         $unitName = "Unit DART ID: " . $validated['unit_id'];
-        if (class_exists(\App\Models\Unit::class)) {
-            $unit = \App\Models\Unit::find($validated['unit_id']);
-            if ($unit) {
-                $unitName = $unit->nomor_seri;
-            }
+        $unit = Unit::find($validated['unit_id']);
+        if ($unit) {
+            $unitName = $unit->nomor_seri;
         }
 
         // Call the Gemini Service

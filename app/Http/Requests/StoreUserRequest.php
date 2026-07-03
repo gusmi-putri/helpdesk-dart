@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Models\Role;
 
 class StoreUserRequest extends FormRequest
 {
@@ -13,7 +14,7 @@ class StoreUserRequest extends FormRequest
 
     public function rules(): array
     {
-        $adminRoleId = \App\Models\Role::where('nama_role', 'Admin')->first()?->id;
+        $adminRoleId = Role::where('nama_role', 'Admin')->first()?->id;
 
         return [
             'username' => 'required|string|min:4|max:50|unique:users',
@@ -23,6 +24,7 @@ class StoreUserRequest extends FormRequest
             'nrp_nip' => ['required', 'string', 'min:8', 'max:20', 'regex:/^[0-9]+$/'],
             'role_id' => ['required', 'exists:roles,id', 'not_in:' . $adminRoleId],
             'asal_satuan' => 'nullable|string|max:100',
+            'satuan_id' => 'nullable|exists:satuans,id',
             'no_wa' => ['nullable', 'string', 'regex:/^62[0-9]{8,13}$/'],
             'spesialisasi' => 'nullable|string|max:100',
         ];

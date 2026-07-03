@@ -22,8 +22,6 @@ router.on('success', (event: any) => {
 
     if (flash) {
         const flashMsg = flash.success || flash.message || flash.error || '';
-        const flashKey = `${flashMsg}_${Date.now()}`;
-
         // Deduplicate: jangan tampilkan flash yang sama dalam waktu dekat
         if (flashMsg && flashMsg === lastFlashKey) {
             return;

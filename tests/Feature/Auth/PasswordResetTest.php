@@ -3,9 +3,11 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\User;
-use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ResetPasswordCodeMail;
 use Tests\TestCase;
 
 class PasswordResetTest extends TestCase
@@ -19,55 +21,56 @@ class PasswordResetTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_reset_password_link_can_be_requested(): void
+    public function test_reset_password_code_can_be_requested(): void
     {
-        Notification::fake();
+        Mail::fake();
 
         $user = User::factory()->create();
 
-        $this->post('/forgot-password', ['email' => $user->email]);
+        $response = $this->post('/forgot-password/send-code', [
+            'identifier' => $user->email,
+        ]);
 
-        Notification::assertSentTo($user, ResetPassword::class);
-    }
+        $response->assertSessionHas('success');
+        
+        // Assert that the token is stored in the database
+        $this->assertDatabaseHas('password_reset_tokens', [
+            'email' => $user->email,
+        ]);
 
-    public function test_reset_password_screen_can_be_rendered(): void
-    {
-        Notification::fake();
-
-        $user = User::factory()->create();
-
-        $this->post('/forgot-password', ['email' => $user->email]);
-
-        Notification::assertSentTo($user, ResetPassword::class, function ($notification) {
-            $response = $this->get('/reset-password/'.$notification->token);
-
-            $response->assertStatus(200);
-
-            return true;
+        Mail::assertSent(ResetPasswordCodeMail::class, function ($mail) use ($user) {
+            return $mail->hasTo($user->email);
         });
     }
 
-    public function test_password_can_be_reset_with_valid_token(): void
+    public function test_password_can_be_reset_with_valid_otp(): void
     {
-        Notification::fake();
-
         $user = User::factory()->create();
+        $code = '123456';
 
-        $this->post('/forgot-password', ['email' => $user->email]);
+        // Seed the token table
+        DB::table('password_reset_tokens')->insert([
+            'email' => $user->email,
+            'token' => Hash::make($code),
+            'created_at' => now(),
+        ]);
 
-        Notification::assertSentTo($user, ResetPassword::class, function ($notification) use ($user) {
-            $response = $this->post('/reset-password', [
-                'token' => $notification->token,
-                'email' => $user->email,
-                'password' => 'password',
-                'password_confirmation' => 'password',
-            ]);
+        $response = $this->post('/forgot-password/verify-reset', [
+            'identifier' => $user->email,
+            'code' => $code,
+            'password' => 'newpassword123',
+            'password_confirmation' => 'newpassword123',
+        ]);
 
-            $response
-                ->assertSessionHasNoErrors()
-                ->assertRedirect(route('login'));
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect('/login');
 
-            return true;
-        });
+        // Assert database token is deleted
+        $this->assertDatabaseMissing('password_reset_tokens', [
+            'email' => $user->email,
+        ]);
+
+        // Assert user password is changed
+        $this->assertTrue(Hash::check('newpassword123', $user->refresh()->password));
     }
 }

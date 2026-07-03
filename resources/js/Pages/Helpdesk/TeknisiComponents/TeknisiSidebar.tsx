@@ -11,7 +11,7 @@ interface TeknisiSidebarProps {
 
 const TeknisiSidebar: React.FC<TeknisiSidebarProps> = ({
   isMobileMenuOpen,
-  setIsMobileMenuOpen,
+  setIsMobileMenuOpen: _,
   activeMenu,
   activeTasksCount,
   handleLogout

@@ -1,6 +1,6 @@
 
 import { motion } from 'framer-motion';
-import { ShieldCheck, Target, Zap, LogIn, FileText, Send, Laptop, MousePointer2, ClipboardCheck } from 'lucide-react';
+import { Laptop, MousePointer2, ClipboardCheck } from 'lucide-react';
 
 const About = () => {
   return (
