@@ -32,7 +32,7 @@ type SubMenuReport = 'KERUSAKAN' | 'PERBAIKAN';
 type MenuTab = 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER' | 'FEEDBACK';
 
 const DashboardAdmin = (props: any) => {
-  const { dbCases = [], dbUsers = [], dbLogs = [], dbRoles = [], dbUnits = [], dbSatuans = [], dbFeedbacks = [], dbMutations = [], dbArchivedUnits = [] } = props;
+  const { dbCases = [], dbUsers = [], dbLogs = [], dbRoles = [], dbUnits = [], dbSatuans = [], dbFeedbacks = [], dbMutations = [], dbUserMutations = [], dbArchivedUnits = [] } = props;
   const [activeMenu, setActiveMenu] = useState<MenuTab>('ANALYTICS');
   const [activeSubReport, setActiveSubReport] = useState<SubMenuReport>('KERUSAKAN');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
@@ -42,7 +42,7 @@ const DashboardAdmin = (props: any) => {
   // Auto-polling untuk real-time sinkronisasi
   useEffect(() => {
     const interval = setInterval(() => {
-      router.reload({ only: ['dbCases', 'dbUsers', 'dbLogs'] });
+      router.reload({ only: ['dbCases', 'dbUsers', 'dbLogs', 'dbUnits'] });
     }, 15000);
     return () => clearInterval(interval);
   }, []);
@@ -231,6 +231,14 @@ const DashboardAdmin = (props: any) => {
     setIsUnitDeleteModalOpen(true);
   };
 
+  const handleDeleteUnitBatch = (selectedUnits: any[]) => {
+    const ids = selectedUnits.map((u: any) => u.db_id);
+    const snList = selectedUnits.map((u: any) => u.nomor_seri).join(', ');
+    if (window.confirm(`APAKAH ANDA YAKIN INGIN MENGHAPUS SECARA MASSAL ${selectedUnits.length} UNIT INVENTARIS BERIKUT?\n\nDaftar Seri:\n${snList}\n\nTindakan ini akan mengarsipkan unit tersebut secara permanen.`)) {
+      router.post('/units/destroy-batch', { ids });
+    }
+  };
+
   const handleShowUnitHistory = (unit: any) => {
     setSelectedUnitForHistory(unit);
     setIsUnitHistoryModalOpen(true);
@@ -279,22 +287,22 @@ const DashboardAdmin = (props: any) => {
     });
   };
 
-  const handleApproveUser = (user: any) => {
-    router.post(`/users/${user.db_id}/approve`, {}, {
+  const handleApproveUser = (mutation: any) => {
+    router.post(`/users/${mutation.id}/approve`, {}, {
       onSuccess: () => {
         // Notification logic if any
       }
     });
   };
 
-  const handleRejectUser = (user: any) => {
-    setUserToReject(user);
+  const handleRejectUser = (mutation: any) => {
+    setUserToReject(mutation);
     setIsRejectModalOpen(true);
   };
 
-  const confirmRejectUser = () => {
+  const confirmRejectUser = (reason: string = 'Ditolak oleh Admin') => {
     if (userToReject) {
-      router.post(`/users/${userToReject.db_id}/reject`, { reason: 'Ditolak oleh Admin' }, {
+      router.post(`/users/${userToReject.id}/reject`, { admin_notes: reason }, {
         onSuccess: () => {
           setIsRejectModalOpen(false);
           setUserToReject(null);
@@ -464,6 +472,7 @@ const DashboardAdmin = (props: any) => {
                 unitSearch={unitSearch}
                 setUnitSearch={setUnitSearch}
                 unitSortConfig={unitSortConfig}
+                onImportBatch={() => setIsAdminBatchModalOpen(true)}
                 handleUnitSort={(key) => {
                   let direction: 'asc' | 'desc' = 'asc';
                   if (unitSortConfig && unitSortConfig.key === key && unitSortConfig.direction === 'asc') {
@@ -475,6 +484,7 @@ const DashboardAdmin = (props: any) => {
                 handleAddUnit={handleAddUnit}
                 handleEditUnit={handleEditUnit}
                 handleDeleteUnit={handleDeleteUnit}
+                onDeleteBatch={handleDeleteUnitBatch}
               />
             )}
             {activeMenu === 'SATUANS' && (
@@ -495,6 +505,7 @@ const DashboardAdmin = (props: any) => {
               <ApprovalCenter
                 dbUsers={dbUsers}
                 dbMutations={dbMutations}
+                dbUserMutations={dbUserMutations}
                 dbSatuans={dbSatuans}
                 dbArchivedUnits={dbArchivedUnits}
                 handleApproveUser={handleApproveUser}
@@ -585,7 +596,8 @@ const DashboardAdmin = (props: any) => {
         isOpen={isRejectModalOpen}
         onClose={() => { setIsRejectModalOpen(false); setUserToReject(null); }}
         onConfirm={confirmRejectUser}
-        userName={userToReject?.name || ''}
+        userName={userToReject?.user_data?.nama_lengkap || userToReject?.target_user?.name || ''}
+        actionType={userToReject?.type?.replace('request_', '') || 'register'}
       />
 
       <SatuanModal

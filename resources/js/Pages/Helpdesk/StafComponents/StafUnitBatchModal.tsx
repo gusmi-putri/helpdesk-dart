@@ -35,7 +35,32 @@ const StafUnitBatchModal: React.FC<StafUnitBatchModalProps> = ({ isOpen, onClose
   };
 
   const downloadTemplate = () => {
-    const csvContent = "nomor_seri,jenis,asal_satuan,status_unit\nCONTOH-001,DART STD,NAMA SATUAN,Beroperasi";
+    const csvContent = [
+      "nomor_seri,jenis,asal_satuan,status_unit",
+      "PU - 42 - 098 - 2026,DART Portabel - Pop,MAKOSTRAD,Beroperasi",
+      "FL - 42 - 098 - 2026,DART Portabel - Flip,MAKO KOPASSUS,Rusak",
+      "SW - 42 - 098 - 2026,DART Portabel - Swing,DIVIF 1 KOSTRAD,Perbaikan",
+      "MV - 42 - 098 - 2026,Moving Target,AKMIL,Nonaktif",
+      "# -------------------------------------------------------------",
+      "# PANDUAN PENGISIAN TEMPLATE CSV:",
+      "# -------------------------------------------------------------",
+      "# 1. Kolom 'nomor_seri': Masukkan nomor seri unik unit (Contoh: PU - 42 - 098 - 2026, FL - 42 - 098 - 2026, dll).",
+      "# 2. Kolom 'jenis': Harus bernilai salah satu dari pilihan berikut:",
+      "#    - DART STD",
+      "#    - DART STK",
+      "#    - DART Portabel - Swing",
+      "#    - DART Portabel - Pop",
+      "#    - DART Portabel - Flip",
+      "#    - DART Marathon Target",
+      "#    - Moving Target",
+      "# 3. Kolom 'asal_satuan': Harus sesuai nama Satuan yang SUDAH TERDAFTAR di database (Contoh: MAKOSTRAD, AKMIL).",
+      "# 4. Kolom 'status_unit': Harus bernilai salah satu dari pilihan berikut:",
+      "#    - Beroperasi",
+      "#    - Rusak",
+      "#    - Perbaikan",
+      "#    - Nonaktif",
+      "# 5. Catatan: Baris panduan yang diawali dengan tanda '#' ini otomatis diabaikan oleh sistem."
+    ].join("\n");
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = window.document.createElement("a");
     const url = URL.createObjectURL(blob);
@@ -59,12 +84,14 @@ const StafUnitBatchModal: React.FC<StafUnitBatchModalProps> = ({ isOpen, onClose
 
         <div className="overflow-y-auto custom-scrollbar p-6 space-y-4 flex-1">
           <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/40 p-3 rounded-sm space-y-2">
-            <p className="text-[10px] font-mono text-blue-700 dark:text-blue-400 uppercase leading-snug">
-              ℹ CARA PENGGUNAAN: 
-              1. Unduh template CSV.
-              2. Isi data unit tanpa mengubah judul kolom (Header baris pertama).
-              3. Unggah CSV beserta 1 file Dokumen Surat Pendukung yang menaungi seluruh data tersebut.
-            </p>
+            <div className="text-[10px] font-mono text-blue-700 dark:text-blue-400 uppercase leading-snug space-y-1">
+              <p className="font-bold">ℹ CARA PENGGUNAAN:</p>
+              <p>1. Unduh template CSV.</p>
+              <p>2. Kolom <span className="font-bold">jenis</span> harus bernilai: DART STD, DART STK, DART Portabel - Swing/Pop/Flip, DART Marathon Target, atau Moving Target.</p>
+              <p>3. Kolom <span className="font-bold">status_unit</span> harus bernilai: Beroperasi, Rusak, Perbaikan, atau Nonaktif.</p>
+              <p>4. Kolom <span className="font-bold">asal_satuan</span> harus berupa nama Satuan yang SUDAH TERDAFTAR di sistem (contoh: MAKOSTRAD, AKMIL). Satuan yang tidak terdaftar akan dilewati.</p>
+              <p>5. Unggah CSV beserta 1 file Dokumen Surat Pendukung yang menaungi seluruh data tersebut.</p>
+            </div>
             <button type="button" onClick={downloadTemplate} className="flex items-center gap-1.5 text-[10px] font-mono font-bold bg-blue-100 dark:bg-blue-800 text-blue-700 dark:text-blue-300 px-3 py-1.5 rounded-sm hover:bg-blue-200 dark:hover:bg-blue-700 transition-colors cursor-pointer w-full justify-center">
               <Download size={12} /> UNDUH TEMPLATE CSV
             </button>

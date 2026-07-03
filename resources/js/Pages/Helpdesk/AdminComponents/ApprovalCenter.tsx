@@ -10,6 +10,7 @@ import SortableHeader from '@/Components/Table/SortableHeader';
 interface ApprovalCenterProps {
   dbUsers: any[];
   dbMutations: any[];
+  dbUserMutations: any[];
   dbSatuans: any[];
   dbArchivedUnits: any[];
   handleApproveUser: (user: any) => void;
@@ -19,6 +20,7 @@ interface ApprovalCenterProps {
 const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
   dbUsers,
   dbMutations,
+  dbUserMutations = [],
   dbSatuans,
   dbArchivedUnits,
   handleApproveUser,
@@ -27,7 +29,7 @@ const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
   const [activeTab, setActiveTab] = useState<'PERSONEL' | 'INVENTARIS' | 'SATUAN'>('PERSONEL');
   const addNotification = useStore(state => state.addNotification);
 
-  const pendingPersonelCount = dbUsers.filter((u: any) => !u.is_approved).length;
+  const pendingPersonelCount = dbUserMutations.filter((m: any) => m.status === 'pending').length;
   const pendingMutationsCount = dbMutations.filter((m: any) => m.status === 'pending').length;
   const pendingSatuans = dbSatuans.filter((s: any) => s.pending_action !== null);
   const pendingSatuansCount = pendingSatuans.length;
@@ -106,7 +108,7 @@ const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
       <div className="pt-2">
         {activeTab === 'PERSONEL' && (
           <ApprovalTable
-            dbUsers={dbUsers}
+            dbUserMutations={dbUserMutations}
             handleApproveUser={handleApproveUser}
             handleRejectUser={handleRejectUser}
           />

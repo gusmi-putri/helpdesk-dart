@@ -128,7 +128,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
                 </div>
               </>
             ) : (
-              <div className="flex flex-col">
+              <div className="flex flex-col col-span-2">
                 <label className="block text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-1">Username (LOCKED)</label>
                 <div className="bg-slate-50 dark:bg-slate-800/80 p-2.5 border border-slate-200 dark:border-slate-800 text-sm font-mono font-bold text-slate-400 dark:text-slate-500 italic flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-700"></span>

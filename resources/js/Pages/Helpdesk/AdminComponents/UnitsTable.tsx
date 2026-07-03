@@ -14,6 +14,7 @@ interface UnitsTableProps {
   handleShowUnitHistory: (unit: any) => void;
   handleEditUnit?: (unit: any) => void;
   handleDeleteUnit?: (unit: any) => void;
+  onDeleteBatch?: (selectedUnits: any[]) => void;
 }
 
 const UnitsTable: React.FC<UnitsTableProps> = ({
@@ -26,9 +27,20 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
   handleUnitSort,
   handleShowUnitHistory,
   handleEditUnit,
-  handleDeleteUnit
+  handleDeleteUnit,
+  onDeleteBatch
 }) => {
   const [importResult, setImportResult] = React.useState<any>(null);
+  const [selectedUnitIds, setSelectedUnitIds] = React.useState<number[]>([]);
+  const [isDeleteMode, setIsDeleteMode] = React.useState<boolean>(false);
+
+  const toggleSelectUnit = (id: number) => {
+    if (selectedUnitIds.includes(id)) {
+      setSelectedUnitIds(selectedUnitIds.filter(v => v !== id));
+    } else {
+      setSelectedUnitIds([...selectedUnitIds, id]);
+    }
+  };
 
   // Local filter states
   const [filterJenis, setFilterJenis] = React.useState('ALL');
@@ -83,6 +95,24 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
+      {onDeleteBatch && selectedUnitIds.length > 0 && (
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/40 p-3 flex justify-between items-center shadow-md animate-in slide-in-from-top-2">
+          <p className="text-sm font-tactical font-bold text-red-700 dark:text-red-400 uppercase tracking-widest flex items-center gap-2">
+            ⚠️ {selectedUnitIds.length} UNIT TERPILIH UNTUK DIHAPUS
+          </p>
+          <button
+            onClick={() => {
+              const selected = dbUnits.filter(u => selectedUnitIds.includes(u.db_id));
+              onDeleteBatch(selected);
+              setSelectedUnitIds([]);
+              setIsDeleteMode(false);
+            }}
+            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 font-tactical font-bold text-xs tracking-widest transition-colors flex items-center gap-2 shadow-sm cursor-pointer border border-red-600"
+          >
+            <Trash2 className="w-4 h-4" /> EKSEKUSI HAPUS MASSAL
+          </button>
+        </div>
+      )}
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
@@ -105,6 +135,21 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
             <Package className="text-cighra-gold w-6 h-6" /> DATA INVENTARIS UNIT
           </h3>
           <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+            {onDeleteBatch && (
+              <button
+                onClick={() => {
+                  setIsDeleteMode(!isDeleteMode);
+                  setSelectedUnitIds([]);
+                }}
+                className={`px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-all border shadow-lg uppercase cursor-pointer ${
+                  isDeleteMode 
+                    ? 'bg-slate-700 hover:bg-slate-600 text-white border-slate-700' 
+                    : 'bg-red-600 hover:bg-red-500 text-white border-red-600'
+                }`}
+              >
+                <Trash2 className="w-4 h-4" /> {isDeleteMode ? 'TUTUP MODE HAPUS' : 'MODE HAPUS MASSAL'}
+              </button>
+            )}
             {onImportBatch && (
               <button
                 onClick={onImportBatch}
@@ -165,10 +210,36 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
           </div>
         </div>
 
+        {isDeleteMode && (
+          <div className="p-4 bg-red-500/5 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center text-[10px] font-mono text-red-600 dark:text-red-400">
+            <span className="font-bold flex items-center gap-2">
+              ⚠️ MODE HAPUS MASSAL AKTIF: KLIK PADA BARIS UNIT UNTUK MENANDAI PENGHAPUSAN.
+            </span>
+            <button
+              type="button"
+              onClick={() => {
+                if (selectedUnitIds.length === filteredUnits.length) {
+                  setSelectedUnitIds([]);
+                } else {
+                  setSelectedUnitIds(filteredUnits.map((u: any) => u.db_id));
+                }
+              }}
+              className="bg-red-500/10 hover:bg-red-500/20 text-red-700 dark:text-red-300 px-3 py-1 font-mono font-bold tracking-widest uppercase border border-red-500/30 transition-colors cursor-pointer"
+            >
+              {selectedUnitIds.length === filteredUnits.length ? 'BATAL PILIH SEMUA' : 'PILIH SEMUA'}
+            </button>
+          </div>
+        )}
+
         <div className="overflow-x-auto">
           <table className="w-full text-left font-sans text-sm">
             <thead className="bg-slate-800 border-b border-slate-700">
               <tr>
+                {isDeleteMode && (
+                  <th className="p-4 w-28 text-center text-red-500 font-mono text-xs uppercase tracking-wider">
+                    PILIHAN HAPUS
+                  </th>
+                )}
                 {[
                   { label: 'NOMOR SERI', key: 'nomor_seri' },
                   { label: 'JENIS', key: 'jenis' },
@@ -184,49 +255,102 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
                     onSort={handleUnitSort} 
                   />
                 ))}
-                <SortableHeader label="OPSI" />
+                {!isDeleteMode && <SortableHeader label="OPSI" />}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700/50">
               {filteredUnits.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="p-10 text-center text-slate-500 dark:text-slate-400 font-mono italic uppercase tracking-widest">Tidak ada unit yang ditemukan.</td>
+                  <td colSpan={6} className="p-10 text-center text-slate-500 dark:text-slate-400 font-mono italic uppercase tracking-widest">Tidak ada unit yang ditemukan.</td>
                 </tr>
               ) : (
-                filteredUnits.map((u: any) => (
-                  <tr key={u.db_id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group bg-white dark:bg-transparent">
-                    <td className="p-4 font-mono font-bold text-slate-800 dark:text-white text-center truncate max-w-[150px]" title={u.nomor_seri}>{u.nomor_seri}</td>
-                    <td className="p-4 font-mono text-xs text-slate-800 dark:text-white uppercase text-center truncate max-w-[150px]" title={u.jenis}>{u.jenis}</td>
-                    <td className="p-4 font-mono text-xs text-slate-800 dark:text-white uppercase text-center truncate max-w-[200px]" title={u.asal_satuan}>{u.asal_satuan}</td>
-                    <td className="p-4 text-center">
-                      <span className={`px-2 py-0.5 border text-[9px] font-bold tracking-widest uppercase
-                        ${u.status_unit === 'Beroperasi' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40' :
-                          u.status_unit === 'Rusak' ? 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/40' :
-                            u.status_unit === 'Perbaikan' ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800/40' :
-                              'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-300 dark:border-slate-600'}
-                      `}>
-                        {u.status_unit === 'Perbaikan' ? 'Dalam Perbaikan' : u.status_unit}
-                      </span>
-                    </td>
-                    <td className="p-4 font-mono text-[10px] text-slate-800 dark:text-white text-center">{u.last_maintenance}</td>
+                filteredUnits.map((u: any) => {
+                  const isSelected = selectedUnitIds.includes(u.db_id);
+                  return (
+                    <tr 
+                      key={u.db_id}
+                      onClick={isDeleteMode ? () => toggleSelectUnit(u.db_id) : undefined}
+                      className={`transition-colors group bg-white dark:bg-transparent ${
+                        isDeleteMode 
+                          ? 'cursor-pointer select-none' 
+                          : ''
+                      } ${
+                        isSelected 
+                          ? 'bg-red-500/5 dark:bg-red-950/20 border-l-4 border-l-red-600' 
+                          : isDeleteMode 
+                            ? 'hover:bg-slate-50 dark:hover:bg-slate-800/30 border-l-4 border-l-transparent' 
+                            : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'
+                      }`}
+                    >
+                      {isDeleteMode && (
+                        <td className="p-4 text-center">
+                          {isSelected ? (
+                            <span className="px-2.5 py-1 bg-red-600/90 text-white text-[9px] font-mono font-bold tracking-widest uppercase inline-block border border-red-700">
+                              HAPUS
+                            </span>
+                          ) : (
+                            <span className="px-2.5 py-1 bg-slate-100 dark:bg-slate-800/50 text-slate-400 dark:text-slate-500 text-[9px] font-mono font-bold tracking-widest uppercase inline-block border border-slate-200 dark:border-slate-700">
+                              LEWATI
+                            </span>
+                          )}
+                        </td>
+                      )}
+                      <td className="p-4 font-mono font-bold text-slate-800 dark:text-white text-center truncate max-w-[150px]" title={u.nomor_seri}>{u.nomor_seri}</td>
+                      <td className="p-4 font-mono text-xs text-slate-800 dark:text-white uppercase text-center truncate max-w-[150px]" title={u.jenis}>{u.jenis}</td>
+                      <td className="p-4 font-mono text-xs text-slate-800 dark:text-white uppercase text-center truncate max-w-[200px]" title={u.asal_satuan}>{u.asal_satuan}</td>
+                      <td className="p-4 text-center">
+                        <span className={`px-2 py-0.5 border text-[9px] font-bold tracking-widest uppercase inline-block mx-auto
+                          ${u.status_unit === 'Beroperasi' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40' :
+                            u.status_unit === 'Rusak' ? 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/40' :
+                              u.status_unit === 'Perbaikan' ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800/40' :
+                                'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-300 dark:border-slate-600'}
+                        `}>
+                          {u.status_unit === 'Perbaikan' ? 'Dalam Perbaikan' : u.status_unit}
+                        </span>
+                      </td>
+                      <td className="p-4 font-mono text-[10px] text-slate-800 dark:text-white text-center">{u.last_maintenance}</td>
 
-                    <td className="p-4 flex gap-2 justify-center">
-                      <button onClick={() => handleShowUnitHistory(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Riwayat">
-                        <History className="w-4 h-4" />
-                      </button>
-                      {handleEditUnit && (
-                        <button onClick={() => handleEditUnit(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Edit">
-                          <Edit className="w-4 h-4" />
-                        </button>
+                      {!isDeleteMode && (
+                        <td className="p-4 flex gap-2 justify-center">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleShowUnitHistory(u);
+                            }}
+                            className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm"
+                            title="Riwayat"
+                          >
+                            <History className="w-4 h-4" />
+                          </button>
+                          {handleEditUnit && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEditUnit(u);
+                              }}
+                              className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm"
+                              title="Edit"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </button>
+                          )}
+                          {handleDeleteUnit && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteUnit(u);
+                              }}
+                              className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-600 dark:text-white hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm"
+                              title="Hapus"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
+                        </td>
                       )}
-                      {handleDeleteUnit && (
-                        <button onClick={() => handleDeleteUnit(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-600 dark:text-white hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Hapus">
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>

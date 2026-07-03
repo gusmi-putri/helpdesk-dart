@@ -1,5 +1,7 @@
 import React from 'react';
-import { X, MapPin, Building2, Save } from 'lucide-react';
+import { MapPin, Building2, Save } from 'lucide-react';
+import { Modal } from '@/Components/ui/Modal';
+import { Button } from '@/Components/ui/Button';
 
 interface SatuanModalProps {
   isOpen: boolean;
@@ -27,21 +29,42 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 px-6 overflow-y-auto">
-      <div className="bg-white dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full max-w-2xl shadow-[0_0_100px_rgba(0,0,0,0.6)] animate-in zoom-in-95 duration-300 rounded-sm overflow-hidden">
-
-        {/* Header */}
-        <div className="p-5 border-b border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/5 flex justify-between items-center px-8">
-          <div className="flex items-center gap-4">
-            <Building2 className="w-6 h-6 text-cighra-primary dark:text-cighra-gold" />
-            <h3 className="font-tactical font-bold text-cighra-primary dark:text-cighra-gold tracking-widest uppercase text-lg">
-              {isPengajuan ? (isAddMode ? 'PENGAJUAN TAMBAH SATUAN' : 'PENGAJUAN EDIT SATUAN') : (isAddMode ? 'TAMBAH DATA SATUAN' : 'EDIT DATA SATUAN')}
-            </h3>
-          </div>
-          <button onClick={onClose} className="text-slate-400 hover:text-red-500 transition-colors text-xl">✕</button>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={isPengajuan ? (isAddMode ? 'PENGAJUAN TAMBAH SATUAN' : 'PENGAJUAN EDIT SATUAN') : (isAddMode ? 'TAMBAH DATA SATUAN' : 'EDIT DATA SATUAN')}
+      icon={<Building2 />}
+      maxWidth="2xl"
+      footer={
+        <div className="w-full flex gap-4">
+          <Button 
+            type="submit" 
+            onClick={onSubmit}
+            variant="primary" 
+            disabled={processing}
+            className="flex-[2] uppercase" 
+            size="lg"
+          >
+            {processing ? 'MEMPROSES...' : isPengajuan ? 'AJUKAN DATA' : (
+              <>
+                <Save className="w-5 h-5" /> SIMPAN DATA SATUAN
+              </>
+            )}
+          </Button>
+          <Button 
+            type="button" 
+            variant="secondary" 
+            onClick={onClose} 
+            className="flex-1 uppercase" 
+            size="lg"
+          >
+            BATAL
+          </Button>
         </div>
-        <form onSubmit={onSubmit} className="p-8 space-y-8 max-h-[85vh] overflow-y-auto custom-scrollbar">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+      }
+    >
+      <form id="satuan-form" onSubmit={onSubmit} className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
           {/* Form Fields */}
           <div className="col-span-2">
             <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">
@@ -57,7 +80,7 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
             {errors.nama_satuan && <p className="text-red-500 text-[9px] mt-1 font-mono uppercase">{errors.nama_satuan}</p>}
           </div>
 
-          <div>
+          <div className="col-span-2">
             <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">
               Kode Satuan
             </label>
@@ -85,7 +108,7 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
             {errors.alamat && <p className="text-red-500 text-[9px] mt-1 font-mono uppercase">{errors.alamat}</p>}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 col-span-2">
             <div>
               <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">
                 Latitude (LINTANG)
@@ -139,30 +162,8 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
             )}
           </div>
         </div>
-
-        <div className="pt-6 flex gap-4 px-8 pb-8">
-          <button
-            type="submit"
-            disabled={processing}
-            className="flex-[2] bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white p-3.5 font-tactical font-bold tracking-widest hover:brightness-110 active:scale-[0.98] transition-all disabled:opacity-50 shadow-lg flex items-center justify-center gap-2"
-          >
-            {processing ? 'MEMPROSES...' : isPengajuan ? 'AJUKAN DATA' : (
-              <>
-                <Save className="w-4 h-4" /> SIMPAN DATA SATUAN
-              </>
-            )}
-          </button>
-          <button 
-            type="button" 
-            onClick={onClose} 
-            className="flex-1 bg-transparent border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 p-3.5 font-tactical font-bold tracking-widest hover:bg-slate-50 dark:hover:bg-slate-800 transition-all uppercase"
-          >
-            BATAL
-          </button>
-        </div>
-        </form>
-      </div>
-    </div>
+      </form>
+    </Modal>
   );
 };
 

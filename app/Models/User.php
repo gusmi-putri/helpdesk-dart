@@ -10,14 +10,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['username', 'email', 'password', 'nama_lengkap', 'nrp_nip', 'asal_satuan', 'satuan_id', 'no_wa', 'spesialisasi', 'role_id', 'is_active', 'is_approved', 'pending_action', 'pending_changes'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
+    protected $fillable = [
+        'username', 'email', 'password', 'nama_lengkap', 'nrp_nip', 
+        'asal_satuan', 'satuan_id', 'no_wa', 'spesialisasi', 'role_id', 'is_active', 'is_approved'
+    ];/**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>

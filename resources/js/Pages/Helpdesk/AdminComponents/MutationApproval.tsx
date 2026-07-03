@@ -520,7 +520,7 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
           {historyMutations.length === 0 ? (
             <div className="glass-panel p-10 text-center">
               <FileText className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
-              <p className="text-sm text-slate-500 font-mono uppercase">Belum ada riwayat mutasi.</p>
+              <p className="text-sm text-slate-500 font-mono uppercase">Belum ada riwayat pengajuan.</p>
             </div>
           ) : (
             historyMutations.filter((m: any) => {

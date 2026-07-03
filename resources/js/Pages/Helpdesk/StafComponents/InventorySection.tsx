@@ -34,6 +34,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
   onRequestDeleteBatch,
 }) => {
   const [selectedUnitIds, setSelectedUnitIds] = useState<number[]>([]);
+  const [isDeleteMode, setIsDeleteMode] = useState<boolean>(false);
   const baseJenisOptions = [
     'DART STD',
     'DART STK',
@@ -71,7 +72,32 @@ const InventorySection: React.FC<InventorySectionProps> = ({
   };
 
   const handleDownloadTemplate = () => {
-    const csvContent = "nomor_seri,jenis,asal_satuan,status_unit\nCONTOH-001,DART STD,NAMA SATUAN,Beroperasi";
+    const csvContent = [
+      "nomor_seri,jenis,asal_satuan,status_unit",
+      "PU - 42 - 098 - 2026,DART Portabel - Pop,MAKOSTRAD,Beroperasi",
+      "FL - 42 - 098 - 2026,DART Portabel - Flip,MAKO KOPASSUS,Rusak",
+      "SW - 42 - 098 - 2026,DART Portabel - Swing,DIVIF 1 KOSTRAD,Perbaikan",
+      "MV - 42 - 098 - 2026,Moving Target,AKMIL,Nonaktif",
+      "# -------------------------------------------------------------",
+      "# PANDUAN PENGISIAN TEMPLATE CSV:",
+      "# -------------------------------------------------------------",
+      "# 1. Kolom 'nomor_seri': Masukkan nomor seri unik unit (Contoh: PU - 42 - 098 - 2026, FL - 42 - 098 - 2026, dll).",
+      "# 2. Kolom 'jenis': Harus bernilai salah satu dari pilihan berikut:",
+      "#    - DART STD",
+      "#    - DART STK",
+      "#    - DART Portabel - Swing",
+      "#    - DART Portabel - Pop",
+      "#    - DART Portabel - Flip",
+      "#    - DART Marathon Target",
+      "#    - Moving Target",
+      "# 3. Kolom 'asal_satuan': Harus sesuai nama Satuan yang SUDAH TERDAFTAR di database (Contoh: MAKOSTRAD, AKMIL).",
+      "# 4. Kolom 'status_unit': Harus bernilai salah satu dari pilihan berikut:",
+      "#    - Beroperasi",
+      "#    - Rusak",
+      "#    - Perbaikan",
+      "#    - Nonaktif",
+      "# 5. Catatan: Baris panduan yang diawali dengan tanda '#' ini otomatis diabaikan oleh sistem."
+    ].join("\n");
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -145,6 +171,21 @@ const InventorySection: React.FC<InventorySectionProps> = ({
             <Package className="text-cighra-gold w-6 h-6" /> DATA INVENTARIS UNIT
           </h3>
           <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+            {onRequestDeleteBatch && (
+              <button
+                onClick={() => {
+                  setIsDeleteMode(!isDeleteMode);
+                  setSelectedUnitIds([]);
+                }}
+                className={`px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-all border shadow-lg uppercase cursor-pointer ${
+                  isDeleteMode 
+                    ? 'bg-slate-700 hover:bg-slate-600 text-white border-slate-700' 
+                    : 'bg-red-600 hover:bg-red-500 text-white border-red-600'
+                }`}
+              >
+                <Trash2 className="w-4 h-4" /> {isDeleteMode ? 'TUTUP MODE HAPUS' : 'MODE HAPUS MASSAL'}
+              </button>
+            )}
             {onAddBatch && (
               <button
                 onClick={onAddBatch}
@@ -205,18 +246,34 @@ const InventorySection: React.FC<InventorySectionProps> = ({
           </div>
         </div>
 
+        {isDeleteMode && (
+          <div className="p-4 bg-red-500/5 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center text-[10px] font-mono text-red-600 dark:text-red-400">
+            <span className="font-bold flex items-center gap-2">
+              ⚠️ MODE HAPUS MASSAL AKTIF: KLIK PADA BARIS UNIT UNTUK MENANDAI PENGHAPUSAN.
+            </span>
+            <button
+              type="button"
+              onClick={() => {
+                if (selectedUnitIds.length === filteredUnits.length) {
+                  setSelectedUnitIds([]);
+                } else {
+                  setSelectedUnitIds(filteredUnits.map((u: any) => u.db_id));
+                }
+              }}
+              className="bg-red-500/10 hover:bg-red-500/20 text-red-700 dark:text-red-300 px-3 py-1 font-mono font-bold tracking-widest uppercase border border-red-500/30 transition-colors cursor-pointer"
+            >
+              {selectedUnitIds.length === filteredUnits.length ? 'BATAL PILIH SEMUA' : 'PILIH SEMUA'}
+            </button>
+          </div>
+        )}
+
         <div className="overflow-x-auto">
           <table className="w-full text-left font-sans text-sm">
             <thead className="bg-slate-800 border-b border-slate-700">
               <tr>
-                {onRequestDeleteBatch && (
-                  <th className="p-4 w-10 text-center">
-                    <input
-                      type="checkbox"
-                      onChange={toggleSelectAll}
-                      checked={filteredUnits.length > 0 && selectedUnitIds.length === filteredUnits.length}
-                      className="w-4 h-4 cursor-pointer accent-cighra-primary dark:accent-cighra-gold"
-                    />
+                {isDeleteMode && (
+                  <th className="p-4 w-28 text-center text-red-500 font-mono text-xs uppercase tracking-wider">
+                    PILIHAN HAPUS
                   </th>
                 )}
                 <SortableHeader label="NOMOR SERI" sortKey="nomor_seri" currentSort={sortConfig} onSort={handleSort} />
@@ -224,46 +281,78 @@ const InventorySection: React.FC<InventorySectionProps> = ({
                 <SortableHeader label="ASAL SATUAN / LOKASI" sortKey="asal_satuan" currentSort={sortConfig} onSort={handleSort} />
                 <SortableHeader label="STATUS" sortKey="status_unit" currentSort={sortConfig} onSort={handleSort} />
                 <SortableHeader label="MAINTENANCE" sortKey="last_maintenance" currentSort={sortConfig} onSort={handleSort} />
-                {onRequestDelete && <SortableHeader label="OPSI" />}
+                {onRequestDelete && !isDeleteMode && <SortableHeader label="OPSI" />}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700/50">
               {filteredUnits.length === 0 ? (
                 <tr>
-                  <td colSpan={onRequestDeleteBatch ? 8 : 7} className="p-10 text-center text-slate-500 dark:text-slate-400 font-mono italic uppercase tracking-widest">Tidak ada unit yang ditemukan.</td>
+                  <td colSpan={isDeleteMode ? 7 : (onRequestDelete ? 6 : 5)} className="p-10 text-center text-slate-500 dark:text-slate-400 font-mono italic uppercase tracking-widest">Tidak ada unit yang ditemukan.</td>
                 </tr>
               ) : (
-                filteredUnits.map((u: any) => (
-                  <tr key={u.db_id} className={`hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group bg-white dark:bg-transparent ${selectedUnitIds.includes(u.db_id) ? 'bg-red-50/50 dark:bg-red-900/10' : ''}`}>
-                    {onRequestDeleteBatch && (
+                filteredUnits.map((u: any) => {
+                  const isSelected = selectedUnitIds.includes(u.db_id);
+                  return (
+                    <tr
+                      key={u.db_id}
+                      onClick={isDeleteMode ? () => toggleSelectUnit(u.db_id) : undefined}
+                      className={`transition-colors group bg-white dark:bg-transparent ${
+                        isDeleteMode 
+                          ? 'cursor-pointer select-none' 
+                          : ''
+                      } ${
+                        isSelected 
+                          ? 'bg-red-500/5 dark:bg-red-950/20 border-l-4 border-l-red-600' 
+                          : isDeleteMode 
+                            ? 'hover:bg-slate-50 dark:hover:bg-slate-800/30 border-l-4 border-l-transparent' 
+                            : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'
+                      }`}
+                    >
+                      {isDeleteMode && (
+                        <td className="p-4 text-center">
+                          {isSelected ? (
+                            <span className="px-2.5 py-1 bg-red-600/90 text-white text-[9px] font-mono font-bold tracking-widest uppercase inline-block border border-red-700">
+                              HAPUS
+                            </span>
+                          ) : (
+                            <span className="px-2.5 py-1 bg-slate-100 dark:bg-slate-800/50 text-slate-400 dark:text-slate-500 text-[9px] font-mono font-bold tracking-widest uppercase inline-block border border-slate-200 dark:border-slate-700">
+                              LEWATI
+                            </span>
+                          )}
+                        </td>
+                      )}
+                      <td className="p-4 font-mono font-bold text-slate-800 dark:text-white text-center">{u.nomor_seri}</td>
+                      <td className="p-4 font-mono text-xs text-slate-500 dark:text-slate-300 uppercase text-center">{u.jenis}</td>
+                      <td className="p-4 text-gunmetal dark:text-slate-300 uppercase text-center">{u.asal_satuan}</td>
                       <td className="p-4 text-center">
-                        <input type="checkbox" checked={selectedUnitIds.includes(u.db_id)} onChange={() => toggleSelectUnit(u.db_id)} className="w-4 h-4 cursor-pointer accent-cighra-primary dark:accent-cighra-gold" />
+                        <span className={`px-2 py-0.5 border text-[9px] font-bold tracking-widest uppercase inline-block mx-auto
+                          ${u.status_unit === 'Beroperasi' ? 'bg-camogreen/10 text-camogreen border-camogreen/30' :
+                            u.status_unit === 'Rusak' ? 'bg-cighra-primary/10 dark:bg-cighra-gold/10 text-cighra-primary dark:text-cighra-gold border-cighra-primary dark:border-cighra-gold/30' :
+                              u.status_unit === 'Perbaikan' ? 'bg-blue-900/10 text-blue-500 border-blue-800/30' :
+                                'bg-slate-900/10 text-slate-500 border-slate-800/30'}
+                        `}>
+                          {u.status_unit === 'Perbaikan' ? 'Dalam Perbaikan' : u.status_unit}
+                        </span>
                       </td>
-                    )}
-                    <td className="p-4 font-mono font-bold text-slate-800 dark:text-white text-center">{u.nomor_seri}</td>
-                    <td className="p-4 font-mono text-xs text-slate-500 dark:text-slate-300 uppercase text-center">{u.jenis}</td>
-                    <td className="p-4 text-gunmetal dark:text-slate-300 uppercase text-center">{u.asal_satuan}</td>
-                    <td className="p-4 text-center">
-                      <span className={`px-2 py-0.5 border text-[9px] font-bold tracking-widest uppercase inline-block mx-auto
-                        ${u.status_unit === 'Beroperasi' ? 'bg-camogreen/10 text-camogreen border-camogreen/30' :
-                          u.status_unit === 'Rusak' ? 'bg-cighra-primary/10 dark:bg-cighra-gold/10 text-cighra-primary dark:text-cighra-gold border-cighra-primary dark:border-cighra-gold/30' :
-                            u.status_unit === 'Perbaikan' ? 'bg-blue-900/10 text-blue-500 border-blue-800/30' :
-                              'bg-slate-900/10 text-slate-500 border-slate-800/30'}
-                      `}>
-                        {u.status_unit === 'Perbaikan' ? 'Dalam Perbaikan' : u.status_unit}
-                      </span>
-                    </td>
-                    <td className="p-4 font-mono text-[10px] text-slate-500 dark:text-slate-400 text-center">{u.last_maintenance}</td>
+                      <td className="p-4 font-mono text-[10px] text-slate-500 dark:text-slate-400 text-center">{u.last_maintenance}</td>
 
-                    {onRequestDelete && (
-                      <td className="p-4 text-center">
-                        <button onClick={() => onRequestDelete(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-500 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm cursor-pointer mx-auto block" title="Ajukan Penghapusan">
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </td>
-                    )}
-                  </tr>
-                ))
+                      {onRequestDelete && !isDeleteMode && (
+                        <td className="p-4 text-center">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onRequestDelete(u);
+                            }}
+                            className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-500 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm cursor-pointer mx-auto block"
+                            title="Ajukan Penghapusan"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </td>
+                      )}
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
