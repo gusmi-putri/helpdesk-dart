@@ -11,6 +11,13 @@ class RecapController extends Controller
 {
     public function export(Request $request)
     {
+        $request->validate([
+            'period' => 'nullable|in:weekly,monthly,yearly',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'year' => 'nullable|integer|min:2000|max:2100',
+        ]);
+
         $period = $request->query('period', 'monthly');
         $startDate = $request->query('start_date');
         $endDate = $request->query('end_date');

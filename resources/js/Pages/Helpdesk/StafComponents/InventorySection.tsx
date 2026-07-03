@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Plus, Trash2, CheckSquare, Download, Upload, Package, Filter, ArrowUp, ArrowDown } from 'lucide-react';
+import { Search, Plus, Trash2, CheckSquare, Upload, Package } from 'lucide-react';
 import SortableHeader from '@/Components/Table/SortableHeader';
 
 interface InventorySectionProps {
@@ -55,13 +55,6 @@ const InventorySection: React.FC<InventorySectionProps> = ({
     setSortConfig({ key, direction });
   };
 
-  const toggleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked) {
-      setSelectedUnitIds(filteredUnits.map((u: any) => u.db_id));
-    } else {
-      setSelectedUnitIds([]);
-    }
-  };
 
   const toggleSelectUnit = (id: number) => {
     if (selectedUnitIds.includes(id)) {
@@ -71,42 +64,6 @@ const InventorySection: React.FC<InventorySectionProps> = ({
     }
   };
 
-  const handleDownloadTemplate = () => {
-    const csvContent = [
-      "nomor_seri,jenis,asal_satuan,status_unit",
-      "PU - 42 - 098 - 2026,DART Portabel - Pop,MAKOSTRAD,Beroperasi",
-      "FL - 42 - 098 - 2026,DART Portabel - Flip,MAKO KOPASSUS,Rusak",
-      "SW - 42 - 098 - 2026,DART Portabel - Swing,DIVIF 1 KOSTRAD,Perbaikan",
-      "MV - 42 - 098 - 2026,Moving Target,AKMIL,Nonaktif",
-      "# -------------------------------------------------------------",
-      "# PANDUAN PENGISIAN TEMPLATE CSV:",
-      "# -------------------------------------------------------------",
-      "# 1. Kolom 'nomor_seri': Masukkan nomor seri unik unit (Contoh: PU - 42 - 098 - 2026, FL - 42 - 098 - 2026, dll).",
-      "# 2. Kolom 'jenis': Harus bernilai salah satu dari pilihan berikut:",
-      "#    - DART STD",
-      "#    - DART STK",
-      "#    - DART Portabel - Swing",
-      "#    - DART Portabel - Pop",
-      "#    - DART Portabel - Flip",
-      "#    - DART Marathon Target",
-      "#    - Moving Target",
-      "# 3. Kolom 'asal_satuan': Harus sesuai nama Satuan yang SUDAH TERDAFTAR di database (Contoh: MAKOSTRAD, AKMIL).",
-      "# 4. Kolom 'status_unit': Harus bernilai salah satu dari pilihan berikut:",
-      "#    - Beroperasi",
-      "#    - Rusak",
-      "#    - Perbaikan",
-      "#    - Nonaktif",
-      "# 5. Catatan: Baris panduan yang diawali dengan tanda '#' ini otomatis diabaikan oleh sistem."
-    ].join("\n");
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute('download', 'template_unit_dart.csv');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
 
   const unitStats = {
     TOTAL: dbUnits.length,

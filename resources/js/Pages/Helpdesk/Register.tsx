@@ -56,14 +56,14 @@ const Register: React.FC = () => {
     setData(field, numericValue);
   };
 
-  // Strict uppercase input handler for unit name
-  const handleUppercaseInput = (field: keyof RegisterData, value: string) => {
-    setData(field, value.toUpperCase());
-  };
 
   // WhatsApp number handler — must start with 62
   const handleWaInput = (value: string) => {
-    const numericValue = value.replace(/\D/g, '');
+    let clean = value.trim();
+    if (clean.startsWith('+')) {
+      clean = clean.slice(1);
+    }
+    const numericValue = clean.replace(/\D/g, '');
 
     // Auto-prefix: if user types 0 at start, convert 08 -> 628
     let finalValue = numericValue;
@@ -303,13 +303,14 @@ const Register: React.FC = () => {
 
                 {/* Asal Satuan */}
                 <div className="space-y-2">
-                  <label className="text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300/80 uppercase flex items-center gap-2">
+                  <label htmlFor="asal-satuan-input" className="text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300/80 uppercase flex items-center gap-2">
                     <MapPin className="w-3 h-3" /> Asal SATUAN
                   </label>
                   <div className="group relative">
                     <Combobox value={data.asal_satuan} onChange={(val: string | null) => val && setData('asal_satuan', val)}>
                       <div className="relative">
                         <ComboboxInput
+                          id="asal-satuan-input"
                           className={`w-full bg-soft-sand/30 dark:bg-cighra-dark/50 border ${errors.asal_satuan ? 'border-cighra-primary dark:border-cighra-gold' : 'border-cighra-primary dark:border-cighra-gold/40 dark:border-cighra-primary dark:border-cighra-gold/60'} group-hover:border-camogreen focus:border-camogreen text-slate-800 dark:text-white px-4 py-3 pr-10 focus:outline-none transition-all font-mono text-sm rounded-sm`}
                           placeholder="PILIH ATAU KETIK SATUAN BARU..."
                           displayValue={(item: string) => item}

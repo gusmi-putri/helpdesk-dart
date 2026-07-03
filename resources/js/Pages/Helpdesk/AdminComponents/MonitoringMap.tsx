@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, ZoomControl, useMap, Circle } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Shield, AlertTriangle, CheckCircle, Search, Target, Map as MapIcon, ArrowLeft } from 'lucide-react';
+import { Shield, AlertTriangle, Search, Target, Map as MapIcon, ArrowLeft } from 'lucide-react';
 
 // Fix for default marker icons in Leaflet with Vite
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
-let DefaultIcon = L.icon({
+const DefaultIcon = L.icon({
     iconUrl: markerIcon,
     shadowUrl: markerShadow,
     iconSize: [25, 41],
@@ -105,6 +105,7 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
         if (initialFocusSatuan) {
             const group = satuanGroups[initialFocusSatuan];
             if (group && group.coords) {
+                // eslint-disable-next-line react-hooks/set-state-in-effect
                 setSelectedGroup(group);
             }
         }
@@ -115,6 +116,7 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
         if (searchQuery.length > 2) {
             const exactMatch = Object.values(satuanGroups).find((g: any) => g.name.toLowerCase() === searchQuery.toLowerCase()) as any;
             if (exactMatch && exactMatch.coords) {
+                // eslint-disable-next-line react-hooks/set-state-in-effect
                 setSelectedGroup(exactMatch);
             }
         }

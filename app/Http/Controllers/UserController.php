@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\UserMutation;
+use App\Models\Role;
+use App\Models\Report;
+use App\Models\SystemLog;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
@@ -52,7 +56,7 @@ class UserController extends Controller
                     'user_data' => $userData,
                 ]);
 
-                \App\Models\SystemLog::log('SUCCESS', $currentUser->id, "Menambahkan personel baru secara langsung: {$request->nama_lengkap} ({$request->username})");
+                SystemLog::log('SUCCESS', $currentUser->id, "Menambahkan personel baru secara langsung: {$request->nama_lengkap} ({$request->username})");
             } else {
                 // Staf just requests addition, doesn't create user in DB
                 UserMutation::create([
@@ -63,7 +67,7 @@ class UserController extends Controller
                     'user_data' => $userData,
                 ]);
 
-                \App\Models\SystemLog::log('INFO', $currentUser->id, "Mendaftarkan personel baru: {$request->nama_lengkap} ({$request->username}) (Menunggu Persetujuan)");
+                SystemLog::log('INFO', $currentUser->id, "Mendaftarkan personel baru: {$request->nama_lengkap} ({$request->username}) (Menunggu Persetujuan)");
             }
         });
 
@@ -77,7 +81,7 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, string $id)
     {
         $user = User::findOrFail($id);
-        $adminRoleId = \App\Models\Role::where('nama_role', 'Admin')->first()?->id;
+        $adminRoleId = Role::where('nama_role', 'Admin')->first()?->id;
 
         $updateData = $request->only('email', 'nama_lengkap', 'nrp_nip', 'asal_satuan', 'satuan_id', 'no_wa', 'spesialisasi');
         if ($user->role_id !== $adminRoleId) {
@@ -100,7 +104,7 @@ class UserController extends Controller
                     'user_data' => $updateData,
                 ]);
 
-                \App\Models\SystemLog::log('SUCCESS', $currentUser->id, "Mengubah data personel secara langsung: {$user->nama_lengkap}");
+                SystemLog::log('SUCCESS', $currentUser->id, "Mengubah data personel secara langsung: {$user->nama_lengkap}");
             } else {
                 UserMutation::create([
                     'target_user_id' => $user->id,
@@ -110,7 +114,7 @@ class UserController extends Controller
                     'user_data' => $updateData,
                 ]);
 
-                \App\Models\SystemLog::log('INFO', $currentUser->id, "Mengajukan edit data personel: {$user->nama_lengkap}");
+                SystemLog::log('INFO', $currentUser->id, "Mengajukan edit data personel: {$user->nama_lengkap}");
             }
         });
 
@@ -123,14 +127,14 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         $user = User::findOrFail($id);
-        $adminRoleId = \App\Models\Role::where('nama_role', 'Admin')->first()?->id;
+        $adminRoleId = Role::where('nama_role', 'Admin')->first()?->id;
         $currentUser = auth()->user();
 
         if ($user->role_id === $adminRoleId && $currentUser->role_id !== $adminRoleId) {
             return redirect()->back()->with('error', 'Akses ditolak: Staf tidak diizinkan menghapus akun Admin.');
         }
 
-        $ongoingReportsCount = \App\Models\Report::where(function ($query) use ($user) {
+        $ongoingReportsCount = Report::where(function ($query) use ($user) {
             $query->where('user_id', $user->id)
                   ->orWhere('teknisi_id', $user->id);
         })->whereNotIn('status_laporan', ['Selesai', 'Ditolak'])->count();
@@ -152,7 +156,7 @@ class UserController extends Controller
                 ]);
 
                 $user->delete();
-                \App\Models\SystemLog::log('ALERT', $currentUser->id, "Menghapus personel secara langsung: {$userName}");
+                SystemLog::log('ALERT', $currentUser->id, "Menghapus personel secara langsung: {$userName}");
             } else {
                 UserMutation::create([
                     'target_user_id' => $user->id,
@@ -161,7 +165,7 @@ class UserController extends Controller
                     'status' => 'pending',
                 ]);
 
-                \App\Models\SystemLog::log('INFO', $currentUser->id, "Mengajukan penghapusan personel: {$user->nama_lengkap}");
+                SystemLog::log('INFO', $currentUser->id, "Mengajukan penghapusan personel: {$user->nama_lengkap}");
             }
         });
 
@@ -179,7 +183,7 @@ class UserController extends Controller
 
         $statusStr = $user->is_active ? 'AKTIF' : 'NONAKTIF';
         $admin = auth()->user();
-        \App\Models\SystemLog::log('WARN', $admin->id, "Mengubah status personel {$user->nama_lengkap} menjadi {$statusStr}");
+        SystemLog::log('WARN', $admin->id, "Mengubah status personel {$user->nama_lengkap} menjadi {$statusStr}");
 
         return redirect()->back()->with('message', "Status personel berhasil diubah menjadi {$statusStr}.");
     }
@@ -206,7 +210,7 @@ class UserController extends Controller
                     'type' => 'approved_edit',
                 ]);
 
-                \App\Models\SystemLog::log('SUCCESS', $admin->id, "Menyetujui perubahan data personel: {$user->nama_lengkap}");
+                SystemLog::log('SUCCESS', $admin->id, "Menyetujui perubahan data personel: {$user->nama_lengkap}");
                 $msg = 'Perubahan profil personel telah disetujui.';
             } elseif ($mutation->type === 'request_delete') {
                 $user = User::findOrFail($mutation->target_user_id);
@@ -219,7 +223,7 @@ class UserController extends Controller
                 ]);
 
                 $user->delete();
-                \App\Models\SystemLog::log('ALERT', $admin->id, "Menyetujui penghapusan personel: {$userName}");
+                SystemLog::log('ALERT', $admin->id, "Menyetujui penghapusan personel: {$userName}");
                 $msg = 'Penghapusan personel telah disetujui.';
             } elseif ($mutation->type === 'request_add') {
                 $userData = $mutation->user_data ?? [];
@@ -234,7 +238,7 @@ class UserController extends Controller
                     'type' => 'approved_add',
                 ]);
 
-                \App\Models\SystemLog::log('SUCCESS', $admin->id, "Menyetujui pendaftaran personel baru: {$user->nama_lengkap}");
+                SystemLog::log('SUCCESS', $admin->id, "Menyetujui pendaftaran personel baru: {$user->nama_lengkap}");
                 $msg = 'Personel telah disetujui dan sekarang dapat login.';
             }
         });
@@ -242,7 +246,7 @@ class UserController extends Controller
         return redirect()->back()->with('message', $msg);
     }
 
-    public function reject(\Illuminate\Http\Request $request, string $id)
+    public function reject(Request $request, string $id)
     {
         $mutation = UserMutation::findOrFail($id);
         
@@ -272,7 +276,7 @@ class UserController extends Controller
             $userName = $mutation->user_data['nama_lengkap'] ?? ($mutation->targetUser->nama_lengkap ?? 'Unknown');
             $action = str_replace('request_', '', $mutation->type);
 
-            \App\Models\SystemLog::log('WARN', $admin->id, "Menolak pengajuan {$action} personel: {$userName}");
+            SystemLog::log('WARN', $admin->id, "Menolak pengajuan {$action} personel: {$userName}");
             $msg = "Pengajuan {$action} personel telah ditolak.";
         });
 

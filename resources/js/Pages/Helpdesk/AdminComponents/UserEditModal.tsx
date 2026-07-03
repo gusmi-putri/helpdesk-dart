@@ -59,12 +59,6 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
       setWaWarning('');
     }
   };
-
-  // Uppercase handler for asal_satuan
-  const handleUppercaseInput = (field: string, value: string) => {
-    setData(field, value.toUpperCase());
-  };
-
   return (
     <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 px-6 overflow-y-auto">
       <div className="bg-white dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full max-w-2xl shadow-[0_0_100px_rgba(0,0,0,0.6)] animate-in zoom-in-95 duration-300 rounded-sm overflow-hidden">

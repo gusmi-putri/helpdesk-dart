@@ -25,10 +25,13 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
+            'username' => fake()->unique()->userName(),
+            'nama_lengkap' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            'role_id' => fn () => \App\Models\Role::firstOrCreate(['nama_role' => 'Pelapor'])->id,
+            'is_approved' => true,
+            'is_active' => true,
             'remember_token' => Str::random(10),
         ];
     }

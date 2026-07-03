@@ -12,7 +12,7 @@ class GeminiService
 
     public function __construct()
     {
-        $this->apiKey = env('GEMINI_API_KEY', '');
+        $this->apiKey = config('services.gemini.key', '');
     }
 
     /**
@@ -46,9 +46,15 @@ class GeminiService
         $userMessage = "Target/Unit DART: {$unitName}\nTingkat Kerusakan: {$level}\nDeskripsi Kendala yang dilaporkan: {$description}\n\nTolong berikan analisis singkat dan saran langkah awal.";
 
         try {
-            $response = Http::withoutVerifying()->withHeaders([
+            $client = Http::withHeaders([
                 'Content-Type' => 'application/json',
-            ])->post($this->apiUrl . '?key=' . $this->apiKey, [
+            ]);
+
+            if (app()->environment('local')) {
+                $client->withoutVerifying();
+            }
+
+            $response = $client->post($this->apiUrl . '?key=' . $this->apiKey, [
                 'contents' => [
                     [
                         'role' => 'user',

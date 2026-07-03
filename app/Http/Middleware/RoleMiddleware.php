@@ -30,7 +30,5 @@ class RoleMiddleware
         }
 
         abort(403, 'Akses Ditolak: Anda tidak memiliki otoritas untuk area ini.');
-
-        return $next($request);
     }
 }

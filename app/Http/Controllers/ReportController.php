@@ -6,8 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Report;
 use App\Models\Unit;
 use App\Models\User;
-use Carbon\Carbon;
-use Inertia\Inertia;
+use App\Models\SystemLog;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreReportRequest;
 use App\Services\FileUploadService;
@@ -45,9 +44,12 @@ class ReportController extends Controller
                 'status_laporan' => 'Pending'
             ]);
 
-            Unit::find($request->unit_id)->syncStatus();
+            $unit = Unit::find($request->unit_id);
+            if ($unit) {
+                $unit->syncStatus();
+            }
 
-            \App\Models\SystemLog::log('WARN', $request->user()->id, "Mengirimkan laporan kerusakan baru di lokasi: {$request->user()->asal_satuan}");
+            SystemLog::log('WARN', $request->user()->id, "Mengirimkan laporan kerusakan baru di lokasi: {$request->user()->asal_satuan}");
         });
 
         return redirect()->back()->with('message', 'Laporan anda telah berhasil terkirim');
@@ -57,16 +59,32 @@ class ReportController extends Controller
     {
         $report = Report::findOrFail($id);
         
-        $teknisi = null;
-        if ($request->has('teknisi_id')) {
-            $teknisi = User::find($request->teknisi_id);
-        } elseif ($request->has('teknisi_username')) {
-            $teknisi = User::where('username', $request->teknisi_username)->first();
+        $request->validate([
+            'teknisi_id' => 'nullable|exists:users,id',
+            'teknisi_username' => 'nullable|exists:users,username',
+        ]);
+
+        $candidate = null;
+        if ($request->filled('teknisi_id')) {
+            $candidate = User::find($request->teknisi_id);
+        } elseif ($request->filled('teknisi_username')) {
+            $candidate = User::where('username', $request->teknisi_username)->first();
         }
-        
-        // Fallback jika tidak ditemukan
+
+        if ($candidate) {
+            if (!$candidate->role || $candidate->role->nama_role !== 'Teknisi') {
+                return redirect()->back()->with('error', 'Personel yang dipilih bukan seorang Teknisi.');
+            }
+            $teknisi = $candidate;
+        } else {
+            // Fallback jika tidak ditemukan
+            $teknisi = User::whereHas('role', function ($q) {
+                $q->where('nama_role', 'Teknisi');
+            })->first();
+        }
+
         if (!$teknisi) {
-            $teknisi = User::whereHas('role', function($q) { $q->where('nama_role', 'Teknisi'); })->first();
+            return redirect()->back()->with('error', 'Tidak ada Teknisi terdaftar dalam sistem untuk ditugaskan.');
         }
 
         $report->update([
@@ -78,7 +96,7 @@ class ReportController extends Controller
 
         $report->unit->syncStatus();
 
-        \App\Models\SystemLog::log('INFO', $request->user()->id, "Menugaskan teknisi {$teknisi->nama_lengkap} untuk menangani kasus: LPR-" . str_pad($report->id, 5, '0', STR_PAD_LEFT));
+        SystemLog::log('INFO', $request->user()->id, "Menugaskan teknisi {$teknisi->nama_lengkap} untuk menangani kasus: LPR-" . str_pad($report->id, 5, '0', STR_PAD_LEFT));
 
         return redirect()->back()->with('message', 'Teknisi berhasil ditugaskan!');
     }
@@ -86,6 +104,11 @@ class ReportController extends Controller
     public function complete(Request $request, $id)
     {
         $report = Report::findOrFail($id);
+
+        if ($report->teknisi_id !== auth()->id()) {
+            return redirect()->back()->with('error', 'Akses Ditolak: Anda tidak ditugaskan untuk laporan ini.');
+        }
+
         $request->validate([
             'catatan' => 'required|string',
             'metode' => 'required|in:Online,Offline',
@@ -106,7 +129,7 @@ class ReportController extends Controller
         $report->status_laporan = 'Selesai'; // transitions immediately to Selesai!
 
         if ($report->save()) {
-            \App\Models\SystemLog::log('SUCCESS', $request->user()->id, "Menyelesaikan penanganan laporan LPR-" . str_pad($report->id, 5, '0', STR_PAD_LEFT));
+            SystemLog::log('SUCCESS', $request->user()->id, "Menyelesaikan penanganan laporan LPR-" . str_pad($report->id, 5, '0', STR_PAD_LEFT));
             $report->unit->syncStatus();
             return redirect()->back()->with('message', 'Laporan perbaikan telah diselesaikan!');
         }
@@ -120,7 +143,7 @@ class ReportController extends Controller
         $report->update(['status_laporan' => 'Diverifikasi']);
         $report->unit->syncStatus();
 
-        \App\Models\SystemLog::log('INFO', auth()->id(), "Memverifikasi laporan kerusakan: LPR-" . str_pad($report->id, 5, '0', STR_PAD_LEFT));
+        SystemLog::log('INFO', auth()->id(), "Memverifikasi laporan kerusakan: LPR-" . str_pad($report->id, 5, '0', STR_PAD_LEFT));
 
         return redirect()->back()->with('message', 'Laporan berhasil diverifikasi!');
     }
@@ -137,7 +160,7 @@ class ReportController extends Controller
         ]);
         $report->unit->syncStatus();
 
-        \App\Models\SystemLog::log('WARN', auth()->id(), "Menolak laporan kerusakan: LPR-" . str_pad($report->id, 5, '0', STR_PAD_LEFT) . " dengan alasan: {$request->alasan}");
+        SystemLog::log('WARN', auth()->id(), "Menolak laporan kerusakan: LPR-" . str_pad($report->id, 5, '0', STR_PAD_LEFT) . " dengan alasan: {$request->alasan}");
 
         return redirect()->back()->with('message', 'Laporan telah ditolak!');
     }
@@ -145,10 +168,15 @@ class ReportController extends Controller
     public function acceptTask($id)
     {
         $report = Report::findOrFail($id);
+
+        if ($report->teknisi_id !== auth()->id()) {
+            return redirect()->back()->with('error', 'Akses Ditolak: Anda tidak ditugaskan untuk laporan ini.');
+        }
+
         $report->update(['status_laporan' => 'Diterima Teknisi']);
         $report->unit->syncStatus();
 
-        \App\Models\SystemLog::log('INFO', auth()->id(), "Teknisi menerima tugas penanganan: LPR-" . str_pad($report->id, 5, '0', STR_PAD_LEFT));
+        SystemLog::log('INFO', auth()->id(), "Teknisi menerima tugas penanganan: LPR-" . str_pad($report->id, 5, '0', STR_PAD_LEFT));
 
         return redirect()->back()->with('message', 'Tugas berhasil diterima!');
     }
@@ -156,10 +184,15 @@ class ReportController extends Controller
     public function startProgress($id)
     {
         $report = Report::findOrFail($id);
+
+        if ($report->teknisi_id !== auth()->id()) {
+            return redirect()->back()->with('error', 'Akses Ditolak: Anda tidak ditugaskan untuk laporan ini.');
+        }
+
         $report->update(['status_laporan' => 'Diproses']);
         $report->unit->syncStatus();
 
-        \App\Models\SystemLog::log('INFO', auth()->id(), "Mulai melakukan tindakan perbaikan kasus: LPR-" . str_pad($report->id, 5, '0', STR_PAD_LEFT));
+        SystemLog::log('INFO', auth()->id(), "Mulai melakukan tindakan perbaikan kasus: LPR-" . str_pad($report->id, 5, '0', STR_PAD_LEFT));
 
         return redirect()->back()->with('message', 'Perbaikan mulai diproses!');
     }

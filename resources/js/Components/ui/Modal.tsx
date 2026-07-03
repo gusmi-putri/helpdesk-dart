@@ -16,7 +16,7 @@ export const Modal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
   title,
-  subtitle,
+  subtitle: _,
   icon,
   children,
   footer,

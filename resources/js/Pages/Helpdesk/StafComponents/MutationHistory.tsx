@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, FileText, CheckCircle, XCircle } from 'lucide-react';
+import { Plus, Trash2, FileText } from 'lucide-react';
 import { useTableSort } from '@/hooks/useTableSort';
 import SortableHeader from '@/Components/Table/SortableHeader';
 

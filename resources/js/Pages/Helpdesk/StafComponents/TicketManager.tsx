@@ -1,12 +1,10 @@
 import React, { useState, useMemo } from 'react';
 import { 
   Clock, Activity, ShieldAlert, Eye, XCircle, CheckCircle, Wallet, 
-  Search, Filter, SlidersHorizontal, ChevronDown, User, MapPin, 
-  MoreVertical, Calendar, Image as ImageIcon, X, History, FileText,
+  Search, SlidersHorizontal, User, MapPin, 
+  Calendar, Image as ImageIcon, X, FileText,
   AlertTriangle
 } from 'lucide-react';
-import { format } from 'date-fns';
-import { id } from 'date-fns/locale';
 
 interface TicketManagerProps {
   reports: any[];

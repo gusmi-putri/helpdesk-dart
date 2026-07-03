@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react';
+import { FormEvent } from 'react';
 import { motion } from 'framer-motion';
 import { Send, Star } from 'lucide-react';
 import { useForm } from '@inertiajs/react';

@@ -1,32 +1,60 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Users, Search, Plus, Eye, Edit, Trash2, Power } from 'lucide-react';
 import { useTableSort } from '@/hooks/useTableSort';
 import SortableHeader from '@/Components/Table/SortableHeader';
 import { Modal } from '@/Components/ui/Modal';
 import { Button } from '@/Components/ui/Button';
 import { AlertTriangle } from 'lucide-react';
+import { router, useForm } from '@inertiajs/react';
+import { useStore } from '@/store/useStore';
+import UserDetailModal from './UserDetailModal';
+import UserDeleteModal from './UserDeleteModal';
+import UserEditModal from './UserEditModal';
 
 interface UsersTableProps {
   dbUsers: any[];
-  handleAddUser?: () => void;
-  handleToggleUserStatus?: (user: any) => void;
-  handleShowDetail: (user: any) => void;
-  handleEditUser?: (user: any) => void;
-  handleDeleteUser?: (user: any) => void;
+  dbRoles?: any[];
+  dbSatuans?: any[];
+  isPengajuan?: boolean;
 }
 
 const UsersTable: React.FC<UsersTableProps> = ({
   dbUsers,
-  handleAddUser,
-  handleToggleUserStatus,
-  handleShowDetail,
-  handleEditUser,
-  handleDeleteUser
+  dbRoles,
+  dbSatuans,
+  isPengajuan
 }) => {
-  const [userSearch, setUserSearch] = React.useState('');
-  const [warningUser, setWarningUser] = React.useState<any>(null);
+  const [userSearch, setUserSearch] = useState('');
+  const [warningUser, setWarningUser] = useState<any>(null);
+  
+  // Modal visibility states
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  
+  // Data states
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [userToDelete, setUserToDelete] = useState<any>(null);
+  const [isAddMode, setIsAddMode] = useState(false);
+  const [editingUser, setEditingUser] = useState<any>(null);
 
-  const filtered = dbUsers.filter((u: any) => u.is_approved).filter((u: any) => {
+  const addNotification = useStore(state => state.addNotification);
+
+  // Form state
+  const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
+    username: '',
+    password: '',
+    email: '',
+    nama_lengkap: '',
+    nrp_nip: '',
+    role_id: '',
+    satuan_id: '',
+    asal_satuan: '',
+    no_wa: '',
+    spesialisasi: ''
+  });
+
+  const filtered = dbUsers.filter((u: any) => u.is_approved !== false).filter((u: any) => {
     if (!userSearch) return true;
     const q = userSearch.toLowerCase();
     return (
@@ -39,6 +67,91 @@ const UsersTable: React.FC<UsersTableProps> = ({
   });
 
   const { sortedItems: filteredUsers, sortConfig, handleSort } = useTableSort(filtered, { key: 'name', direction: 'asc' });
+
+  // Handlers
+  const handleAddUser = () => {
+    setIsAddMode(true);
+    setEditingUser(null);
+    clearErrors();
+    setData({
+      username: '',
+      password: '',
+      email: '',
+      nama_lengkap: '',
+      nrp_nip: '',
+      role_id: '',
+      satuan_id: '',
+      asal_satuan: '',
+      no_wa: '',
+      spesialisasi: ''
+    });
+    setIsEditModalOpen(true);
+  };
+
+  const handleShowDetail = (user: any) => {
+    setSelectedUser(user);
+    setIsDetailModalOpen(true);
+  };
+
+  const handleEditUser = (user: any) => {
+    setIsAddMode(false);
+    setEditingUser(user);
+    clearErrors();
+    setData({
+      username: user.username || '',
+      password: '',
+      email: user.email || '',
+      nama_lengkap: user.name,
+      nrp_nip: user.nrp_nip || '',
+      role_id: user.role_id || '',
+      satuan_id: user.satuan_id || '',
+      asal_satuan: user.asal_satuan || '',
+      no_wa: user.no_wa || '',
+      spesialisasi: user.spesialisasi || ''
+    });
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveUser = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isAddMode) {
+      post('/users', {
+        onSuccess: () => {
+          setIsEditModalOpen(false);
+          reset();
+          if (isPengajuan) addNotification('Pengajuan personel berhasil ditambahkan.');
+        },
+      });
+    } else {
+      put(`/users/${editingUser.db_id}`, {
+        onSuccess: () => {
+          setIsEditModalOpen(false);
+          if (isPengajuan) addNotification('Pengajuan perubahan data personel berhasil dikirim.');
+        },
+      });
+    }
+  };
+
+  const handleDeleteUser = (user: any) => {
+    setUserToDelete(user);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDeleteUser = () => {
+    if (userToDelete) {
+      router.delete(`/users/${userToDelete.db_id}`, {
+        onSuccess: () => {
+          setIsDeleteModalOpen(false);
+          setUserToDelete(null);
+          if (isPengajuan) addNotification('Pengajuan hapus personel berhasil dikirim.');
+        }
+      });
+    }
+  };
+
+  const handleToggleUserStatus = (user: any) => {
+    router.post(`/users/${user.db_id}/toggle-status`);
+  };
 
   return (
     <>
@@ -59,14 +172,12 @@ const UsersTable: React.FC<UsersTableProps> = ({
               className="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 pl-9 pr-4 py-2 text-sm font-mono text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:border-cighra-gold transition-colors w-64 uppercase shadow-sm"
             />
           </div>
-          {handleAddUser && (
-            <button
-              onClick={handleAddUser}
-              className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-cighra-primary dark:border-cighra-gold shadow-lg uppercase"
-            >
-              <Plus className="w-4 h-4" /> TAMBAH USER
-            </button>
-          )}
+          <button
+            onClick={handleAddUser}
+            className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-cighra-primary dark:border-cighra-gold shadow-lg uppercase"
+          >
+            <Plus className="w-4 h-4" /> TAMBAH USER
+          </button>
         </div>
       </div>
       <div className="overflow-x-auto">
@@ -117,26 +228,22 @@ const UsersTable: React.FC<UsersTableProps> = ({
                   <button onClick={() => handleShowDetail(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Detail">
                     <Eye className="w-4 h-4" />
                   </button>
-                  {handleEditUser && (
-                    <button onClick={() => handleEditUser(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Edit">
-                      <Edit className="w-4 h-4" />
-                    </button>
-                  )}
-                  {handleDeleteUser && (
-                    <button 
-                      onClick={() => {
-                        if (u.has_ongoing_reports) {
-                          setWarningUser(u);
-                        } else {
-                          handleDeleteUser(u);
-                        }
-                      }} 
-                      className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-600 dark:text-white hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Hapus"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  )}
-                  {handleToggleUserStatus && (
+                  <button onClick={() => handleEditUser(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Edit">
+                    <Edit className="w-4 h-4" />
+                  </button>
+                  <button 
+                    onClick={() => {
+                      if (u.has_ongoing_reports) {
+                        setWarningUser(u);
+                      } else {
+                        handleDeleteUser(u);
+                      }
+                    }} 
+                    className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-600 dark:text-white hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Hapus"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                  {!isPengajuan && (
                     <button 
                       onClick={() => handleToggleUserStatus(u)} 
                       disabled={u.role === 'Admin'}
@@ -182,9 +289,37 @@ const UsersTable: React.FC<UsersTableProps> = ({
           </div>
         </div>
       </Modal>
+
+      {/* Embedded Modals */}
+      <UserDetailModal
+        isOpen={isDetailModalOpen}
+        onClose={() => setIsDetailModalOpen(false)}
+        user={selectedUser}
+      />
+
+      <UserDeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={confirmDeleteUser}
+        user={userToDelete}
+        isPengajuan={isPengajuan}
+      />
+
+      <UserEditModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onSubmit={handleSaveUser}
+        data={data}
+        setData={setData}
+        errors={errors}
+        processing={processing}
+        isAddMode={isAddMode}
+        dbRoles={dbRoles || []}
+        dbSatuans={dbSatuans || []}
+        isPengajuan={isPengajuan}
+      />
     </>
   );
 };
 
 export default UsersTable;
-

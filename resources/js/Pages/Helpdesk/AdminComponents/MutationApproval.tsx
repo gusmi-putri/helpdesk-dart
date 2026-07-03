@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GitPullRequest, CheckCircle, XCircle, Archive, RotateCcw, FileText, ExternalLink, Plus, Trash2, Clock, Search, Eye, X } from 'lucide-react';
+import { CheckCircle, XCircle, Archive, RotateCcw, FileText, ExternalLink, Plus, Trash2, Clock, Search, X } from 'lucide-react';
 import { useTableSort } from '@/hooks/useTableSort';
 import SortableHeader from '@/Components/Table/SortableHeader';
 import { router } from '@inertiajs/react';

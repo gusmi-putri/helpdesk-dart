@@ -18,14 +18,23 @@ class RegistrationTest extends TestCase
 
     public function test_new_users_can_register(): void
     {
+        \App\Models\Role::firstOrCreate(['nama_role' => 'Admin']);
+        \App\Models\Role::firstOrCreate(['nama_role' => 'Staf']);
+        \App\Models\Role::firstOrCreate(['nama_role' => 'Teknisi']);
+        \App\Models\Role::firstOrCreate(['nama_role' => 'Pelapor']);
+
         $response = $this->post('/register', [
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => 'password',
-            'password_confirmation' => 'password',
+            'username' => 'testuser',
+            'email' => 'testuser@example.com',
+            'password' => 'password123',
+            'password_confirmation' => 'password123',
+            'nama_lengkap' => 'Test User',
+            'nrp_nip' => '12345678',
+            'asal_satuan' => 'KOPASSUS',
+            'no_wa' => '6281234567890',
         ]);
 
-        $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
+        $this->assertGuest();
+        $response->assertRedirect('/login');
     }
 }

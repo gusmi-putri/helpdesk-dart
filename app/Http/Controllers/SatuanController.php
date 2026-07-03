@@ -23,7 +23,6 @@ class SatuanController extends Controller
         ]);
 
         $user = auth()->user();
-        $isAdmin = $user && $user->role && $user->role->nama_role === 'Admin';
 
         // Guest registration (no auth)
         if (!$user) {
@@ -34,6 +33,13 @@ class SatuanController extends Controller
                 'longitude' => null,
             ]);
             return response()->json($satuan, 201);
+        }
+
+        $isAdmin = $user->role?->nama_role === 'Admin';
+        $isStaf = $user->role?->nama_role === 'Staf';
+
+        if (!$isAdmin && !$isStaf) {
+            abort(403, 'Akses ditolak: Hanya Admin atau Staf yang dapat mengajukan Satuan Kerja baru.');
         }
 
         if ($isAdmin) {
@@ -70,7 +76,7 @@ class SatuanController extends Controller
         ]);
 
         $user = auth()->user();
-        $isAdmin = $user && $user->role && $user->role->nama_role === 'Admin';
+        $isAdmin = $user->role?->nama_role === 'Admin';
 
         $updateData = [];
         if ($request->has('nama_satuan')) {
@@ -103,7 +109,7 @@ class SatuanController extends Controller
     public function destroy(Satuan $satuan)
     {
         $user = auth()->user();
-        $isAdmin = $user && $user->role && $user->role->nama_role === 'Admin';
+        $isAdmin = $user->role?->nama_role === 'Admin';
 
         if ($isAdmin) {
             $info = $satuan->nama_satuan;

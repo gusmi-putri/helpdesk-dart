@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Models\Role;
+use App\Models\User;
 
 class UpdateUserRequest extends FormRequest
 {
@@ -13,15 +15,16 @@ class UpdateUserRequest extends FormRequest
 
     public function rules(): array
     {
-        $adminRoleId = \App\Models\Role::where('nama_role', 'Admin')->first()?->id;
+        $adminRoleId = Role::where('nama_role', 'Admin')->first()?->id;
         $userId = $this->route('user'); // Get ID from route params if bound
-        $user = \App\Models\User::find($userId);
+        $user = User::find($userId);
 
         $rules = [
             'email' => 'required|email|unique:users,email,' . $userId,
             'nama_lengkap' => 'required|string|max:100',
             'nrp_nip' => ['required', 'string', 'min:8', 'max:20', 'regex:/^[0-9]+$/'],
             'asal_satuan' => 'nullable|string|max:100',
+            'satuan_id' => 'nullable|exists:satuans,id',
             'no_wa' => ['nullable', 'string', 'regex:/^62[0-9]{8,13}$/'],
             'spesialisasi' => 'nullable|string|max:100',
         ];

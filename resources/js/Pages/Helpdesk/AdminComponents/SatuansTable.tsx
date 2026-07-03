@@ -1,28 +1,53 @@
 import React, { useState } from 'react';
-import { Search, Plus, MapPin, CheckCircle, Clock, Edit, Trash2, Eye } from 'lucide-react';
+import { Search, Plus, MapPin, Edit, Trash2, Eye } from 'lucide-react';
 import { useTableSort } from '@/hooks/useTableSort';
 import SortableHeader from '@/Components/Table/SortableHeader';
+import { router, useForm } from '@inertiajs/react';
+import { useStore } from '@/store/useStore';
+import SatuanModal from './SatuanModal';
+import SatuanDetailModal from './SatuanDetailModal';
+import SatuanDeleteModal from './SatuanDeleteModal';
 
 interface SatuansTableProps {
   dbSatuans: any[];
   dbUnits?: any[];
-  handleAddSatuan: () => void;
-  handleEditSatuan: (satuan: any) => void;
-  handleDeleteSatuan: (satuan: any) => void;
-  handleShowDetailSatuan?: (satuan: any) => void;
+  dbCases?: any[];
+  dbUsers?: any[];
+  isPengajuan?: boolean;
   handleViewOnMap?: (satuan: any) => void;
 }
 
 const SatuansTable: React.FC<SatuansTableProps> = ({
   dbSatuans,
   dbUnits,
-  handleAddSatuan,
-  handleEditSatuan,
-  handleDeleteSatuan,
-  handleShowDetailSatuan,
+  dbCases,
+  dbUsers,
+  isPengajuan,
   handleViewOnMap
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  
+  // Modal visibility states
+  const [isSatuanDetailModalOpen, setIsSatuanDetailModalOpen] = useState(false);
+  const [isSatuanModalOpen, setIsSatuanModalOpen] = useState(false);
+  const [isSatuanDeleteModalOpen, setIsSatuanDeleteModalOpen] = useState(false);
+  
+  // Data states
+  const [selectedSatuan, setSelectedSatuan] = useState<any>(null);
+  const [satuanToDelete, setSatuanToDelete] = useState<any>(null);
+  const [isSatuanAddMode, setIsSatuanAddMode] = useState(true);
+  const [editingSatuan, setEditingSatuan] = useState<any>(null);
+
+  const addNotification = useStore(state => state.addNotification);
+
+  // Form state
+  const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
+    kode_satuan: '',
+    nama_satuan: '',
+    alamat: '',
+    latitude: '',
+    longitude: ''
+  });
 
   const filtered = dbSatuans.filter((s: any) =>
     s.nama_satuan.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -31,7 +56,61 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
 
   const { sortedItems: filteredSatuans, sortConfig, handleSort } = useTableSort(filtered, { key: 'nama_satuan', direction: 'asc' });
 
+  // Handlers
+  const handleShowDetailSatuan = (satuan: any) => {
+    setSelectedSatuan(satuan);
+    setIsSatuanDetailModalOpen(true);
+  };
+
+  const handleAddSatuan = () => {
+    setIsSatuanAddMode(true);
+    setEditingSatuan(null);
+    clearErrors();
+    reset();
+    setIsSatuanModalOpen(true);
+  };
+
+  const handleEditSatuan = (satuan: any) => {
+    setIsSatuanAddMode(false);
+    setEditingSatuan(satuan);
+    clearErrors();
+    setData({
+      kode_satuan: satuan.kode_satuan || '',
+      nama_satuan: satuan.nama_satuan,
+      alamat: satuan.alamat || '',
+      latitude: satuan.latitude || '',
+      longitude: satuan.longitude || ''
+    });
+    setIsSatuanModalOpen(true);
+  };
+
+  const handleDeleteSatuan = (satuan: any) => {
+    setSatuanToDelete(satuan);
+    setIsSatuanDeleteModalOpen(true);
+  };
+
+  const handleSatuanSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isSatuanAddMode) {
+      post('/satuans', {
+        onSuccess: () => {
+          setIsSatuanModalOpen(false);
+          reset();
+          if (isPengajuan) addNotification('Pengajuan penambahan SATUAN dikirim.');
+        }
+      });
+    } else {
+      put(`/satuans/${editingSatuan.id}`, {
+        onSuccess: () => {
+          setIsSatuanModalOpen(false);
+          if (isPengajuan) addNotification('Pengajuan perubahan SATUAN dikirim.');
+        }
+      });
+    }
+  };
+
   return (
+    <>
     <div className="bg-white dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600 shadow-2xl overflow-hidden relative mt-6 animate-in fade-in duration-500">
       <div className="absolute top-0 left-0 w-full h-[2px] bg-cighra-primary dark:bg-cighra-gold"></div>
       
@@ -121,15 +200,13 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
                     )}
                   </td>
                   <td className="p-4 flex gap-2 justify-center">
-                    {handleShowDetailSatuan && (
-                      <button
-                        onClick={() => handleShowDetailSatuan(satuan)}
-                        className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm"
-                        title="Lihat Detail"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </button>
-                    )}
+                    <button
+                      onClick={() => handleViewOnMap ? handleViewOnMap(satuan) : handleShowDetailSatuan(satuan)}
+                      className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm"
+                      title={handleViewOnMap ? "Lihat di Peta" : "Lihat Detail"}
+                    >
+                      <Eye className="w-4 h-4" />
+                    </button>
                     <button
                       onClick={() => handleEditSatuan(satuan)}
                       className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm"
@@ -152,8 +229,36 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
         </table>
       </div>
     </div>
+      {/* Embedded Modals */}
+      <SatuanDetailModal
+        isOpen={isSatuanDetailModalOpen}
+        onClose={() => setIsSatuanDetailModalOpen(false)}
+        satuan={selectedSatuan}
+        dbUnits={dbUnits || []}
+        dbUsers={dbUsers || []}
+        dbCases={dbCases || []}
+      />
+
+      <SatuanDeleteModal
+        isOpen={isSatuanDeleteModalOpen}
+        onClose={() => setIsSatuanDeleteModalOpen(false)}
+        satuan={satuanToDelete}
+        isPengajuan={isPengajuan}
+      />
+
+      <SatuanModal
+        isOpen={isSatuanModalOpen}
+        onClose={() => setIsSatuanModalOpen(false)}
+        onSubmit={handleSatuanSubmit}
+        data={data}
+        setData={setData}
+        errors={errors}
+        processing={processing}
+        isAddMode={isSatuanAddMode}
+        isPengajuan={isPengajuan}
+      />
+    </>
   );
 };
 
 export default SatuansTable;
-

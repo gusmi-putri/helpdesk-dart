@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileArchive, Download, X, Calendar, CalendarDays, CalendarRange } from 'lucide-react';
+import { FileArchive, Download, X, CalendarDays, CalendarRange } from 'lucide-react';
 
 interface StafRecapModalProps {
   isOpen: boolean;

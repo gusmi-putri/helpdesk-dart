@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FileArchive } from 'lucide-react';
 import { useStore } from '@/store/useStore';
-import { router, usePage, useForm } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import LogoutConfirmModal from '@/Components/LogoutConfirmModal';
 
 // Sub-components
@@ -17,21 +17,13 @@ import StafRecapModal from './StafComponents/StafRecapModal';
 import ReportRejectModal from './StafComponents/ReportRejectModal';
 import StafUnitModal from './StafComponents/StafUnitModal';
 import RequestDeleteModal from './StafComponents/RequestDeleteModal';
-import MutationHistory from './StafComponents/MutationHistory';
-import UserMutationHistory from './StafComponents/UserMutationHistory';
 import StafMutationCenter from './StafComponents/StafMutationCenter';
 import StafUnitBatchModal from './StafComponents/StafUnitBatchModal';
 import RequestDeleteBatchModal from './StafComponents/RequestDeleteBatchModal';
 
 // Reuse Admin components for PersonelTable
 import UsersTable from './AdminComponents/UsersTable';
-import UserDetailModal from './AdminComponents/UserDetailModal';
-import UserDeleteModal from './AdminComponents/UserDeleteModal';
-import UserEditModal from './AdminComponents/UserEditModal';
 import SatuansTable from './AdminComponents/SatuansTable';
-import SatuanModal from './AdminComponents/SatuanModal';
-import SatuanDetailModal from './AdminComponents/SatuanDetailModal';
-import SatuanDeleteModal from './AdminComponents/SatuanDeleteModal';
 
 type MenuTab = 'MASUK' | 'SELESAI' | 'INVENTARIS' | 'MUTASI' | 'PERSONEL' | 'SATUANS';
 
@@ -71,44 +63,6 @@ const DashboardStaf = (props: any) => {
   const [isDeleteBatchModalOpen, setIsDeleteBatchModalOpen] = useState(false);
   const [selectedUnitsForDelete, setSelectedUnitsForDelete] = useState<any[]>([]);
 
-  // Satuan States
-  const [isSatuanDetailModalOpen, setIsSatuanDetailModalOpen] = useState(false);
-  const [selectedSatuan, setSelectedSatuan] = useState<any>(null);
-  const [isSatuanModalOpen, setIsSatuanModalOpen] = useState(false);
-  const [isSatuanAddMode, setIsSatuanAddMode] = useState(true);
-  const [editingSatuan, setEditingSatuan] = useState<any>(null);
-  const [isSatuanDeleteModalOpen, setIsSatuanDeleteModalOpen] = useState(false);
-  const [satuanToDelete, setSatuanToDelete] = useState<any>(null);
-  const satuanForm = useForm({
-    kode_satuan: '',
-    nama_satuan: '',
-    alamat: '',
-    latitude: '',
-    longitude: ''
-  });
-
-  // Personel States
-  const [isUserDetailModalOpen, setIsUserDetailModalOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<any>(null);
-  const [isUserDeleteModalOpen, setIsUserDeleteModalOpen] = useState(false);
-  const [userToDelete, setUserToDelete] = useState<any>(null);
-  const [isUserEditModalOpen, setIsUserEditModalOpen] = useState(false);
-  const [isAddUserMode, setIsAddUserMode] = useState(false);
-  const [editingUser, setEditingUser] = useState<any>(null);
-
-  const userForm = useForm({
-    username: '',
-    password: '',
-    email: '',
-    nama_lengkap: '',
-    nrp_nip: '',
-    role_id: '',
-    satuan_id: '',
-    asal_satuan: '',
-    no_wa: '',
-    spesialisasi: ''
-  });
-
   const { auth } = usePage().props as any;
   const currentUser = auth.user;
   const logoutAction = useStore(state => state.logout);
@@ -116,12 +70,31 @@ const DashboardStaf = (props: any) => {
 
   const selectedReport = dbCases.find((c: any) => c.db_id === selectedReportId);
 
-  // Auto-polling
+  // Auto-polling with visibility detection
   useEffect(() => {
-    const interval = setInterval(() => {
-      router.reload({ only: ['dbCases', 'dbUsers', 'dbUnits', 'dbMutations', 'dbAllUsers'] });
-    }, 15000);
-    return () => clearInterval(interval);
+    let intervalId: NodeJS.Timeout;
+
+    const startPolling = () => {
+      intervalId = setInterval(() => {
+        router.reload({ only: ['dbCases', 'dbUsers', 'dbUnits', 'dbMutations', 'dbAllUsers'] });
+      }, 15000);
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        clearInterval(intervalId);
+      } else {
+        startPolling();
+      }
+    };
+
+    startPolling();
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      clearInterval(intervalId);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   const handleAssignTechnician = (reportId: number, idTeknisi: number) => {
@@ -145,10 +118,19 @@ const DashboardStaf = (props: any) => {
   };
 
   const handleExportRecap = () => {
+    if (recapPeriod === 'custom' && (!recapStartDate || !recapEndDate)) {
+      addNotification('Tanggal mulai dan selesai wajib diisi untuk rekap kustom.', 'error');
+      return;
+    }
+    if (recapPeriod === 'year_specific' && !recapYear) {
+      addNotification('Tahun wajib diisi.', 'error');
+      return;
+    }
+
     let url = `/staf/recap/export?period=${recapPeriod}`;
-    if (recapPeriod === 'custom' && recapStartDate && recapEndDate) {
+    if (recapPeriod === 'custom') {
       url += `&start_date=${recapStartDate}&end_date=${recapEndDate}`;
-    } else if (recapPeriod === 'year_specific' && recapYear) {
+    } else if (recapPeriod === 'year_specific') {
       url += `&year=${recapYear}`;
     }
     window.open(url, '_blank');
@@ -263,144 +245,6 @@ const DashboardStaf = (props: any) => {
     });
   };
 
-  // === Satuan Handlers ===
-  const handleShowDetailSatuan = (satuan: any) => {
-    setSelectedSatuan(satuan);
-    setIsSatuanDetailModalOpen(true);
-  };
-
-  const handleAddSatuan = () => {
-    setIsSatuanAddMode(true);
-    setEditingSatuan(null);
-    satuanForm.clearErrors();
-    satuanForm.reset();
-    setIsSatuanModalOpen(true);
-  };
-
-  const handleEditSatuan = (satuan: any) => {
-    setIsSatuanAddMode(false);
-    setEditingSatuan(satuan);
-    satuanForm.clearErrors();
-    satuanForm.setData({
-      kode_satuan: satuan.kode_satuan || '',
-      nama_satuan: satuan.nama_satuan,
-      alamat: satuan.alamat || '',
-      latitude: satuan.latitude || '',
-      longitude: satuan.longitude || ''
-    });
-    setIsSatuanModalOpen(true);
-  };
-
-  const handleDeleteSatuan = (satuan: any) => {
-    setSatuanToDelete(satuan);
-    setIsSatuanDeleteModalOpen(true);
-  };
-
-  const handleSatuanSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (isSatuanAddMode) {
-      satuanForm.post('/satuans', {
-        onSuccess: () => {
-          setIsSatuanModalOpen(false);
-          satuanForm.reset();
-          addNotification('Pengajuan penambahan SATUAN dikirim.');
-        }
-      });
-    } else {
-      satuanForm.put(`/satuans/${editingSatuan.id}`, {
-        onSuccess: () => {
-          setIsSatuanModalOpen(false);
-          addNotification('Pengajuan perubahan SATUAN dikirim.');
-        }
-      });
-    }
-  };
-
-  // === Personel Handlers ===
-  const handleAddUser = () => {
-    setIsAddUserMode(true);
-    setEditingUser(null);
-    userForm.clearErrors();
-    userForm.setData({
-      username: '',
-      password: '',
-      email: '',
-      nama_lengkap: '',
-      nrp_nip: '',
-      role_id: '',
-      satuan_id: '',
-      asal_satuan: '',
-      no_wa: '',
-      spesialisasi: ''
-    });
-    setIsUserEditModalOpen(true);
-  };
-
-  const handleShowDetail = (user: any) => {
-    setSelectedUser(user);
-    setIsUserDetailModalOpen(true);
-  };
-
-  const handleEditUser = (user: any) => {
-    setIsAddUserMode(false);
-    setEditingUser(user);
-    userForm.clearErrors();
-    userForm.setData({
-      username: user.username || '',
-      password: '',
-      email: user.email || '',
-      nama_lengkap: user.name,
-      nrp_nip: user.nrp_nip || '',
-      role_id: user.role_id || '',
-      satuan_id: user.satuan_id || '',
-      asal_satuan: user.asal_satuan || '',
-      no_wa: user.no_wa || '',
-      spesialisasi: user.spesialisasi || ''
-    });
-    setIsUserEditModalOpen(true);
-  };
-
-  const handleSaveUser = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (isAddUserMode) {
-      userForm.post('/users', {
-        onSuccess: () => {
-          setIsUserEditModalOpen(false);
-          userForm.reset();
-          addNotification('Personel berhasil ditambahkan.');
-        },
-      });
-    } else {
-      userForm.put(`/users/${editingUser.db_id}`, {
-        onSuccess: () => {
-          setIsUserEditModalOpen(false);
-          addNotification('Data personel berhasil diperbarui.');
-        },
-      });
-    }
-  };
-
-  const handleDeleteUser = (user: any) => {
-    setUserToDelete(user);
-    setIsUserDeleteModalOpen(true);
-  };
-
-  const confirmDeleteUser = () => {
-    if (userToDelete) {
-      router.delete(`/users/${userToDelete.db_id}`, {
-        onSuccess: () => {
-          setIsUserDeleteModalOpen(false);
-          setUserToDelete(null);
-          addNotification('Personel berhasil dihapus.');
-        }
-      });
-    }
-  };
-
-  const handleToggleUserStatus = (user: any) => {
-    router.post(`/users/${user.db_id}/toggle-status`);
-  };
-
   const rejectingReport = dbCases.find((c: any) => c.db_id === rejectingReportId);
 
   const incomingReports = dbCases.filter((r: any) => r.status !== 'SELESAI' && r.status !== 'DITOLAK');
@@ -507,10 +351,9 @@ const DashboardStaf = (props: any) => {
             {activeMenu === 'PERSONEL' && (
               <UsersTable
                 dbUsers={dbAllUsers}
-                handleAddUser={handleAddUser}
-                handleShowDetail={handleShowDetail}
-                handleEditUser={handleEditUser}
-                handleDeleteUser={handleDeleteUser}
+                dbRoles={dbRoles}
+                dbSatuans={dbSatuans}
+                isPengajuan={true}
               />
             )}
 
@@ -518,10 +361,9 @@ const DashboardStaf = (props: any) => {
               <SatuansTable
                 dbSatuans={dbSatuans}
                 dbUnits={dbUnits}
-                handleAddSatuan={handleAddSatuan}
-                handleEditSatuan={handleEditSatuan}
-                handleDeleteSatuan={handleDeleteSatuan}
-                handleShowDetailSatuan={handleShowDetailSatuan}
+                dbCases={dbCases}
+                dbUsers={dbAllUsers}
+                isPengajuan={true}
               />
             )}
           </div>
@@ -606,66 +448,8 @@ const DashboardStaf = (props: any) => {
         selectedUnits={selectedUnitsForDelete}
         processing={mutationProcessing}
       />
-      {/* Personel Modals */}
-      <UserDetailModal
-        isOpen={isUserDetailModalOpen}
-        onClose={() => setIsUserDetailModalOpen(false)}
-        user={selectedUser}
-      />
-
-      <UserDeleteModal
-        isOpen={isUserDeleteModalOpen}
-        onClose={() => setIsUserDeleteModalOpen(false)}
-        onConfirm={confirmDeleteUser}
-        user={userToDelete}
-        isPengajuan={true}
-      />
-
-      <UserEditModal
-        isOpen={isUserEditModalOpen}
-        onClose={() => setIsUserEditModalOpen(false)}
-        onSubmit={handleSaveUser}
-        data={userForm.data}
-        setData={userForm.setData}
-        errors={userForm.errors}
-        processing={userForm.processing}
-        isAddMode={isAddUserMode}
-        dbRoles={dbRoles}
-        dbSatuans={dbSatuans}
-        isPengajuan={true}
-      />
-
-      <SatuanModal
-        isOpen={isSatuanModalOpen}
-        onClose={() => setIsSatuanModalOpen(false)}
-        onSubmit={handleSatuanSubmit}
-        data={satuanForm.data}
-        setData={satuanForm.setData}
-        errors={satuanForm.errors}
-        processing={satuanForm.processing}
-        isAddMode={isSatuanAddMode}
-        isPengajuan={true}
-      />
-
-      <SatuanDetailModal
-        isOpen={isSatuanDetailModalOpen}
-        onClose={() => setIsSatuanDetailModalOpen(false)}
-        satuan={selectedSatuan}
-        dbUnits={dbUnits}
-        dbUsers={dbUsers}
-        dbCases={dbCases}
-      />
-
-      <SatuanDeleteModal
-        isOpen={isSatuanDeleteModalOpen}
-        onClose={() => setIsSatuanDeleteModalOpen(false)}
-        satuan={satuanToDelete}
-        isPengajuan={true}
-      />
-
     </div>
   );
 };
 
 export default DashboardStaf;
-

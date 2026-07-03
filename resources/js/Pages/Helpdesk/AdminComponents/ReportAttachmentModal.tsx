@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paperclip, Image as ImageIcon, Link as LinkIcon, FileText, X, AlertCircle } from 'lucide-react';
+import { Paperclip, Image as ImageIcon, Link as LinkIcon, FileText, X } from 'lucide-react';
 
 interface ReportAttachmentModalProps {
   isOpen: boolean;
