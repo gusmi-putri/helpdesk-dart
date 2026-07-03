@@ -6,6 +6,7 @@ interface Option {
   label: string;
   sublabel?: string;
   tag?: string;
+  disabled?: boolean;
 }
 
 interface SearchableSelectProps {
@@ -85,18 +86,25 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
           <div className="max-h-60 overflow-y-auto custom-scrollbar">
             {filteredOptions.length > 0 ? (
               filteredOptions.map((opt) => (
-                <div 
+                  <div 
                   key={opt.id}
                   onClick={() => {
+                    if (opt.disabled) return;
                     onChange(opt.id);
                     setIsOpen(false);
                     setSearchQuery('');
                   }}
-                  className={`px-4 py-3 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 cursor-pointer transition-colors flex flex-col border-b border-slate-200 dark:border-slate-600 last:border-none ${value.toString() === opt.id.toString() ? 'bg-cighra-primary/10 dark:bg-cighra-gold/10 border-l-4 border-l-olive' : ''}`}
+                  className={`px-4 py-3 border-b border-slate-200 dark:border-slate-600 last:border-none flex flex-col ${
+                    opt.disabled 
+                      ? 'bg-slate-50 dark:bg-slate-800/50 cursor-not-allowed opacity-60' 
+                      : 'hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 cursor-pointer transition-colors'
+                  } ${value.toString() === opt.id.toString() && !opt.disabled ? 'bg-cighra-primary/10 dark:bg-cighra-gold/10 border-l-4 border-l-olive' : ''}`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-bold font-mono text-xs tracking-wider uppercase text-slate-800 dark:text-slate-200">{opt.label}</span>
-                    {value.toString() === opt.id.toString() && <Check size={14} className="text-cighra-primary dark:text-cighra-gold" />}
+                    <span className="font-bold font-mono text-xs tracking-wider uppercase text-slate-800 dark:text-slate-200">
+                      {opt.label} {opt.disabled && <span className="text-[9px] text-red-500 ml-1 font-sans italic">(Pending)</span>}
+                    </span>
+                    {value.toString() === opt.id.toString() && !opt.disabled && <Check size={14} className="text-cighra-primary dark:text-cighra-gold" />}
                   </div>
                   <span className="text-[10px] text-slate-600 dark:text-slate-400 uppercase tracking-tighter mt-0.5 font-mono">{opt.sublabel} | {opt.tag}</span>
                 </div>

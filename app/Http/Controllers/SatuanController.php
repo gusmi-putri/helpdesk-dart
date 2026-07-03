@@ -167,6 +167,14 @@ class SatuanController extends Controller
         $user = auth()->user();
         if ($satuan->pending_action === 'create') {
             $info = $satuan->nama_satuan;
+            
+            // Cascading Reject: Tolak pendaftaran pengguna yang terkait dengan satuan ini
+            $pendingUsers = \App\Models\User::where('satuan_id', $satuan->id)->where('is_approved', false)->get();
+            foreach ($pendingUsers as $pUser) {
+                SystemLog::log('WARN', $user->id, "Sistem otomatis menolak pendaftaran personel baru: {$pUser->nama_lengkap} (karena Satuan ditolak)");
+                $pUser->delete();
+            }
+
             $satuan->delete();
             SystemLog::log('INFO', $user->id, "Admin menolak penambahan Satuan Kerja: {$info}");
         } else {

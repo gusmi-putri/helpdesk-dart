@@ -53,8 +53,8 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedGroup, setSelectedGroup] = useState<any>(null);
 
-    // Filter pending satuans
-    const pendingSatuans = dbSatuans.filter(s => s.is_verified && (s.latitude === null || s.longitude === null));
+    // Filter pending satuans (Belum diverifikasi ATAU belum ada koordinat)
+    const pendingSatuans = dbSatuans.filter(s => !s.is_verified || s.latitude === null || s.longitude === null);
     const [showPendingModal, setShowPendingModal] = useState(false);
     const [pendingSatuanEdit, setPendingSatuanEdit] = useState<any>(null);
     const [latInput, setLatInput] = useState('');

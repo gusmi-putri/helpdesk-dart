@@ -20,7 +20,14 @@ class RegisterController extends Controller
     {
         DB::transaction(function () use ($request) {
             $satuanName = strtoupper($request->asal_satuan);
-            $satuan = Satuan::firstOrCreate(['nama_satuan' => $satuanName]);
+            $satuan = Satuan::where('nama_satuan', $satuanName)->first();
+            if (!$satuan) {
+                $satuan = Satuan::create([
+                    'nama_satuan' => $satuanName,
+                    'is_verified' => false,
+                    'pending_action' => 'create'
+                ]);
+            }
 
             User::create([
                 'username' => $request->username,

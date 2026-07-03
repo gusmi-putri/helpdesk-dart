@@ -1,5 +1,5 @@
 import React from 'react';
-import { Phone, MapPin, AlertCircle, CircleUser, Upload, Camera, Trash2, Send, ShieldCheck, X, Wallet, FileText, Building2 } from 'lucide-react';
+import { Phone, MapPin, AlertCircle, CircleUser, Upload, Camera, Trash2, Send, ShieldCheck, X, Wallet, FileText, Building2, Package } from 'lucide-react';
 import SearchableSelect from '@/Components/SearchableSelect';
 import { useForm } from '@inertiajs/react';
 import { useStore } from '@/store/useStore';
@@ -129,6 +129,29 @@ const ReportForm: React.FC<ReportFormProps> = ({
     setData('dokumen_anggaran', (data.dokumen_anggaran || []).filter((_: File, i: number) => i !== index));
   };
 
+  const userUnits = dbUnits.filter((unit: any) => unit.asal_satuan === authUser?.asal_satuan);
+
+  if (userUnits.length === 0) {
+    return (
+      <div className="max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6">
+        <div className="glass-panel p-10 text-center border-t-4 border-t-cighra-primary dark:border-t-cighra-gold bg-white dark:bg-cighra-darkcard/80 shadow-xl border border-slate-200 dark:border-slate-600 flex flex-col items-center justify-center min-h-[400px]">
+          <Package className="w-20 h-20 text-slate-300 dark:text-slate-600 mb-6" />
+          <h2 className="text-2xl font-tactical font-bold text-slate-800 dark:text-white tracking-wider uppercase mb-4">
+            SATUAN BELUM MEMILIKI DATA UNIT
+          </h2>
+          <p className="text-sm text-slate-600 dark:text-slate-300 max-w-md mx-auto leading-relaxed mb-6">
+            Satuan Anda belum memiliki data perangkat DART. Silakan hubungi Admin/Staf untuk mendaftarkan unit Anda beserta surat pendukung. Laporan kerusakan hanya dapat dibuat setelah perangkat tercatat di sistem.
+          </p>
+          <div className="flex gap-4">
+            <a href="https://wa.me/6282225418071" target="_blank" className="flex items-center gap-2 px-6 py-3 bg-cighra-primary hover:bg-cighra-primary/90 dark:bg-cighra-gold dark:text-slate-900 dark:hover:bg-cighra-gold/90 text-white font-tactical font-bold tracking-widest text-xs transition-all shadow-lg rounded-sm">
+              <Phone size={16} /> HUBUNGI STAF/ADMIN
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6">
       <div className="glass-panel border-t-4 border-t-olive overflow-hidden bg-white dark:bg-cighra-darkcard/80 shadow-xl border border-slate-200 dark:border-slate-600">
@@ -230,13 +253,13 @@ const ReportForm: React.FC<ReportFormProps> = ({
           <SearchableSelect
             label="Nomor Seri DART"
             placeholder="Ketik nomor seri atau keterangan DART..."
-            options={dbUnits
-              .filter((unit: any) => unit.asal_satuan === authUser?.asal_satuan)
+            options={userUnits
               .map((unit: any) => ({
                 id: unit.db_id || unit.id,
                 label: unit.nomor_seri,
                 sublabel: unit.nomor_seri,
-                tag: `${unit.jenis} | ${unit.asal_satuan}`
+                tag: `${unit.jenis} | ${unit.asal_satuan}`,
+                disabled: unit.is_verified === 0 || unit.is_verified === false
               }))}
             value={data.unit_id}
             onChange={(val) => { setData('unit_id', val.toString()); setLocalErrors((prev: any) => ({ ...prev, unit_id: null })); }}

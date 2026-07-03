@@ -87,21 +87,40 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
                       </div>
                     )}
                   </td>
-                  <td className="p-4 flex gap-3 justify-center items-center h-full mt-2">
-                    <button
-                      onClick={() => handleApproveUser(m)}
-                      className="flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-4 py-2 text-[10px] font-tactical font-bold tracking-widest transition-all shadow-lg"
-                  >
-                    <CheckCircle className="w-4 h-4" /> SETUJUI
-                  </button>
-                  <button
-                    onClick={() => handleRejectUser(m)}
-                    className="flex items-center gap-2 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-4 py-2 text-[10px] font-tactical font-bold tracking-widest transition-all shadow-lg"
-                  >
-                    <XCircle className="w-4 h-4" /> TOLAK
-                  </button>
-                </td>
-              </tr>
+                  <td className="p-4 flex flex-col gap-2 justify-center items-center h-full mt-2">
+                    {(() => {
+                      const isSatuanUnverified = m.type === 'request_register' && m.user_data?.satuan && (m.user_data.satuan.is_verified === 0 || m.user_data.satuan.is_verified === false);
+                      return (
+                        <>
+                          <div className="flex gap-3">
+                            <button
+                              onClick={() => handleApproveUser(m)}
+                              disabled={isSatuanUnverified}
+                              className={`flex items-center gap-2 px-4 py-2 text-[10px] font-tactical font-bold tracking-widest transition-all shadow-lg ${
+                                isSatuanUnverified 
+                                ? 'bg-slate-300 text-slate-500 cursor-not-allowed dark:bg-slate-700 dark:text-slate-500' 
+                                : 'bg-green-600 hover:bg-green-500 text-white'
+                              }`}
+                            >
+                              <CheckCircle className="w-4 h-4" /> {isSatuanUnverified ? 'TUNGGU SATUAN DI-APPROVE' : 'SETUJUI'}
+                            </button>
+                            <button
+                              onClick={() => handleRejectUser(m)}
+                              className="flex items-center gap-2 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-4 py-2 text-[10px] font-tactical font-bold tracking-widest transition-all shadow-lg"
+                            >
+                              <XCircle className="w-4 h-4" /> TOLAK
+                            </button>
+                          </div>
+                          {isSatuanUnverified && (
+                            <div className="text-[9px] text-cighra-primary dark:text-cighra-gold text-center max-w-[200px]">
+                              * Satuan kerja pelapor ini baru dan menunggu persetujuan Anda di tab Satuan.
+                            </div>
+                          )}
+                        </>
+                      );
+                    })()}
+                  </td>
+                </tr>
             );
           })}
         </tbody>
