@@ -23,7 +23,7 @@ type SubMenuReport = 'KERUSAKAN' | 'PERBAIKAN';
 type MenuTab = 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER' | 'FEEDBACK';
 
 const DashboardAdmin = (props: any) => {
-  const { dbCases = [], dbUsers = [], dbLogs = [], dbRoles = [], dbUnits = [], dbSatuans = [], dbFeedbacks = [], dbMutations = [], dbUserMutations = [], dbArchivedUnits = [] } = props;
+  const { dbCases = [], dbUsers = [], dbLogs = [], dbRoles = [], dbUnits = [], dbSatuans = [], dbFeedbacks = [], dbFeedbackUnreadCount = 0, dbMutations = [], dbUserMutations = [], dbArchivedUnits = [] } = props;
   const [activeMenu, setActiveMenu] = useState<MenuTab>('ANALYTICS');
   const [activeSubReport, setActiveSubReport] = useState<SubMenuReport>('KERUSAKAN');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
@@ -36,7 +36,7 @@ const DashboardAdmin = (props: any) => {
 
     const startPolling = () => {
       intervalId = setInterval(() => {
-        router.reload({ only: ['dbCases', 'dbUsers', 'dbLogs', 'dbUnits'] });
+        router.reload({ only: ['dbCases', 'dbUsers', 'dbLogs', 'dbUnits', 'dbFeedbacks', 'dbFeedbackUnreadCount'] });
       }, 15000);
     };
 
@@ -161,8 +161,7 @@ const DashboardAdmin = (props: any) => {
         handleMenuClick={setActiveMenu}
         dbUsers={dbUsers}
         dbMutations={dbMutations}
-        dbSatuans={dbSatuans}
-        handleLogout={handleLogout}
+        dbSatuans={dbSatuans}        dbFeedbackUnreadCount={dbFeedbackUnreadCount}        handleLogout={handleLogout}
       />
 
       {/* MAIN CONTENT AREA */}
