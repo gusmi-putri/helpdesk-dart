@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 class GeminiService
 {
     protected string $apiKey;
-    protected string $apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent';
+    protected string $apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent';
 
     public function __construct()
     {
@@ -46,15 +46,10 @@ class GeminiService
         $userMessage = "Target/Unit DART: {$unitName}\nTingkat Kerusakan: {$level}\nDeskripsi Kendala yang dilaporkan: {$description}\n\nTolong berikan analisis singkat dan saran langkah awal.";
 
         try {
-            $client = Http::withHeaders([
+            $response = Http::withoutVerifying()->withHeaders([
                 'Content-Type' => 'application/json',
-            ]);
-
-            if (app()->environment('local')) {
-                $client->withoutVerifying();
-            }
-
-            $response = $client->post($this->apiUrl . '?key=' . $this->apiKey, [
+                'x-goog-api-key' => $this->apiKey,
+            ])->post($this->apiUrl, [
                 'contents' => [
                     [
                         'role' => 'user',
