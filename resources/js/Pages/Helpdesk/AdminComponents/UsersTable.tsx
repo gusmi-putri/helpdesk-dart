@@ -10,6 +10,8 @@ import { useStore } from '@/store/useStore';
 import UserDetailModal from './UserDetailModal';
 import UserDeleteModal from './UserDeleteModal';
 import UserEditModal from './UserEditModal';
+import { usePagination } from '@/hooks/usePagination';
+import Pagination from '@/Components/Table/Pagination';
 
 interface UsersTableProps {
   dbUsers: any[];
@@ -67,6 +69,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
   });
 
   const { sortedItems: filteredUsers, sortConfig, handleSort } = useTableSort(filtered, { key: 'name', direction: 'asc' });
+  const { currentPage, totalPages, paginatedItems, handlePageChange, itemsPerPage, totalItems } = usePagination(filteredUsers, 15);
 
   // Handlers
   const handleAddUser = () => {
@@ -194,13 +197,13 @@ const UsersTable: React.FC<UsersTableProps> = ({
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50 bg-white dark:bg-transparent">
-            {filteredUsers.length === 0 ? (
+            {paginatedItems.length === 0 ? (
               <tr>
                 <td colSpan={7} className="p-8 text-center text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest">
                   {userSearch ? 'Tidak ditemukan personel yang cocok.' : 'Belum ada data personel.'}
                 </td>
               </tr>
-            ) : filteredUsers.map((u: any) => (
+            ) : paginatedItems.map((u: any) => (
               <tr key={u.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
                 <td className="p-4 font-mono text-slate-800 dark:text-white text-center">{u.id}</td>
                 <td className="p-4 font-mono text-xs text-slate-800 dark:text-white text-center">{u.nrp_nip || '-'}</td>
@@ -265,6 +268,13 @@ const UsersTable: React.FC<UsersTableProps> = ({
           </tbody>
         </table>
       </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        handlePageChange={handlePageChange}
+        totalItems={totalItems}
+        itemsPerPage={itemsPerPage}
+      />
     </div>
       <Modal
         isOpen={!!warningUser}

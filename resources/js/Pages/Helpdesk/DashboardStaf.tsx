@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { FileArchive } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { router, usePage } from '@inertiajs/react';
@@ -7,9 +7,6 @@ import LogoutConfirmModal from '@/Components/LogoutConfirmModal';
 // Sub-components
 import StafSidebar from './StafComponents/StafSidebar';
 import StafTopbar from './StafComponents/StafTopbar';
-import TicketManager from './StafComponents/TicketManager';
-import CompletedReportsTable from './StafComponents/CompletedReportsTable';
-import InventorySection from './StafComponents/InventorySection';
 import ProofModal from './StafComponents/ProofModal';
 import ReportDetailModal from './StafComponents/ReportDetailModal';
 import AssignTechnicianModal from './StafComponents/AssignTechnicianModal';
@@ -17,13 +14,16 @@ import StafRecapModal from './StafComponents/StafRecapModal';
 import ReportRejectModal from './StafComponents/ReportRejectModal';
 import StafUnitModal from './StafComponents/StafUnitModal';
 import RequestDeleteModal from './StafComponents/RequestDeleteModal';
-import StafMutationCenter from './StafComponents/StafMutationCenter';
 import StafUnitBatchModal from './StafComponents/StafUnitBatchModal';
 import RequestDeleteBatchModal from './StafComponents/RequestDeleteBatchModal';
 
-// Reuse Admin components for PersonelTable
-import UsersTable from './AdminComponents/UsersTable';
-import SatuansTable from './AdminComponents/SatuansTable';
+// Lazy loaded components for better performance
+const TicketManager = lazy(() => import('./StafComponents/TicketManager'));
+const CompletedReportsTable = lazy(() => import('./StafComponents/CompletedReportsTable'));
+const InventorySection = lazy(() => import('./StafComponents/InventorySection'));
+const StafMutationCenter = lazy(() => import('./StafComponents/StafMutationCenter'));
+const UsersTable = lazy(() => import('./AdminComponents/UsersTable'));
+const SatuansTable = lazy(() => import('./AdminComponents/SatuansTable'));
 
 type MenuTab = 'MASUK' | 'SELESAI' | 'INVENTARIS' | 'MUTASI' | 'PERSONEL' | 'SATUANS';
 
@@ -303,69 +303,78 @@ const DashboardStaf = (props: any) => {
               )}
             </div>
 
-            {activeMenu === 'MASUK' && (
-              <TicketManager
-                reports={dbCases}
-                onAssignTechnician={setAssigningReportId}
-                onViewProof={setViewingProof}
-                onVerify={handleVerify}
-                onReject={setRejectingReportId}
-              />
-            )}
+            <Suspense fallback={
+              <div className="flex items-center justify-center h-64 w-full">
+                <div className="flex flex-col items-center gap-4 animate-in fade-in duration-300">
+                  <div className="w-10 h-10 border-4 border-cighra-gold border-t-transparent rounded-full animate-spin"></div>
+                  <span className="text-xs font-tactical tracking-[0.2em] uppercase text-cighra-gold animate-pulse">Memuat Komponen...</span>
+                </div>
+              </div>
+            }>
+              {activeMenu === 'MASUK' && (
+                <TicketManager
+                  reports={dbCases}
+                  onAssignTechnician={setAssigningReportId}
+                  onViewProof={setViewingProof}
+                  onVerify={handleVerify}
+                  onReject={setRejectingReportId}
+                />
+              )}
 
-            {activeMenu === 'SELESAI' && (
-              <CompletedReportsTable
-                reports={completedReports}
-                onSelectReport={setSelectedReportId}
-                onViewProof={setViewingProof}
-              />
-            )}
+              {activeMenu === 'SELESAI' && (
+                <CompletedReportsTable
+                  reports={completedReports}
+                  onSelectReport={setSelectedReportId}
+                  onViewProof={setViewingProof}
+                />
+              )}
 
-            {activeMenu === 'INVENTARIS' && (
-              <InventorySection
-                dbUnits={dbUnits}
-                unitSearch={unitSearch}
-                setUnitSearch={setUnitSearch}
-                filterJenis={filterJenis}
-                setFilterJenis={setFilterJenis}
-                filterSatuan={filterSatuan}
-                setFilterSatuan={setFilterSatuan}
-                sortConfig={sortConfig}
-                setSortConfig={setSortConfig}
-                onAddUnit={() => setIsAddUnitModalOpen(true)}
-                onAddBatch={() => setIsAddBatchModalOpen(true)}
-                onRequestDelete={handleRequestDelete}
-                onRequestDeleteBatch={handleRequestDeleteBatch}
-              />
-            )}
+              {activeMenu === 'INVENTARIS' && (
+                <InventorySection
+                  dbUnits={dbUnits}
+                  unitSearch={unitSearch}
+                  setUnitSearch={setUnitSearch}
+                  filterJenis={filterJenis}
+                  setFilterJenis={setFilterJenis}
+                  filterSatuan={filterSatuan}
+                  setFilterSatuan={setFilterSatuan}
+                  sortConfig={sortConfig}
+                  setSortConfig={setSortConfig}
+                  onAddUnit={() => setIsAddUnitModalOpen(true)}
+                  onAddBatch={() => setIsAddBatchModalOpen(true)}
+                  onRequestDelete={handleRequestDelete}
+                  onRequestDeleteBatch={handleRequestDeleteBatch}
+                />
+              )}
 
-            {activeMenu === 'MUTASI' && (
-              <StafMutationCenter
-                dbMutations={dbMutations}
-                dbUserMutations={dbUserMutations}
-                activeTab={mutationActiveTab}
-                setActiveTab={setMutationActiveTab}
-              />
-            )}
+              {activeMenu === 'MUTASI' && (
+                <StafMutationCenter
+                  dbMutations={dbMutations}
+                  dbUserMutations={dbUserMutations}
+                  activeTab={mutationActiveTab}
+                  setActiveTab={setMutationActiveTab}
+                />
+              )}
 
-            {activeMenu === 'PERSONEL' && (
-              <UsersTable
-                dbUsers={dbAllUsers}
-                dbRoles={dbRoles}
-                dbSatuans={dbSatuans}
-                isPengajuan={true}
-              />
-            )}
+              {activeMenu === 'PERSONEL' && (
+                <UsersTable
+                  dbUsers={dbAllUsers}
+                  dbRoles={dbRoles}
+                  dbSatuans={dbSatuans}
+                  isPengajuan={true}
+                />
+              )}
 
-            {activeMenu === 'SATUANS' && (
-              <SatuansTable
-                dbSatuans={dbSatuans}
-                dbUnits={dbUnits}
-                dbCases={dbCases}
-                dbUsers={dbAllUsers}
-                isPengajuan={true}
-              />
-            )}
+              {activeMenu === 'SATUANS' && (
+                <SatuansTable
+                  dbSatuans={dbSatuans}
+                  dbUnits={dbUnits}
+                  dbCases={dbCases}
+                  dbUsers={dbAllUsers}
+                  isPengajuan={true}
+                />
+              )}
+            </Suspense>
           </div>
         </div>
       </main>

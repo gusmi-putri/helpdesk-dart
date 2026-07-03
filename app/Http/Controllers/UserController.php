@@ -246,6 +246,31 @@ class UserController extends Controller
         return redirect()->back()->with('message', $msg);
     }
 
+    public function approveRegistration(string $id)
+    {
+        $user = User::findOrFail($id);
+        $user->is_approved = true;
+        $user->save();
+
+        $admin = auth()->user();
+        SystemLog::log('SUCCESS', $admin->id, "Menyetujui pendaftaran personel baru: {$user->nama_lengkap}");
+
+        return redirect()->back()->with('message', 'Pendaftaran personel telah disetujui.');
+    }
+
+    public function rejectRegistration(Request $request, string $id)
+    {
+        $user = User::findOrFail($id);
+        $userName = $user->nama_lengkap;
+        
+        $admin = auth()->user();
+        SystemLog::log('WARN', $admin->id, "Menolak pendaftaran personel baru: {$userName}");
+
+        $user->delete();
+
+        return redirect()->back()->with('message', 'Pendaftaran personel telah ditolak dan data dihapus.');
+    }
+
     public function reject(Request $request, string $id)
     {
         $mutation = UserMutation::findOrFail($id);

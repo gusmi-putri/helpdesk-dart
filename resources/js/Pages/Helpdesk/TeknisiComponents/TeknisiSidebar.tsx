@@ -20,7 +20,7 @@ const TeknisiSidebar: React.FC<TeknisiSidebarProps> = ({
     <aside className={`fixed inset-y-0 left-0 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 w-72 bg-white dark:bg-cighra-dark border-r border-slate-200 dark:border-slate-600 z-50 flex-shrink-0 flex flex-col shadow-2xl`}>
       <div className="p-6 border-b border-slate-200 dark:border-slate-600 flex items-center gap-4 bg-cighra-light dark:bg-cighra-darkcard/80">
         <div className="relative">
-          <img src="/logo.png" alt="DART Logo" className="w-12 h-14 object-contain" />
+          <img src="/logo.png" alt="DART Logo" fetchPriority="high" loading="eager" className="w-12 h-14 object-contain" />
         </div>
         <div>
           <h1 className="font-stencil text-2xl tracking-widest text-slate-800 dark:text-white leading-none">SISFO DART</h1>

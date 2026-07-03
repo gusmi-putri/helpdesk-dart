@@ -25,7 +25,6 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
   const addNotification = useStore(state => state.addNotification);
   const currentUser = useStore(state => state.currentUser);
   const logoutAction = useStore(state => state.logout);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Find current user's DB ID
   const dbUser = dbUsers.find((u: any) => u.username === currentUser?.username);
@@ -56,20 +55,6 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
 
   const selectedItem = dbCases.find((c: any) => c.db_id === selectedItemId);
 
-  // Form handling
-  const { data, setData, post, processing, reset, errors } = useForm({
-    unit_id: '',
-    deskripsi: '',
-    tingkat_kerusakan: '',
-    urgensi: '',
-    jenis_perbaikan: '',
-    dokumen_anggaran: [] as File[],
-    keterangan_anggaran: '',
-    klasifikasi: '',
-    file_bukti: [] as File[],
-    tautan_video: '',
-  });
-
   // Auto-polling
   useEffect(() => {
     const interval = setInterval(() => {
@@ -77,37 +62,6 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
     }, 15000);
     return () => clearInterval(interval);
   }, []);
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const newFiles = Array.from(e.target.files);
-      setData('file_bukti', [...data.file_bukti, ...newFiles].slice(0, 5));
-    }
-    if (fileInputRef.current) fileInputRef.current.value = '';
-  };
-
-  const removeFile = (index: number) => {
-    setData('file_bukti', data.file_bukti.filter((_, i) => i !== index));
-  };
-
-  const handleSubmitNewReport = (e: React.FormEvent) => {
-    e.preventDefault();
-    post('/reports', {
-      onSuccess: () => {
-        // Simpan data yang baru saja dikirim untuk diberikan ke AI
-        setLastReportedData({
-          unit_id: data.unit_id,
-          deskripsi: data.deskripsi,
-          tingkat_kerusakan: data.tingkat_kerusakan
-        });
-        reset();
-        setActiveMenu('WIZARD');
-      },
-      onError: () => {
-        addNotification('Gagal mengirim laporan. Silakan periksa kembali koneksi Anda.', 'error');
-      }
-    });
-  };
 
   const handleLogout = () => {
     setIsLogoutModalOpen(true);
@@ -148,17 +102,13 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
 
           {activeMenu === 'FORM' && (
             <ReportForm
-              data={data}
-              setData={setData}
-              errors={errors}
-              processing={processing}
-              handleSubmit={handleSubmitNewReport}
               dbUnits={dbUnits}
               authUser={authUser}
               currentUser={currentUser}
-              fileInputRef={fileInputRef}
-              handleFileSelect={handleFileSelect}
-              removeFile={removeFile}
+              onSuccess={(reportedData) => {
+                setLastReportedData(reportedData);
+                setActiveMenu('WIZARD');
+              }}
             />
           )}
 

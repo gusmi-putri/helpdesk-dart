@@ -1,34 +1,49 @@
 import React from 'react';
 import { Phone, MapPin, AlertCircle, CircleUser, Upload, Camera, Trash2, Send, ShieldCheck, X, Wallet, FileText, Building2 } from 'lucide-react';
 import SearchableSelect from '@/Components/SearchableSelect';
+import { useForm } from '@inertiajs/react';
+import { useStore } from '@/store/useStore';
 
 interface ReportFormProps {
-  data: any;
-  setData: (key: string, value: any) => void;
-  errors: any;
-  processing: boolean;
-  handleSubmit: (e: React.FormEvent) => void;
   dbUnits: any[];
   authUser: any;
   currentUser: any;
-  fileInputRef: React.RefObject<HTMLInputElement | null>;
-  handleFileSelect: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  removeFile: (index: number) => void;
+  onSuccess: (reportedData: any) => void;
 }
 
 const ReportForm: React.FC<ReportFormProps> = ({
-  data,
-  setData,
-  errors,
-  processing,
-  handleSubmit,
   dbUnits,
   authUser,
   currentUser,
-  fileInputRef,
-  handleFileSelect,
-  removeFile
+  onSuccess
 }) => {
+  const addNotification = useStore(state => state.addNotification);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const { data, setData, post, processing, reset, errors } = useForm({
+    unit_id: '',
+    deskripsi: '',
+    tingkat_kerusakan: '',
+    urgensi: '',
+    jenis_perbaikan: '',
+    dokumen_anggaran: [] as File[],
+    keterangan_anggaran: '',
+    klasifikasi: '',
+    file_bukti: [] as File[],
+    tautan_video: '',
+  });
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const newFiles = Array.from(e.target.files);
+      setData('file_bukti', [...data.file_bukti, ...newFiles].slice(0, 5));
+    }
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const removeFile = (index: number) => {
+    setData('file_bukti', data.file_bukti.filter((_: File, i: number) => i !== index));
+  };
   const [isConfirmOpen, setIsConfirmOpen] = React.useState(false);
   const [localErrors, setLocalErrors] = React.useState<any>({});
   const budgetDocInputRef = React.useRef<HTMLInputElement>(null);
@@ -63,8 +78,19 @@ const ReportForm: React.FC<ReportFormProps> = ({
 
   const confirmSubmit = () => {
     setIsConfirmOpen(false);
-    const syntheticEvent = { preventDefault: () => { } } as React.FormEvent;
-    handleSubmit(syntheticEvent);
+    post('/reports', {
+      onSuccess: () => {
+        onSuccess({
+          unit_id: data.unit_id,
+          deskripsi: data.deskripsi,
+          tingkat_kerusakan: data.tingkat_kerusakan
+        });
+        reset();
+      },
+      onError: () => {
+        addNotification('Gagal mengirim laporan. Silakan periksa kembali koneksi Anda.', 'error');
+      }
+    });
   };
 
   const selectedUnit = dbUnits.find((u: any) => (u.db_id || u.id)?.toString() === data.unit_id?.toString());

@@ -3,6 +3,8 @@ import { Radar, FileArchive, AlertTriangle, Wrench, Download, Paperclip } from '
 import { useTableSort } from '@/hooks/useTableSort';
 import SortableHeader from '@/Components/Table/SortableHeader';
 import ReportAttachmentModal from './ReportAttachmentModal';
+import { usePagination } from '@/hooks/usePagination';
+import Pagination from '@/Components/Table/Pagination';
 
 interface ReportsSectionProps {
   dbCases: any[];
@@ -43,28 +45,29 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
   });
 
   const { sortedItems: filteredCases, sortConfig, handleSort } = useTableSort(filtered, { key: 'caseId', direction: 'desc' });
+  const { currentPage, totalPages, paginatedItems, handlePageChange, itemsPerPage, totalItems } = usePagination(filteredCases, 10);
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       
       {/* 1. Summary Cards (Original Tactical Style) */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className={`bg-white dark:bg-cighra-darkcard/80 border-l-4 ${reportStatusFilter === 'PENDING' ? 'border-cighra-primary dark:border-cighra-gold' : 'border-slate-200 dark:border-slate-600'} p-4 shadow-md`}>
+        <button onClick={() => setReportStatusFilter('PENDING')} className={`text-left bg-white dark:bg-cighra-darkcard/80 border-l-4 ${reportStatusFilter === 'PENDING' ? 'border-cighra-primary dark:border-cighra-gold' : 'border-slate-200 dark:border-slate-600'} p-4 shadow-md hover:bg-slate-50 dark:hover:bg-cighra-dark/60 transition-colors`}>
           <p className="text-[9px] font-mono font-bold text-slate-500 dark:text-slate-300 tracking-widest uppercase mb-1">Laporan Baru</p>
           <p className={`text-2xl font-tactical font-bold ${reportStatusFilter === 'PENDING' ? 'text-cighra-primary dark:text-cighra-gold' : 'text-slate-700 dark:text-slate-300'}`}>{counts.PENDING}</p>
-        </div>
-        <div className={`bg-white dark:bg-cighra-darkcard/80 border-l-4 ${['DIVERIFIKASI', 'DITERIMA TEKNISI', 'DIPROSES'].includes(reportStatusFilter) ? 'border-blue-500' : 'border-slate-200 dark:border-slate-600'} p-4 shadow-md`}>
+        </button>
+        <button onClick={() => setReportStatusFilter('DIPROSES')} className={`text-left bg-white dark:bg-cighra-darkcard/80 border-l-4 ${['DIVERIFIKASI', 'DITERIMA TEKNISI', 'DIPROSES'].includes(reportStatusFilter) ? 'border-blue-500' : 'border-slate-200 dark:border-slate-600'} p-4 shadow-md hover:bg-slate-50 dark:hover:bg-cighra-dark/60 transition-colors`}>
           <p className="text-[9px] font-mono font-bold text-slate-500 dark:text-slate-300 tracking-widest uppercase mb-1">Aktif / Penanganan</p>
           <p className={`text-2xl font-tactical font-bold ${['DIVERIFIKASI', 'DITERIMA TEKNISI', 'DIPROSES'].includes(reportStatusFilter) ? 'text-blue-500' : 'text-slate-700 dark:text-slate-300'}`}>{counts.AKTIF}</p>
-        </div>
-        <div className={`bg-white dark:bg-cighra-darkcard/80 border-l-4 ${reportStatusFilter === 'SELESAI' ? 'border-green-500' : 'border-slate-200 dark:border-slate-600'} p-4 shadow-md`}>
+        </button>
+        <button onClick={() => setReportStatusFilter('SELESAI')} className={`text-left bg-white dark:bg-cighra-darkcard/80 border-l-4 ${reportStatusFilter === 'SELESAI' ? 'border-green-500' : 'border-slate-200 dark:border-slate-600'} p-4 shadow-md hover:bg-slate-50 dark:hover:bg-cighra-dark/60 transition-colors`}>
           <p className="text-[9px] font-mono font-bold text-slate-500 dark:text-slate-300 tracking-widest uppercase mb-1">Telah Selesai</p>
           <p className={`text-2xl font-tactical font-bold ${reportStatusFilter === 'SELESAI' ? 'text-green-500' : 'text-slate-700 dark:text-slate-300'}`}>{counts.SELESAI}</p>
-        </div>
-        <div className={`bg-white dark:bg-cighra-darkcard/80 border-l-4 ${reportStatusFilter === 'DITOLAK' ? 'border-red-600' : 'border-slate-200 dark:border-slate-600'} p-4 shadow-md`}>
+        </button>
+        <button onClick={() => setReportStatusFilter('DITOLAK')} className={`text-left bg-white dark:bg-cighra-darkcard/80 border-l-4 ${reportStatusFilter === 'DITOLAK' ? 'border-red-600' : 'border-slate-200 dark:border-slate-600'} p-4 shadow-md hover:bg-slate-50 dark:hover:bg-cighra-dark/60 transition-colors`}>
           <p className="text-[9px] font-mono font-bold text-slate-500 dark:text-slate-300 tracking-widest uppercase mb-1">Ditolak</p>
           <p className={`text-2xl font-tactical font-bold ${reportStatusFilter === 'DITOLAK' ? 'text-red-600' : 'text-slate-700 dark:text-slate-300'}`}>{counts.DITOLAK}</p>
-        </div>
+        </button>
       </div>
 
       {/* Main Container */}
@@ -158,14 +161,14 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-gray-800 bg-white dark:bg-transparent">
-              {filteredCases.length === 0 ? (
+              {paginatedItems.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="p-10 text-center text-slate-500 italic font-mono tracking-widest uppercase">
                     Tidak ada laporan dengan status {reportStatusFilter === 'ALL' ? 'apapun' : reportStatusFilter}.
                   </td>
                 </tr>
               ) : (
-                filteredCases.map((c: any) => (
+                paginatedItems.map((c: any) => (
                   <tr key={c.caseId} className="hover:bg-slate-50 dark:hover:bg-slate-700/60 transition-colors group text-slate-800 dark:text-slate-200">
                     <td className="p-4 font-mono text-slate-800 dark:text-white font-bold text-center">
                       {c.caseId}
@@ -277,6 +280,14 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
             </tbody>
           </table>
         </div>
+        
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          handlePageChange={handlePageChange}
+          totalItems={totalItems}
+          itemsPerPage={itemsPerPage}
+        />
       </div>
 
       <ReportAttachmentModal

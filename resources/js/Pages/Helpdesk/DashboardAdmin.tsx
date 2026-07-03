@@ -1,21 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 
 import Sidebar from './AdminComponents/Sidebar';
 import Topbar from './AdminComponents/Topbar';
-import AnalyticsSection from './AdminComponents/AnalyticsSection';
-import UsersTable from './AdminComponents/UsersTable';
-import UnitsTable from './AdminComponents/UnitsTable';
-import LogsTable from './AdminComponents/LogsTable';
-import ReportsSection from './AdminComponents/ReportsSection';
-import ApprovalCenter from './AdminComponents/ApprovalCenter';
-import FeedbackTable from './AdminComponents/FeedbackTable';
-import MonitoringMap from './AdminComponents/MonitoringMap';
-import SatuansTable from './AdminComponents/SatuansTable';
 import RecapModal from './AdminComponents/RecapModal';
 import RejectConfirmModal from './AdminComponents/RejectConfirmModal';
 import LogoutConfirmModal from '@/Components/LogoutConfirmModal';
 import { useStore } from '@/store/useStore';
 import { router } from '@inertiajs/react';
+
+// Lazy loaded components for better performance
+const AnalyticsSection = lazy(() => import('./AdminComponents/AnalyticsSection'));
+const UsersTable = lazy(() => import('./AdminComponents/UsersTable'));
+const UnitsTable = lazy(() => import('./AdminComponents/UnitsTable'));
+const LogsTable = lazy(() => import('./AdminComponents/LogsTable'));
+const ReportsSection = lazy(() => import('./AdminComponents/ReportsSection'));
+const ApprovalCenter = lazy(() => import('./AdminComponents/ApprovalCenter'));
+const FeedbackTable = lazy(() => import('./AdminComponents/FeedbackTable'));
+const MonitoringMap = lazy(() => import('./AdminComponents/MonitoringMap'));
+const SatuansTable = lazy(() => import('./AdminComponents/SatuansTable'));
 
 type SubMenuReport = 'KERUSAKAN' | 'PERBAIKAN';
 type MenuTab = 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER' | 'FEEDBACK';
@@ -77,7 +79,11 @@ const DashboardAdmin = (props: any) => {
   };
 
   const handleApproveUser = (mutation: any) => {
-    router.post(`/users/${mutation.id}/approve`, {}, {
+    const endpoint = mutation.type === 'request_register' 
+      ? `/users/${mutation.id}/approve-registration` 
+      : `/users/${mutation.id}/approve`;
+      
+    router.post(endpoint, {}, {
       onSuccess: () => {
         // Notification logic if any
       }
@@ -91,7 +97,11 @@ const DashboardAdmin = (props: any) => {
 
   const confirmRejectUser = (reason: string = 'Ditolak oleh Admin') => {
     if (userToReject) {
-      router.post(`/users/${userToReject.id}/reject`, { admin_notes: reason }, {
+      const endpoint = userToReject.type === 'request_register'
+        ? `/users/${userToReject.id}/reject-registration`
+        : `/users/${userToReject.id}/reject`;
+        
+      router.post(endpoint, { admin_notes: reason }, {
         onSuccess: () => {
           setIsRejectModalOpen(false);
           setUserToReject(null);
@@ -167,72 +177,81 @@ const DashboardAdmin = (props: any) => {
         {/* Scrollable Content Container */}
         <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar z-10">
           <div className="max-w-[1400px] mx-auto">
-            {activeMenu === 'ANALYTICS' && <AnalyticsSection dbCases={dbCases} />}
-            {activeMenu === 'MAP' && (
-              <MonitoringMap 
-                dbUnits={dbUnits} 
-                dbCases={dbCases} 
-                dbSatuans={dbSatuans} 
-                initialFocusSatuan={mapFocusSatuan}
-              />
-            )}
-            {activeMenu === 'REPORTS' && (
-              <ReportsSection
-                dbCases={dbCases}
-                reportStatusFilter={reportStatusFilter}
-                setReportStatusFilter={setReportStatusFilter}
-                activeSubReport={activeSubReport}
-                setActiveSubReport={setActiveSubReport}
-                setIsRecapModalOpen={setIsRecapModalOpen}
-                handlePrintCasePDF={handlePrintCasePDF}
-              />
-            )}
-            {activeMenu === 'USERS' && (
-              <UsersTable
-                dbUsers={dbUsers}
-                dbRoles={dbRoles}
-                dbSatuans={dbSatuans}
-              />
-            )}
-            {activeMenu === 'LOGS' && (
-              <LogsTable
-                dbLogs={dbLogs}
-                logFilter={logFilter}
-                setLogFilter={setLogFilter}
-                setSelectedLogPayload={setSelectedLogPayload}
-              />
-            )}
-            {activeMenu === 'UNITS' && (
-              <UnitsTable
-                dbUnits={dbUnits}
-                dbSatuans={dbSatuans}
-                dbCases={dbCases}
-              />
-            )}
-            {activeMenu === 'SATUANS' && (
-              <SatuansTable
-                dbSatuans={dbSatuans}
-                dbUnits={dbUnits}
-                dbCases={dbCases}
-                dbUsers={dbUsers}
-                handleViewOnMap={(satuan) => {
-                  setMapFocusSatuan(satuan.nama_satuan);
-                  setActiveMenu('MAP');
-                }}
-              />
-            )}
-            {activeMenu === 'APPROVAL_CENTER' && (
-              <ApprovalCenter
-                dbUsers={dbUsers}
-                dbMutations={dbMutations}
-                dbUserMutations={dbUserMutations}
-                dbSatuans={dbSatuans}
-                dbArchivedUnits={dbArchivedUnits}
-                handleApproveUser={handleApproveUser}
-                handleRejectUser={handleRejectUser}
-              />
-            )}
-            {activeMenu === 'FEEDBACK' && <FeedbackTable dbFeedbacks={dbFeedbacks} />}
+            <Suspense fallback={
+              <div className="flex items-center justify-center h-64 w-full">
+                <div className="flex flex-col items-center gap-4 animate-in fade-in duration-300">
+                  <div className="w-10 h-10 border-4 border-cighra-gold border-t-transparent rounded-full animate-spin"></div>
+                  <span className="text-xs font-tactical tracking-[0.2em] uppercase text-cighra-gold animate-pulse">Memuat Komponen...</span>
+                </div>
+              </div>
+            }>
+              {activeMenu === 'ANALYTICS' && <AnalyticsSection dbCases={dbCases} />}
+              {activeMenu === 'MAP' && (
+                <MonitoringMap 
+                  dbUnits={dbUnits} 
+                  dbCases={dbCases} 
+                  dbSatuans={dbSatuans} 
+                  initialFocusSatuan={mapFocusSatuan}
+                />
+              )}
+              {activeMenu === 'REPORTS' && (
+                <ReportsSection
+                  dbCases={dbCases}
+                  reportStatusFilter={reportStatusFilter}
+                  setReportStatusFilter={setReportStatusFilter}
+                  activeSubReport={activeSubReport}
+                  setActiveSubReport={setActiveSubReport}
+                  setIsRecapModalOpen={setIsRecapModalOpen}
+                  handlePrintCasePDF={handlePrintCasePDF}
+                />
+              )}
+              {activeMenu === 'USERS' && (
+                <UsersTable
+                  dbUsers={dbUsers}
+                  dbRoles={dbRoles}
+                  dbSatuans={dbSatuans}
+                />
+              )}
+              {activeMenu === 'LOGS' && (
+                <LogsTable
+                  dbLogs={dbLogs}
+                  logFilter={logFilter}
+                  setLogFilter={setLogFilter}
+                  setSelectedLogPayload={setSelectedLogPayload}
+                />
+              )}
+              {activeMenu === 'UNITS' && (
+                <UnitsTable
+                  dbUnits={dbUnits}
+                  dbSatuans={dbSatuans}
+                  dbCases={dbCases}
+                />
+              )}
+              {activeMenu === 'SATUANS' && (
+                <SatuansTable
+                  dbSatuans={dbSatuans}
+                  dbUnits={dbUnits}
+                  dbCases={dbCases}
+                  dbUsers={dbUsers}
+                  handleViewOnMap={(satuan: any) => {
+                    setMapFocusSatuan(satuan.nama_satuan);
+                    setActiveMenu('MAP');
+                  }}
+                />
+              )}
+              {activeMenu === 'APPROVAL_CENTER' && (
+                <ApprovalCenter
+                  dbUsers={dbUsers}
+                  dbMutations={dbMutations}
+                  dbUserMutations={dbUserMutations}
+                  dbSatuans={dbSatuans}
+                  dbArchivedUnits={dbArchivedUnits}
+                  handleApproveUser={handleApproveUser}
+                  handleRejectUser={handleRejectUser}
+                />
+              )}
+              {activeMenu === 'FEEDBACK' && <FeedbackTable dbFeedbacks={dbFeedbacks} />}
+            </Suspense>
           </div>
         </div>
       </main>

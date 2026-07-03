@@ -6,6 +6,8 @@ import UnitModal from './UnitModal';
 import UnitDeleteModal from './UnitDeleteModal';
 import UnitHistoryModal from './UnitHistoryModal';
 import AdminUnitBatchModal from './AdminUnitBatchModal';
+import { usePagination } from '@/hooks/usePagination';
+import Pagination from '@/Components/Table/Pagination';
 
 interface UnitsTableProps {
   dbUnits: any[];
@@ -104,6 +106,8 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
     if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
     return 0;
   });
+
+  const { currentPage, totalPages, paginatedItems, handlePageChange, itemsPerPage, totalItems } = usePagination(filteredUnits, 15);
 
   const handleUnitSort = (key: string) => {
     let direction: 'asc' | 'desc' = 'asc';
@@ -357,12 +361,12 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700/50">
-              {filteredUnits.length === 0 ? (
+              {paginatedItems.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="p-10 text-center text-slate-500 dark:text-slate-400 font-mono italic uppercase tracking-widest">Tidak ada unit yang ditemukan.</td>
                 </tr>
               ) : (
-                filteredUnits.map((u: any) => {
+                paginatedItems.map((u: any) => {
                   const isSelected = selectedUnitIds.includes(u.db_id);
                   return (
                     <tr 
@@ -449,6 +453,13 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
             </tbody>
           </table>
         </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          handlePageChange={handlePageChange}
+          totalItems={totalItems}
+          itemsPerPage={itemsPerPage}
+        />
       </div>
       {/* Import Result Modal */}
       {importResult && (

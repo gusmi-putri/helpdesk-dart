@@ -46,7 +46,7 @@ const StafSidebar: React.FC<StafSidebarProps> = ({
       >
         <div className="p-6 border-b border-slate-200 dark:border-slate-600 flex items-center gap-4 bg-cighra-light dark:bg-cighra-darkcard/80">
           <div className="relative">
-            <img src="/logo.png" alt="DART Logo" className="w-12 h-14 object-contain" />
+            <img src="/logo.png" alt="DART Logo" fetchPriority="high" loading="eager" className="w-12 h-14 object-contain" />
           </div>
           <div>
             <h1 className="font-stencil text-2xl tracking-widest text-slate-800 dark:text-white leading-none">SISFO DART</h1>

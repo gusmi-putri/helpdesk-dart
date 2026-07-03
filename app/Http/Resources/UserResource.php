@@ -32,6 +32,7 @@ class UserResource extends JsonResource
             'is_active' => $this->is_active,
             'status' => !$this->is_approved ? 'Menunggu' : ($this->is_active ? 'Aktif' : 'Nonaktif'),
             'lastLogin' => 'Baru saja',
+            'created_at' => $this->created_at,
             // Specifically for technicians
             'tasksReceived' => $this->whenLoaded('reportsDitangani', function () {
                 return $this->reportsDitangani->count();

@@ -19,6 +19,7 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
 
   const getBadgeInfo = (type: string) => {
     if (type === 'request_add') return { label: 'TAMBAH PERSONEL', color: 'bg-green-100 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800' };
+    if (type === 'request_register') return { label: 'PENDAFTARAN BARU', color: 'bg-green-100 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800' };
     if (type === 'request_edit') return { label: 'UBAH PROFIL', color: 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800' };
     if (type === 'request_delete') return { label: 'HAPUS PERSONEL', color: 'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800' };
     return { label: 'UNKNOWN', color: 'bg-gray-100' };
@@ -47,7 +48,7 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
             ) : pendingMutations.map((m: any) => {
               const badge = getBadgeInfo(m.type);
               
-              const targetName = m.user_data?.nama_lengkap || m.target_user?.name || '-';
+              const targetName = m.user_data?.name || m.user_data?.nama_lengkap || m.target_user?.name || '-';
               const targetUsername = m.user_data?.username || m.target_user?.username || '-';
 
               return (
@@ -57,7 +58,7 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
                       {badge.label}
                     </span>
                     <div className="text-[9px] font-mono mt-1 text-slate-500">
-                      Oleh: {m.requested_by?.name}
+                      Oleh: {m.requested_by?.name || '-'}
                     </div>
                   </td>
                   <td className="p-4 text-center">
@@ -70,18 +71,18 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
                   </td>
                   <td className="p-4 text-slate-800 dark:text-white font-bold text-center">{targetName}</td>
                   <td className="p-4">
-                    {m.type === 'request_add' ? (
+                    {m.type === 'request_add' || m.type === 'request_register' ? (
                       <div className="text-[10px] font-mono text-slate-800 dark:text-white space-y-0.5">
-                        <div>NRP/NIP: {m.user_data?.nrp_nip}</div>
-                        <div>Satuan: {m.user_data?.asal_satuan}</div>
-                        <div>WA: {m.user_data?.no_wa}</div>
+                        <div>NRP/NIP: {m.user_data?.nrp_nip || '-'}</div>
+                        <div>Satuan: {m.user_data?.asal_satuan || m.user_data?.satuan?.nama_satuan || '-'}</div>
+                        <div>WA: {m.user_data?.no_wa || '-'}</div>
                       </div>
                     ) : m.type === 'request_delete' ? (
                       <div className="text-[10px] font-mono text-red-500 dark:text-red-400 italic">Penghapusan akun dari sistem.</div>
                     ) : (
                       <div className="text-[10px] font-mono text-slate-800 dark:text-white">
                         {Object.entries(m.user_data || {}).map(([key, val]) => (
-                          <div key={key}><span className="text-blue-500 dark:text-blue-400 font-bold uppercase">{key}:</span> {String(val)}</div>
+                          <div key={key}><span className="text-blue-500 dark:text-blue-400 font-bold uppercase">{key}:</span> {typeof val === 'object' && val !== null ? JSON.stringify(val) : String(val)}</div>
                         ))}
                       </div>
                     )}

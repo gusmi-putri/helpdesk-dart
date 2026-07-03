@@ -47,7 +47,7 @@ const Navbar = () => {
             className="flex items-center gap-2 cursor-pointer group"
             onClick={() => handleNavClick('BERANDA')}
           >
-            <img src="/logo.png" alt="DART Logo" className="w-9 h-10 object-contain drop-shadow-[0_0_8px_rgba(30,49,102,0.4)] dark:drop-shadow-[0_0_8px_rgba(255,215,0,0.4)] transition-all group-hover:scale-105" />
+            <img src="/logo.png" alt="DART Logo" fetchPriority="high" loading="eager" className="w-9 h-10 object-contain drop-shadow-[0_0_8px_rgba(30,49,102,0.4)] dark:drop-shadow-[0_0_8px_rgba(255,215,0,0.4)] transition-all group-hover:scale-105" />
             <span className="font-stencil text-2xl tracking-widest text-cighra-primary dark:text-white transition-colors">SISFO DART</span>
           </div>
           <div className="hidden md:block">

@@ -17,18 +17,20 @@ class SatuanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'kode_satuan' => 'nullable|string|max:50',
             'nama_satuan' => 'required|string|max:100|unique:satuans,nama_satuan',
+            'alamat' => 'nullable|string',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
         ]);
 
         $user = auth()->user();
 
-        // Guest registration (no auth)
         if (!$user) {
             $satuan = Satuan::create([
                 'nama_satuan' => strtoupper($request->nama_satuan),
                 'is_verified' => false,
+                'pending_action' => 'create',
                 'latitude' => null,
                 'longitude' => null,
             ]);
@@ -44,7 +46,9 @@ class SatuanController extends Controller
 
         if ($isAdmin) {
             $satuan = Satuan::create([
+                'kode_satuan' => $request->kode_satuan,
                 'nama_satuan' => strtoupper($request->nama_satuan),
+                'alamat' => $request->alamat,
                 'is_verified' => true,
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
@@ -54,10 +58,14 @@ class SatuanController extends Controller
         } else {
             // Staf
             $satuan = Satuan::create([
+                'kode_satuan' => $request->kode_satuan,
                 'nama_satuan' => strtoupper($request->nama_satuan),
+                'alamat' => $request->alamat,
                 'is_verified' => false,
                 'pending_action' => 'create',
                 'pending_changes' => [
+                    'kode_satuan' => $request->kode_satuan,
+                    'alamat' => $request->alamat,
                     'latitude' => $request->latitude,
                     'longitude' => $request->longitude,
                 ]
@@ -70,7 +78,9 @@ class SatuanController extends Controller
     public function update(Request $request, Satuan $satuan)
     {
         $request->validate([
+            'kode_satuan' => 'nullable|string|max:50',
             'nama_satuan' => 'sometimes|string|max:100|unique:satuans,nama_satuan,' . $satuan->id,
+            'alamat' => 'nullable|string',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
         ]);
@@ -78,16 +88,13 @@ class SatuanController extends Controller
         $user = auth()->user();
         $isAdmin = $user->role?->nama_role === 'Admin';
 
-        $updateData = [];
-        if ($request->has('nama_satuan')) {
-            $updateData['nama_satuan'] = strtoupper($request->nama_satuan);
-        }
-        if ($request->has('latitude')) {
-            $updateData['latitude'] = $request->latitude;
-        }
-        if ($request->has('longitude')) {
-            $updateData['longitude'] = $request->longitude;
-        }
+        $updateData = [
+            'kode_satuan' => $request->input('kode_satuan'),
+            'nama_satuan' => strtoupper($request->input('nama_satuan')),
+            'alamat' => $request->input('alamat'),
+            'latitude' => $request->input('latitude'),
+            'longitude' => $request->input('longitude'),
+        ];
 
         if ($isAdmin) {
             $updateData['is_verified'] = true;

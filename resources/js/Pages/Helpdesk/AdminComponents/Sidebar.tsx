@@ -29,7 +29,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   // Collapsible menu states
   const [isDataMasterExpanded, setIsDataMasterExpanded] = useState<boolean>(true);
 
-  const pendingPersonelCount = dbUsers.filter((u: any) => !u.is_approved).length;
+  const pendingPersonelCount = dbUsers.filter((u: any) => !u.is_approved).length; // Keep this, but we need to pass dbUserMutations or just use dbUsers.
   const pendingMutationsCount = dbMutations.filter((m: any) => m.status === 'pending').length;
   const pendingSatuansCount = dbSatuans.filter((s: any) => s.pending_action !== null).length;
   const totalPending = pendingPersonelCount + pendingMutationsCount + pendingSatuansCount;
@@ -58,7 +58,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         {/* Brand */}
         <div className="p-6 border-b border-slate-200 dark:border-slate-600 flex items-center gap-4 bg-cighra-light dark:bg-cighra-dark/60">
           <div className="relative">
-            <img src="/logo.png" alt="DART Logo" className="w-12 h-14 object-contain drop-shadow-[0_0_8px_rgba(255,215,0,0.5)]" />
+            <img src="/logo.png" alt="DART Logo" fetchPriority="high" loading="eager" className="w-12 h-14 object-contain drop-shadow-[0_0_8px_rgba(255,215,0,0.5)]" />
           </div>
           <div>
             <h1 className="font-stencil text-2xl tracking-widest text-slate-800 dark:text-white leading-none">SISFO DART</h1>
