@@ -8,11 +8,11 @@ use Illuminate\Support\Facades\Log;
 class GeminiService
 {
     protected string $apiKey;
-    protected string $apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent';
+    protected string $apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent';
 
     public function __construct()
     {
-        $this->apiKey = env('GEMINI_API_KEY', '');
+        $this->apiKey = config('services.gemini.key', '');
     }
 
     /**
@@ -48,7 +48,8 @@ class GeminiService
         try {
             $response = Http::withoutVerifying()->withHeaders([
                 'Content-Type' => 'application/json',
-            ])->post($this->apiUrl . '?key=' . $this->apiKey, [
+                'x-goog-api-key' => $this->apiKey,
+            ])->post($this->apiUrl, [
                 'contents' => [
                     [
                         'role' => 'user',
