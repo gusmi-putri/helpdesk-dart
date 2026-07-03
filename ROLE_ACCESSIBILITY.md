@@ -20,6 +20,9 @@ Admin memiliki hak akses tertinggi (`role:Admin`) dan berfungsi sebagai pengontr
 *   **Manajemen Kasus/Laporan:**
     *   Memverifikasi laporan baru dari pelapor (`reports.verify`).
     *   Mengekspor data operasional dan rekapitulasi ke dalam PDF/Excel (`admin.recap.export`).
+*   **Manajemen Satuan Kerja (Lokasi):**
+    *   Melihat, menambah, dan memperbarui data Satuan (termasuk koordinat Peta Monitoring) secara instan.
+    *   **Persetujuan Satuan:** Memvalidasi dan menyetujui (`approve`) pengajuan penambahan atau perubahan data Satuan dari form registrasi atau pengajuan Staf.
 
 ---
 
@@ -35,6 +38,8 @@ Staf (`role:Staf`) berfokus pada manajemen data aset harian, namun tindakan yang
     *   Staf bertugas mendistribusikan laporan yang masuk kepada Teknisi yang tersedia melalui *endpoint* `/reports/{id}/handle`.
 *   **Manajemen Akun Terbatas:**
     *   Bisa melihat daftar pengguna dan melakukan *toggle status* (`users.toggle-status`), namun **tidak memiliki akses** untuk menyetujui pengguna baru (`users.approve` dibatasi hanya untuk Admin).
+*   **Manajemen Satuan Terbatas:**
+    *   Dapat mengedit data Satuan Kerja, namun modifikasi ini berstatus **Pengajuan** (`pending_action: edit`) dan tidak langsung terubah di sistem. Perubahan ini membutuhkan persetujuan Admin melalui *Approval Center*.
 *   **Ekspor Data:** Dapat mengekspor rekapitulasi data inventaris (`staf.recap.export`).
 
 ---
