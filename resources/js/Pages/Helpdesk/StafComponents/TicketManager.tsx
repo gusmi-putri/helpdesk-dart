@@ -170,38 +170,49 @@ const TicketManager: React.FC<TicketManagerProps> = ({
       </div>
 
       {/* 2. Filters & Search */}
-      <div className="flex flex-col md:flex-row gap-3 items-center bg-white dark:bg-cighra-darkcard p-3  border border-slate-200 dark:border-slate-700/50 shadow-sm">
-        <div className="relative flex-1 w-full">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-          <input 
-            type="text" 
-            placeholder="Cari ID tiket, unit, pelapor, atau lokasi..." 
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700  text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-cighra-primary dark:focus:ring-cighra-gold"
-          />
+      <div className="mb-6 flex flex-col md:flex-row gap-4 items-end">
+        <div className="w-full md:w-96">
+          <label className="block text-[9px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">CARI TIKET / UNIT</label>
+          <div className="relative">
+            <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
+            <input 
+              type="text" 
+              placeholder="ID TIKET, UNIT, PELAPOR..." 
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 pl-9 pr-4 py-2 text-xs font-mono text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold transition-colors uppercase"
+            />
+          </div>
         </div>
         
-        <div className="flex flex-wrap md:flex-nowrap gap-2 w-full md:w-auto">
-          <select value={priorityFilter} onChange={e => setPriorityFilter(e.target.value)} className="py-2 pl-3 pr-8 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700  text-xs font-medium text-slate-700 dark:text-slate-300 focus:outline-none appearance-none">
-            <option value="ALL">Prioritas</option>
-            <option value="KRITIS">Kritis</option>
-            <option value="TINGGI">Tinggi</option>
-            <option value="SEDANG">Sedang</option>
-            <option value="RENDAH">Rendah</option>
+        <div className="w-full md:w-48">
+          <label className="block text-[9px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">PRIORITAS</label>
+          <select 
+            value={priorityFilter} 
+            onChange={e => setPriorityFilter(e.target.value)} 
+            className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-3 py-2 text-xs font-mono text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold transition-colors uppercase"
+          >
+            <option value="ALL">SEMUA PRIORITAS</option>
+            <option value="KRITIS">KRITIS</option>
+            <option value="TINGGI">TINGGI</option>
+            <option value="SEDANG">SEDANG</option>
+            <option value="RENDAH">RENDAH</option>
           </select>
-          
-          <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className="py-2 pl-3 pr-8 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700  text-xs font-medium text-slate-700 dark:text-slate-300 focus:outline-none appearance-none">
-            <option value="ALL">Status</option>
-            <option value="PENDING">Menunggu Verifikasi</option>
-            <option value="DIVERIFIKASI">Diverifikasi</option>
-            <option value="DIPROSES">Dalam Penanganan</option>
-            <option value="SELESAI">Selesai</option>
-          </select>
+        </div>
 
-          <button className="p-2 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700  text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
-            <SlidersHorizontal className="w-4 h-4" />
-          </button>
+        <div className="w-full md:w-56">
+          <label className="block text-[9px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">STATUS</label>
+          <select 
+            value={statusFilter} 
+            onChange={e => setStatusFilter(e.target.value)} 
+            className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-3 py-2 text-xs font-mono text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold transition-colors uppercase"
+          >
+            <option value="ALL">SEMUA STATUS</option>
+            <option value="PENDING">MENUNGGU VERIFIKASI</option>
+            <option value="DIVERIFIKASI">DIVERIFIKASI</option>
+            <option value="DIPROSES">DALAM PENANGANAN</option>
+            <option value="SELESAI">SELESAI</option>
+          </select>
         </div>
       </div>
 
