@@ -52,7 +52,7 @@ class ReportResource extends JsonResource
                 'tindakan' => $this->catatan_teknisi,
                 'metodePerbaikan' => $this->metode_perbaikan, 
                 'foto_bukti_selesai' => $this->file_bukti_selesai ? asset('storage/reports/' . $this->file_bukti_selesai) : null,
-                'video_bukti_selesai' => $this->file_bukti_selesai_video ? asset('storage/reports/' . $this->file_bukti_selesai_video) : null,
+                'video_bukti_selesai' => $this->tautan_video_selesai,
                 'alasanPenolakan' => $this->alasan_penolakan,
                 'statusPerbaikan' => strtoupper($this->status_laporan),
             ]

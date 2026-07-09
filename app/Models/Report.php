@@ -12,7 +12,7 @@ class Report extends Model
         'unit_id', 'user_id', 'staff_id', 'teknisi_id', 'tanggal_lapor',
         'lokasi_laporan', 'klasifikasi', 'tingkat_kerusakan', 'urgensi', 'jenis_perbaikan',
         'deskripsi_kerusakan', 'file_bukti', 'tautan_video', 'dokumen_anggaran', 'keterangan_anggaran',
-        'file_bukti_selesai', 'file_bukti_selesai_video', 'tautan_video_selesai', 'alasan_penolakan',
+        'file_bukti_selesai', 'tautan_video_selesai', 'alasan_penolakan',
         'status_laporan', 'metode_perbaikan', 'tgl_ditunjuk', 'tgl_selesai', 'catatan_teknisi'
     ];
 

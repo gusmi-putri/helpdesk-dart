@@ -12,7 +12,6 @@ class Satuan extends Model
     protected $fillable = [
         'kode_satuan',
         'nama_satuan',
-        'kotama',
         'alamat',
         'is_verified',
         'is_active',
