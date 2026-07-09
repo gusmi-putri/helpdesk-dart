@@ -334,7 +334,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
 
       {/* 4. Modal for Ticket Details */}
       {selectedTicket && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6">
           <div 
             className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300"
             onClick={() => setSelectedTicketId(null)}

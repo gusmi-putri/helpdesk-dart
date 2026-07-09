@@ -65,7 +65,7 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
 
       {/* Dropdown Area - Kembali ke Absolute agar sinkron dengan container */}
       {isOpen && (
-        <div className="absolute left-0 right-0 top-full mt-1 bg-cighra-light dark:bg-cighra-dark border border-slate-200 dark:border-slate-600 shadow-2xl rounded-sm overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-[100]">
+        <div className="absolute left-0 right-0 top-full mt-1 bg-cighra-light dark:bg-cighra-dark border border-slate-200 dark:border-slate-600 shadow-2xl rounded-sm overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-[9999]">
           <div className="p-2 border-b border-slate-200 dark:border-slate-600 bg-white dark:bg-cighra-darkcard/80 flex items-center gap-2">
             <Search size={14} className="text-slate-500 dark:text-slate-400" />
             <input 
