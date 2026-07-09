@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { 
   Clock, Activity, ShieldAlert, Eye, XCircle, CheckCircle, Wallet, 
   Search, SlidersHorizontal, User, MapPin, 
@@ -333,8 +334,8 @@ const TicketManager: React.FC<TicketManagerProps> = ({
       </div>
 
       {/* 4. Modal for Ticket Details */}
-      {selectedTicket && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+      {selectedTicket && createPortal(
+        <div className="fixed inset-0 md:pl-72 z-[100] flex items-center justify-center p-4 sm:p-6">
           <div 
             className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300"
             onClick={() => setSelectedTicketId(null)}
@@ -560,7 +561,8 @@ const TicketManager: React.FC<TicketManagerProps> = ({
               )}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
