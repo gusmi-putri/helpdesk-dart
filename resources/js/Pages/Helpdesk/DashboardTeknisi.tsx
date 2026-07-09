@@ -85,7 +85,6 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
       onSuccess: () => {
         reset();
         setImagePreview(null);
-        setVideoPreview(null);
         setSelectedTaskId(null);
       },
       onError: () => {
