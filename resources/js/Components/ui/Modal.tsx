@@ -35,12 +35,12 @@ export const Modal: React.FC<ModalProps> = ({
   };
 
   return (
-    <div className={`fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 px-6 overflow-y-auto ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none transition-opacity'}`}>
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/75 backdrop-blur-sm p-4">
       {/* Backdrop (Click to close) */}
       <div className="absolute inset-0" onClick={onClose} />
 
       {/* Modal Dialog */}
-      <div className={`relative bg-white dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full ${maxWidthClasses[maxWidth]} shadow-[0_0_100px_rgba(0,0,0,0.6)] animate-in zoom-in-95 duration-300 rounded-sm overflow-hidden text-center flex flex-col max-h-[90vh]`}>
+      <div className={`relative bg-white dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full ${maxWidthClasses[maxWidth]} shadow-[0_0_80px_rgba(0,0,0,0.5)] animate-in zoom-in-95 duration-200 rounded-sm overflow-hidden flex flex-col max-h-[90vh]`}>
         
         {/* Header */}
         <div className="p-5 border-b border-cighra-primary dark:border-cighra-gold bg-red-500/10 dark:bg-red-900/10 flex items-center justify-between shrink-0 relative">
@@ -64,13 +64,13 @@ export const Modal: React.FC<ModalProps> = ({
         </div>
 
         {/* Content (Scrollable) */}
-        <div className="p-10 overflow-y-auto custom-scrollbar flex-1 space-y-8 text-left">
+        <div className="p-8 overflow-y-auto custom-scrollbar flex-1 space-y-6 text-left">
           {children}
         </div>
 
         {/* Footer */}
         {footer && (
-          <div className="flex justify-end gap-3 p-6 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 shrink-0">
+          <div className="flex justify-end gap-3 p-5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 shrink-0">
             {footer}
           </div>
         )}

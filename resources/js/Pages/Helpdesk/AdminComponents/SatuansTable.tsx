@@ -50,8 +50,9 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
   });
 
   const filtered = dbSatuans.filter((s: any) =>
-    s.nama_satuan.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    (s.kode_satuan && s.kode_satuan.toLowerCase().includes(searchTerm.toLowerCase()))
+    (s.nama_satuan || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (s.kode_satuan || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (s.alamat || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const { sortedItems: filteredSatuans, sortConfig, handleSort } = useTableSort(filtered, { key: 'nama_satuan', direction: 'asc' });
@@ -148,79 +149,81 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full text-left font-sans text-sm">
+      <div>
+        <table className="w-full text-left font-sans text-xs">
           <thead className="bg-slate-800 border-b border-slate-700">
             <tr>
-              <SortableHeader label="KODE SATUAN" sortKey="kode_satuan" currentSort={sortConfig} onSort={handleSort} />
+              <SortableHeader label="KODE" sortKey="kode_satuan" currentSort={sortConfig} onSort={handleSort} width="80px" />
               <SortableHeader label="NAMA SATUAN" sortKey="nama_satuan" currentSort={sortConfig} onSort={handleSort} />
               <SortableHeader label="ALAMAT / LOKASI" sortKey="alamat" currentSort={sortConfig} onSort={handleSort} />
-              <SortableHeader label="KOORDINAT" sortKey="latitude" currentSort={sortConfig} onSort={handleSort} />
-              <SortableHeader label="TOTAL DART" />
-              <SortableHeader label="STATUS LOKASI" />
-              <SortableHeader label="AKSI" />
+              <SortableHeader label="KOORDINAT" sortKey="latitude" currentSort={sortConfig} onSort={handleSort} width="140px" />
+              <SortableHeader label="JML" width="60px" />
+              <SortableHeader label="STATUS" width="90px" />
+              <SortableHeader label="AKSI" width="110px" />
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200 dark:divide-slate-700/50">
             {filteredSatuans.length === 0 ? (
               <tr>
-                <td colSpan={6} className="p-10 text-center text-slate-500 dark:text-slate-400 font-mono italic uppercase tracking-widest">
+                <td colSpan={7} className="p-8 text-center text-slate-500 dark:text-slate-400 font-mono italic uppercase tracking-widest">
                   Tidak ada data SATUAN yang ditemukan.
                 </td>
               </tr>
             ) : (
               filteredSatuans.map((satuan: any) => (
                 <tr key={satuan.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group bg-white dark:bg-transparent">
-                  <td className="p-4 text-sm font-mono text-slate-800 dark:text-white truncate max-w-[150px]" title={satuan.kode_satuan || '-'}>
-                    {satuan.kode_satuan || '-'}
+                  <td className="p-2 px-2 text-[9px] font-mono text-slate-800 dark:text-white text-center" title={satuan.kode_satuan || '-'}>
+                    <span className="block truncate max-w-[80px]">{satuan.kode_satuan || '-'}</span>
                   </td>
-                  <td className="p-4 font-mono font-bold text-slate-800 dark:text-white truncate max-w-[200px]" title={satuan.nama_satuan}>
-                    {satuan.nama_satuan}
+                  <td className="p-2 px-3 font-mono font-bold text-[11px] text-slate-800 dark:text-white" title={satuan.nama_satuan}>
+                    <span className="block truncate max-w-[180px]">{satuan.nama_satuan}</span>
                   </td>
-                  <td className="p-4 text-sm font-mono text-slate-800 dark:text-white truncate max-w-[250px]" title={satuan.alamat || '-'}>
-                    {satuan.alamat || '-'}
+                  <td className="p-2 px-3 text-[10px] font-mono text-slate-600 dark:text-slate-300" title={satuan.alamat || '-'}>
+                    <span className="block truncate max-w-[200px]">{satuan.alamat || '-'}</span>
                   </td>
-                  <td className="p-4 text-xs font-mono text-slate-800 dark:text-white text-center">
-                    {satuan.latitude && satuan.longitude 
-                      ? `${satuan.latitude}, ${satuan.longitude}`
+                  <td className="p-2 px-2 text-[9px] font-mono text-slate-600 dark:text-slate-400 text-center w-[140px]">
+                    {satuan.latitude && satuan.longitude
+                      ? <span className="block truncate">{satuan.latitude}, {satuan.longitude}</span>
                       : <span className="text-slate-400 italic">Belum diset</span>}
                   </td>
-                  <td className="p-4 font-tactical text-slate-800 dark:text-white text-center">
+                  <td className="p-2 px-2 font-tactical text-[11px] text-slate-800 dark:text-white text-center w-[60px]">
                     {dbUnits ? dbUnits.filter(u => u.satuan_id === satuan.id).length : 0}
                   </td>
-                  <td className="p-4 text-center">
+                  <td className="p-2 px-3 text-center">
                     {satuan.latitude && satuan.longitude ? (
-                      <span className="px-2 py-0.5 border text-[9px] font-bold tracking-widest uppercase bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40">
-                        Siap Ditampilkan
+                      <span className="px-1.5 py-0.5 border text-[8px] font-bold tracking-widest uppercase bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40">
+                        Siap
                       </span>
                     ) : (
-                      <span className="px-2 py-0.5 border text-[9px] font-bold tracking-widest uppercase bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800/40">
-                        Belum Lengkap
+                      <span className="px-1.5 py-0.5 border text-[8px] font-bold tracking-widest uppercase bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800/40">
+                        Belum
                       </span>
                     )}
                   </td>
-                  <td className="p-4 flex gap-2 justify-center">
-                    <button
-                      onClick={() => handleViewOnMap ? handleViewOnMap(satuan) : handleShowDetailSatuan(satuan)}
-                      className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm"
-                      title={handleViewOnMap ? "Lihat di Peta" : "Lihat Detail"}
-                    >
-                      <Eye className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => handleEditSatuan(satuan)}
-                      className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm"
-                      title="Edit Satuan"
-                    >
-                      <Edit className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => handleDeleteSatuan(satuan)}
-                      className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-600 dark:text-white hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm"
-                      title="Hapus Satuan"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                  <td className="p-2 px-3 text-center">
+                    <div className="flex items-center justify-center gap-1">
+                      <button
+                        onClick={() => handleViewOnMap ? handleViewOnMap(satuan) : handleShowDetailSatuan(satuan)}
+                        className="p-1.5 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm"
+                        title={handleViewOnMap ? "Lihat di Peta" : "Lihat Detail"}
+                      >
+                        <Eye className="w-3 h-3" />
+                      </button>
+                      <button
+                        onClick={() => handleEditSatuan(satuan)}
+                        className="p-1.5 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm"
+                        title="Edit Satuan"
+                      >
+                        <Edit className="w-3 h-3" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteSatuan(satuan)}
+                        className="p-1.5 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-600 dark:text-white hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm"
+                        title="Hapus Satuan"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))

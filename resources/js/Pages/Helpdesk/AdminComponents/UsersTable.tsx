@@ -40,6 +40,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
   const [isAddMode, setIsAddMode] = useState(false);
   const [editingUser, setEditingUser] = useState<any>(null);
 
+  const currentUser = useStore(state => state.currentUser);
   const addNotification = useStore(state => state.addNotification);
 
   // Form state
@@ -142,6 +143,12 @@ const UsersTable: React.FC<UsersTableProps> = ({
 
   const confirmDeleteUser = () => {
     if (userToDelete) {
+      if (userToDelete.db_id === currentUser?.id || userToDelete.username === currentUser?.username) {
+        addNotification('Anda tidak dapat menghapus akun Anda sendiri.', 'error');
+        setIsDeleteModalOpen(false);
+        setUserToDelete(null);
+        return;
+      }
       router.delete(`/users/${userToDelete.db_id}`, {
         onSuccess: () => {
           setIsDeleteModalOpen(false);
@@ -233,41 +240,53 @@ const UsersTable: React.FC<UsersTableProps> = ({
                     </span>
                   </div>
                 </td>
-                <td className="p-4 flex gap-2 justify-center">
-                  <button onClick={() => handleShowDetail(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Detail">
-                    <Eye className="w-4 h-4" />
-                  </button>
-                  <button onClick={() => handleEditUser(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Edit">
-                    <Edit className="w-4 h-4" />
-                  </button>
-                  <button 
-                    onClick={() => {
-                      if (u.has_ongoing_reports) {
-                        setWarningUser(u);
-                      } else {
-                        handleDeleteUser(u);
-                      }
-                    }} 
-                    className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-600 dark:text-white hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Hapus"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                  {!isPengajuan && (
-                    <button 
-                      onClick={() => handleToggleUserStatus(u)} 
-                      disabled={u.role === 'Admin'}
-                      className={`p-2 transition-all border rounded-sm ${
-                        u.role === 'Admin' 
-                          ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 border-slate-200 dark:border-slate-700 cursor-not-allowed opacity-50' 
-                          : u.status === 'Aktif'
-                            ? 'bg-slate-50 dark:bg-slate-700 text-green-600 dark:text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 border-slate-200 dark:border-slate-600'
-                            : 'bg-slate-50 dark:bg-slate-700 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-600 border-slate-200 dark:border-slate-600'
-                      }`}
-                      title={u.role === 'Admin' ? 'Status Admin tidak dapat diubah' : (u.status === 'Aktif' ? 'Nonaktifkan User' : 'Aktifkan User')}
-                    >
-                      <Power className="w-4 h-4" />
+                <td className="p-4 text-center whitespace-nowrap">
+                  <div className="flex items-center justify-center gap-1.5">
+                    <button onClick={() => handleShowDetail(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Detail">
+                      <Eye className="w-4 h-4" />
                     </button>
-                  )}
+                    <button onClick={() => handleEditUser(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Edit">
+                      <Edit className="w-4 h-4" />
+                    </button>
+                    {u.db_id === currentUser?.id || u.username === currentUser?.username ? (
+                      <button 
+                        disabled
+                        className="p-2 bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700 cursor-not-allowed opacity-50 rounded-sm" 
+                        title="Anda tidak dapat menghapus akun Anda sendiri"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    ) : (
+                      <button 
+                        onClick={() => {
+                          if (u.has_ongoing_reports) {
+                            setWarningUser(u);
+                          } else {
+                            handleDeleteUser(u);
+                          }
+                        }} 
+                        className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-600 dark:text-white hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Hapus"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
+                    {!isPengajuan && (
+                      <button 
+                        onClick={() => handleToggleUserStatus(u)} 
+                        disabled={u.role === 'Admin'}
+                        className={`p-2 transition-all border rounded-sm ${
+                          u.role === 'Admin' 
+                            ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 border-slate-200 dark:border-slate-700 cursor-not-allowed opacity-50' 
+                            : u.status === 'Aktif'
+                              ? 'bg-slate-50 dark:bg-slate-700 text-green-600 dark:text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 border-slate-200 dark:border-slate-600'
+                              : 'bg-slate-50 dark:bg-slate-700 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-600 border-slate-200 dark:border-slate-600'
+                        }`}
+                        title={u.role === 'Admin' ? 'Status Admin tidak dapat diubah' : (u.status === 'Aktif' ? 'Nonaktifkan User' : 'Aktifkan User')}
+                      >
+                        <Power className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}

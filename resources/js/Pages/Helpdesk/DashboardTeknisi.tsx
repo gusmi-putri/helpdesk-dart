@@ -30,8 +30,9 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
 
   const tasksToShow = activeTab === 'ACTIVE' ? activeTasks : historyTasks;
   const filteredTasks = tasksToShow.filter((t: any) =>
-    t.kerusakan.barangRusak.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    t.caseId.toLowerCase().includes(searchQuery.toLowerCase())
+    (t.kerusakan?.barangRusak || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (t.kerusakan?.lokasi || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (t.caseId || '').toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const selectedTask = dbCases.find((t: any) => t.db_id === selectedTaskId) || null;
