@@ -47,14 +47,13 @@ const UserMutationHistory: React.FC<UserMutationHistoryProps> = ({ dbMutations }
 
   return (
     <div className="animate-in fade-in space-y-4">
-      <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
-        <div className="flex-1"></div>
+      <div className="flex flex-col md:flex-row items-center gap-4 mb-4">
         <input
           type="text"
           placeholder="CARI NAMA / USERNAME..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="bg-slate-100 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-600 px-4 py-2 text-xs font-mono focus:border-cighra-gold outline-none uppercase w-full md:w-56 text-slate-800 dark:text-white"
+          className="bg-slate-100 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-600 px-4 py-2 text-xs font-mono focus:border-cighra-gold outline-none uppercase w-full md:w-72 text-slate-800 dark:text-white"
         />
       </div>
 
