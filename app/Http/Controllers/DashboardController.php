@@ -114,6 +114,8 @@ class DashboardController extends Controller
         });
 
         $units = UnitResource::collection(Unit::with('satuan')->get());
+        $unreadFeedbackCount = Feedback::where('status_baca', false)->count();
+        Feedback::where('status_baca', false)->update(['status_baca' => true]);
         $feedbacks = Feedback::orderBy('created_at', 'desc')->get()->map(function($f) {
             return [
                 'id' => $f->id,
@@ -150,6 +152,7 @@ class DashboardController extends Controller
             'dbUnits' => $units,
             'dbSatuans' => $satuans,
             'dbFeedbacks' => $feedbacks,
+            'dbFeedbackUnreadCount' => $unreadFeedbackCount,
             'dbMutations' => $mutations,
             'dbUserMutations' => $userMutations,
             'dbArchivedUnits' => $archivedUnits,
