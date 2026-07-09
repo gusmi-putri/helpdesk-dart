@@ -50,8 +50,9 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
   });
 
   const filtered = dbSatuans.filter((s: any) =>
-    s.nama_satuan.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    (s.kode_satuan && s.kode_satuan.toLowerCase().includes(searchTerm.toLowerCase()))
+    (s.nama_satuan || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (s.kode_satuan || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (s.alamat || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const { sortedItems: filteredSatuans, sortConfig, handleSort } = useTableSort(filtered, { key: 'nama_satuan', direction: 'asc' });

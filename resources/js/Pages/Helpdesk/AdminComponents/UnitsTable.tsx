@@ -94,8 +94,9 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
   };
 
   const filteredUnits = dbUnits.filter((u: any) => {
-    const matchesSearch = u.nomor_seri.toLowerCase().includes(unitSearch.toLowerCase()) ||
-      u.asal_satuan.toLowerCase().includes(unitSearch.toLowerCase());
+    const matchesSearch = (u.nomor_seri || '').toLowerCase().includes(unitSearch.toLowerCase()) ||
+      (u.asal_satuan || '').toLowerCase().includes(unitSearch.toLowerCase()) ||
+      (u.jenis || '').toLowerCase().includes(unitSearch.toLowerCase());
     const matchesJenis = filterJenis === 'ALL' || u.jenis === filterJenis;
     const matchesSatuan = filterSatuan === 'ALL' || u.asal_satuan === filterSatuan;
     return matchesSearch && matchesJenis && matchesSatuan;
