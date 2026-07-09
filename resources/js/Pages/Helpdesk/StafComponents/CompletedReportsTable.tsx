@@ -18,9 +18,12 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
 
   return (
     <div className="animate-in fade-in space-y-6 mt-6">
-      <div className="bg-white/60 dark:bg-cighra-darkcard/70 border border-slate-300 dark:border-slate-600 rounded-sm overflow-hidden shadow-xl">
-        <div className="p-4 border-b border-slate-200 dark:border-slate-600 bg-cighra-light dark:bg-cighra-darkcard/80 flex items-center justify-between text-slate-800 dark:text-white">
-          <h3 className="font-tactical tracking-widest text-sm flex items-center gap-2"><CheckCircle className="w-4 h-4 text-camogreen" /> ARSIP PERBAIKAN SELESAI </h3>
+      <div className="bg-white dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600 shadow-2xl overflow-hidden relative">
+        <div className="absolute top-0 left-0 w-full h-[2px] bg-cighra-primary dark:bg-cighra-gold"></div>
+        <div className="p-5 border-b border-slate-200 dark:border-slate-600 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-800">
+          <h3 className="text-white font-tactical font-bold text-lg tracking-widest flex items-center gap-3 uppercase">
+            <CheckCircle className="text-cighra-gold w-6 h-6" /> ARSIP PERBAIKAN SELESAI
+          </h3>
         </div>
         <div className="overflow-x-auto p-2">
           <table className="w-full text-left font-sans">
@@ -33,7 +36,7 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                 <SortableHeader label="DOKUMENTASI" />
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-soft-sand/5 bg-white dark:bg-transparent text-slate-800 dark:text-white">
+            <tbody className="divide-y divide-slate-200 dark:divide-slate-700/50 bg-white dark:bg-transparent text-slate-800 dark:text-white">
               {reports.length === 0 && (
                 <tr>
                   <td colSpan={5} className="p-8 text-center text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest">

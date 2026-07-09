@@ -1,6 +1,6 @@
 import React from 'react';
 import { MapPin, Building2, Save } from 'lucide-react';
-import { Modal } from '@/Components/ui/Modal';
+import { BaseModal } from '@/Components/ui/BaseModal';
 import { Button } from '@/Components/ui/Button';
 
 interface SatuanModalProps {
@@ -29,12 +29,13 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <Modal
+    <BaseModal
       isOpen={isOpen}
       onClose={onClose}
       title={isPengajuan ? (isAddMode ? 'PENGAJUAN TAMBAH SATUAN' : 'PENGAJUAN EDIT SATUAN') : (isAddMode ? 'TAMBAH DATA SATUAN' : 'EDIT DATA SATUAN')}
       icon={<Building2 />}
       maxWidth="2xl"
+      headerColor="primary"
       footer={
         <div className="w-full flex gap-4">
           <Button 
@@ -63,7 +64,7 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
         </div>
       }
     >
-      <form id="satuan-form" onSubmit={onSubmit} className="space-y-8">
+      <form id="satuan-form" onSubmit={onSubmit} className="p-8 space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
           {/* Form Fields */}
           <div className="col-span-2">
@@ -163,7 +164,7 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
           </div>
         </div>
       </form>
-    </Modal>
+    </BaseModal>
   );
 };
 

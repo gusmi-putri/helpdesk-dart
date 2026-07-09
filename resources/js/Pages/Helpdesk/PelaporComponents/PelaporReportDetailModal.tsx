@@ -1,5 +1,6 @@
 import React from 'react';
 import { Activity, Wrench, Wallet, FileText } from 'lucide-react';
+import { BaseModal } from '@/Components/ui/BaseModal';
 
 interface PelaporReportDetailModalProps {
   isOpen: boolean;
@@ -11,15 +12,25 @@ const PelaporReportDetailModal: React.FC<PelaporReportDetailModalProps> = ({ isO
   if (!isOpen || !report) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
-      <div className="bg-cighra-light dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full max-w-2xl shadow-2xl animate-in zoom-in-95 duration-200">
-        <div className="p-4 border-b border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/10 flex justify-between items-center">
-          <h3 className="font-tactical font-bold text-cighra-primary dark:text-cighra-gold tracking-widest uppercase flex items-center gap-2">
-            <Activity size={18} /> RINCIAN TIKET: {report.caseId}
-          </h3>
-          <button onClick={onClose} className="text-slate-500 dark:text-slate-400 hover:text-cighra-primary dark:hover:text-cighra-gold text-xl">✕</button>
+    <BaseModal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={`RINCIAN TIKET: ${report.caseId}`}
+      icon={<Activity />}
+      maxWidth="2xl"
+      headerColor="primary"
+      footer={
+        <div className="flex justify-end w-full">
+          <button
+            onClick={onClose}
+            className="px-6 py-2 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white font-tactical font-bold text-xs tracking-widest hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 transition-colors uppercase rounded-sm"
+          >
+            TUTUP
+          </button>
         </div>
-        <div className="p-8 space-y-8 overflow-y-auto max-h-[80vh] custom-scrollbar text-gunmetal dark:text-slate-300">
+      }
+    >
+      <div className="p-8 space-y-8 text-gunmetal dark:text-slate-300">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Bagian Pelaporan */}
             <div className="space-y-4">
@@ -216,17 +227,8 @@ const PelaporReportDetailModal: React.FC<PelaporReportDetailModalProps> = ({ isO
               </div>
             )}
           </div>
-        </div>
-        <div className="p-4 bg-gray-100 dark:bg-cighra-darkcard/80 border-t border-cighra-primary dark:border-cighra-gold/20 text-right">
-          <button
-            onClick={onClose}
-            className="px-6 py-2 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white font-tactical font-bold text-xs tracking-widest hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 transition-colors uppercase"
-          >
-            TUTUP
-          </button>
-        </div>
       </div>
-    </div>
+    </BaseModal>
   );
 };
 

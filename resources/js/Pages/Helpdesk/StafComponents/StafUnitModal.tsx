@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Package, Upload, X, FileText } from 'lucide-react';
+import { BaseModal } from '@/Components/ui/BaseModal';
 
 interface StafUnitModalProps {
   isOpen: boolean;
@@ -50,16 +51,27 @@ const StafUnitModal: React.FC<StafUnitModalProps> = ({ isOpen, onClose, onSubmit
   };
 
   return (
-    <div className="fixed inset-0 z-[130] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-      <div className="bg-cighra-light dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full max-w-lg shadow-2xl animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto custom-scrollbar">
-        <div className="p-4 border-b border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/10 flex justify-between items-center">
-          <h3 className="font-tactical font-bold text-cighra-primary dark:text-cighra-gold tracking-widest uppercase flex items-center gap-2">
-            <Package size={18} /> PENGAJUAN TAMBAH UNIT DART
-          </h3>
-          <button onClick={handleClose} className="text-slate-500 hover:text-cighra-primary dark:hover:text-cighra-gold text-xl">✕</button>
+    <BaseModal
+      isOpen={isOpen}
+      onClose={handleClose}
+      title="PENGAJUAN TAMBAH UNIT DART"
+      icon={<Package />}
+      maxWidth="lg"
+      headerColor="primary"
+      footer={
+        <div className="flex gap-3 w-full">
+          <button type="button" onClick={handleClose}
+            className="flex-1 py-2.5 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 font-tactical text-xs tracking-widest hover:bg-slate-50 dark:hover:bg-slate-800 transition-all rounded-sm">
+            BATAL
+          </button>
+          <button type="submit" form="stafUnitForm" disabled={processing}
+            className="flex-1 py-2.5 bg-cighra-primary dark:bg-cighra-gold text-white dark:text-slate-900 font-tactical font-bold text-xs tracking-widest hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 transition-all disabled:opacity-50 rounded-sm">
+            {processing ? 'MENGIRIM...' : 'AJUKAN PENAMBAHAN'}
+          </button>
         </div>
-
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+      }
+    >
+      <form id="stafUnitForm" onSubmit={handleSubmit} className="p-6 space-y-4">
           <div className="bg-orange-50 dark:bg-orange-900/10 border border-orange-200 dark:border-orange-800/30 p-3 rounded-sm">
             <p className="text-[10px] font-mono text-orange-700 dark:text-orange-400 uppercase">
               ⚠ PERHATIAN: Pengajuan ini akan dikirim ke Admin untuk disetujui. Unit tidak akan langsung masuk ke database aktif.
@@ -143,19 +155,8 @@ const StafUnitModal: React.FC<StafUnitModalProps> = ({ isOpen, onClose, onSubmit
             </div>
           </div>
 
-          <div className="flex gap-3 pt-2">
-            <button type="button" onClick={handleClose}
-              className="flex-1 py-2.5 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 font-tactical text-xs tracking-widest hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
-              BATAL
-            </button>
-            <button type="submit" disabled={processing}
-              className="flex-1 py-2.5 bg-cighra-primary dark:bg-cighra-gold text-white dark:text-slate-900 font-tactical font-bold text-xs tracking-widest hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 transition-all disabled:opacity-50">
-              {processing ? 'MENGIRIM...' : 'AJUKAN PENAMBAHAN'}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+      </form>
+    </BaseModal>
   );
 };
 
