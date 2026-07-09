@@ -48,50 +48,49 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                   onClick={() => onSelectReport(report.db_id)}
                 >
                   <td className="p-4 text-center">
-                    <div
-                      className="font-mono text-slate-800 dark:text-slate-300 text-sm bg-white dark:bg-cighra-darkcard px-2 py-1 border border-slate-300 dark:border-slate-600 block w-fit mx-auto hover:border-cighra-primary dark:hover:border-cighra-gold hover:text-cighra-primary dark:hover:text-cighra-gold transition-colors font-bold"
-                    >
+                    <div className="font-medium text-slate-900 dark:text-white">
                       {report.caseId}
                     </div>
                     {report.status === 'SELESAI' ? (
-                      <div className="mt-2 text-white dark:text-green-400 text-[10px] font-mono font-bold flex justify-center items-center gap-1 bg-camogreen dark:bg-camogreen/20 px-1.5 py-0.5 border border-camogreen dark:border-camogreen/30 w-fit mx-auto">
-                        <CheckCircle className="w-3 h-3" /> TUNTAS
+                      <div className="mt-1.5 text-[10px] font-medium text-camogreen dark:text-green-400 flex justify-center items-center gap-1">
+                        <CheckCircle className="w-3.5 h-3.5" /> Tuntas
                       </div>
                     ) : (
-                      <div className="mt-2 text-red-600 text-[10px] font-mono font-bold flex justify-center items-center gap-1 bg-red-50 dark:bg-red-900/20 px-1.5 py-0.5 border border-red-200 dark:border-red-900/30 w-fit mx-auto">
-                        <XCircle className="w-3 h-3" /> DITOLAK
+                      <div className="mt-1.5 text-[10px] font-medium text-red-600 dark:text-red-400 flex justify-center items-center gap-1">
+                        <XCircle className="w-3.5 h-3.5" /> Ditolak
                       </div>
                     )}
                   </td>
                   <td className="p-4 text-center">
-                    <div className="font-bold text-sm mb-1 uppercase text-slate-800 dark:text-white">{report.kerusakan.barangRusak}</div>
-                    <div className="text-slate-500 dark:text-slate-300 text-xs font-mono w-full max-w-sm uppercase mx-auto">
-                      Masuk: {report.kerusakan.tanggal} <br />
-                      Selesai: <span className="text-slate-800 dark:text-white font-bold">{report.perbaikan.tanggalSelesai || '-'}</span>
+                    <div className="font-medium text-sm text-slate-900 dark:text-white mb-1">{report.kerusakan.barangRusak}</div>
+                    <div className="text-slate-500 dark:text-slate-400 text-xs flex flex-col gap-0.5">
+                      <span>Masuk: {report.kerusakan.tanggal}</span>
+                      <span>Selesai: {report.perbaikan.tanggalSelesai || '-'}</span>
                     </div>
                   </td>
                   <td className="p-4 text-center">
-                    <div className="text-sm font-bold uppercase text-slate-800 dark:text-white">
+                    <div className="font-medium text-sm text-slate-900 dark:text-white">
                       {report.perbaikan.teknisi}
                     </div>
-                    <div className="text-slate-500 dark:text-slate-400 text-[10px] font-mono mt-1 uppercase">
-                      KODE OP: {report.db_id}
+                    <div className="text-slate-500 dark:text-slate-400 text-xs mt-0.5">
+                      Kode OP: {report.db_id}
                     </div>
                   </td>
-                  <td className="p-4 text-center">
+                  <td className="p-4 text-center max-w-sm">
                     {report.status === 'DITOLAK' ? (
-                      <div className="bg-red-50 dark:bg-red-950/20 p-4 border-l-4 border-red-600 text-sm text-slate-600 dark:text-slate-300 shadow-sm">
-                        <span className="font-bold text-red-600 dark:text-red-500 block mb-1 uppercase text-xs">Alasan Penolakan:</span>
-                        <p className="font-mono text-xs uppercase italic">"{report.perbaikan.alasanPenolakan || 'Tidak ada alasan penolakan yang ditulis.'}"</p>
+                      <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 rounded-md p-3 text-left">
+                        <span className="font-medium block mb-1">Alasan Penolakan:</span>
+                        <p className="text-slate-700 dark:text-slate-300 text-xs leading-relaxed">{report.perbaikan.alasanPenolakan || 'Tidak ada alasan penolakan.'}</p>
                       </div>
                     ) : (
-                      <div className="bg-slate-50 dark:bg-cighra-darkcard/30 p-4 border-l-4 border-camogreen text-sm text-slate-600 dark:text-slate-300 relative shadow-sm">
-                        <span className="absolute top-1 left-2 text-xl text-slate-300/50 dark:text-slate-300/10 font-serif">"</span>
-                        <span className="pl-4 block italic font-serif leading-relaxed uppercase mb-3">{report.perbaikan.tindakan || 'Tidak ada catatan.'}</span>
+                      <div className="text-sm text-left">
+                        <p className="text-slate-700 dark:text-slate-300 leading-relaxed mb-2">
+                          {report.perbaikan.tindakan || 'Tidak ada catatan.'}
+                        </p>
                         {report.perbaikan.metodePerbaikan && (
-                          <div className="ml-4 text-[10px] text-white dark:text-green-400 bg-camogreen dark:bg-camogreen/20 px-2 py-1 border border-camogreen dark:border-camogreen/30 inline-block font-mono uppercase">
-                            METODE: {report.perbaikan.metodePerbaikan}
-                          </div>
+                          <span className="text-[10px] font-medium px-2 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-md">
+                            Metode: {report.perbaikan.metodePerbaikan}
+                          </span>
                         )}
                       </div>
                     )}
@@ -101,29 +100,29 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                       {report.kerusakan.fileBukti && report.kerusakan.fileBukti.length > 0 && (
                         <button
                           onClick={(e) => { e.stopPropagation(); onViewProof(report.kerusakan.fileBukti); }}
-                          className="w-full max-w-[140px] bg-white dark:bg-cighra-darkcard/80 hover:bg-slate-50 dark:hover:bg-black text-slate-600 dark:text-slate-300 px-2 py-1.5 text-[10px] font-mono font-bold tracking-widest transition-colors flex items-center justify-center gap-1.5 border border-slate-300 dark:border-slate-600 shadow-sm"
+                          className="w-full max-w-[140px] px-3 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-medium rounded-md transition-colors flex items-center justify-center gap-2"
                         >
-                          <Image className="w-3 h-3 text-red-500" /> BUKTI RUSAK
+                          <Image className="w-3.5 h-3.5 text-slate-500" /> Bukti Rusak
                         </button>
                       )}
                       {report.perbaikan.foto_bukti_selesai && (
                         <button
                           onClick={(e) => { e.stopPropagation(); onViewProof([report.perbaikan.foto_bukti_selesai]); }}
-                          className="w-full max-w-[140px] bg-white dark:bg-cighra-darkcard/80 hover:bg-slate-50 dark:hover:bg-black text-slate-600 dark:text-slate-300 px-2 py-1.5 text-[10px] font-mono font-bold tracking-widest transition-colors flex items-center justify-center gap-1.5 border border-slate-300 dark:border-slate-600 shadow-sm"
+                          className="w-full max-w-[140px] px-3 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-medium rounded-md transition-colors flex items-center justify-center gap-2"
                         >
-                          <CheckSquare className="w-3 h-3 text-camogreen" /> FOTO SELESAI
+                          <CheckSquare className="w-3.5 h-3.5 text-camogreen" /> Foto Selesai
                         </button>
                       )}
                       {report.perbaikan.video_bukti_selesai && (
                         <button
                           onClick={(e) => { e.stopPropagation(); onViewProof([report.perbaikan.video_bukti_selesai]); }}
-                          className="w-full max-w-[140px] bg-white dark:bg-cighra-darkcard/80 hover:bg-slate-50 dark:hover:bg-black text-slate-600 dark:text-slate-300 px-2 py-1.5 text-[10px] font-mono font-bold tracking-widest transition-colors flex items-center justify-center gap-1.5 border border-slate-300 dark:border-slate-600 shadow-sm"
+                          className="w-full max-w-[140px] px-3 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-medium rounded-md transition-colors flex items-center justify-center gap-2"
                         >
-                          <CheckSquare className="w-3 h-3 text-blue-500" /> VIDEO SELESAI
+                          <CheckSquare className="w-3.5 h-3.5 text-blue-500" /> Video Selesai
                         </button>
                       )}
                       {(!report.kerusakan.fileBukti || report.kerusakan.fileBukti.length === 0) && !report.perbaikan.foto_bukti_selesai && !report.perbaikan.video_bukti_selesai && (
-                        <span className="text-[10px] font-mono text-slate-400 dark:text-slate-400">TIDAK ADA FOTO/VIDEO</span>
+                        <span className="text-xs text-slate-400 dark:text-slate-500">Tidak ada media</span>
                       )}
                     </div>
                   </td>
