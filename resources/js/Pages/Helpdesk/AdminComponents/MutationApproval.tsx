@@ -529,10 +529,10 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
               const isBatch = Array.isArray(m.unit_data);
               if (isBatch) {
                 return m.unit_data.some((u: any) =>
-                  u.nomor_seri?.toLowerCase().includes(q) ?.toLowerCase().includes(q)
+                  u.nomor_seri?.toLowerCase().includes(q) || u.asal_satuan?.toLowerCase().includes(q)
                 ) || m.requested_by?.toLowerCase().includes(q);
               }
-              return m.unit_data?.nomor_seri?.toLowerCase().includes(q) ?.toLowerCase().includes(q) || m.requested_by?.toLowerCase().includes(q);
+              return m.unit_data?.nomor_seri?.toLowerCase().includes(q) || m.unit_data?.asal_satuan?.toLowerCase().includes(q) || m.requested_by?.toLowerCase().includes(q);
             }).map((m: any) => {
               const isBatch = Array.isArray(m.unit_data);
               return (
@@ -625,7 +625,7 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
 
       {/* Restore Confirmation Modal */}
       {restoreModal.isOpen && (
-        <div className="fixed inset-0 z-[130] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" onClick={() => setRestoreModal({ isOpen: false, unit: null })}>
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" onClick={() => setRestoreModal({ isOpen: false, unit: null })}>
           <div className="bg-cighra-light dark:bg-cighra-dark border-2 border-purple-500 dark:border-purple-400 w-full max-w-md shadow-2xl animate-in fade-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
             {/* Header */}
             <div className="p-4 border-b border-purple-500 dark:border-purple-400 bg-purple-900/20 flex items-center justify-between">

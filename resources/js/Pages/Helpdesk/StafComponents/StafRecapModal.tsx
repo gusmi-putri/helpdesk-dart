@@ -31,7 +31,7 @@ const StafRecapModal: React.FC<StafRecapModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[150] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div className="bg-white dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-600 w-full max-w-2xl shadow-2xl rounded-sm animate-in zoom-in-95 duration-200 overflow-hidden flex flex-col max-h-[90vh]">
         <div className="p-5 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-black/20 flex justify-between items-center border-t-4 border-t-cighra-primary dark:border-t-cighra-gold">
           <h3 className="font-tactical font-bold text-slate-800 dark:text-white tracking-widest uppercase flex items-center gap-3 text-lg">

@@ -132,7 +132,7 @@ class UnitController extends Controller
         $unit->delete(); // SoftDeletes
 
         SystemLog::log('ALERT', auth()->id(), "Admin menghapus unit DART: {$info}");
-        return redirect()->back()->with('message', 'Unit DART telah diarsipkan.');
+        return redirect()->back()->with('message', 'Unit DART telah dihapus.');
     }
 
     public function destroyBatch(Request $request)
@@ -166,7 +166,7 @@ class UnitController extends Controller
             SystemLog::log('ALERT', $userId, "Admin menghapus secara massal {$count} unit DART.");
         });
 
-        return redirect()->back()->with('message', 'Unit DART terpilih telah diarsipkan secara massal.');
+        return redirect()->back()->with('message', 'Unit DART terpilih telah dihapus secara massal.');
     }
 
     /**

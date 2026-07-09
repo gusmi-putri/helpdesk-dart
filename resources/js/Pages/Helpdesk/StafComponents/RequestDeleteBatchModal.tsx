@@ -29,7 +29,7 @@ const RequestDeleteBatchModal: React.FC<RequestDeleteBatchModalProps> = ({ isOpe
   };
 
   return (
-    <div className="fixed inset-0 z-[130] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
       <div className="bg-cighra-light dark:bg-cighra-dark border-2 border-red-600 w-full max-w-lg shadow-2xl animate-in zoom-in-95 duration-200 overflow-hidden flex flex-col max-h-[90vh]">
         <div className="p-4 border-b border-red-600 bg-red-900/10 flex justify-between items-center shrink-0">
           <h3 className="font-tactical font-bold text-red-600 dark:text-red-400 tracking-widest uppercase flex items-center gap-2">
