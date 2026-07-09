@@ -16,8 +16,8 @@
   /* Lighter blue for columns/cards than the background */
 
   --font-sans: "Inter", sans-serif;
-  --font-tactical: "Rajdhani", sans-serif;
-  --font-stencil: "Oswald", sans-serif;
+  --font-tactical: "Inter", sans-serif;
+  --font-stencil: "Inter", sans-serif;
 
   /* Ported from tailwind.config.js */
   --color-gunmetal: #0A1229;

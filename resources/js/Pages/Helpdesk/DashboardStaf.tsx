@@ -72,7 +72,7 @@ const DashboardStaf = (props: any) => {
 
   // Auto-polling with visibility detection
   useEffect(() => {
-    let intervalId: NodeJS.Timeout;
+    let intervalId: any;
 
     const startPolling = () => {
       intervalId = setInterval(() => {

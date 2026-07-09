@@ -13,6 +13,7 @@ interface SidebarProps {
   dbUsers: any[];
   dbMutations?: any[];
   dbSatuans?: any[];
+  dbFeedbackUnreadCount?: number;
   handleLogout: () => void;
 }
 
@@ -24,6 +25,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   dbUsers,
   dbMutations = [],
   dbSatuans = [],
+  dbFeedbackUnreadCount = 0,
   handleLogout
 }) => {
   // Collapsible menu states
@@ -175,11 +177,21 @@ const Sidebar: React.FC<SidebarProps> = ({
           <button
             onClick={() => handleMenuClick('FEEDBACK')}
             aria-current={activeMenu === 'FEEDBACK' ? 'page' : undefined}
-            className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4 focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none
+            className={`w-full flex items-center justify-between px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4 focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none
               ${activeMenu === 'FEEDBACK' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}
             `}
           >
-            <MessageSquare size={18} /> UMPAN BALIK
+            <div className="flex items-center gap-3">
+              <MessageSquare size={18} /> UMPAN BALIK
+            </div>
+            {dbFeedbackUnreadCount > 0 && (
+              <span 
+                className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse shadow-md"
+                aria-label={`${dbFeedbackUnreadCount} umpan balik belum dibaca`}
+              >
+                {dbFeedbackUnreadCount}
+              </span>
+            )}
           </button>
 
           {/* 7. LOG AKTIVITAS */}

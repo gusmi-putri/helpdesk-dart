@@ -32,7 +32,7 @@ const DashboardAdmin = (props: any) => {
 
   // Auto-polling dengan deteksi keaktifan halaman (visibility)
   useEffect(() => {
-    let intervalId: NodeJS.Timeout;
+    let intervalId: any;
 
     const startPolling = () => {
       intervalId = setInterval(() => {
