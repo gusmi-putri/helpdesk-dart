@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Search, Plus, MapPin, Edit, Trash2, Eye } from 'lucide-react';
+import { Search, Plus, MapPin, Edit, Trash2, Eye, Building2 } from 'lucide-react';
+import { EmptyState } from '@/Components/ui/EmptyState';
 import { useTableSort } from '@/hooks/useTableSort';
 import SortableHeader from '@/Components/Table/SortableHeader';
 import { useForm } from '@inertiajs/react';
@@ -101,6 +102,17 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
         }
       });
     } else {
+      const hasChanged = data.nama_satuan !== editingSatuan.nama_satuan || 
+                         data.tingkat !== editingSatuan.tingkat;
+                         
+      if (!hasChanged) {
+        setIsSatuanModalOpen(false);
+        if (isPengajuan) {
+          addNotification('Tidak ada perubahan', 'info');
+        }
+        return;
+      }
+      
       put(`/satuans/${editingSatuan.id}`, {
         onSuccess: () => {
           setIsSatuanModalOpen(false);
@@ -149,7 +161,7 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
       </div>
 
       {/* Table */}
-      <div>
+      <div className="overflow-x-auto custom-scrollbar pb-2">
         <table className="w-full text-left font-sans text-xs">
           <thead className="bg-slate-800 border-b border-slate-700">
             <tr>
@@ -165,8 +177,12 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
           <tbody className="divide-y divide-slate-200 dark:divide-slate-700/50">
             {filteredSatuans.length === 0 ? (
               <tr>
-                <td colSpan={7} className="p-8 text-center text-slate-500 dark:text-slate-400 font-mono italic uppercase tracking-widest">
-                  Tidak ada data SATUAN yang ditemukan.
+                <td colSpan={7} className="p-8">
+                  <EmptyState 
+                    icon={<Building2 className="w-16 h-16 opacity-50" />}
+                    title={searchTerm ? 'PENCARIAN TIDAK DITEMUKAN' : 'DATA KOSONG'}
+                    description={searchTerm ? 'Tidak ditemukan data satuan yang cocok dengan pencarian Anda.' : 'Belum ada data satuan yang terdaftar di sistem.'}
+                  />
                 </td>
               </tr>
             ) : (
@@ -259,6 +275,10 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
         processing={processing}
         isAddMode={isSatuanAddMode}
         isPengajuan={isPengajuan}
+        submitDisabled={!isSatuanAddMode && (
+          data.nama_satuan === editingSatuan?.nama_satuan && 
+          data.tingkat === editingSatuan?.tingkat
+        )}
       />
     </>
   );

@@ -13,6 +13,7 @@ interface SatuanModalProps {
   processing: boolean;
   isAddMode: boolean;
   isPengajuan?: boolean;
+  submitDisabled?: boolean;
 }
 
 const SatuanModal: React.FC<SatuanModalProps> = ({
@@ -24,7 +25,8 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
   errors,
   processing,
   isAddMode,
-  isPengajuan
+  isPengajuan,
+  submitDisabled
 }) => {
   if (!isOpen) return null;
 
@@ -42,7 +44,7 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
             type="submit" 
             onClick={onSubmit}
             variant="primary" 
-            disabled={processing}
+            disabled={processing || submitDisabled}
             className="flex-[2] uppercase" 
             size="lg"
           >

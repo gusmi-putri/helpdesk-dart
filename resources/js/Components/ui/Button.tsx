@@ -12,13 +12,13 @@ interface ButtonProps extends BaseButtonProps {
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className = '', variant = 'primary', size = 'md', icon, isLoading, children, disabled, ...props }, ref) => {
     
-    const baseStyles = "inline-flex items-center justify-center gap-2 font-tactical tracking-widest uppercase rounded-sm disabled:opacity-50 disabled:cursor-not-allowed shadow-xl focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none";
+    const baseStyles = "inline-flex items-center justify-center gap-2 font-tactical tracking-widest uppercase rounded-sm disabled:opacity-50 disabled:cursor-not-allowed focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none transition-all";
     
     const variants = {
       primary: "bg-cighra-primary text-white dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 border border-cighra-primary dark:border-cighra-gold",
       secondary: "bg-transparent border border-slate-300 text-slate-500 dark:border-slate-700 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800",
-      outline: "border border-slate-300 text-slate-700 dark:border-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800",
-      danger: "bg-red-600 text-white hover:bg-red-700"
+      outline: "bg-white dark:bg-transparent border border-slate-300 text-slate-700 dark:border-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800",
+      danger: "bg-red-600 text-white hover:bg-red-700 border border-red-600"
     };
 
     const sizes = {

@@ -1,5 +1,6 @@
 import React from 'react';
-import { AlertTriangle, Clock, Activity, ShieldAlert, Eye, XCircle, CheckCircle, Wallet } from 'lucide-react';
+import { AlertTriangle, Clock, Activity, ShieldAlert, Eye, XCircle, CheckCircle, Wallet, Inbox } from 'lucide-react';
+import { EmptyState } from '@/Components/ui/EmptyState';
 import { useTableSort } from '@/hooks/useTableSort';
 import SortableHeader from '@/Components/Table/SortableHeader';
 
@@ -42,7 +43,7 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
         <div className="p-4 border-b border-slate-200 dark:border-slate-600 bg-slate-800 flex items-center justify-between text-white">
           <h3 className="font-tactical tracking-widest text-sm flex items-center gap-2"><AlertTriangle className="w-4 h-4 text-yellow-500" /> DAFTAR PENANGANAN KERUSAKAN</h3>
         </div>
-        <div className="overflow-x-auto p-2">
+        <div className="overflow-x-auto p-2 custom-scrollbar pb-4">
           <table className="w-full text-left font-sans">
             <thead className="bg-slate-800 border-b border-slate-700">
               <tr>
@@ -57,8 +58,12 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
             <tbody className="divide-y divide-slate-100 dark:divide-slate-600 bg-white dark:bg-transparent">
               {reports.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest">
-                    Tidak ada antrean laporan saat ini.
+                  <td colSpan={6} className="p-8">
+                    <EmptyState 
+                      icon={<Inbox className="w-16 h-16 opacity-50" />}
+                      title="TIDAK ADA ANTREAN LAPORAN"
+                      description="Saat ini tidak ada laporan kerusakan baru yang perlu diverifikasi atau ditangani."
+                    />
                   </td>
                 </tr>
               )}
@@ -144,13 +149,13 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
                             <div className="flex gap-2">
                               <button
                                 onClick={() => onVerify(report.db_id)}
-                                className="flex-1 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-2.5 py-1.5 text-[11px] font-tactical font-bold tracking-wider transition-colors flex items-center justify-center gap-1 border border-cighra-primary dark:border-cighra-gold shadow-sm"
+                                className="flex-1 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-2.5 py-1.5 text-[11px] font-tactical font-bold tracking-wider transition-colors flex items-center justify-center gap-1 border border-cighra-primary dark:border-cighra-gold"
                               >
                                 <CheckCircle className="w-3 h-3" /> SETUJUI
                               </button>
                               <button
                                 onClick={() => onReject(report.db_id)}
-                                className="flex-1 bg-red-600 hover:bg-red-500 text-white px-2.5 py-1.5 text-[11px] font-tactical font-bold tracking-wider transition-colors flex items-center justify-center gap-1 border border-red-600 shadow-sm"
+                                className="flex-1 bg-red-600 hover:bg-red-500 text-white px-2.5 py-1.5 text-[11px] font-tactical font-bold tracking-wider transition-colors flex items-center justify-center gap-1 border border-red-600"
                               >
                                 <XCircle className="w-3 h-3" /> TOLAK
                               </button>

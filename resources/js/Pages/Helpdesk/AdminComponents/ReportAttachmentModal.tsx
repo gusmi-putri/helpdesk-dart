@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import React from 'react';
 import { Paperclip, Image as ImageIcon, Link as LinkIcon, FileText, X } from 'lucide-react';
 
@@ -15,8 +16,8 @@ const ReportAttachmentModal: React.FC<ReportAttachmentModalProps> = ({ isOpen, o
   const dokumenCount = kerusakan.dokumenAnggaran?.length || 0;
   const hasLink = !!kerusakan.tautan_video;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+  const modalContent = (
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div className="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 w-full max-w-3xl shadow-2xl animate-in zoom-in-95 duration-200 rounded-sm flex flex-col max-h-[90vh]">
         
         {/* Header */}
@@ -149,6 +150,9 @@ const ReportAttachmentModal: React.FC<ReportAttachmentModalProps> = ({ isOpen, o
       </div>
     </div>
   );
+
+  if (typeof document === 'undefined') return null;
+  return createPortal(modalContent, document.body);
 };
 
 export default ReportAttachmentModal;
