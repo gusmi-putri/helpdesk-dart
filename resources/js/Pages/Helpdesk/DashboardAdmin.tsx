@@ -61,6 +61,7 @@ const DashboardAdmin = (props: any) => {
   const addNotification = useStore(state => state.addNotification);
 
   const [logFilter, setLogFilter] = useState<string>('ALL');
+  const [selectedLogPayload, setSelectedLogPayload] = useState<string | null>(null);
 
 
   const [isRecapModalOpen, setIsRecapModalOpen] = useState(false);
