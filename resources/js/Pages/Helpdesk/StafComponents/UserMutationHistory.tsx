@@ -87,7 +87,7 @@ const UserMutationHistory: React.FC<UserMutationHistoryProps> = ({ dbMutations }
                       <div className="font-mono text-xs text-slate-800 dark:text-white">{new Date(m.created_at).toLocaleDateString()}</div>
                     </td>
                     <td className="p-4 text-center">
-                      <span className={`px-2 py-1 text-[10px] font-mono font-bold border rounded-sm flex items-center justify-center gap-1 mx-auto w-max ${badge.color}`}>
+                      <span className={`px-2 py-1 text-xs font-mono font-bold border rounded-sm flex items-center justify-center gap-1 mx-auto w-max ${badge.color}`}>
                         {badge.icon} {badge.label}
                       </span>
                       <div className="text-[9px] font-mono mt-1 text-slate-500 uppercase">
@@ -99,18 +99,24 @@ const UserMutationHistory: React.FC<UserMutationHistoryProps> = ({ dbMutations }
                       <div className="font-bold text-slate-500 dark:text-slate-400 text-xs mt-1">{targetName}</div>
                     </td>
                     <td className="p-4">
-                      {m.type === 'request_add' ? (
-                        <div className="text-[10px] font-mono text-slate-800 dark:text-white space-y-0.5">
-                          <div>NRP/NIP: {m.user_data?.nrp_nip}</div>
-                          <div>Satuan: {m.user_data?.asal_satuan}</div>
-                          <div>WA: {m.user_data?.no_wa}</div>
+                      {m.type.includes('add') ? (
+                        <div className="text-xs font-mono text-slate-800 dark:text-white space-y-0.5">
+                          <div>NRP/NIP: {m.user_data?.nrp_nip || '-'}</div>
+                          <div>Satuan: {m.user_data?.asal_satuan || '-'}</div>
+                          <div>WA: {m.user_data?.no_wa || '-'}</div>
                         </div>
-                      ) : m.type === 'request_delete' ? (
-                        <div className="text-[10px] font-mono text-red-500 dark:text-red-400 italic">Penghapusan akun dari sistem.</div>
+                      ) : m.type.includes('delete') ? (
+                        <div className="text-xs font-mono text-red-500 dark:text-red-400 italic">Penghapusan akun dari sistem.</div>
                       ) : (
-                        <div className="text-[10px] font-mono text-slate-800 dark:text-white">
-                          {Object.entries(m.user_data || {}).map(([key, val]) => (
-                            <div key={key}><span className="text-blue-500 dark:text-blue-400 font-bold uppercase">{key}:</span> {String(val)}</div>
+                        <div className="text-xs font-mono text-slate-800 dark:text-white space-y-0.5">
+                          {Object.entries(m.user_data || {})
+                            .filter(([key]) => !['password', 'role_id', 'satuan_id', 'is_approved'].includes(key.toLowerCase()))
+                            .map(([key, val]) => (
+                            <div key={key}>
+                              <span className="text-blue-500 dark:text-blue-400 font-bold uppercase">
+                                {key.replace(/_/g, ' ')}:
+                              </span> {String(val || '-')}
+                            </div>
                           ))}
                         </div>
                       )}

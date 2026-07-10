@@ -30,7 +30,7 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({ selectedTask, activeT
         {/* DETAIL TUGAS PANEL */}
         <div className="p-6 md:p-8 border-b border-slate-200 dark:border-slate-600 bg-cighra-light dark:bg-cighra-darkcard/80 relative">
           {activeTab === 'HISTORY' && (
-            <div className="absolute top-0 right-0 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white px-4 py-1 font-tactical font-bold text-[10px] tracking-widest uppercase">
+            <div className="absolute top-0 right-0 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white px-4 py-1 font-tactical font-bold text-xs tracking-widest uppercase">
               ARSIP LAPORAN SELESAI
             </div>
           )}
@@ -70,12 +70,12 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({ selectedTask, activeT
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
             <div className="bg-white dark:bg-slate-800/60 p-5 border border-slate-300 dark:border-slate-500 rounded-sm relative shadow-sm">
-              <span className="absolute -top-3 left-4 bg-white dark:bg-cighra-darkcard px-3 py-0.5 text-[10px] font-mono font-bold text-cighra-primary dark:text-cighra-gold border border-slate-300 dark:border-slate-600 border-b-transparent dark:border-b-transparent uppercase">Deskripsi Kendala</span>
+              <span className="absolute -top-3 left-4 bg-white dark:bg-cighra-darkcard px-3 py-0.5 text-xs font-mono font-bold text-cighra-primary dark:text-cighra-gold border border-slate-300 dark:border-slate-600 border-b-transparent dark:border-b-transparent uppercase">Deskripsi Kendala</span>
               <p className="text-sm text-gunmetal dark:text-slate-200 font-sans leading-relaxed italic border-l-2 border-cighra-primary dark:border-cighra-gold/50 pl-4 mt-2">
                 {selectedTask.kerusakan.deskripsi}
               </p>
               <div className="flex justify-end mt-2">
-                <span className="text-[10px] bg-sand/60 dark:bg-soft-gunmetal/40 px-2 py-1 font-mono text-slate-600 dark:text-slate-300 font-bold uppercase">
+                <span className="text-xs bg-sand/60 dark:bg-soft-gunmetal/40 px-2 py-1 font-mono text-slate-600 dark:text-slate-300 font-bold uppercase">
                   PELAPOR: {selectedTask.kerusakan.pelapor}
                 </span>
               </div>
@@ -93,7 +93,7 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({ selectedTask, activeT
 
             {selectedTask.kerusakan.jenisPerbaikan === 'Non-Swadaya' && (
               <div className="bg-blue-50 dark:bg-blue-900/10 p-5 border border-blue-200 dark:border-blue-800/40 rounded-sm relative shadow-sm">
-                <span className="absolute -top-3 left-4 bg-blue-50 dark:bg-cighra-darkcard px-3 py-0.5 text-[10px] font-mono font-bold text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800/40 border-b-transparent uppercase">Dukungan Anggaran</span>
+                <span className="absolute -top-3 left-4 bg-blue-50 dark:bg-cighra-darkcard px-3 py-0.5 text-xs font-mono font-bold text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800/40 border-b-transparent uppercase">Dukungan Anggaran</span>
                 <p className="text-sm text-gunmetal dark:text-slate-200 font-sans leading-relaxed italic border-l-2 border-blue-500 pl-4 mt-2">
                   {selectedTask.kerusakan.keteranganAnggaran || 'Tidak ada keterangan anggaran.'}
                 </p>
@@ -105,7 +105,7 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({ selectedTask, activeT
                         href={doc}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-mono font-bold tracking-widest rounded-sm transition-colors uppercase"
+                        className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-mono font-bold tracking-widest rounded-sm transition-colors uppercase"
                       >
                         <FileText className="w-3.5 h-3.5" /> Dokumen {index + 1}
                       </a>

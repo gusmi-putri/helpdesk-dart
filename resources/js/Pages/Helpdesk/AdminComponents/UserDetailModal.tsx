@@ -28,7 +28,7 @@ const UserDetailModal: React.FC<UserDetailModalProps> = ({ isOpen, onClose, user
                 <Users className="w-10 h-10 text-cighra-primary dark:text-cighra-gold" />
               </div>
               <div className="space-y-1">
-                <p className="text-[10px] font-mono text-slate-500 dark:text-slate-500 uppercase tracking-[0.2em]">{user.id}</p>
+                <p className="text-xs font-mono text-slate-500 dark:text-slate-500 uppercase tracking-[0.2em]">{user.id}</p>
                 <h4 className="text-2xl font-tactical font-bold text-slate-800 dark:text-white uppercase tracking-wider">{user.name}</h4>
                 <div className="inline-block bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white px-3 py-1 font-tactical font-bold text-xs tracking-[0.2em]">
                   {user.role.toUpperCase()}
@@ -37,27 +37,27 @@ const UserDetailModal: React.FC<UserDetailModalProps> = ({ isOpen, onClose, user
             </div>
 
             <div className="space-y-1">
-              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest">Security ID / Username</label>
+              <label className="block text-xs font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest">Security ID / Username</label>
               <p className="text-base font-mono font-bold text-slate-800 dark:text-slate-200">{user.username}</p>
             </div>
             <div className="space-y-1">
-              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest">NRP / NIP Identification</label>
+              <label className="block text-xs font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest">NRP / NIP Identification</label>
               <p className="text-base font-mono font-bold text-slate-800 dark:text-slate-200">{user.nrp_nip || '-'}</p>
             </div>
             <div className="space-y-1">
-              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest">WhatsApp Communication</label>
+              <label className="block text-xs font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest">WhatsApp Communication</label>
               <p className="text-base font-mono font-bold text-slate-800 dark:text-slate-200">+{user.no_wa || '-'}</p>
             </div>
             <div className="space-y-1">
-              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest">Email Contact</label>
+              <label className="block text-xs font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest">Email Contact</label>
               <p className="text-base font-mono font-bold text-slate-800 dark:text-slate-200 lowercase">{user.email || '-'}</p>
             </div>
             <div className="col-span-2 space-y-1">
-              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest">Military Unit / Assignment</label>
+              <label className="block text-xs font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest">Military Unit / Assignment</label>
               <p className="text-base font-mono font-bold text-slate-800 dark:text-slate-200 uppercase">{user.asal_satuan || '-'}</p>
             </div>
             <div className="col-span-2 space-y-3 pt-4">
-              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest">Technical Specialization</label>
+              <label className="block text-xs font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest">Technical Specialization</label>
               <div className={`p-4 bg-slate-50 dark:bg-cighra-darkcard border ${user.role !== 'Teknisi' ? 'border-slate-200 dark:border-slate-800 italic text-slate-400' : 'border-cighra-gold/20 text-slate-800 dark:text-blue-400'}`}>
                 <p className="font-mono font-bold text-sm">
                   {user.role === 'Teknisi' ? (user.spesialisasi || 'PENDING SPECIFICATION...') : 'FIELD ACCESS: NON-TECHNICAL PERSONNEL'}

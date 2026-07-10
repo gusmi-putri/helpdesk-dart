@@ -4,7 +4,7 @@ import Sidebar from './AdminComponents/Sidebar';
 import Topbar from './AdminComponents/Topbar';
 import RecapModal from './AdminComponents/RecapModal';
 import RejectConfirmModal from './AdminComponents/RejectConfirmModal';
-import LogoutConfirmModal from '@/Components/LogoutConfirmModal';
+
 import { useStore } from '@/store/useStore';
 import { router } from '@inertiajs/react';
 
@@ -58,18 +58,17 @@ const DashboardAdmin = (props: any) => {
   }, []);
 
   const currentUser = useStore(state => state.currentUser);
-  const logoutAction = useStore(state => state.logout);
   const addNotification = useStore(state => state.addNotification);
 
   const [logFilter, setLogFilter] = useState<string>('ALL');
-  const [selectedLogPayload, setSelectedLogPayload] = useState<any>(null); // from LogsTable if needed
+
 
   const [isRecapModalOpen, setIsRecapModalOpen] = useState(false);
   const [recapPeriod, setRecapPeriod] = useState<'weekly' | 'monthly' | 'yearly' | 'custom' | 'year_specific'>('monthly');
   const [recapStartDate, setRecapStartDate] = useState<string>('');
   const [recapEndDate, setRecapEndDate] = useState<string>('');
   const [recapYear, setRecapYear] = useState<string>(new Date().getFullYear().toString());
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [userToReject, setUserToReject] = useState<any>(null);
 
@@ -108,15 +107,6 @@ const DashboardAdmin = (props: any) => {
         }
       });
     }
-  };
-
-  const handleLogout = () => {
-    setIsLogoutModalOpen(true);
-  };
-
-  const confirmLogout = () => {
-    logoutAction();
-    router.visit('/login');
   };
 
 
@@ -161,7 +151,7 @@ const DashboardAdmin = (props: any) => {
         handleMenuClick={setActiveMenu}
         dbUsers={dbUsers}
         dbMutations={dbMutations}
-        dbSatuans={dbSatuans}        dbFeedbackUnreadCount={dbFeedbackUnreadCount}        handleLogout={handleLogout}
+        dbSatuans={dbSatuans}        dbFeedbackUnreadCount={dbFeedbackUnreadCount}
       />
 
       {/* MAIN CONTENT AREA */}
@@ -278,11 +268,6 @@ const DashboardAdmin = (props: any) => {
         actionType={userToReject?.type?.replace('request_', '') || 'register'}
       />
 
-      <LogoutConfirmModal
-        isOpen={isLogoutModalOpen}
-        onClose={() => setIsLogoutModalOpen(false)}
-        onConfirm={confirmLogout}
-      />
     </div>
   );
 };

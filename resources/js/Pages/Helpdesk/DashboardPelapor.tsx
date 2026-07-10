@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useStore } from '@/store/useStore';
-import { router, useForm } from '@inertiajs/react';
-import LogoutConfirmModal from '@/Components/LogoutConfirmModal';
+import { router } from '@inertiajs/react';
+
 
 // Sub-components
 import PelaporSidebar from './PelaporComponents/PelaporSidebar';
@@ -19,12 +19,10 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [selectedItemId, setSelectedItemId] = useState<number | string | null>(null);
   const [filterTime, setFilterTime] = useState<'ALL' | 'TODAY' | 'WEEK'>('ALL');
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+
   const [lastReportedData, setLastReportedData] = useState<any>(null);
 
-  const addNotification = useStore(state => state.addNotification);
   const currentUser = useStore(state => state.currentUser);
-  const logoutAction = useStore(state => state.logout);
 
   // Find current user's DB ID
   const dbUser = dbUsers.find((u: any) => u.username === currentUser?.username);
@@ -63,14 +61,6 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
     return () => clearInterval(interval);
   }, []);
 
-  const handleLogout = () => {
-    setIsLogoutModalOpen(true);
-  };
-
-  const confirmLogout = () => {
-    logoutAction();
-    router.visit('/login');
-  };
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-cighra-dark flex font-sans selection:bg-cighra-primary dark:selection:bg-cighra-gold dark:selection:text-slate-900 selection:text-gunmetal relative text-slate-800 dark:text-slate-200">
@@ -80,7 +70,6 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
         setIsMobileMenuOpen={setIsMobileMenuOpen}
         activeMenu={activeMenu}
         setActiveMenu={setActiveMenu}
-        handleLogout={handleLogout}
       />
 
       {/* MAIN CONTENT AREA */}
@@ -133,15 +122,10 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
         report={selectedItem}
       />
 
-      <LogoutConfirmModal
-        isOpen={isLogoutModalOpen}
-        onClose={() => setIsLogoutModalOpen(false)}
-        onConfirm={confirmLogout}
-      />
-
     </div>
   );
 };
 
 export default DashboardPelapor;
+
 

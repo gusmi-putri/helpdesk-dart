@@ -68,7 +68,7 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
           {/* Form Fields */}
           <div className="col-span-2">
-            <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">
+            <label className="block text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">
               Nama SATUAN <span className="text-red-500">*</span>
             </label>
             <input
@@ -82,7 +82,7 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
           </div>
 
           <div className="col-span-2">
-            <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">
+            <label className="block text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">
               Kode Satuan
             </label>
             <input
@@ -96,7 +96,7 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
           </div>
 
           <div className="col-span-2">
-            <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">
+            <label className="block text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">
               Alamat Lengkap
             </label>
             <textarea
@@ -111,7 +111,7 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
 
           <div className="grid grid-cols-2 gap-4 col-span-2">
             <div>
-              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">
+              <label className="block text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">
                 Latitude (LINTANG)
               </label>
               <div className="relative">
@@ -128,7 +128,7 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">
+              <label className="block text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">
                 Longitude (BUJUR)
               </label>
               <div className="relative">
@@ -148,14 +148,14 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
           <div className="col-span-2">
             {isPengajuan ? (
               <div className="bg-yellow-500/10 p-4 border-l-4 border-yellow-500">
-                <p className="text-[10px] text-yellow-600 dark:text-yellow-400 font-mono leading-relaxed">
+                <p className="text-xs text-yellow-600 dark:text-yellow-400 font-mono leading-relaxed">
                   <span className="font-bold uppercase tracking-widest block mb-1">PEMBERITAHUAN:</span> 
                   Data SATUAN yang Anda buat akan masuk sebagai pengajuan dan menunggu persetujuan Admin.
                 </p>
               </div>
             ) : (
               <div className="bg-blue-500/10 p-4 border-l-4 border-blue-500">
-                <p className="text-[10px] text-blue-600 dark:text-blue-400 font-mono leading-relaxed">
+                <p className="text-xs text-blue-600 dark:text-blue-400 font-mono leading-relaxed">
                   <span className="font-bold uppercase tracking-widest block mb-1">INFO VERIFIKASI:</span> 
                   Menyimpan kordinat (latitude & longitude) akan secara otomatis memverifikasi SATUAN ini.
                 </p>

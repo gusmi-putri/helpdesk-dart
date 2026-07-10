@@ -64,17 +64,17 @@ const AnalyticsSection: React.FC<AnalyticsSectionProps> = ({ dbCases }) => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600 p-6 flex flex-col items-center justify-center relative overflow-hidden shadow-lg">
           <div className="absolute top-0 left-0 w-full h-1 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900"></div>
-          <span className="text-[10px] font-mono text-slate-500 dark:text-slate-300 uppercase tracking-widest mb-2">Laporan Baru</span>
+          <span className="text-xs font-mono text-slate-500 dark:text-slate-300 uppercase tracking-widest mb-2">Laporan Baru</span>
           <span className="text-4xl font-tactical font-bold text-cighra-primary dark:text-cighra-gold">{statusCounts.PENDING}</span>
         </div>
         <div className="bg-white dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600 p-6 flex flex-col items-center justify-center relative overflow-hidden shadow-lg">
           <div className="absolute top-0 left-0 w-full h-1 bg-blue-500"></div>
-          <span className="text-[10px] font-mono text-slate-500 dark:text-slate-300 uppercase tracking-widest mb-2">Sedang Diproses</span>
+          <span className="text-xs font-mono text-slate-500 dark:text-slate-300 uppercase tracking-widest mb-2">Sedang Diproses</span>
           <span className="text-4xl font-tactical font-bold text-blue-500">{statusCounts.DIVERIFIKASI + statusCounts.DITERIMA_TEKNISI + statusCounts.DIPROSES}</span>
         </div>
         <div className="bg-white dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600 p-6 flex flex-col items-center justify-center relative overflow-hidden shadow-lg">
           <div className="absolute top-0 left-0 w-full h-1 bg-camogreen"></div>
-          <span className="text-[10px] font-mono text-slate-500 dark:text-slate-300 uppercase tracking-widest mb-2">Telah Selesai</span>
+          <span className="text-xs font-mono text-slate-500 dark:text-slate-300 uppercase tracking-widest mb-2">Telah Selesai</span>
           <span className="text-4xl font-tactical font-bold text-camogreen">{statusCounts.SELESAI}</span>
         </div>
       </div>

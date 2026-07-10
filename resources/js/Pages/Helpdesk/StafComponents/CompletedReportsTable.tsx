@@ -2,11 +2,13 @@ import React from 'react';
 import { CheckCircle, Image, CheckSquare, XCircle } from 'lucide-react';
 import { useTableSort } from '@/hooks/useTableSort';
 import SortableHeader from '@/Components/Table/SortableHeader';
+import { EmptyState } from '@/Components/ui/EmptyState';
+import { Button } from '@/Components/ui/Button';
 
 interface CompletedReportsTableProps {
   reports: any[];
   onSelectReport: (id: number) => void;
-  onViewProof: (proof: any[]) => void;
+  onViewProof: (proofData: { report: any; type: 'rusak' | 'selesai' }) => void;
 }
 
 const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
@@ -39,14 +41,14 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700/50 bg-white dark:bg-transparent text-slate-800 dark:text-white">
               {reports.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="p-8 text-center text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest">
-                    Belum ada data arsip perbaikan.
+                  <td colSpan={5} className="p-0 text-center">
+                    <EmptyState title="TIDAK ADA ARSIP" description="Belum ada data arsip perbaikan yang selesai atau ditolak." />
                   </td>
                 </tr>
               )}
               {sortedReports.map((report: any) => (
-                <tr 
-                  key={report.db_id} 
+                <tr
+                  key={report.db_id}
                   className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors cursor-pointer"
                   onClick={() => onSelectReport(report.db_id)}
                 >
@@ -55,11 +57,11 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                       {report.caseId}
                     </div>
                     {report.status === 'SELESAI' ? (
-                      <div className="mt-1.5 text-[10px] font-medium text-camogreen dark:text-green-400 flex justify-center items-center gap-1">
+                      <div className="mt-1.5 text-xs font-medium text-camogreen dark:text-green-400 flex justify-center items-center gap-1">
                         <CheckCircle className="w-3.5 h-3.5" /> Tuntas
                       </div>
                     ) : (
-                      <div className="mt-1.5 text-[10px] font-medium text-red-600 dark:text-red-400 flex justify-center items-center gap-1">
+                      <div className="mt-1.5 text-xs font-medium text-red-600 dark:text-red-400 flex justify-center items-center gap-1">
                         <XCircle className="w-3.5 h-3.5" /> Ditolak
                       </div>
                     )}
@@ -81,7 +83,7 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                   </td>
                   <td className="p-4 text-center max-w-sm">
                     {report.status === 'DITOLAK' ? (
-                      <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 rounded-md p-3 text-left">
+                      <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 rounded-none p-3 text-left">
                         <span className="font-medium block mb-1">Alasan Penolakan:</span>
                         <p className="text-slate-700 dark:text-slate-300 text-xs leading-relaxed">{report.perbaikan.alasanPenolakan || 'Tidak ada alasan penolakan.'}</p>
                       </div>
@@ -91,7 +93,7 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                           {report.perbaikan.tindakan || 'Tidak ada catatan.'}
                         </p>
                         {report.perbaikan.metodePerbaikan && (
-                          <span className="text-[10px] font-medium px-2 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-md">
+                          <span className="text-xs font-medium px-2 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-md">
                             Metode: {report.perbaikan.metodePerbaikan}
                           </span>
                         )}
@@ -100,31 +102,27 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                   </td>
                   <td className="p-4 text-center">
                     <div className="flex flex-col gap-2 items-center justify-center">
-                      {report.kerusakan.fileBukti && report.kerusakan.fileBukti.length > 0 && (
-                        <button
-                          onClick={(e) => { e.stopPropagation(); onViewProof(report.kerusakan.fileBukti); }}
-                          className="w-full max-w-[140px] px-3 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-medium rounded-md transition-colors flex items-center justify-center gap-2"
+                      {(report.kerusakan.foto_bukti || (report.kerusakan.fileBukti && report.kerusakan.fileBukti.length > 0) || report.kerusakan.tautan_video) && (
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          onClick={(e) => { e.stopPropagation(); onViewProof({ report, type: 'rusak' }); }}
+                          className="w-full max-w-[140px] text-xs"
                         >
                           <Image className="w-3.5 h-3.5 text-slate-500" /> Bukti Rusak
-                        </button>
+                        </Button>
                       )}
-                      {report.perbaikan.foto_bukti_selesai && (
-                        <button
-                          onClick={(e) => { e.stopPropagation(); onViewProof([report.perbaikan.foto_bukti_selesai]); }}
-                          className="w-full max-w-[140px] px-3 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-medium rounded-md transition-colors flex items-center justify-center gap-2"
+                      {(report.perbaikan.foto_bukti_selesai || report.perbaikan.video_bukti_selesai) && (
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          onClick={(e) => { e.stopPropagation(); onViewProof({ report, type: 'selesai' }); }}
+                          className="w-full max-w-[140px] text-xs"
                         >
-                          <CheckSquare className="w-3.5 h-3.5 text-camogreen" /> Foto Selesai
-                        </button>
+                          <CheckSquare className="w-3.5 h-3.5 text-camogreen" /> Bukti Selesai
+                        </Button>
                       )}
-                      {report.perbaikan.video_bukti_selesai && (
-                        <button
-                          onClick={(e) => { e.stopPropagation(); onViewProof([report.perbaikan.video_bukti_selesai]); }}
-                          className="w-full max-w-[140px] px-3 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-medium rounded-md transition-colors flex items-center justify-center gap-2"
-                        >
-                          <CheckSquare className="w-3.5 h-3.5 text-blue-500" /> Video Selesai
-                        </button>
-                      )}
-                      {(!report.kerusakan.fileBukti || report.kerusakan.fileBukti.length === 0) && !report.perbaikan.foto_bukti_selesai && !report.perbaikan.video_bukti_selesai && (
+                      {!(report.kerusakan.foto_bukti || (report.kerusakan.fileBukti && report.kerusakan.fileBukti.length > 0) || report.kerusakan.tautan_video) && !report.perbaikan.foto_bukti_selesai && !report.perbaikan.video_bukti_selesai && (
                         <span className="text-xs text-slate-400 dark:text-slate-500">Tidak ada media</span>
                       )}
                     </div>

@@ -60,7 +60,7 @@ const UnitModal: React.FC<UnitModalProps> = ({
       <form id="unitForm" onSubmit={onSubmit} className="p-8 space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
           <div>
-            <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Nomor Seri Unit</label>
+            <label className="block text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Nomor Seri Unit</label>
             <input
               type="text"
               value={data.nomor_seri}
@@ -73,7 +73,7 @@ const UnitModal: React.FC<UnitModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Jenis Unit DART</label>
+            <label className="block text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Jenis Unit DART</label>
             <select
               value={data.jenis}
               onChange={(e) => setData('jenis', e.target.value)}
@@ -90,7 +90,7 @@ const UnitModal: React.FC<UnitModalProps> = ({
             </select>
           </div>
           <div className="col-span-2">
-            <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Status Operasional</label>
+            <label className="block text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Status Operasional</label>
             <select
               value={data.status_unit}
               onChange={(e) => setData('status_unit', e.target.value)}
@@ -104,7 +104,7 @@ const UnitModal: React.FC<UnitModalProps> = ({
             </select>
           </div>
           <div className="col-span-2">
-            <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Asal Satuan / Lokasi Penempatan</label>
+            <label className="block text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Asal Satuan / Lokasi Penempatan</label>
             <select
               value={data.satuan_id || ''}
               onChange={(e) => {
@@ -124,11 +124,11 @@ const UnitModal: React.FC<UnitModalProps> = ({
           </div>
           {isAddMode && (
             <div className="col-span-2">
-              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Surat Pendukung / Dokumentasi (PDF/IMG)</label>
+              <label className="block text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Surat Pendukung / Dokumentasi (PDF/IMG)</label>
               <input
                 type="file"
                 onChange={(e) => setData('document', e.target.files?.[0] || null)}
-                className={`w-full bg-slate-50 dark:bg-cighra-darkcard border ${errors.document ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} p-3 text-sm font-mono focus:ring-1 focus:ring-cighra-gold outline-none transition-all dark:text-white file:mr-4 file:py-1 file:px-4 file:rounded-none file:border-0 file:text-[10px] file:font-tactical file:bg-cighra-primary file:text-white dark:file:bg-cighra-gold dark:file:text-slate-900 cursor-pointer rounded-sm`}
+                className={`w-full bg-slate-50 dark:bg-cighra-darkcard border ${errors.document ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} p-3 text-sm font-mono focus:ring-1 focus:ring-cighra-gold outline-none transition-all dark:text-white file:mr-4 file:py-1 file:px-4 file:rounded-none file:border-0 file:text-xs file:font-tactical file:bg-cighra-primary file:text-white dark:file:bg-cighra-gold dark:file:text-slate-900 cursor-pointer rounded-sm`}
                 required
                 accept=".pdf,.png,.jpg,.jpeg"
               />

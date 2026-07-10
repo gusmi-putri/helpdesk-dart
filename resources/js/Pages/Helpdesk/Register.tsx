@@ -125,7 +125,7 @@ const Register: React.FC = () => {
                 SISTEM SISFO DART
               </p>
             </div>
-            <Link href="/login" className="flex items-center gap-2 px-4 py-2 border border-slate-300 dark:border-slate-600 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 transition-all duration-300 text-[10px] font-mono font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">
+            <Link href="/login" className="flex items-center gap-2 px-4 py-2 border border-slate-300 dark:border-slate-600 hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 transition-all duration-300 text-xs font-mono font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">
               <ArrowLeft className="w-3.5 h-3.5" /> Kembali ke Login
             </Link>
           </div>
@@ -146,14 +146,14 @@ const Register: React.FC = () => {
             <div className="space-y-6">
               <div className="flex items-center gap-3 mb-4">
                 <span className="h-px flex-1 bg-cighra-primary/20 dark:bg-cighra-gold/20"></span>
-                <h3 className="text-[10px] font-mono font-black text-cighra-primary dark:text-cighra-gold dark:text-camogreen uppercase tracking-[0.4em]">I. DATA AKUN</h3>
+                <h3 className="text-xs font-mono font-black text-cighra-primary dark:text-cighra-gold dark:text-camogreen uppercase tracking-[0.4em]">I. DATA AKUN</h3>
                 <span className="h-px flex-1 bg-cighra-primary/20 dark:bg-cighra-gold/20"></span>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Username */}
                 <div className="space-y-2">
-                  <label className="text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300/80 uppercase flex items-center gap-2">
+                  <label className="text-xs font-mono font-bold text-slate-600 dark:text-slate-300/80 uppercase flex items-center gap-2">
                     <User className="w-3 h-3" /> Nama Pengguna
                   </label>
                   <div className="group relative">
@@ -175,7 +175,7 @@ const Register: React.FC = () => {
 
                 {/* Email */}
                 <div className="space-y-2">
-                  <label className="text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300/80 uppercase flex items-center gap-2">
+                  <label className="text-xs font-mono font-bold text-slate-600 dark:text-slate-300/80 uppercase flex items-center gap-2">
                     <Mail className="w-3 h-3" /> Alamat Email
                   </label>
                   <div className="group relative">
@@ -197,7 +197,7 @@ const Register: React.FC = () => {
 
                 {/* Password */}
                 <div className="space-y-2 md:col-span-2">
-                  <label className="text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300/80 uppercase flex items-center gap-2">
+                  <label className="text-xs font-mono font-bold text-slate-600 dark:text-slate-300/80 uppercase flex items-center gap-2">
                     <Lock className="w-3 h-3" /> Kata Sandi
                   </label>
                   <div className="group relative">
@@ -228,7 +228,7 @@ const Register: React.FC = () => {
 
                 {/* Confirm Password */}
                 <div className="space-y-2 md:col-span-2">
-                  <label className="text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300/80 uppercase flex items-center gap-2">
+                  <label className="text-xs font-mono font-bold text-slate-600 dark:text-slate-300/80 uppercase flex items-center gap-2">
                     <Lock className="w-3 h-3" /> Konfirmasi Kata Sandi
                   </label>
                   <div className="group relative">
@@ -256,14 +256,14 @@ const Register: React.FC = () => {
             <div className="space-y-6">
               <div className="flex items-center gap-3 mb-4">
                 <span className="h-px flex-1 bg-cighra-primary/20 dark:bg-cighra-gold/20"></span>
-                <h3 className="text-[10px] font-mono font-black text-cighra-primary dark:text-cighra-gold dark:text-camogreen uppercase tracking-[0.4em]">II. DATA DIRI</h3>
+                <h3 className="text-xs font-mono font-black text-cighra-primary dark:text-cighra-gold dark:text-camogreen uppercase tracking-[0.4em]">II. DATA DIRI</h3>
                 <span className="h-px flex-1 bg-cighra-primary/20 dark:bg-cighra-gold/20"></span>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Nama Lengkap */}
                 <div className="space-y-2">
-                  <label className="text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300/80 uppercase flex items-center gap-2">
+                  <label className="text-xs font-mono font-bold text-slate-600 dark:text-slate-300/80 uppercase flex items-center gap-2">
                     <User className="w-3 h-3" /> Nama Lengkap
                   </label>
                   <div className="group relative">
@@ -281,7 +281,7 @@ const Register: React.FC = () => {
 
                 {/* NRP / NIP */}
                 <div className="space-y-2">
-                  <label className="text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300/80 uppercase flex items-center gap-2">
+                  <label className="text-xs font-mono font-bold text-slate-600 dark:text-slate-300/80 uppercase flex items-center gap-2">
                     <IdCard className="w-3 h-3" /> NRP / NIP
                   </label>
                   <div className="group relative">
@@ -303,7 +303,7 @@ const Register: React.FC = () => {
 
                 {/* Asal Satuan */}
                 <div className="space-y-2">
-                  <label htmlFor="asal-satuan-input" className="text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300/80 uppercase flex items-center gap-2">
+                  <label htmlFor="asal-satuan-input" className="text-xs font-mono font-bold text-slate-600 dark:text-slate-300/80 uppercase flex items-center gap-2">
                     <MapPin className="w-3 h-3" /> Asal SATUAN
                   </label>
                   <div className="group relative">
@@ -358,7 +358,7 @@ const Register: React.FC = () => {
 
                 {/* No WA */}
                 <div className="space-y-2">
-                  <label className="text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300/80 uppercase flex items-center gap-2">
+                  <label className="text-xs font-mono font-bold text-slate-600 dark:text-slate-300/80 uppercase flex items-center gap-2">
                     <Phone className="w-3 h-3" /> Nomor WhatsApp
                   </label>
                   <div className="group relative">
@@ -411,7 +411,7 @@ const Register: React.FC = () => {
                   )}
                 </span>
               </button>
-              <p className="text-center mt-6 text-[10px] font-mono text-slate-500 dark:text-slate-300 uppercase tracking-widest">
+              <p className="text-center mt-6 text-xs font-mono text-slate-500 dark:text-slate-300 uppercase tracking-widest">
                 Sudah punya akun?{' '}
                 <Link href="/login" className="text-cighra-primary dark:text-cighra-gold hover:text-camogreen font-black underline underline-offset-4">Masuk di sini</Link>
               </p>

@@ -80,7 +80,7 @@ const StafRecapModal: React.FC<StafRecapModalProps> = ({
                   <p className={`text-sm font-bold uppercase tracking-widest ${recapPeriod === period ? 'text-cighra-primary dark:text-cighra-gold' : 'text-slate-700 dark:text-slate-300'}`}>
                     {period === 'weekly' ? 'Mingguan' : period === 'monthly' ? 'Bulanan' : 'Tahunan'}
                   </p>
-                  <p className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-1">S/D Hari Ini</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-1">S/D Hari Ini</p>
                 </button>
               ))}
             </div>
@@ -102,7 +102,7 @@ const StafRecapModal: React.FC<StafRecapModalProps> = ({
                   <CalendarRange size={16} className={recapPeriod === 'custom' ? 'text-cighra-primary dark:text-cighra-gold' : 'text-slate-400'} />
                   <p className={`text-sm font-bold uppercase tracking-widest ${recapPeriod === 'custom' ? 'text-cighra-primary dark:text-cighra-gold' : 'text-slate-700 dark:text-slate-300'}`}>Rentang Khusus</p>
                 </div>
-                <p className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider">Atur Tanggal Awal - Akhir</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider">Atur Tanggal Awal - Akhir</p>
               </button>
 
               <button
@@ -120,7 +120,7 @@ const StafRecapModal: React.FC<StafRecapModalProps> = ({
                   <CalendarDays size={16} className={recapPeriod === 'year_specific' ? 'text-cighra-primary dark:text-cighra-gold' : 'text-slate-400'} />
                   <p className={`text-sm font-bold uppercase tracking-widest ${recapPeriod === 'year_specific' ? 'text-cighra-primary dark:text-cighra-gold' : 'text-slate-700 dark:text-slate-300'}`}>Tahun Tertentu</p>
                 </div>
-                <p className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider">Pilih Satu Tahun Penuh</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider">Pilih Satu Tahun Penuh</p>
               </button>
             </div>
 
@@ -129,7 +129,7 @@ const StafRecapModal: React.FC<StafRecapModalProps> = ({
               {recapPeriod === 'custom' && (
                 <div className="grid grid-cols-2 gap-4 p-5 bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-slate-600 rounded-sm animate-in slide-in-from-top-2">
                   <div>
-                    <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Mulai Tanggal</label>
+                    <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Mulai Tanggal</label>
                     <input 
                       type="date" 
                       value={recapStartDate}
@@ -138,7 +138,7 @@ const StafRecapModal: React.FC<StafRecapModalProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Sampai Tanggal</label>
+                    <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Sampai Tanggal</label>
                     <input 
                       type="date" 
                       value={recapEndDate}
@@ -151,7 +151,7 @@ const StafRecapModal: React.FC<StafRecapModalProps> = ({
 
               {recapPeriod === 'year_specific' && (
                 <div className="p-5 bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-slate-600 rounded-sm animate-in slide-in-from-top-2">
-                  <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Pilih Tahun Evaluasi</label>
+                  <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Pilih Tahun Evaluasi</label>
                   <select 
                     value={recapYear}
                     onChange={(e) => setRecapYear(e.target.value)}

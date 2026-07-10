@@ -49,7 +49,7 @@ const RequestDeleteModal: React.FC<RequestDeleteModalProps> = ({ isOpen, onClose
                 <p className="text-xs font-mono text-red-700 dark:text-red-400 mt-1">
                   [{unit.nomor_seri}]— {unit.asal_satuan}
                 </p>
-                <p className="text-[10px] text-red-600 dark:text-red-400 mt-2">
+                <p className="text-xs text-red-600 dark:text-red-400 mt-2">
                   Pengajuan ini akan dikirim ke Admin untuk persetujuan. Unit tidak akan langsung dihapus.
                 </p>
               </div>
@@ -57,13 +57,13 @@ const RequestDeleteModal: React.FC<RequestDeleteModalProps> = ({ isOpen, onClose
           </div>
 
           <div>
-            <label className="block text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Alasan Penghapusan *</label>
+            <label className="block text-xs font-mono font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Alasan Penghapusan *</label>
             <textarea value={reason} onChange={(e) => setReason(e.target.value)} rows={3} required
               className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm font-mono focus:border-red-500 outline-none text-slate-800 dark:text-white resize-none" placeholder="Jelaskan alasan penghapusan unit ini..." />
           </div>
 
           <div>
-            <label className="block text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Surat Pendukung (PDF/JPG/PNG)</label>
+            <label className="block text-xs font-mono font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Surat Pendukung (PDF/JPG/PNG)</label>
             <div className="relative">
               {document ? (
                 <div className="flex items-center gap-2 bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-800/30 px-3 py-2 rounded-sm">

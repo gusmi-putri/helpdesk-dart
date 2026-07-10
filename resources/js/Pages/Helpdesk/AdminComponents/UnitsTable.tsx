@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Package, Search, Plus, History, Edit, Trash2, Upload, CheckCircle, AlertTriangle, X } from 'lucide-react';
+import { EmptyState } from '@/Components/ui/EmptyState';
 import { usePage, router, useForm } from '@inertiajs/react';
 import SortableHeader from '@/Components/Table/SortableHeader';
 import UnitModal from './UnitModal';
@@ -75,16 +76,17 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
   // Read flash data from Inertia
   const { flash } = usePage().props as any;
 
-  React.useEffect(() => {
-    if (flash?.import_result) {
-      try {
-        const result = JSON.parse(flash.import_result);
-        setImportResult(result);
-      } catch {
-        // ignore parse error
-      }
+  const [prevImportResultStr, setPrevImportResultStr] = useState<string | null>(null);
+
+  if (flash?.import_result && flash.import_result !== prevImportResultStr) {
+    setPrevImportResultStr(flash.import_result);
+    try {
+      const result = JSON.parse(flash.import_result);
+      setImportResult(result);
+    } catch {
+      // ignore
     }
-  }, [flash?.import_result]);
+  }
 
   const unitStats = {
     TOTAL: dbUnits.length,
@@ -314,7 +316,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
         </div>
 
         {isDeleteMode && (
-          <div className="p-4 bg-red-500/5 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center text-[10px] font-mono text-red-600 dark:text-red-400">
+          <div className="p-4 bg-red-500/5 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center text-xs font-mono text-red-600 dark:text-red-400">
             <span className="font-bold flex items-center gap-2">
               ⚠️ MODE HAPUS MASSAL AKTIF: KLIK PADA BARIS UNIT UNTUK MENANDAI PENGHAPUSAN.
             </span>
@@ -364,7 +366,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700/50">
               {paginatedItems.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-10 text-center text-slate-500 dark:text-slate-400 font-mono italic uppercase tracking-widest">Tidak ada unit yang ditemukan.</td>
+                  <td colSpan={6} className="p-0 text-center"><EmptyState title="TIDAK ADA DATA" description="Tidak ada unit yang ditemukan berdasarkan pencarian Anda." /></td>
                 </tr>
               ) : (
                 paginatedItems.map((u: any) => {
@@ -411,7 +413,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
                           {u.status_unit === 'Perbaikan' ? 'Dalam Perbaikan' : u.status_unit}
                         </span>
                       </td>
-                      <td className="p-4 font-mono text-[10px] text-slate-800 dark:text-white text-center">{u.last_maintenance}</td>
+                      <td className="p-4 font-mono text-xs text-slate-800 dark:text-white text-center">{u.last_maintenance}</td>
 
                       {!isDeleteMode && (
                         <td className="p-4 flex gap-2 justify-center">
@@ -493,11 +495,11 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
                     </div>
                   </div>
                   {importResult.skipped > 0 && (
-                    <p className="text-[10px] font-mono text-yellow-600 dark:text-yellow-400 bg-yellow-500/10 p-2 border border-yellow-500/20">
+                    <p className="text-xs font-mono text-yellow-600 dark:text-yellow-400 bg-yellow-500/10 p-2 border border-yellow-500/20">
                       ⚠ {importResult.skipped} baris dilewati karena Nomor Seri sudah terdaftar di sistem.
                     </p>
                   )}
-                  <p className="text-[10px] font-mono text-slate-500 dark:text-slate-300 text-center uppercase">
+                  <p className="text-xs font-mono text-slate-500 dark:text-slate-300 text-center uppercase">
                     Data inventaris telah diperbarui secara otomatis.
                   </p>
                 </div>

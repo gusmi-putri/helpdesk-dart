@@ -1,20 +1,18 @@
 import React from 'react';
-import { Send, History, LogOut, Video } from 'lucide-react';
+import { Send, History, Video } from 'lucide-react';
 
 interface PelaporSidebarProps {
   isMobileMenuOpen: boolean;
   setIsMobileMenuOpen: (open: boolean) => void;
   activeMenu: 'FORM' | 'HISTORY' | 'WIZARD' | 'VIDEO';
   setActiveMenu: (menu: 'FORM' | 'HISTORY' | 'WIZARD' | 'VIDEO') => void;
-  handleLogout: () => void;
 }
 
 const PelaporSidebar: React.FC<PelaporSidebarProps> = ({
   isMobileMenuOpen,
   setIsMobileMenuOpen,
   activeMenu,
-  setActiveMenu,
-  handleLogout
+  setActiveMenu
 }) => {
   return (
     <aside className={`fixed inset-y-0 left-0 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 w-72 bg-white dark:bg-cighra-dark border-r border-slate-200 dark:border-slate-600 z-50 flex-shrink-0 flex flex-col shadow-2xl`}>
@@ -55,15 +53,8 @@ const PelaporSidebar: React.FC<PelaporSidebarProps> = ({
           <Video size={18} className={activeMenu === 'VIDEO' ? 'text-cighra-primary dark:text-cighra-gold' : ''} /> BANK VIDEO
         </button>
       </nav>
-
-      <div className="p-4 border-t border-slate-200 dark:border-slate-600 bg-cighra-light dark:bg-cighra-dark/60">
-        <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 font-tactical text-sm tracking-wider transition-all rounded-sm border border-transparent hover:border-cighra-primary dark:hover:border-cighra-gold/30">
-          <LogOut className="w-5 h-5" /> KELUAR SISTEM
-        </button>
-      </div>
     </aside>
   );
 };
 
 export default PelaporSidebar;
-

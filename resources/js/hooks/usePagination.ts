@@ -16,10 +16,13 @@ export function usePagination<T>(items: T[], itemsPerPage: number = 10) {
     }
   };
 
+  const [prevItemsLength, setPrevItemsLength] = useState(items.length);
+
   // Reset to page 1 if total items changes (e.g., due to search/filter)
-  useEffect(() => {
+  if (items.length !== prevItemsLength) {
+    setPrevItemsLength(items.length);
     setCurrentPage(1);
-  }, [items.length]);
+  }
 
   return {
     currentPage,

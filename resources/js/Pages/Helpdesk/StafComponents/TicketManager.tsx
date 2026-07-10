@@ -7,11 +7,13 @@ import {
   AlertTriangle, Link as LinkIcon
 } from 'lucide-react';
 import { BaseModal } from '@/Components/ui/BaseModal';
+import { Button } from '@/Components/ui/Button';
+import { EmptyState } from '@/Components/ui/EmptyState';
 
 interface TicketManagerProps {
   reports: any[];
   onAssignTechnician: (id: number) => void;
-  onViewProof: (proof: any[]) => void;
+  onViewProof: (proofData: { report: any; type: 'rusak' | 'selesai' }) => void;
   onVerify: (id: number) => void;
   onReject: (id: number) => void;
 }
@@ -57,19 +59,19 @@ const TicketManager: React.FC<TicketManagerProps> = ({
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'PENDING':
-        return <span className="bg-transparent text-red-500 border border-red-500/30 text-[10px] font-bold px-2 py-1  font-mono flex items-center gap-1 w-fit shadow-sm"><span className="w-1.5 h-1.5  bg-red-500 animate-pulse block"></span> PENDING VERIFIKASI</span>;
+        return <span className="bg-transparent text-red-500 border border-red-500/30 text-xs font-bold px-2 py-1  font-mono flex items-center gap-1 w-fit shadow-sm"><span className="w-1.5 h-1.5  bg-red-500 animate-pulse block"></span> PENDING VERIFIKASI</span>;
       case 'DIVERIFIKASI':
-        return <span className="bg-transparent text-yellow-500 border border-yellow-500/30 text-[10px] font-bold px-2 py-1  font-mono flex items-center gap-1 w-fit shadow-sm"><Clock className="w-3 h-3 text-yellow-500" /> DIVERIFIKASI</span>;
+        return <span className="bg-transparent text-yellow-500 border border-yellow-500/30 text-xs font-bold px-2 py-1  font-mono flex items-center gap-1 w-fit shadow-sm"><Clock className="w-3 h-3 text-yellow-500" /> DIVERIFIKASI</span>;
       case 'DITERIMA TEKNISI':
-        return <span className="bg-transparent text-purple-500 border border-purple-500/30 text-[10px] font-bold px-2 py-1  font-mono flex items-center gap-1 w-fit shadow-sm"><Activity className="w-3 h-3 text-purple-500" /> TUGAS DITERIMA</span>;
+        return <span className="bg-transparent text-purple-500 border border-purple-500/30 text-xs font-bold px-2 py-1  font-mono flex items-center gap-1 w-fit shadow-sm"><Activity className="w-3 h-3 text-purple-500" /> TUGAS DITERIMA</span>;
       case 'DIPROSES':
-        return <span className="bg-transparent text-blue-500 border border-blue-500/30 text-[10px] font-bold px-2 py-1  font-mono flex items-center gap-1 w-fit shadow-sm"><Activity className="w-3 h-3" /> SEDANG DIPROSES</span>;
+        return <span className="bg-transparent text-blue-500 border border-blue-500/30 text-xs font-bold px-2 py-1  font-mono flex items-center gap-1 w-fit shadow-sm"><Activity className="w-3 h-3" /> SEDANG DIPROSES</span>;
       case 'SELESAI':
-        return <span className="bg-transparent text-green-500 border border-green-500/30 text-[10px] font-bold px-2 py-1  font-mono flex items-center gap-1 w-fit shadow-sm"><CheckCircle className="w-3 h-3" /> SELESAI</span>;
+        return <span className="bg-transparent text-green-500 border border-green-500/30 text-xs font-bold px-2 py-1  font-mono flex items-center gap-1 w-fit shadow-sm"><CheckCircle className="w-3 h-3" /> SELESAI</span>;
       case 'DITOLAK':
-        return <span className="bg-transparent text-red-500 border border-red-500/30 text-[10px] font-bold px-2 py-1  font-mono flex items-center gap-1 w-fit shadow-sm"><XCircle className="w-3 h-3" /> DITOLAK</span>;
+        return <span className="bg-transparent text-red-500 border border-red-500/30 text-xs font-bold px-2 py-1  font-mono flex items-center gap-1 w-fit shadow-sm"><XCircle className="w-3 h-3" /> DITOLAK</span>;
       default:
-        return <span className="bg-transparent text-slate-400 border border-slate-700 text-[10px] font-bold px-2 py-1  font-mono w-fit">{status}</span>;
+        return <span className="bg-transparent text-slate-400 border border-slate-700 text-xs font-bold px-2 py-1  font-mono w-fit">{status}</span>;
     }
   };
 
@@ -119,10 +121,10 @@ const TicketManager: React.FC<TicketManagerProps> = ({
             <Clock className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-[10px] font-tactical tracking-widest text-slate-500 dark:text-slate-400 uppercase">Menunggu Verifikasi</p>
+            <p className="text-xs font-tactical tracking-widest text-slate-500 dark:text-slate-400 uppercase">Menunggu Verifikasi</p>
             <div className="flex items-baseline gap-2">
               <h4 className="text-2xl font-bold font-mono text-slate-800 dark:text-white">{countMenunggu}</h4>
-              <span className="text-[10px] text-slate-400">Butuh verifikasi awal</span>
+              <span className="text-xs text-slate-400">Butuh verifikasi awal</span>
             </div>
           </div>
         </div>
@@ -133,10 +135,10 @@ const TicketManager: React.FC<TicketManagerProps> = ({
             <User className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-[10px] font-tactical tracking-widest text-slate-500 dark:text-slate-400 uppercase">Ditugaskan</p>
+            <p className="text-xs font-tactical tracking-widest text-slate-500 dark:text-slate-400 uppercase">Ditugaskan</p>
             <div className="flex items-baseline gap-2">
               <h4 className="text-2xl font-bold font-mono text-slate-800 dark:text-white">{countDitugaskan}</h4>
-              <span className="text-[10px] text-slate-400">Menunggu teknisi</span>
+              <span className="text-xs text-slate-400">Menunggu teknisi</span>
             </div>
           </div>
         </div>
@@ -147,10 +149,10 @@ const TicketManager: React.FC<TicketManagerProps> = ({
             <Activity className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-[10px] font-tactical tracking-widest text-slate-500 dark:text-slate-400 uppercase">Sedang Ditangani</p>
+            <p className="text-xs font-tactical tracking-widest text-slate-500 dark:text-slate-400 uppercase">Sedang Ditangani</p>
             <div className="flex items-baseline gap-2">
               <h4 className="text-2xl font-bold font-mono text-slate-800 dark:text-white">{countDikerjakan}</h4>
-              <span className="text-[10px] text-slate-400">Dalam proses perbaikan</span>
+              <span className="text-xs text-slate-400">Dalam proses perbaikan</span>
             </div>
           </div>
         </div>
@@ -161,10 +163,10 @@ const TicketManager: React.FC<TicketManagerProps> = ({
             <CheckCircle className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-[10px] font-tactical tracking-widest text-slate-500 dark:text-slate-400 uppercase">Selesai</p>
+            <p className="text-xs font-tactical tracking-widest text-slate-500 dark:text-slate-400 uppercase">Selesai</p>
             <div className="flex items-baseline gap-2">
               <h4 className="text-2xl font-bold font-mono text-slate-800 dark:text-white">{countSelesai}</h4>
-              <span className="text-[10px] text-slate-400">Selesai ditangani</span>
+              <span className="text-xs text-slate-400">Selesai ditangani</span>
             </div>
           </div>
         </div>
@@ -234,9 +236,8 @@ const TicketManager: React.FC<TicketManagerProps> = ({
 
         <div className="p-4 space-y-3">
           {filteredReports.length === 0 ? (
-             <div className="text-center py-12">
-               <ShieldAlert className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
-               <p className="text-slate-500 dark:text-slate-400 font-mono text-sm uppercase tracking-widest">Tidak ada tiket ditemukan.</p>
+             <div className="py-8">
+               <EmptyState title="TIDAK ADA TIKET" description="Belum ada tiket atau laporan kerusakan yang ditemukan." />
              </div>
           ) : (
             filteredReports.map((report) => {
@@ -252,7 +253,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
               return (
                 <div 
                   key={report.db_id} 
-                  className={`relative flex flex-col lg:flex-row gap-4 p-4  border-y border-r border-l-4 ${borderColorClass} ${isSelected ? 'bg-slate-50 dark:bg-slate-800/60 border-y-cighra-gold border-r-cighra-gold shadow-md' : 'bg-white dark:bg-cighra-darkcard border-y-slate-200 dark:border-y-slate-700 border-r-slate-200 dark:border-r-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/40'} transition-all group`}
+                  className={`relative flex flex-col lg:flex-row gap-4 p-4  border-y border-r border-l-4 ${borderColorClass} ${isSelected ? 'bg-slate-50 dark:bg-slate-800/60 border-y-cighra-gold border-r-cighra-gold shadow-md' : 'bg-white dark:bg-cighra-darkcard border-y-slate-200 dark:border-y-slate-700 border-r-slate-200 dark:border-r-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/40 hover:-translate-y-0.5 hover:shadow-lg'} transition-all duration-300 group`}
                 >
                   {/* Column 1: Ticket Info */}
                   <div className="w-full lg:w-1/4 space-y-2 lg:space-y-3">
@@ -265,9 +266,9 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                     <div className="flex flex-row lg:flex-col justify-between items-start lg:gap-2">
                       <div className="pt-1 lg:pt-2 text-left">
                         <p className="font-bold text-sm text-slate-800 dark:text-white truncate">{report.kerusakan.barangRusak}</p>
-                        <p className="text-[10px] text-slate-500 dark:text-slate-400 font-mono uppercase mt-0.5">Unit DART</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 font-mono uppercase mt-0.5">Unit DART</p>
                       </div>
-                      <div className="flex items-center gap-1.5 text-[10px] text-slate-500 dark:text-slate-400 font-mono mt-1 lg:mt-0 text-right lg:text-left">
+                      <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-mono mt-1 lg:mt-0 text-right lg:text-left">
                         <Calendar className="w-3 h-3" /> {report.kerusakan.tanggal}
                       </div>
                     </div>
@@ -281,14 +282,14 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                     {/* Reporter & Location */}
                     <div className="w-full lg:w-1/2 space-y-4 py-1">
                       <div>
-                        <p className="text-[10px] text-slate-500 dark:text-slate-400 font-mono uppercase mb-1">Pelapor</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 font-mono uppercase mb-1">Pelapor</p>
                         <div className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-200">
                           <User className="w-4 h-4 text-slate-400" />
                           <span className="truncate">{report.kerusakan.pelapor}</span>
                         </div>
                       </div>
                       <div>
-                        <p className="text-[10px] text-slate-500 dark:text-slate-400 font-mono uppercase mb-1">Lokasi</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 font-mono uppercase mb-1">Lokasi</p>
                         <div className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-200">
                           <MapPin className="w-4 h-4 text-slate-400" />
                           <span className="truncate">{report.kerusakan.lokasi}</span>
@@ -299,11 +300,11 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                     {/* Status & Technician */}
                     <div className="w-full lg:w-1/2 space-y-4 py-1">
                       <div>
-                        <p className="text-[10px] text-slate-500 dark:text-slate-400 font-mono uppercase mb-1">Status</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 font-mono uppercase mb-1">Status</p>
                         {getStatusBadge(report.status)}
                       </div>
                       <div>
-                        <p className="text-[10px] text-slate-500 dark:text-slate-400 font-mono uppercase mb-1">Teknisi Ditugaskan</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 font-mono uppercase mb-1">Teknisi Ditugaskan</p>
                         <div className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-200">
                           <User className="w-4 h-4 text-slate-400" />
                           <span className="truncate">{report.perbaikan.teknisi || '-'}</span>
@@ -314,28 +315,30 @@ const TicketManager: React.FC<TicketManagerProps> = ({
 
                   {/* Column 4: Actions */}
                   <div className="w-full lg:w-1/4 flex flex-row lg:flex-col justify-center items-center gap-2 lg:pl-4 lg:border-l border-slate-200 dark:border-slate-700 pt-3 lg:pt-0 border-t border-slate-200 dark:border-slate-700 lg:border-t-0 relative">
-                    <button 
+                    <Button 
+                      variant="outline"
+                      size="sm"
                       onClick={() => setSelectedTicketId(report.db_id)}
-                      className="w-full max-w-[140px] px-3 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-[10px] font-tactical tracking-widest  transition-colors flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-600"
+                      className="w-full max-w-[190px] text-xs"
                     >
                       <Eye className="w-3.5 h-3.5 text-blue-500" /> DETAIL
-                    </button>
+                    </Button>
 
                     {report.status === 'PENDING' && (
-                      <div className="flex gap-2 w-full max-w-[160px]">
-                        <button onClick={() => onVerify(report.db_id)} className="flex-1 bg-cighra-primary hover:bg-cighra-primary/90 dark:bg-cighra-gold dark:hover:bg-cighra-gold/90 dark:text-slate-900 text-white py-2 px-1 text-[10px] font-tactical tracking-widest  transition-colors flex items-center justify-center border border-cighra-primary dark:border-cighra-gold shadow-md">
-                          <CheckCircle className="w-3.5 h-3.5 mr-1" /> SETUJUI
-                        </button>
-                        <button onClick={() => onReject(report.db_id)} className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 px-1 text-[10px] font-tactical tracking-widest  transition-colors flex items-center justify-center border border-red-600 shadow-md">
-                          <XCircle className="w-3.5 h-3.5 mr-1" /> TOLAK
-                        </button>
+                      <div className="flex gap-2 w-full max-w-[190px]">
+                        <Button variant="primary" size="sm" onClick={() => onVerify(report.db_id)} className="flex-1 text-xs px-1">
+                          <CheckCircle className="w-3.5 h-3.5" /> SETUJUI
+                        </Button>
+                        <Button variant="danger" size="sm" onClick={() => onReject(report.db_id)} className="flex-1 text-xs px-1">
+                          <XCircle className="w-3.5 h-3.5" /> TOLAK
+                        </Button>
                       </div>
                     )}
 
                     {report.status === 'DIVERIFIKASI' && (
-                      <button onClick={() => onAssignTechnician(report.db_id)} className="w-full max-w-[140px] px-3 py-2 bg-cighra-primary hover:bg-cighra-primary/90 dark:bg-cighra-gold dark:hover:bg-cighra-gold/90 dark:text-slate-900 text-white text-[10px] font-tactical tracking-widest  transition-colors flex items-center justify-center gap-2 border border-cighra-primary dark:border-cighra-gold shadow-md">
+                      <Button variant="primary" size="sm" onClick={() => onAssignTechnician(report.db_id)} className="w-full max-w-[190px] text-xs">
                         <User className="w-3.5 h-3.5" /> TUGASKAN TEKNISI
-                      </button>
+                      </Button>
                     )}
                   </div>
                 </div>
@@ -367,7 +370,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                   );
                 })()}
               </div>
-              <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400 mt-2 font-normal normal-case">Dibuat: {selectedTicket.kerusakan.tanggal}</p>
+              <p className="text-xs font-mono text-slate-500 dark:text-slate-400 mt-2 font-normal normal-case">Dibuat: {selectedTicket.kerusakan.tanggal}</p>
             </div>
           }
           footer={
@@ -393,22 +396,22 @@ const TicketManager: React.FC<TicketManagerProps> = ({
               
               {/* Section 1: Info Unit */}
               <div className="bg-slate-50 dark:bg-slate-800/30 p-4 border border-slate-200 dark:border-slate-700 rounded-sm">
-                <h4 className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3">Informasi Unit DART</h4>
+                <h4 className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3">Informasi Unit DART</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 uppercase">Nomor Unit</p>
+                    <p className="text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 uppercase">Nomor Unit</p>
                     <p className="text-sm font-bold text-slate-800 dark:text-white truncate">{selectedTicket.kerusakan.barangRusak}</p>
                   </div>
                   <div>
-                    <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 uppercase">Lokasi</p>
+                    <p className="text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 uppercase">Lokasi</p>
                     <p className="text-sm font-semibold text-slate-800 dark:text-white truncate">{selectedTicket.kerusakan.lokasi}</p>
                   </div>
                   <div>
-                    <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 uppercase">Jenis DART</p>
+                    <p className="text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 uppercase">Jenis DART</p>
                     <p className="text-sm font-semibold text-slate-800 dark:text-white truncate">{selectedTicket.kerusakan.jenis_dart || 'Tidak Diketahui'}</p>
                   </div>
                   <div>
-                    <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 uppercase">Satuan</p>
+                    <p className="text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 uppercase">Satuan</p>
                     <p className="text-sm font-semibold text-slate-800 dark:text-white truncate">{selectedTicket.kerusakan.lokasi || '-'}</p>
                   </div>
                 </div>
@@ -416,15 +419,15 @@ const TicketManager: React.FC<TicketManagerProps> = ({
 
               {/* Section 2: Info Pelapor */}
               <div className="bg-slate-50 dark:bg-slate-800/30 p-4 border border-slate-200 dark:border-slate-700 rounded-sm">
-                <h4 className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3">Informasi Pelapor</h4>
+                <h4 className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3">Informasi Pelapor</h4>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="col-span-2">
-                    <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 uppercase">Nama Pelapor</p>
+                    <p className="text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 uppercase">Nama Pelapor</p>
                     <p className="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-2"><User className="w-4 h-4 text-slate-400" /> {selectedTicket.kerusakan.pelapor}</p>
                   </div>
                   <div className="col-span-2">
-                    <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 uppercase">Metode Perbaikan Diajukan</p>
-                    <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-mono font-bold border rounded-sm uppercase bg-slate-100 text-slate-600 border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600">
+                    <p className="text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 uppercase">Metode Perbaikan Diajukan</p>
+                    <span className="inline-flex items-center px-2 py-0.5 text-xs font-mono font-bold border rounded-sm uppercase bg-slate-100 text-slate-600 border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600">
                       <Wallet className="w-3 h-3 mr-1" /> {selectedTicket.kerusakan.jenisPerbaikan || 'Swadaya'}
                     </span>
                   </div>
@@ -433,7 +436,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
 
               {/* Section 3: Deskripsi */}
               <section>
-                <h4 className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                <h4 className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
                   <FileText size={14} /> DESKRIPSI KERUSAKAN
                 </h4>
                 <div className="bg-slate-50 dark:bg-slate-900/50 p-4 border border-slate-200 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-sans italic relative rounded-sm">
@@ -444,7 +447,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                 {/* Lampiran Foto */}
                 {(selectedTicket.kerusakan.foto_bukti || (selectedTicket.kerusakan.fileBukti && selectedTicket.kerusakan.fileBukti.length > 0)) && (
                   <div className="mt-6 space-y-3">
-                    <h4 className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                    <h4 className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest flex items-center gap-2">
                       <ImageIcon size={14} /> FOTO KENDALA
                     </h4>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -476,7 +479,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                 {/* Lampiran Dokumen */}
                 {selectedTicket.kerusakan.dokumenAnggaran && selectedTicket.kerusakan.dokumenAnggaran.length > 0 && (
                   <div className="mt-6 space-y-3">
-                    <h4 className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                    <h4 className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest flex items-center gap-2">
                       <FileText size={14} /> DOKUMEN PENDUKUNG ({selectedTicket.kerusakan.dokumenAnggaran.length})
                     </h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -490,7 +493,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                               </div>
                               <div className="min-w-0">
                                 <p className="text-xs font-semibold text-slate-800 dark:text-white truncate" title={fileName}>{fileName}</p>
-                                <p className="text-[10px] text-slate-500 font-mono mt-0.5">Berkas Terlampir</p>
+                                <p className="text-xs text-slate-500 font-mono mt-0.5">Berkas Terlampir</p>
                               </div>
                             </div>
                             <a href={doc} target="_blank" rel="noopener noreferrer" title="Unduh Dokumen" className="shrink-0 ml-3 p-2 text-slate-500 dark:text-slate-400 border border-slate-300 dark:border-slate-600 hover:text-cighra-primary dark:hover:text-cighra-gold hover:border-cighra-primary dark:hover:border-cighra-gold hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors rounded-sm">
@@ -506,7 +509,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                 {/* Tautan Media Eksternal */}
                 {selectedTicket.kerusakan.tautan_video && (
                   <div className="mt-6 space-y-3">
-                    <h4 className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                    <h4 className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest flex items-center gap-2">
                       <LinkIcon size={14} /> TAUTAN MEDIA EKSTERNAL
                     </h4>
                     <div className="flex items-center justify-between p-4 border border-slate-200 dark:border-slate-700 rounded-sm bg-white dark:bg-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
@@ -516,10 +519,10 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                         </div>
                         <div className="min-w-0">
                           <p className="text-xs font-semibold text-slate-800 dark:text-white mb-1">Tautan Drive / URL</p>
-                          <p className="text-[10px] text-blue-600 dark:text-blue-400 font-mono truncate cursor-pointer hover:underline" onClick={() => window.open(selectedTicket.kerusakan.tautan_video, '_blank')} title={selectedTicket.kerusakan.tautan_video}>{selectedTicket.kerusakan.tautan_video}</p>
+                          <p className="text-xs text-blue-600 dark:text-blue-400 font-mono truncate cursor-pointer hover:underline" onClick={() => window.open(selectedTicket.kerusakan.tautan_video, '_blank')} title={selectedTicket.kerusakan.tautan_video}>{selectedTicket.kerusakan.tautan_video}</p>
                         </div>
                       </div>
-                      <a href={selectedTicket.kerusakan.tautan_video} target="_blank" rel="noopener noreferrer" className="shrink-0 ml-3 px-4 py-2 text-[10px] font-tactical font-bold tracking-widest uppercase bg-blue-600 text-white hover:bg-blue-700 transition-colors rounded-sm flex items-center gap-2 shadow-sm">
+                      <a href={selectedTicket.kerusakan.tautan_video} target="_blank" rel="noopener noreferrer" className="shrink-0 ml-3 px-4 py-2 text-xs font-tactical font-bold tracking-widest uppercase bg-blue-600 text-white hover:bg-blue-700 transition-colors rounded-sm flex items-center gap-2 shadow-sm">
                         Buka Tautan <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                       </a>
                     </div>
@@ -529,7 +532,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
 
               {/* Section 4: Riwayat Status */}
               <div className="bg-slate-50 dark:bg-slate-800/30 p-4 border border-slate-200 dark:border-slate-700 rounded-sm">
-                <h4 className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4">Riwayat Status</h4>
+                <h4 className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4">Riwayat Status</h4>
                 <div className="space-y-4 relative before:absolute before:inset-0 before:ml-2.5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-300 dark:before:via-slate-700 before:to-transparent">
                   {/* Item 1: Dilaporkan */}
                   <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
@@ -540,7 +543,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                       <div className="flex items-center justify-between mb-1">
                         <span className="font-bold text-xs text-slate-800 dark:text-white uppercase">Dilaporkan</span>
                       </div>
-                      <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400">{selectedTicket.kerusakan.tanggal}</p>
+                      <p className="text-xs font-mono text-slate-500 dark:text-slate-400">{selectedTicket.kerusakan.tanggal}</p>
                     </div>
                   </div>
 
@@ -554,7 +557,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                         <div className="flex items-center justify-between mb-1">
                           <span className="font-bold text-xs text-yellow-600 dark:text-yellow-500 uppercase">Diverifikasi</span>
                         </div>
-                        <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400">Verifikasi awal selesai.</p>
+                        <p className="text-xs font-mono text-slate-500 dark:text-slate-400">Verifikasi awal selesai.</p>
                       </div>
                     </div>
                   )}
@@ -568,7 +571,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                         <div className="flex items-center justify-between mb-1">
                           <span className="font-bold text-xs text-blue-600 dark:text-blue-500 uppercase">Ditugaskan</span>
                         </div>
-                        <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400">Ke: {selectedTicket.perbaikan.teknisi}</p>
+                        <p className="text-xs font-mono text-slate-500 dark:text-slate-400">Ke: {selectedTicket.perbaikan.teknisi}</p>
                       </div>
                     </div>
                   )}
@@ -582,7 +585,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                         <div className="flex items-center justify-between mb-1">
                           <span className={`font-bold text-xs uppercase ${selectedTicket.status === 'SELESAI' ? 'text-green-600 dark:text-green-500' : 'text-red-600 dark:text-red-500'}`}>{selectedTicket.status}</span>
                         </div>
-                        <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400">{selectedTicket.perbaikan.tanggalSelesai || 'Diselesaikan'}</p>
+                        <p className="text-xs font-mono text-slate-500 dark:text-slate-400">{selectedTicket.perbaikan.tanggalSelesai || 'Diselesaikan'}</p>
                       </div>
                     </div>
                   )}
@@ -592,15 +595,15 @@ const TicketManager: React.FC<TicketManagerProps> = ({
 
               {/* Section 5: Info Teknisi */}
               <div className="bg-slate-50 dark:bg-slate-800/30 p-4 border border-slate-200 dark:border-slate-700 rounded-sm">
-                <h4 className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2"><User className="w-3.5 h-3.5" /> Teknisi Ditugaskan</h4>
+                <h4 className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2"><User className="w-3.5 h-3.5" /> Teknisi Ditugaskan</h4>
                 {selectedTicket.perbaikan.teknisi ? (
                   <div className="flex justify-between items-center">
                     <div>
-                      <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 uppercase">Nama Teknisi</p>
+                      <p className="text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 uppercase">Nama Teknisi</p>
                       <p className="text-sm font-bold text-slate-800 dark:text-white">{selectedTicket.perbaikan.teknisi}</p>
                     </div>
                     {selectedTicket.status === 'DIVERIFIKASI' && (
-                      <button onClick={() => onAssignTechnician(selectedTicket.db_id)} className="bg-cighra-primary hover:bg-cighra-primary/90 dark:bg-cighra-gold dark:hover:bg-cighra-gold/90 text-white dark:text-slate-900 px-3 py-1.5 text-[10px] font-tactical tracking-widest  transition-colors border border-cighra-primary dark:border-cighra-gold shadow-sm rounded-sm">
+                      <button onClick={() => onAssignTechnician(selectedTicket.db_id)} className="bg-cighra-primary hover:bg-cighra-primary/90 dark:bg-cighra-gold dark:hover:bg-cighra-gold/90 text-white dark:text-slate-900 px-3 py-1.5 text-xs font-tactical tracking-widest  transition-colors border border-cighra-primary dark:border-cighra-gold shadow-sm rounded-sm">
                         UBAH TEKNISI
                       </button>
                     )}
@@ -609,7 +612,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                   <div className="text-center py-4">
                     <p className="text-slate-500 dark:text-slate-400 text-xs font-mono uppercase italic mb-2">Belum ada teknisi ditugaskan.</p>
                     {selectedTicket.status === 'DIVERIFIKASI' && (
-                      <button onClick={() => onAssignTechnician(selectedTicket.db_id)} className="bg-cighra-primary hover:bg-cighra-primary/90 dark:bg-cighra-gold dark:hover:bg-cighra-gold/90 text-white dark:text-slate-900 px-4 py-2 text-[10px] font-tactical tracking-widest  transition-colors flex items-center gap-2 mx-auto shadow-md rounded-sm">
+                      <button onClick={() => onAssignTechnician(selectedTicket.db_id)} className="bg-cighra-primary hover:bg-cighra-primary/90 dark:bg-cighra-gold dark:hover:bg-cighra-gold/90 text-white dark:text-slate-900 px-4 py-2 text-xs font-tactical tracking-widest  transition-colors flex items-center gap-2 mx-auto shadow-md rounded-sm">
                         <ShieldAlert className="w-3.5 h-3.5" /> TUGASKAN SEKARANG
                       </button>
                     )}
@@ -618,13 +621,13 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                 
                 {selectedTicket.perbaikan.tindakan && (
                   <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-700/50">
-                    <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 uppercase">Catatan Tindakan</p>
+                    <p className="text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 uppercase">Catatan Tindakan</p>
                     <p className="text-sm text-slate-800 dark:text-slate-300 font-serif italic">"{selectedTicket.perbaikan.tindakan}"</p>
                   </div>
                 )}
                 {selectedTicket.perbaikan.alasanPenolakan && (
                   <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-700/50">
-                    <p className="text-[10px] font-mono text-red-500 dark:text-red-400 mb-1 uppercase">Alasan Penolakan</p>
+                    <p className="text-xs font-mono text-red-500 dark:text-red-400 mb-1 uppercase">Alasan Penolakan</p>
                     <p className="text-sm text-slate-800 dark:text-slate-300 font-serif italic text-red-700 dark:text-red-300">"{selectedTicket.perbaikan.alasanPenolakan}"</p>
                   </div>
                 )}

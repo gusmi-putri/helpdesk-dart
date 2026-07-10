@@ -27,7 +27,7 @@ const VideoBank: React.FC = () => {
           <div className="aspect-video bg-slate-900 relative flex items-center justify-center overflow-hidden">
             <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')] bg-cover bg-center opacity-40 group-hover:opacity-60 transition-opacity mix-blend-overlay"></div>
             <PlaySquare className="w-16 h-16 text-white/50 group-hover:text-cighra-gold transition-colors z-10" />
-            <div className="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] px-2 py-1 font-mono rounded-sm">G-DRIVE</div>
+            <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-2 py-1 font-mono rounded-sm">G-DRIVE</div>
           </div>
           <div className="p-5 border-t-2 border-transparent group-hover:border-cighra-primary transition-colors">
             <h4 className="font-tactical font-bold text-lg text-slate-800 dark:text-white uppercase leading-tight mb-2">Video Instalasi</h4>
@@ -40,7 +40,7 @@ const VideoBank: React.FC = () => {
           <div className="aspect-video bg-slate-900 relative flex items-center justify-center overflow-hidden">
             <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1581092160562-40aa08e78837?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')] bg-cover bg-center opacity-40 group-hover:opacity-60 transition-opacity mix-blend-overlay"></div>
             <PlaySquare className="w-16 h-16 text-white/50 group-hover:text-cighra-gold transition-colors z-10" />
-            <div className="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] px-2 py-1 font-mono rounded-sm">G-DRIVE</div>
+            <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-2 py-1 font-mono rounded-sm">G-DRIVE</div>
           </div>
           <div className="p-5 border-t-2 border-transparent group-hover:border-cighra-primary transition-colors">
             <h4 className="font-tactical font-bold text-lg text-slate-800 dark:text-white uppercase leading-tight mb-2">Video Troubleshooting</h4>

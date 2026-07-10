@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Search, Plus, MapPin, Edit, Trash2, Eye } from 'lucide-react';
 import { useTableSort } from '@/hooks/useTableSort';
 import SortableHeader from '@/Components/Table/SortableHeader';
-import { router, useForm } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 import { useStore } from '@/store/useStore';
 import SatuanModal from './SatuanModal';
 import SatuanDetailModal from './SatuanDetailModal';
@@ -178,7 +178,7 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
                   <td className="p-2 px-3 font-mono font-bold text-[11px] text-slate-800 dark:text-white" title={satuan.nama_satuan}>
                     <span className="block truncate max-w-[180px]">{satuan.nama_satuan}</span>
                   </td>
-                  <td className="p-2 px-3 text-[10px] font-mono text-slate-600 dark:text-slate-300" title={satuan.alamat || '-'}>
+                  <td className="p-2 px-3 text-xs font-mono text-slate-600 dark:text-slate-300" title={satuan.alamat || '-'}>
                     <span className="block truncate max-w-[200px]">{satuan.alamat || '-'}</span>
                   </td>
                   <td className="p-2 px-2 text-[9px] font-mono text-slate-600 dark:text-slate-400 text-center w-[140px]">

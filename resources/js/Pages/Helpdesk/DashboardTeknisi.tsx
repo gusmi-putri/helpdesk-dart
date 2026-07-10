@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useStore } from '@/store/useStore';
 import { router, useForm } from '@inertiajs/react';
-import LogoutConfirmModal from '@/Components/LogoutConfirmModal';
+
 
 // Sub-components
 import TeknisiSidebar from './TeknisiComponents/TeknisiSidebar';
@@ -22,7 +22,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+
 
   // Filter tasks
   const activeTasks = dbCases.filter((r: any) => r.status === 'DIVERIFIKASI' || r.status === 'DITERIMA TEKNISI' || r.status === 'DIPROSES');
@@ -94,15 +94,6 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
     });
   };
 
-  const handleLogout = () => {
-    setIsLogoutModalOpen(true);
-  };
-
-  const confirmLogout = () => {
-    logoutAction();
-    router.visit('/login');
-  };
-
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-cighra-dark flex font-sans selection:bg-cighra-primary dark:selection:bg-cighra-gold dark:selection:text-slate-900 selection:text-white relative text-gunmetal dark:text-slate-300">
 
@@ -111,7 +102,6 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
         setIsMobileMenuOpen={setIsMobileMenuOpen}
         activeMenu="TUGAS"
         activeTasksCount={activeTasks.length}
-        handleLogout={handleLogout}
       />
 
       {/* MAIN CONTENT AREA */}
@@ -196,15 +186,8 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
           </div>
         </div>
       </main>
-
-      <LogoutConfirmModal
-        isOpen={isLogoutModalOpen}
-        onClose={() => setIsLogoutModalOpen(false)}
-        onConfirm={confirmLogout}
-      />
     </div>
   );
 };
 
 export default DashboardTeknisi;
-

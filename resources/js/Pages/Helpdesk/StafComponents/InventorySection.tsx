@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Search, Plus, Trash2, CheckSquare, Upload, Package } from 'lucide-react';
 import SortableHeader from '@/Components/Table/SortableHeader';
+import { EmptyState } from '@/Components/ui/EmptyState';
+import { Button } from '@/Components/ui/Button';
 
 interface InventorySectionProps {
   dbUnits: any[];
@@ -134,7 +136,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
                   setIsDeleteMode(!isDeleteMode);
                   setSelectedUnitIds([]);
                 }}
-                className={`px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-all border shadow-lg uppercase cursor-pointer ${
+                className={`px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-all border shadow-lg uppercase cursor-pointer rounded-none ${
                   isDeleteMode 
                     ? 'bg-slate-700 hover:bg-slate-600 text-white border-slate-700' 
                     : 'bg-red-600 hover:bg-red-500 text-white border-red-600'
@@ -146,7 +148,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
             {onAddBatch && (
               <button
                 onClick={onAddBatch}
-                className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-blue-600 shadow-lg uppercase cursor-pointer"
+                className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-blue-600 shadow-lg uppercase cursor-pointer rounded-none"
               >
                 <Upload className="w-4 h-4" /> AJUKAN MASSAL (CSV)
               </button>
@@ -154,7 +156,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
             {onAddUnit && (
               <button
                 onClick={onAddUnit}
-                className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-cighra-primary dark:border-cighra-gold shadow-lg uppercase cursor-pointer"
+                className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-cighra-primary dark:border-cighra-gold shadow-lg uppercase cursor-pointer rounded-none"
               >
                 <Plus className="w-4 h-4" /> AJUKAN TAMBAH UNIT
               </button>
@@ -204,7 +206,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
         </div>
 
         {isDeleteMode && (
-          <div className="p-4 bg-red-500/5 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center text-[10px] font-mono text-red-600 dark:text-red-400">
+          <div className="p-4 bg-red-500/5 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center text-xs font-mono text-red-600 dark:text-red-400">
             <span className="font-bold flex items-center gap-2">
               ⚠️ MODE HAPUS MASSAL AKTIF: KLIK PADA BARIS UNIT UNTUK MENANDAI PENGHAPUSAN.
             </span>
@@ -244,7 +246,9 @@ const InventorySection: React.FC<InventorySectionProps> = ({
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700/50">
               {filteredUnits.length === 0 ? (
                 <tr>
-                  <td colSpan={isDeleteMode ? 7 : (onRequestDelete ? 6 : 5)} className="p-10 text-center text-slate-500 dark:text-slate-400 font-mono italic uppercase tracking-widest">Tidak ada unit yang ditemukan.</td>
+                  <td colSpan={isDeleteMode ? 7 : (onRequestDelete ? 6 : 5)} className="p-0 text-center">
+                    <EmptyState title="TIDAK ADA UNIT" description="Belum ada unit inventaris yang ditemukan." />
+                  </td>
                 </tr>
               ) : (
                 filteredUnits.map((u: any) => {
@@ -291,7 +295,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
                           {u.status_unit === 'Perbaikan' ? 'Dalam Perbaikan' : u.status_unit}
                         </span>
                       </td>
-                      <td className="p-4 font-mono text-[10px] text-slate-500 dark:text-slate-400 text-center">{u.last_maintenance}</td>
+                      <td className="p-4 font-mono text-xs text-slate-500 dark:text-slate-400 text-center">{u.last_maintenance}</td>
 
                       {onRequestDelete && !isDeleteMode && (
                         <td className="p-4 text-center">

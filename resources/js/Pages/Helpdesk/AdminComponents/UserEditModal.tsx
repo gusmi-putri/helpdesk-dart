@@ -91,7 +91,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
       <form id="userEditForm" onSubmit={onSubmit} className="p-8 space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
           <div>
-            <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">NRP / NIP</label>
+            <label className="block text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">NRP / NIP</label>
             <input
               type="text"
               value={data.nrp_nip}
@@ -109,7 +109,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
           {isAddMode ? (
             <>
               <div>
-                <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Username</label>
+                <label className="block text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Username</label>
                 <input
                   type="text"
                   value={data.username}
@@ -124,7 +124,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
                 {errors.username && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.username}</p>}
               </div>
               <div>
-                <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Password</label>
+                <label className="block text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Password</label>
                 <input
                   type="password"
                   value={data.password}
@@ -143,7 +143,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
             </>
           ) : (
             <div className="flex flex-col col-span-2">
-              <label className="block text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-1">Username (LOCKED)</label>
+              <label className="block text-xs font-mono text-slate-500 uppercase tracking-widest mb-1">Username (LOCKED)</label>
               <div className="bg-slate-50 dark:bg-slate-800/80 p-2.5 border border-slate-200 dark:border-slate-800 text-sm font-mono font-bold text-slate-400 dark:text-slate-500 italic flex items-center gap-2 rounded-sm">
                 <span className="w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-700"></span>
                 {data.username}
@@ -151,7 +151,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
             </div>
           )}
           <div className="col-span-2">
-            <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Nama Lengkap</label>
+            <label className="block text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Nama Lengkap</label>
             <input
               type="text"
               value={data.nama_lengkap}
@@ -163,7 +163,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
             {errors.nama_lengkap && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.nama_lengkap}</p>}
           </div>
           <div className="col-span-2 md:col-span-1">
-            <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Email Address</label>
+            <label className="block text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Email Address</label>
             <input
               type="email"
               value={data.email}
@@ -176,7 +176,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
           </div>
           {data.username === 'admin' ? (
             <div className="flex flex-col">
-              <label className="block text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-1">Hak Akses (LOCKED)</label>
+              <label className="block text-xs font-mono text-slate-500 uppercase tracking-widest mb-1">Hak Akses (LOCKED)</label>
               <div className="bg-slate-100 dark:bg-slate-800/80 p-3 border border-slate-200 dark:border-slate-800 text-sm font-mono font-bold text-slate-400 dark:text-slate-500 italic flex items-center gap-2 rounded-sm">
                 <span className="w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-700"></span>
                 ADMINISTRATOR
@@ -184,7 +184,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
             </div>
           ) : (
             <div>
-              <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Hak Akses (Role)</label>
+              <label className="block text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Hak Akses (Role)</label>
               <select
                 value={data.role_id}
                 onChange={(e) => setData('role_id', e.target.value)}
@@ -200,7 +200,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
             </div>
           )}
           <div>
-            <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">WhatsApp Connection</label>
+            <label className="block text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">WhatsApp Connection</label>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-mono text-sm font-bold pointer-events-none">+</span>
               <input
@@ -221,7 +221,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
             {errors.no_wa && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.no_wa}</p>}
           </div>
           <div>
-            <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Asal Satuan / Komando</label>
+            <label className="block text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Asal Satuan / Komando</label>
             <select
               value={data.satuan_id || ''}
               onChange={(e) => {
@@ -242,7 +242,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
             {errors.satuan_id && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.satuan_id}</p>}
           </div>
           <div className="col-span-2">
-            <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">
+            <label className="block text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">
               Specialization {dbRoles?.find((r: any) => r.id == data.role_id)?.name !== 'Teknisi' && '(TECH ONLY)'}
             </label>
             <input

@@ -41,13 +41,13 @@ const RecapModal: React.FC<RecapModalProps> = ({
         </div>
 
         <div className="p-8 space-y-8">
-          <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase tracking-widest leading-relaxed border-l-4 border-cighra-primary dark:border-cighra-gold pl-4 bg-slate-50 dark:bg-slate-800/20 p-4">
+          <p className="text-xs font-mono text-slate-500 dark:text-slate-400 uppercase tracking-widest leading-relaxed border-l-4 border-cighra-primary dark:border-cighra-gold pl-4 bg-slate-50 dark:bg-slate-800/20 p-4">
             KONFIGURASI PERIODE LAPORAN UNTUK EKSPOR FORMAT PDF (LANDSCAPE). DOKUMEN INI AKAN MENCAKUP DATA OPERASIONAL, STATUS UNIT, DAN REKAPITULASI PENANGANAN.
           </p>
 
           <div className="space-y-6">
             <div className="flex flex-col gap-2">
-                <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase tracking-widest">METODE FILTER PERIODE</label>
+                <label className="block text-xs font-mono text-slate-500 dark:text-slate-400 uppercase tracking-widest">METODE FILTER PERIODE</label>
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
                     {(['weekly', 'monthly', 'yearly', 'custom', 'year_specific'] as const).map(period => (
                         <button
@@ -71,7 +71,7 @@ const RecapModal: React.FC<RecapModalProps> = ({
             {recapPeriod === 'custom' && (
               <div className="grid grid-cols-2 gap-6 p-6 bg-slate-50 dark:bg-cighra-darkcard border border-cighra-gold/20 animate-in slide-in-from-top-4 duration-300">
                 <div className="space-y-2">
-                  <label className="block text-[10px] font-mono text-slate-500 uppercase tracking-widest">Mulai Tanggal</label>
+                  <label className="block text-xs font-mono text-slate-500 uppercase tracking-widest">Mulai Tanggal</label>
                   <input
                     type="date"
                     value={recapStartDate}
@@ -80,7 +80,7 @@ const RecapModal: React.FC<RecapModalProps> = ({
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="block text-[10px] font-mono text-slate-500 uppercase tracking-widest">Sampai Tanggal</label>
+                  <label className="block text-xs font-mono text-slate-500 uppercase tracking-widest">Sampai Tanggal</label>
                   <input
                     type="date"
                     value={recapEndDate}
@@ -94,7 +94,7 @@ const RecapModal: React.FC<RecapModalProps> = ({
             {/* Conditional Input for Year Specific */}
             {recapPeriod === 'year_specific' && (
               <div className="p-6 bg-slate-50 dark:bg-cighra-darkcard border border-cighra-gold/20 animate-in slide-in-from-top-4 duration-300">
-                <label className="block text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-2">TARGET TAHUN OPERASIONAL</label>
+                <label className="block text-xs font-mono text-slate-500 uppercase tracking-widest mb-2">TARGET TAHUN OPERASIONAL</label>
                 <select
                   value={recapYear}
                   onChange={(e) => setRecapYear(e.target.value)}

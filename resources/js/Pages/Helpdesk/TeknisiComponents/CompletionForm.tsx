@@ -66,7 +66,7 @@ const CompletionForm: React.FC<CompletionFormProps> = ({
                 <div className="relative w-full max-w-[200px] h-32 border-2 border-cighra-primary dark:border-cighra-gold shadow-lg overflow-hidden group-hover:scale-105 transition-transform">
                   <img src={imagePreview} className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span className="text-[10px] text-white font-bold font-mono">GANTI FOTO</span>
+                    <span className="text-xs text-white font-bold font-mono">GANTI FOTO</span>
                   </div>
                 </div>
               ) : (

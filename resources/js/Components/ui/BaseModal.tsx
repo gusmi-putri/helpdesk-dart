@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface BaseModalProps {
   isOpen: boolean;
@@ -22,7 +23,15 @@ export const BaseModal: React.FC<BaseModalProps> = ({
   maxWidth = '2xl',
   headerColor = 'default'
 }) => {
-  if (!isOpen) return null;
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   const maxWidthClasses = {
     sm: 'max-w-sm',
@@ -37,9 +46,9 @@ export const BaseModal: React.FC<BaseModalProps> = ({
   };
 
   const headerTheme = {
-    default: 'bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700',
-    primary: 'bg-red-500/10 dark:bg-red-900/10 border-b border-cighra-primary dark:border-cighra-gold',
-    danger: 'bg-red-500/10 dark:bg-red-900/10 border-b border-red-500/50'
+    default: 'bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700',
+    primary: 'bg-red-500/10 dark:bg-red-900/20 border-b border-cighra-primary dark:border-cighra-gold backdrop-blur-md',
+    danger: 'bg-red-500/10 dark:bg-red-900/20 border-b border-red-500/50 backdrop-blur-md'
   };
 
   const titleTheme = {
@@ -61,46 +70,62 @@ export const BaseModal: React.FC<BaseModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 px-6 overflow-y-auto">
-      {/* Backdrop (Click to close) */}
-      <div className="absolute inset-0" onClick={onClose} />
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 px-6 overflow-y-auto">
+          {/* Backdrop (Click to close) */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 bg-black/80 backdrop-blur-md" 
+            onClick={onClose} 
+          />
 
-      {/* Modal Dialog */}
-      <div className={`relative bg-white dark:bg-cighra-darkcard w-full ${modalBorderTheme[headerColor]} ${maxWidthClasses[maxWidth]} shadow-[0_0_100px_rgba(0,0,0,0.6)] animate-in zoom-in-95 duration-300 rounded-sm overflow-hidden text-left flex flex-col max-h-[90vh]`}>
-        
-        {/* Header */}
-        <div className={`p-5 flex items-center justify-between shrink-0 relative ${headerTheme[headerColor]}`}>
-          <div className="flex items-center gap-4">
-            {icon && (
-              <div className="w-8 h-8 text-red-500 animate-pulse flex items-center justify-center">
-                {icon}
+          {/* Modal Dialog */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+            transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
+            className={`relative bg-white dark:bg-cighra-darkcard w-full ${modalBorderTheme[headerColor]} ${maxWidthClasses[maxWidth]} shadow-[0_0_100px_rgba(0,0,0,0.6)] rounded-sm overflow-hidden text-left flex flex-col max-h-[90vh] z-10`}
+          >
+            
+            {/* Header */}
+            <div className={`p-5 flex items-center justify-between shrink-0 relative ${headerTheme[headerColor]}`}>
+              <div className="flex items-center gap-4">
+                {icon && (
+                  <div className="w-8 h-8 text-red-500 animate-pulse flex items-center justify-center">
+                    {icon}
+                  </div>
+                )}
+                <h3 className={`font-tactical font-bold tracking-widest uppercase text-xl ${titleTheme[headerColor]}`}>
+                  {title}
+                </h3>
+              </div>
+              
+              <button 
+                onClick={onClose} 
+                className={`p-2 transition-colors rounded-sm ${closeBtnTheme[headerColor]}`}
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Content (Scrollable) */}
+            <div className="overflow-y-auto custom-scrollbar flex-1">
+              {children}
+            </div>
+
+            {/* Footer */}
+            {footer && (
+              <div className="p-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 flex gap-3 shrink-0 relative z-20">
+                {footer}
               </div>
             )}
-            <h3 className={`font-tactical font-bold tracking-widest uppercase text-xl ${titleTheme[headerColor]}`}>
-              {title}
-            </h3>
-          </div>
-          
-          <button 
-            onClick={onClose} 
-            className={`p-2 transition-colors rounded-sm ${closeBtnTheme[headerColor]}`}
-          >
-            <X className="w-5 h-5" />
-          </button>
+          </motion.div>
         </div>
-
-        {/* Content (Scrollable) */}
-        <div className="overflow-y-auto custom-scrollbar flex-1">
-          {children}
-        </div>
-
-        {/* Footer */}
-        {footer && (
-          <div className="p-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 flex gap-3 shrink-0">
-            {footer}
-          </div>
-        )}
-      </div>
-    </div>
+      )}
+    </AnimatePresence>
   );
 };

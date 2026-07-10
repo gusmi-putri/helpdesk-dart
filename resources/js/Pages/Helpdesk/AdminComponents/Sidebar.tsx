@@ -14,7 +14,6 @@ interface SidebarProps {
   dbMutations?: any[];
   dbSatuans?: any[];
   dbFeedbackUnreadCount?: number;
-  handleLogout: () => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -26,7 +25,6 @@ const Sidebar: React.FC<SidebarProps> = ({
   dbMutations = [],
   dbSatuans = [],
   dbFeedbackUnreadCount = 0,
-  handleLogout
 }) => {
   // Collapsible menu states
   const [isDataMasterExpanded, setIsDataMasterExpanded] = useState<boolean>(true);
@@ -38,7 +36,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   const isMasterDataActive = activeMenu === 'USERS' || activeMenu === 'UNITS' || activeMenu === 'SATUANS';
 
-  const baseButtonClass = "w-full flex items-center justify-between px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4 focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none";
+  const baseButtonClass = "w-full flex items-center justify-between px-6 py-4 font-tactical text-sm tracking-wider transition-all duration-300 border-l-4 group focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none";
 
   return (
     <>
@@ -73,22 +71,22 @@ const Sidebar: React.FC<SidebarProps> = ({
           <button
             onClick={() => handleMenuClick('MAP')}
             aria-current={activeMenu === 'MAP' ? 'page' : undefined}
-            className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4 focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none
+            className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all duration-300 border-l-4 group focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none
               ${activeMenu === 'MAP' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}
             `}
           >
-            <MapIcon size={18} /> PETA MONITORING
+            <MapIcon size={18} className="transition-transform duration-300 group-hover:scale-110 group-active:scale-95" /> PETA MONITORING
           </button>
 
           {/* 2. ANALISIS DATA */}
           <button
             onClick={() => handleMenuClick('ANALYTICS')}
             aria-current={activeMenu === 'ANALYTICS' ? 'page' : undefined}
-            className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4 focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none
+            className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all duration-300 border-l-4 group focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none
               ${activeMenu === 'ANALYTICS' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}
             `}
           >
-            <Activity size={18} /> ANALISIS DATA
+            <Activity size={18} className="transition-transform duration-300 group-hover:scale-110 group-active:scale-95" /> ANALISIS DATA
           </button>
 
           {/* 3. DATA MASTER (Collapsible) */}
@@ -97,12 +95,12 @@ const Sidebar: React.FC<SidebarProps> = ({
               onClick={() => setIsDataMasterExpanded(!isDataMasterExpanded)}
               aria-expanded={isDataMasterExpanded}
               aria-controls="data-master-submenu"
-              className={`w-full flex items-center justify-between px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4 focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none
+              className={`w-full flex items-center justify-between px-6 py-4 font-tactical text-sm tracking-wider transition-all duration-300 border-l-4 group focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none
                 ${isMasterDataActive ? 'bg-cighra-gold/5 text-cighra-gold border-cighra-gold/40' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}
               `}
             >
               <div className="flex items-center gap-3">
-                <Layers size={18} /> DATA MASTER
+                <Layers size={18} className="transition-transform duration-300 group-hover:scale-110 group-active:scale-95" /> DATA MASTER
               </div>
               <div className="flex items-center gap-2">
                 {isDataMasterExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
@@ -119,23 +117,23 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <button
                   onClick={() => handleMenuClick('USERS')}
                   aria-current={activeMenu === 'USERS' ? 'page' : undefined}
-                  className={`w-full text-left pl-[54px] py-2.5 flex items-center gap-2 text-xs font-tactical tracking-widest transition-colors focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none ${activeMenu === 'USERS' ? 'text-cighra-primary dark:text-cighra-gold font-bold' : 'text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
+                  className={`w-full text-left pl-[54px] py-2.5 flex items-center gap-2 text-xs font-tactical tracking-widest transition-all duration-300 focus-visible:ring group focus-visible:ring-cighra-gold focus-visible:outline-none ${activeMenu === 'USERS' ? 'text-cighra-primary dark:text-cighra-gold font-bold' : 'text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
                 >
-                  <Users size={14} /> » PERSONEL
+                  <Users size={14} className="transition-transform duration-300 group-hover:scale-110 group-active:scale-95" /> » PERSONEL
                 </button>
                 <button
                   onClick={() => handleMenuClick('UNITS')}
                   aria-current={activeMenu === 'UNITS' ? 'page' : undefined}
-                  className={`w-full text-left pl-[54px] py-2.5 flex items-center gap-2 text-xs font-tactical tracking-widest transition-colors focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none ${activeMenu === 'UNITS' ? 'text-cighra-primary dark:text-cighra-gold font-bold' : 'text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
+                  className={`w-full text-left pl-[54px] py-2.5 flex items-center gap-2 text-xs font-tactical tracking-widest transition-all duration-300 focus-visible:ring group focus-visible:ring-cighra-gold focus-visible:outline-none ${activeMenu === 'UNITS' ? 'text-cighra-primary dark:text-cighra-gold font-bold' : 'text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
                 >
-                  <Package size={14} /> » INVENTARIS
+                  <Package size={14} className="transition-transform duration-300 group-hover:scale-110 group-active:scale-95" /> » INVENTARIS
                 </button>
                 <button
                   onClick={() => handleMenuClick('SATUANS')}
                   aria-current={activeMenu === 'SATUANS' ? 'page' : undefined}
-                  className={`w-full text-left pl-[54px] py-2.5 flex items-center gap-2 text-xs font-tactical tracking-widest transition-colors focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none ${activeMenu === 'SATUANS' ? 'text-cighra-primary dark:text-cighra-gold font-bold' : 'text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
+                  className={`w-full text-left pl-[54px] py-2.5 flex items-center gap-2 text-xs font-tactical tracking-widest transition-all duration-300 focus-visible:ring group focus-visible:ring-cighra-gold focus-visible:outline-none ${activeMenu === 'SATUANS' ? 'text-cighra-primary dark:text-cighra-gold font-bold' : 'text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
                 >
-                  <MapPin size={14} /> » SATUAN
+                  <MapPin size={14} className="transition-transform duration-300 group-hover:scale-110 group-active:scale-95" /> » SATUAN
                 </button>
               </div>
             )}
@@ -145,16 +143,16 @@ const Sidebar: React.FC<SidebarProps> = ({
           <button
             onClick={() => handleMenuClick('APPROVAL_CENTER')}
             aria-current={activeMenu === 'APPROVAL_CENTER' ? 'page' : undefined}
-            className={`w-full flex items-center justify-between px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4 focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none
+            className={`w-full flex items-center justify-between px-6 py-4 font-tactical text-sm tracking-wider transition-all duration-300 border-l-4 group focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none
               ${activeMenu === 'APPROVAL_CENTER' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}
             `}
           >
             <div className="flex items-center gap-3">
-              <CheckSquare size={18} /> PUSAT PERSETUJUAN
+              <CheckSquare size={18} className="transition-transform duration-300 group-hover:scale-110 group-active:scale-95" /> PUSAT PERSETUJUAN
             </div>
             {totalPending > 0 && (
               <span 
-                className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse shadow-md"
+                className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full animate-pulse shadow-md"
                 aria-label={`${totalPending} pengajuan tertunda`}
               >
                 {totalPending}
@@ -166,7 +164,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           <button
             onClick={() => handleMenuClick('REPORTS')}
             aria-current={activeMenu === 'REPORTS' ? 'page' : undefined}
-            className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4 focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none
+            className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all duration-300 border-l-4 group focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none
               ${activeMenu === 'REPORTS' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}
             `}
           >
@@ -177,15 +175,15 @@ const Sidebar: React.FC<SidebarProps> = ({
           <button
             onClick={() => handleMenuClick('FEEDBACK')}
             aria-current={activeMenu === 'FEEDBACK' ? 'page' : undefined}
-            className={`w-full flex items-center justify-between gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4 focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none
+            className={`w-full flex items-center justify-between gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all duration-300 border-l-4 group focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none
               ${activeMenu === 'FEEDBACK' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}
             `}
           >
             <div className="flex items-center gap-3">
-              <MessageSquare size={18} /> UMPAN BALIK
+              <MessageSquare size={18} className="transition-transform duration-300 group-hover:scale-110 group-active:scale-95" /> UMPAN BALIK
             </div>
             {dbFeedbackUnreadCount > 0 && (
-              <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
+              <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full uppercase">
                 {dbFeedbackUnreadCount}
               </span>
             )}
@@ -195,24 +193,13 @@ const Sidebar: React.FC<SidebarProps> = ({
           <button
             onClick={() => handleMenuClick('LOGS')}
             aria-current={activeMenu === 'LOGS' ? 'page' : undefined}
-            className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all border-l-4 focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none
+            className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all duration-300 border-l-4 group focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none
               ${activeMenu === 'LOGS' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}
             `}
           >
-            <Database size={18} /> LOG AKTIVITAS
+            <Database size={18} className="transition-transform duration-300 group-hover:scale-110 group-active:scale-95" /> LOG AKTIVITAS
           </button>
         </nav>
-
-        {/* 8. KELUAR SISTEM */}
-        <div className="p-4 border-t border-slate-200 dark:border-slate-600 bg-cighra-light dark:bg-cighra-dark/60">
-          <button 
-            onClick={handleLogout} 
-            className="w-full flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 font-tactical text-sm tracking-wider transition-all rounded-sm border border-transparent hover:border-cighra-primary dark:hover:border-cighra-gold/30 focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none"
-            aria-label="Keluar dari sistem"
-          >
-            <LogOut className="w-5 h-5" /> KELUAR SISTEM
-          </button>
-        </div>
       </aside>
     </>
   );

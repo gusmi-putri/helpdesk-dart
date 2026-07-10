@@ -73,13 +73,13 @@ const StafUnitModal: React.FC<StafUnitModalProps> = ({ isOpen, onClose, onSubmit
     >
       <form id="stafUnitForm" onSubmit={handleSubmit} className="p-6 space-y-4">
           <div className="bg-orange-50 dark:bg-orange-900/10 border border-orange-200 dark:border-orange-800/30 p-3 rounded-sm">
-            <p className="text-[10px] font-mono text-orange-700 dark:text-orange-400 uppercase">
+            <p className="text-xs font-mono text-orange-700 dark:text-orange-400 uppercase">
               ⚠ PERHATIAN: Pengajuan ini akan dikirim ke Admin untuk disetujui. Unit tidak akan langsung masuk ke database aktif.
             </p>
           </div>
 
           <div>
-            <label className="block text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Nomor Seri *</label>
+            <label className="block text-xs font-mono font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Nomor Seri *</label>
             <input type="text" value={nomorSeri} onChange={(e) => setNomorSeri(e.target.value.toUpperCase())} required
               className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm font-mono focus:border-cighra-primary dark:focus:border-cighra-gold outline-none text-slate-800 dark:text-white" placeholder="DRT-XXX" />
           </div>
@@ -88,7 +88,7 @@ const StafUnitModal: React.FC<StafUnitModalProps> = ({ isOpen, onClose, onSubmit
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Jenis *</label>
+              <label className="block text-xs font-mono font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Jenis *</label>
               <select value={jenisDart} onChange={(e) => setJenisDart(e.target.value)}
                 className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm font-mono focus:border-cighra-primary dark:focus:border-cighra-gold outline-none text-slate-800 dark:text-white">
                 <option value="DART STD">DART STD</option>
@@ -101,7 +101,7 @@ const StafUnitModal: React.FC<StafUnitModalProps> = ({ isOpen, onClose, onSubmit
               </select>
             </div>
             <div>
-              <label className="block text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Status Unit *</label>
+              <label className="block text-xs font-mono font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Status Unit *</label>
               <select value={statusUnit} onChange={(e) => setStatusUnit(e.target.value)}
                 className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm font-mono focus:border-cighra-primary dark:focus:border-cighra-gold outline-none text-slate-800 dark:text-white">
                 <option value="Beroperasi">BEROPERASI</option>
@@ -114,7 +114,7 @@ const StafUnitModal: React.FC<StafUnitModalProps> = ({ isOpen, onClose, onSubmit
           </div>
 
           <div>
-            <label className="block text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Asal Satuan *</label>
+            <label className="block text-xs font-mono font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Asal Satuan *</label>
             <select
                 value={satuanId}
                 onChange={(e) => setSatuanId(e.target.value)}
@@ -129,13 +129,13 @@ const StafUnitModal: React.FC<StafUnitModalProps> = ({ isOpen, onClose, onSubmit
           </div>
 
           <div>
-            <label className="block text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Alasan / Catatan</label>
+            <label className="block text-xs font-mono font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Alasan / Catatan</label>
             <textarea value={reason} onChange={(e) => setReason(e.target.value)} rows={2}
               className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm font-mono focus:border-cighra-primary dark:focus:border-cighra-gold outline-none text-slate-800 dark:text-white resize-none" placeholder="Alasan penambahan unit..." />
           </div>
 
           <div>
-            <label className="block text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Surat Pendukung (PDF/JPG/PNG) *</label>
+            <label className="block text-xs font-mono font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Surat Pendukung (PDF/JPG/PNG) *</label>
             <div className="relative">
               {document ? (
                 <div className="flex items-center gap-2 bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-800/30 px-3 py-2 rounded-sm">

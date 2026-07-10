@@ -54,7 +54,7 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
               return (
                 <tr key={m.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/60 transition-colors group text-slate-800 dark:text-slate-200">
                   <td className="p-4 text-center">
-                    <span className={`px-2 py-1 text-[10px] font-mono font-bold border rounded-sm ${badge.color}`}>
+                    <span className={`px-2 py-1 text-xs font-mono font-bold border rounded-sm ${badge.color}`}>
                       {badge.label}
                     </span>
                     <div className="text-[9px] font-mono mt-1 text-slate-500">
@@ -64,7 +64,7 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
                   <td className="p-4 text-center">
                     <div className="font-mono text-slate-800 dark:text-white font-bold">{targetUsername}</div>
                     {m.type === 'request_edit' && m.user_data?.role_id && (
-                      <div className="text-[10px] font-mono uppercase text-slate-500 dark:text-slate-400 mt-1 bg-slate-100 dark:bg-slate-800 inline-block px-1 rounded-sm border border-slate-200 dark:border-slate-600">
+                      <div className="text-xs font-mono uppercase text-slate-500 dark:text-slate-400 mt-1 bg-slate-100 dark:bg-slate-800 inline-block px-1 rounded-sm border border-slate-200 dark:border-slate-600">
                         Ubah Role ke: {m.user_data.role_id}
                       </div>
                     )}
@@ -72,15 +72,15 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
                   <td className="p-4 text-slate-800 dark:text-white font-bold text-center">{targetName}</td>
                   <td className="p-4">
                     {m.type === 'request_add' || m.type === 'request_register' ? (
-                      <div className="text-[10px] font-mono text-slate-800 dark:text-white space-y-0.5">
+                      <div className="text-xs font-mono text-slate-800 dark:text-white space-y-0.5">
                         <div>NRP/NIP: {m.user_data?.nrp_nip || '-'}</div>
                         <div>Satuan: {m.user_data?.asal_satuan || m.user_data?.satuan?.nama_satuan || '-'}</div>
                         <div>WA: {m.user_data?.no_wa || '-'}</div>
                       </div>
                     ) : m.type === 'request_delete' ? (
-                      <div className="text-[10px] font-mono text-red-500 dark:text-red-400 italic">Penghapusan akun dari sistem.</div>
+                      <div className="text-xs font-mono text-red-500 dark:text-red-400 italic">Penghapusan akun dari sistem.</div>
                     ) : (
-                      <div className="text-[10px] font-mono text-slate-800 dark:text-white">
+                      <div className="text-xs font-mono text-slate-800 dark:text-white">
                         {Object.entries(m.user_data || {}).map(([key, val]) => (
                           <div key={key}><span className="text-blue-500 dark:text-blue-400 font-bold uppercase">{key}:</span> {typeof val === 'object' && val !== null ? JSON.stringify(val) : String(val)}</div>
                         ))}
@@ -96,7 +96,7 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
                             <button
                               onClick={() => handleApproveUser(m)}
                               disabled={isSatuanUnverified}
-                              className={`flex items-center gap-2 px-4 py-2 text-[10px] font-tactical font-bold tracking-widest transition-all shadow-lg ${
+                              className={`flex items-center gap-2 px-4 py-2 text-xs font-tactical font-bold tracking-widest transition-all shadow-lg ${
                                 isSatuanUnverified 
                                 ? 'bg-slate-300 text-slate-500 cursor-not-allowed dark:bg-slate-700 dark:text-slate-500' 
                                 : 'bg-green-600 hover:bg-green-500 text-white'
@@ -106,7 +106,7 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
                             </button>
                             <button
                               onClick={() => handleRejectUser(m)}
-                              className="flex items-center gap-2 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-4 py-2 text-[10px] font-tactical font-bold tracking-widest transition-all shadow-lg"
+                              className="flex items-center gap-2 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest transition-all shadow-lg"
                             >
                               <XCircle className="w-4 h-4" /> TOLAK
                             </button>

@@ -103,7 +103,7 @@ const MutationHistory: React.FC<MutationHistoryProps> = ({ dbMutations }) => {
                       <div className="font-mono text-xs text-slate-800 dark:text-white">{new Date(m.created_at).toLocaleDateString()}</div>
                     </td>
                     <td className="p-4 text-center align-top">
-                      <span className={`px-2 py-1 text-[10px] font-mono font-bold border rounded-sm flex items-center justify-center gap-1 mx-auto w-max ${badge.color}`}>
+                      <span className={`px-2 py-1 text-xs font-mono font-bold border rounded-sm flex items-center justify-center gap-1 mx-auto w-max ${badge.color}`}>
                         {badge.icon} {badge.label}
                       </span>
                       <div className="text-[9px] font-mono mt-1 text-slate-500 uppercase">
@@ -128,12 +128,12 @@ const MutationHistory: React.FC<MutationHistoryProps> = ({ dbMutations }) => {
                     <td className="p-4 align-top">
                       {isBatch ? (
                         <div className="space-y-2">
-                          <div className="text-[10px] font-mono text-slate-800 dark:text-white">
+                          <div className="text-xs font-mono text-slate-800 dark:text-white">
                             <strong>JUMLAH BATCH:</strong> {m.unit_data.length} Unit
                           </div>
                           <button
                             onClick={() => toggleExpand(m.id)}
-                            className="text-[10px] font-mono font-bold text-cighra-primary dark:text-cighra-gold hover:underline"
+                            className="text-xs font-mono font-bold text-cighra-primary dark:text-cighra-gold hover:underline"
                           >
                             {expandedIds.includes(m.id) ? 'Sembunyikan Detail Batch' : 'Tampilkan Detail Batch'}
                           </button>
@@ -156,9 +156,9 @@ const MutationHistory: React.FC<MutationHistoryProps> = ({ dbMutations }) => {
                                     <tr key={uIdx} className="hover:bg-slate-100 dark:hover:bg-slate-800/30">
                                       <td className="p-2 font-mono text-center">{uIdx + 1}</td>
                                       <td className="p-2 font-mono font-bold text-slate-800 dark:text-white text-center">{u.nomor_seri}</td>
-                                      <td className="p-2 uppercase text-slate-800 dark:text-white text-center text-[10px]">{u.nama_satuan || '-'}</td>
-                                      <td className="p-2 uppercase text-[10px] text-center text-slate-800 dark:text-white">{u.jenis}</td>
-                                      <td className="p-2 uppercase text-[10px] text-center text-slate-800 dark:text-white">{u.asal_satuan}</td>
+                                      <td className="p-2 uppercase text-slate-800 dark:text-white text-center text-xs">{u.nama_satuan || '-'}</td>
+                                      <td className="p-2 uppercase text-xs text-center text-slate-800 dark:text-white">{u.jenis}</td>
+                                      <td className="p-2 uppercase text-xs text-center text-slate-800 dark:text-white">{u.asal_satuan}</td>
                                       <td className="p-2 text-center">
                                         <span className={`px-2 py-0.5 text-[9px] font-mono font-bold border rounded-sm
                                           ${u.status === 'approved' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40' :
@@ -177,13 +177,13 @@ const MutationHistory: React.FC<MutationHistoryProps> = ({ dbMutations }) => {
                           )}
                         </div>
                       ) : (
-                        <div className="text-[10px] font-mono text-slate-800 dark:text-white">
+                        <div className="text-xs font-mono text-slate-800 dark:text-white">
                           <span className="font-bold">Keterangan:</span> {m.reason || '-'}
                         </div>
                       )}
                       
                       {m.file_path && (
-                        <a href={`/storage/${m.file_path}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 mt-2 text-[10px] font-mono font-bold text-cighra-primary dark:text-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/10 px-2 py-1 rounded">
+                        <a href={`/storage/${m.file_path}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 mt-2 text-xs font-mono font-bold text-cighra-primary dark:text-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/10 px-2 py-1 rounded">
                           <FileText size={12} /> BUKTI DOKUMEN
                         </a>
                       )}
