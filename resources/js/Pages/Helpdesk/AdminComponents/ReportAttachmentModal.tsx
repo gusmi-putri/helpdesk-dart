@@ -30,7 +30,7 @@ const ReportAttachmentModal: React.FC<ReportAttachmentModalProps> = ({ isOpen, o
         </div>
 
         {/* Content */}
-        <div className="p-6 overflow-y-auto custom-scrollbar flex-1 space-y-8">
+        <div className="p-6 overflow-y-auto custom-scrollbar flex-1 min-h-0 space-y-8">
           
           {/* Informasi Laporan */}
           <div className="bg-slate-50 dark:bg-slate-800/30 p-4 border border-slate-200 dark:border-slate-700 rounded-sm">

@@ -38,7 +38,7 @@ const RequestDeleteBatchModal: React.FC<RequestDeleteBatchModalProps> = ({ isOpe
           <button onClick={handleClose} className="text-slate-500 hover:text-red-600 text-xl">✕</button>
         </div>
 
-        <div className="overflow-y-auto custom-scrollbar p-6 space-y-4 flex-1">
+        <div className="overflow-y-auto custom-scrollbar p-6 space-y-4 flex-1 min-h-0">
           <div className="bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800/30 p-4 rounded-sm">
             <div className="flex items-start gap-2">
               <AlertTriangle className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 shrink-0" />
@@ -74,7 +74,7 @@ const RequestDeleteBatchModal: React.FC<RequestDeleteBatchModalProps> = ({ isOpe
                 {document ? (
                   <div className="flex items-center gap-2 bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-800/30 px-3 py-2 rounded-sm">
                     <FileText className="w-4 h-4 text-green-600 dark:text-green-400" />
-                    <span className="text-xs font-mono text-green-700 dark:text-green-400 flex-1 truncate">{document.name}</span>
+                    <span className="text-xs font-mono text-green-700 dark:text-green-400 flex-1 min-h-0 truncate">{document.name}</span>
                     <button type="button" onClick={() => setDocument(null)} className="text-red-500 hover:text-red-700">
                       <X size={14} />
                     </button>
@@ -94,11 +94,11 @@ const RequestDeleteBatchModal: React.FC<RequestDeleteBatchModalProps> = ({ isOpe
         <div className="p-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-cighra-dark/50 shrink-0">
           <div className="flex gap-3">
             <button type="button" onClick={handleClose}
-              className="flex-1 py-2.5 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 font-tactical text-xs tracking-widest hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
+              className="flex-1 min-h-0 py-2.5 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 font-tactical text-xs tracking-widest hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
               BATAL
             </button>
             <button type="submit" form="deleteBatchForm" disabled={processing || !reason.trim() || !document}
-              className="flex-1 py-2.5 bg-red-600 text-white font-tactical font-bold text-xs tracking-widest hover:bg-red-700 transition-all disabled:opacity-50">
+              className="flex-1 min-h-0 py-2.5 bg-red-600 text-white font-tactical font-bold text-xs tracking-widest hover:bg-red-700 transition-all disabled:opacity-50">
               {processing ? 'MENGIRIM...' : 'AJUKAN PENGHAPUSAN'}
             </button>
           </div>

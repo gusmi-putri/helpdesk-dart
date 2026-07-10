@@ -79,7 +79,7 @@ const AdminUnitBatchModal: React.FC<AdminUnitBatchModalProps> = ({ isOpen, onClo
           <button onClick={handleClose} className="text-slate-400 hover:text-red-500 transition-colors text-xl">✕</button>
         </div>
 
-        <div className="overflow-y-auto custom-scrollbar p-8 space-y-8 flex-1">
+        <div className="overflow-y-auto custom-scrollbar p-8 space-y-8 flex-1 min-h-0">
           <div className="bg-blue-500/5 dark:bg-blue-900/10 border-l-4 border-blue-500 p-6 space-y-2">
             <div className="text-xs font-mono text-blue-700 dark:text-blue-400 uppercase tracking-widest leading-relaxed space-y-1">
               <span className="font-bold block mb-1">PROSEDUR OPERASIONAL:</span> 
@@ -142,7 +142,7 @@ const AdminUnitBatchModal: React.FC<AdminUnitBatchModalProps> = ({ isOpen, onClo
 
           <div className="pt-4 flex gap-4">
             <button type="button" onClick={handleClose}
-              className="flex-1 py-4 border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 font-tactical font-bold tracking-[0.2em] hover:bg-slate-50 dark:hover:bg-slate-800 transition-all uppercase">
+              className="flex-1 min-h-0 py-4 border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 font-tactical font-bold tracking-[0.2em] hover:bg-slate-50 dark:hover:bg-slate-800 transition-all uppercase">
               BATAL
             </button>
             <button type="submit" form="adminBatchForm" disabled={processing || !csvFile || !document}
