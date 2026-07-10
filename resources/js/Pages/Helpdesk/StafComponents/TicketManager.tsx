@@ -570,6 +570,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
               )}
             </div>
           </div>
+        </div>
       )}
     </div>
   );
