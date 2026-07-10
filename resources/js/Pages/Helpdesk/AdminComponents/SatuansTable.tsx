@@ -103,7 +103,10 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
       });
     } else {
       const hasChanged = data.nama_satuan !== editingSatuan.nama_satuan || 
-                         data.tingkat !== editingSatuan.tingkat;
+                         data.kode_satuan !== (editingSatuan.kode_satuan || '') ||
+                         data.alamat !== (editingSatuan.alamat || '') ||
+                         data.latitude !== (editingSatuan.latitude || '') ||
+                         data.longitude !== (editingSatuan.longitude || '');
                          
       if (!hasChanged) {
         setIsSatuanModalOpen(false);
@@ -277,7 +280,10 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
         isPengajuan={isPengajuan}
         submitDisabled={!isSatuanAddMode && (
           data.nama_satuan === editingSatuan?.nama_satuan && 
-          data.tingkat === editingSatuan?.tingkat
+          data.kode_satuan === (editingSatuan?.kode_satuan || '') &&
+          data.alamat === (editingSatuan?.alamat || '') &&
+          data.latitude === (editingSatuan?.latitude || '') &&
+          data.longitude === (editingSatuan?.longitude || '')
         )}
       />
     </>

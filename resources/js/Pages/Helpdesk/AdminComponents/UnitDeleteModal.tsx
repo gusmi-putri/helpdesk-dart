@@ -1,6 +1,6 @@
 import React from 'react';
 import { AlertTriangle, Trash2 } from 'lucide-react';
-import { Modal } from '@/Components/ui/Modal';
+import { BaseModal } from '@/Components/ui/BaseModal';
 import { Button } from '@/Components/ui/Button';
 
 interface UnitDeleteModalProps {
@@ -15,12 +15,13 @@ const UnitDeleteModal: React.FC<UnitDeleteModalProps> = ({ isOpen, onClose, onCo
   if (!isOpen || !unit) return null;
 
   return (
-    <Modal
+    <BaseModal
       isOpen={isOpen}
       onClose={onClose}
       title={isPengajuan ? 'AJUKAN PENGHAPUSAN' : 'KONFIRMASI PENGHAPUSAN'}
       icon={<AlertTriangle />}
       maxWidth="lg"
+      headerColor="danger"
       footer={
         <div className="flex gap-4 w-full">
           <Button 
@@ -50,7 +51,7 @@ const UnitDeleteModal: React.FC<UnitDeleteModalProps> = ({ isOpen, onClose, onCo
             : <>PERINGATAN TINGKAT TINGGI: ANDA AKAN MENGHAPUS DATA UNIT DART NO. SERI <span className="text-red-500 font-bold underline decoration-2 underline-offset-4">{unit.nomor_seri}</span> SECARA PERMANEN DARI SISTEM OPERASIONAL.</>}
         </p>
       </div>
-    </Modal>
+    </BaseModal>
   );
 };
 

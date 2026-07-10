@@ -1,6 +1,6 @@
 import React from 'react';
 import { UserMinus, Trash2 } from 'lucide-react';
-import { Modal } from '@/Components/ui/Modal';
+import { BaseModal } from '@/Components/ui/BaseModal';
 import { Button } from '@/Components/ui/Button';
 
 interface UserDeleteModalProps {
@@ -15,12 +15,13 @@ const UserDeleteModal: React.FC<UserDeleteModalProps> = ({ isOpen, onClose, onCo
   if (!isOpen || !user) return null;
 
   return (
-    <Modal
+    <BaseModal
       isOpen={isOpen}
       onClose={onClose}
       title={isPengajuan ? 'AJUKAN PENGHAPUSAN' : 'KONFIRMASI PENGHAPUSAN'}
       icon={<UserMinus />}
       maxWidth="lg"
+      headerColor="danger"
       footer={
         <div className="flex gap-4 w-full">
           <Button 
@@ -50,7 +51,7 @@ const UserDeleteModal: React.FC<UserDeleteModalProps> = ({ isOpen, onClose, onCo
             : <>PERINGATAN TINGKAT TINGGI: ANDA AKAN MENGHAPUS DATA PERSONEL <span className="text-red-500 font-bold underline decoration-2 underline-offset-4">{user.name}</span> SECARA PERMANEN DARI SISTEM OPERASIONAL DART.</>}
         </p>
       </div>
-    </Modal>
+    </BaseModal>
   );
 };
 

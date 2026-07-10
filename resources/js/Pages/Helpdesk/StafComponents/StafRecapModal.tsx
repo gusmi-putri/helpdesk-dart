@@ -1,6 +1,7 @@
 import React from 'react';
 import { FileArchive, Download, X, CalendarDays, CalendarRange } from 'lucide-react';
 import { BaseModal } from '@/Components/ui/BaseModal';
+import { Button } from '@/Components/ui/Button';
 
 interface StafRecapModalProps {
   isOpen: boolean;
@@ -41,18 +42,18 @@ const StafRecapModal: React.FC<StafRecapModalProps> = ({
       headerColor="primary"
       footer={
         <div className="flex justify-end gap-3 w-full">
-          <button
+          <Button
             onClick={onClose}
-            className="px-6 py-2.5 text-xs font-tactical font-bold tracking-widest border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-black/40 transition-colors uppercase rounded-sm"
-          >
+            
+           variant="secondary" className="flex-1 uppercase" size="lg">
             Batal
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={onExport}
-            className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-8 py-2.5 text-xs font-tactical font-bold tracking-widest transition-colors flex items-center gap-2 uppercase rounded-sm shadow-md"
-          >
+            
+           variant="primary" className="flex-[2] uppercase" size="lg">
             <Download className="w-4 h-4" /> CETAK PDF
-          </button>
+          </Button>
         </div>
       }
     >

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Activity, Wrench, Wallet, FileText } from 'lucide-react';
 import { BaseModal } from '@/Components/ui/BaseModal';
+import { Button } from '@/Components/ui/Button';
 
 interface PelaporReportDetailModalProps {
   isOpen: boolean;
@@ -21,12 +22,12 @@ const PelaporReportDetailModal: React.FC<PelaporReportDetailModalProps> = ({ isO
       headerColor="primary"
       footer={
         <div className="flex justify-end w-full">
-          <button
+          <Button
             onClick={onClose}
-            className="px-6 py-2 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white font-tactical font-bold text-xs tracking-widest hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 transition-colors uppercase rounded-sm"
-          >
+            
+           variant="primary" className="flex-[2] uppercase" size="lg">
             TUTUP
-          </button>
+          </Button>
         </div>
       }
     >
