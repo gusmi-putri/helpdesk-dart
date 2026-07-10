@@ -1,7 +1,10 @@
-import React from 'react';
-import { Menu as MenuIcon, CircleUser, LogOut, Settings } from 'lucide-react';
+import React, { useState } from 'react';
+import { Menu as MenuIcon, CircleUser, LogOut, Settings, KeyRound, AlertTriangle } from 'lucide-react';
 import { Menu, Transition } from '@headlessui/react';
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
+import ChangePasswordModal from '../AdminComponents/ChangePasswordModal';
+import { Modal } from '@/Components/ui/Modal';
+import { Button } from '@/Components/ui/Button';
 
 interface PelaporTopbarProps {
   setIsMobileMenuOpen: (open: boolean) => void;
@@ -9,7 +12,15 @@ interface PelaporTopbarProps {
 }
 
 const PelaporTopbar: React.FC<PelaporTopbarProps> = ({ setIsMobileMenuOpen, currentUser }) => {
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+
+  const handleLogout = () => {
+    router.post('/logout');
+  };
+
   return (
+    <>
     <header className="h-16 border-b border-slate-200 dark:border-slate-600 bg-cighra-primary text-white dark:bg-cighra-darkcard/60 backdrop-blur-md flex items-center justify-between px-4 md:px-8 flex-shrink-0 z-50 relative">
       <div className="flex items-center gap-4">
         <button
@@ -60,17 +71,30 @@ const PelaporTopbar: React.FC<PelaporTopbarProps> = ({ setIsMobileMenuOpen, curr
             <div className="px-1 py-1">
               <Menu.Item>
                 {({ active }) => (
-                  <Link
-                    href="/logout"
-                    method="post"
-                    as="button"
+                  <button
+                    onClick={() => setIsPasswordModalOpen(true)}
+                    className={`${
+                      active ? 'bg-cighra-primary/10 dark:bg-slate-800 text-cighra-primary dark:text-white' : 'text-slate-700 dark:text-slate-300'
+                    } group flex w-full items-center rounded-sm px-2 py-2 text-sm font-sans uppercase tracking-wider text-left`}
+                  >
+                    <KeyRound className="mr-2 h-4 w-4" aria-hidden="true" />
+                    Ganti Kata Sandi
+                  </button>
+                )}
+              </Menu.Item>
+            </div>
+            <div className="px-1 py-1">
+              <Menu.Item>
+                {({ active }) => (
+                  <button
+                    onClick={() => setIsLogoutModalOpen(true)}
                     className={`${
                       active ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400' : 'text-slate-700 dark:text-slate-300'
-                    } group flex w-full items-center rounded-sm px-2 py-2 text-sm font-sans uppercase tracking-wider`}
+                    } group flex w-full items-center rounded-sm px-2 py-2 text-sm font-sans uppercase tracking-wider text-left`}
                   >
                     <LogOut className="mr-2 h-4 w-4" aria-hidden="true" />
                     Keluar / Logout
-                  </Link>
+                  </button>
                 )}
               </Menu.Item>
             </div>
@@ -78,6 +102,51 @@ const PelaporTopbar: React.FC<PelaporTopbarProps> = ({ setIsMobileMenuOpen, curr
         </Transition>
       </Menu>
     </header>
+    
+    <ChangePasswordModal 
+       isOpen={isPasswordModalOpen} 
+       onClose={() => setIsPasswordModalOpen(false)} 
+    />
+
+    {isLogoutModalOpen && (
+      <Modal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        maxWidth="lg"
+        icon={<AlertTriangle />}
+        title="KONFIRMASI KELUAR SISTEM"
+        footer={
+          <div className="flex gap-4 w-full">
+            <Button 
+              variant="danger" 
+              onClick={handleLogout} 
+              className="flex-[2] uppercase" 
+              size="lg"
+            >
+              <LogOut className="w-5 h-5" /> YA, KELUAR SISTEM
+            </Button>
+            <Button 
+              variant="secondary" 
+              onClick={() => setIsLogoutModalOpen(false)} 
+              className="flex-1 uppercase" 
+              size="lg"
+            >
+              BATAL
+            </Button>
+          </div>
+        }
+      >
+        <div className="space-y-4">
+          <h4 className="text-xl font-tactical font-bold text-slate-800 dark:text-white tracking-[0.2em] uppercase">
+            AKHIRI SESI SEKARANG?
+          </h4>
+          <p className="text-sm font-mono text-slate-600 dark:text-slate-300 leading-relaxed uppercase tracking-wider">
+            ANDA AKAN MERESTART SESI PADA <span className="text-cighra-primary dark:text-cighra-gold font-bold underline decoration-2 underline-offset-4">SISFO DART</span>. ANDA HARUS LOGIN KEMBALI UNTUK MASUK KE DALAM SISTEM.
+          </p>
+        </div>
+      </Modal>
+    )}
+    </>
   );
 };
 
