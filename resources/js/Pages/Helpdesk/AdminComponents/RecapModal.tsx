@@ -59,7 +59,7 @@ const RecapModal: React.FC<RecapModalProps> = ({
                             : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-cighra-darkcard text-slate-500 hover:border-cighra-gold/50'}
                         `}
                         >
-                        <p className="text-[9px] font-tactical font-bold uppercase tracking-widest text-center leading-none">
+                        <p className="text-[11px] font-tactical font-bold uppercase tracking-widest text-center leading-none">
                             {period === 'weekly' ? 'Mingguan' : period === 'monthly' ? 'Bulanan' : period === 'yearly' ? 'Tahunan' : period === 'custom' ? 'Kostum' : 'Filter Tahun'}
                         </p>
                         </button>
@@ -125,7 +125,7 @@ const RecapModal: React.FC<RecapModalProps> = ({
         </div>
 
         <div className="p-4 bg-slate-100 dark:bg-black/20 text-center border-t border-slate-200 dark:border-slate-800">
-          <p className="text-[9px] font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest">
+          <p className="text-[11px] font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest">
             COMMAND CENTER SECURITY MODULE — DART DATA SYSTEM
           </p>
         </div>

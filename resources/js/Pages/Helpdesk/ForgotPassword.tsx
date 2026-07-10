@@ -133,7 +133,7 @@ const ForgotPassword = () => {
                             <div className="p-3 bg-cighra-primary/5 dark:bg-cighra-gold/5 border border-cighra-primary/20 dark:border-cighra-gold/20 rounded-sm text-center">
                                 <p className="text-xs font-mono text-slate-600 dark:text-slate-400">Kode telah dikirim ke email terhubung:</p>
                                 <p className="text-sm font-bold text-cighra-primary dark:text-cighra-gold">{maskedEmail}</p>
-                                <p className="text-[9px] text-red-500 font-bold mt-1 uppercase">Masa aktif kode: 5 Menit</p>
+                                <p className="text-[11px] text-red-500 font-bold mt-1 uppercase">Masa aktif kode: 5 Menit</p>
                             </div>
 
                             <div className="space-y-2">

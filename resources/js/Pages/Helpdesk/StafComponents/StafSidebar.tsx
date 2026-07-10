@@ -136,7 +136,7 @@ const StafSidebar: React.FC<StafSidebarProps> = ({
                   </div>
                   {mutationPendingCount > 0 && (
                     <span
-                      className="bg-orange-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full ml-2 shrink-0"
+                      className="bg-orange-500 text-white text-[11px] font-bold px-1.5 py-0.5 rounded-full ml-2 shrink-0"
                       aria-label={`${mutationPendingCount} mutasi tertunda`}
                     >
                       {mutationPendingCount}

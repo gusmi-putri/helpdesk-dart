@@ -202,7 +202,7 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
                                     >
                                         <div className="flex flex-col gap-0.5">
                                             <span className="text-[11px] font-bold font-tactical tracking-widest uppercase text-slate-800 dark:text-cighra-gold">{group.name}</span>
-                                            <span className="text-[9px] text-slate-500 dark:text-slate-400 font-mono tracking-tighter">OPERATIONAL ASSETS: {group.units.length} UNITS</span>
+                                            <span className="text-[11px] text-slate-500 dark:text-slate-400 font-mono tracking-tighter">OPERATIONAL ASSETS: {group.units.length} UNITS</span>
                                         </div>
                                         {!group.coords ? (
                                             <span className="text-[8px] font-mono text-red-500 bg-red-500/10 px-1 border border-red-500/20">NO COORDS</span>
@@ -284,9 +284,9 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
                                                         </span>
                                                     </div>
                                                     {hasCase ? (
-                                                        <span className="bg-orange-500/20 text-orange-600 dark:text-orange-500 px-1.5 py-0.5 rounded text-[9px] font-bold border border-orange-500/30">RUSAK</span>
+                                                        <span className="bg-orange-500/20 text-orange-600 dark:text-orange-500 px-1.5 py-0.5 rounded text-[11px] font-bold border border-orange-500/30">RUSAK</span>
                                                     ) : (
-                                                        <span className="bg-green-500/20 text-green-600 dark:text-green-500 px-1.5 py-0.5 rounded text-[9px] font-bold border border-green-500/30">BEROPERASI</span>
+                                                        <span className="bg-green-500/20 text-green-600 dark:text-green-500 px-1.5 py-0.5 rounded text-[11px] font-bold border border-green-500/30">BEROPERASI</span>
                                                     )}
                                                 </div>
                                             </div>
@@ -295,7 +295,7 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
                                 </div>
                                 
                                 <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700 shrink-0">
-                                    <div className="text-[9px] text-slate-500 font-mono text-center">
+                                    <div className="text-[11px] text-slate-500 font-mono text-center">
                                         COORD: {selectedGroup.coords[0].toFixed(4)}, {selectedGroup.coords[1].toFixed(4)}
                                     </div>
                                 </div>
@@ -482,7 +482,7 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
                                                     >
                                                         SIMPAN & VERIFIKASI SEKARANG
                                                     </button>
-                                                    <p className="text-[9px] text-center opacity-50 font-mono">Menyimpan akan membuat satuan ini muncul di pilihan pendaftaran.</p>
+                                                    <p className="text-[11px] text-center opacity-50 font-mono">Menyimpan akan membuat satuan ini muncul di pilihan pendaftaran.</p>
                                                 </div>
                                             </>
                                         )}

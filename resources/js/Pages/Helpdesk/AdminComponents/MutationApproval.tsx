@@ -167,7 +167,7 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
     };
     const b = badges[type] || { bg: 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200', icon: Clock, label: type };
     const Icon = b.icon;
-    return <span className={`${b.bg} border px-2 py-0.5 text-[9px] font-mono font-bold flex items-center gap-1`}><Icon size={10} /> {b.label}</span>;
+    return <span className={`${b.bg} border px-2 py-0.5 text-[11px] font-mono font-bold flex items-center gap-1`}><Icon size={10} /> {b.label}</span>;
   };
   return (
     <div className="space-y-6 animate-in fade-in duration-700">
@@ -216,7 +216,7 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                     <div className="flex-1 space-y-2 w-full">
                       <div className="flex flex-wrap items-center gap-2">
                         {getTypeBadge(m.type, isBatch)}
-                        <span className="bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800/40 px-2 py-0.5 text-[9px] font-mono font-bold animate-pulse">MENUNGGU</span>
+                        <span className="bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800/40 px-2 py-0.5 text-[11px] font-mono font-bold animate-pulse">MENUNGGU</span>
                       </div>
                       
                       {isBatch ? (
@@ -424,7 +424,7 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                                   <td className="p-3 uppercase font-mono text-xs text-center text-slate-800 dark:text-white">{u.jenis}</td>
                                   <td className="p-3 uppercase text-center text-slate-800 dark:text-white">{u.asal_satuan}</td>
                                   <td className="p-3 text-center">
-                                    <span className={`px-2 py-0.5 text-[9px] font-mono font-bold border rounded-sm
+                                    <span className={`px-2 py-0.5 text-[11px] font-mono font-bold border rounded-sm
                                       ${u.status === 'approved' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40' :
                                         u.status === 'rejected' ? 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/40' :
                                         'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800/40 animate-pulse'
@@ -541,7 +541,7 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                     <div className="flex-1 space-y-1 w-full">
                       <div className="flex flex-wrap items-center gap-2">
                         {getTypeBadge(m.type, isBatch)}
-                        <span className={`px-2 py-0.5 text-[9px] font-mono font-bold border ${m.status === 'approved' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40' : 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/40'}`}>
+                        <span className={`px-2 py-0.5 text-[11px] font-mono font-bold border ${m.status === 'approved' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40' : 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/40'}`}>
                           {m.status === 'approved' ? 'DISETUJUI' : 'DITOLAK'}
                         </span>
                       </div>
@@ -582,7 +582,7 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                                       <td className="p-2 uppercase text-xs text-center text-slate-800 dark:text-white">{u.jenis}</td>
                                       <td className="p-2 uppercase text-xs text-center text-slate-800 dark:text-white">{u.asal_satuan}</td>
                                       <td className="p-2 text-center">
-                                        <span className={`px-2 py-0.5 text-[9px] font-mono font-bold border rounded-sm
+                                        <span className={`px-2 py-0.5 text-[11px] font-mono font-bold border rounded-sm
                                           ${u.status === 'approved' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40' :
                                             u.status === 'rejected' ? 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/40' :
                                             'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800/40'

@@ -28,7 +28,7 @@ const ProofModal: React.FC<ProofModalProps> = ({ isOpen, onClose, viewingProof }
                 {/* Tautan Video */}
                 {report.kerusakan.tautan_video && (
                   <div className="bg-slate-100 dark:bg-cighra-darkcard/40 p-4 border border-slate-200 dark:border-slate-700/50">
-                    <p className="text-[9px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest font-bold mb-2">Tautan Video G-Drive:</p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest font-bold mb-2">Tautan Video G-Drive:</p>
                     <a href={report.kerusakan.tautan_video} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:text-blue-400 underline break-all font-mono inline-block">
                       {report.kerusakan.tautan_video}
                     </a>
@@ -38,7 +38,7 @@ const ProofModal: React.FC<ProofModalProps> = ({ isOpen, onClose, viewingProof }
                 {/* Foto Bukti */}
                 {(report.kerusakan.foto_bukti || (report.kerusakan.fileBukti && report.kerusakan.fileBukti.length > 0)) && (
                   <div className="bg-slate-100 dark:bg-cighra-darkcard/40 p-4 border border-slate-200 dark:border-slate-700/50 space-y-3">
-                    <p className="text-[9px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest font-bold">DOKUMENTASI KENDALA (DARI PELAPOR):</p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest font-bold">DOKUMENTASI KENDALA (DARI PELAPOR):</p>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {report.kerusakan.foto_bukti && (
@@ -59,7 +59,7 @@ const ProofModal: React.FC<ProofModalProps> = ({ isOpen, onClose, viewingProof }
 
             {type === 'selesai' && (
               <div className="bg-slate-100 dark:bg-cighra-darkcard/40 p-4 border border-slate-200 dark:border-slate-700/50 space-y-3">
-                <p className="text-[9px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest font-bold">DOKUMENTASI HASIL PERBAIKAN:</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest font-bold">DOKUMENTASI HASIL PERBAIKAN:</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {report.perbaikan.foto_bukti_selesai && (
                     <div className="border border-slate-300 dark:border-slate-700 rounded-sm overflow-hidden bg-black/40 flex items-center justify-center h-48">

@@ -35,11 +35,11 @@ const UserMutationHistory: React.FC<UserMutationHistoryProps> = ({ dbMutations }
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'pending':
-        return <span className="bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800/40 px-2 py-0.5 text-[9px] font-mono font-bold animate-pulse">MENUNGGU VERIFIKASI</span>;
+        return <span className="bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800/40 px-2 py-0.5 text-[11px] font-mono font-bold animate-pulse">MENUNGGU VERIFIKASI</span>;
       case 'approved':
-        return <span className="bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800/40 px-2 py-0.5 text-[9px] font-mono font-bold">DISETUJUI</span>;
+        return <span className="bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800/40 px-2 py-0.5 text-[11px] font-mono font-bold">DISETUJUI</span>;
       case 'rejected':
-        return <span className="bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800/40 px-2 py-0.5 text-[9px] font-mono font-bold">DITOLAK</span>;
+        return <span className="bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800/40 px-2 py-0.5 text-[11px] font-mono font-bold">DITOLAK</span>;
       default:
         return null;
     }
@@ -90,7 +90,7 @@ const UserMutationHistory: React.FC<UserMutationHistoryProps> = ({ dbMutations }
                       <span className={`px-2 py-1 text-xs font-mono font-bold border rounded-sm flex items-center justify-center gap-1 mx-auto w-max ${badge.color}`}>
                         {badge.icon} {badge.label}
                       </span>
-                      <div className="text-[9px] font-mono mt-1 text-slate-500 uppercase">
+                      <div className="text-[11px] font-mono mt-1 text-slate-500 uppercase">
                         Oleh: {m.requested_by?.name || '-'}
                       </div>
                     </td>
@@ -125,12 +125,12 @@ const UserMutationHistory: React.FC<UserMutationHistoryProps> = ({ dbMutations }
                       <div className="space-y-1">
                         {getStatusBadge(m.status)}
                         {m.status !== 'pending' && m.approved_by && (
-                          <div className="text-[9px] font-mono text-slate-500 uppercase mt-1">
+                          <div className="text-[11px] font-mono text-slate-500 uppercase mt-1">
                             Oleh: {m.approved_by.name}
                           </div>
                         )}
                         {m.status === 'rejected' && m.admin_notes && (
-                          <div className="text-[9px] font-mono text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-1 mt-1 rounded border border-red-100 dark:border-red-900/50 text-left">
+                          <div className="text-[11px] font-mono text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-1 mt-1 rounded border border-red-100 dark:border-red-900/50 text-left">
                             <strong>Alasan:</strong> {m.admin_notes}
                           </div>
                         )}

@@ -55,7 +55,7 @@ const LogsTable: React.FC<LogsTableProps> = ({
           <h3 className="text-white font-mono font-bold text-xs tracking-widest flex items-center gap-2 uppercase">
             <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div> /var/log/helpdesk_audit.log
           </h3>
-          <span className="text-[9px] text-slate-300 font-mono italic">Showing {filteredLogs.length} entries</span>
+          <span className="text-[11px] text-slate-300 font-mono italic">Showing {filteredLogs.length} entries</span>
         </div>
         <div className="overflow-x-auto max-h-[600px] overflow-y-auto custom-scrollbar">
           <table className="w-full text-left font-mono text-xs border-collapse">

@@ -37,15 +37,15 @@ const ReportDetailModal: React.FC<ReportDetailModalProps> = ({ isOpen, onClose, 
               <h4 className="text-xs font-mono font-bold text-slate-500 dark:text-slate-300 tracking-[0.2em] border-b border-slate-200 dark:border-slate-600 pb-2 uppercase">DATA PELAPORAN</h4>
               <div className="space-y-3">
                 <div>
-                  <p className="text-[9px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest">Barang Rusak</p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest">Barang Rusak</p>
                   <p className="text-sm font-bold text-slate-800 dark:text-white uppercase">{report.kerusakan.barangRusak}</p>
                 </div>
                 <div>
-                  <p className="text-[9px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest">Lokasi Kejadian</p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest">Lokasi Kejadian</p>
                   <p className="text-sm font-bold text-cighra-primary dark:text-cighra-gold uppercase">{report.kerusakan.lokasi}</p>
                 </div>
                 <div>
-                  <p className="text-[9px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest">Jenis Perbaikan</p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest">Jenis Perbaikan</p>
                   <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-mono font-bold border mt-1 uppercase ${
                     report.kerusakan.jenisPerbaikan === 'Non-Swadaya'
                       ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800'
@@ -55,7 +55,7 @@ const ReportDetailModal: React.FC<ReportDetailModalProps> = ({ isOpen, onClose, 
                   </span>
                 </div>
                 <div>
-                  <p className="text-[9px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest font-bold">Prioritas Penanganan</p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest font-bold">Prioritas Penanganan</p>
                   <span className={`inline-block px-2 py-0.5 text-xs font-mono font-bold border mt-1 uppercase ${
                     report.kerusakan.urgensi?.toUpperCase() === 'SANGAT MENDESAK'
                       ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-500 border-red-200 dark:border-red-800'
@@ -67,7 +67,7 @@ const ReportDetailModal: React.FC<ReportDetailModalProps> = ({ isOpen, onClose, 
                   </span>
                 </div>
                 <div>
-                  <p className="text-[9px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest font-bold">Tingkat Kerusakan</p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest font-bold">Tingkat Kerusakan</p>
                   <span className={`inline-block px-2 py-0.5 text-xs font-mono font-bold border mt-1 uppercase ${
                     ['PARAH', 'BERAT'].includes(report.kerusakan.tingkatKerusakan?.toUpperCase() || '')
                       ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-500 border-red-200 dark:border-red-800'
@@ -79,7 +79,7 @@ const ReportDetailModal: React.FC<ReportDetailModalProps> = ({ isOpen, onClose, 
                   </span>
                 </div>
                 <div>
-                  <p className="text-[9px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest">Waktu Lapor</p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest">Waktu Lapor</p>
                   <p className="text-sm font-mono text-slate-600 dark:text-slate-300">{report.kerusakan.tanggal}</p>
                 </div>
               </div>
@@ -90,7 +90,7 @@ const ReportDetailModal: React.FC<ReportDetailModalProps> = ({ isOpen, onClose, 
               <h4 className="text-xs font-mono font-bold text-slate-500 dark:text-slate-300 tracking-[0.2em] border-b border-slate-200 dark:border-slate-600 pb-2 uppercase">STATUS SISTEM</h4>
               <div className="space-y-3">
                 <div>
-                  <p className="text-[9px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest">Status Perbaikan</p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest">Status Perbaikan</p>
                   <span className={`inline-block px-3 py-1 text-xs font-tactical font-bold tracking-widest border mt-1
                     ${report.status === 'SELESAI' ? 'bg-camogreen/10 text-camogreen border-camogreen/30' :
                       report.status === 'DITOLAK' ? 'bg-red-600/10 text-red-500 border-red-600/30' :
@@ -101,7 +101,7 @@ const ReportDetailModal: React.FC<ReportDetailModalProps> = ({ isOpen, onClose, 
                   </span>
                 </div>
                 <div>
-                  <p className="text-[9px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest">Teknisi Penanggung Jawab</p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest">Teknisi Penanggung Jawab</p>
                   <p className="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-2">
                     <Wrench size={14} className="text-cighra-primary dark:text-cighra-gold" /> {report.perbaikan.teknisi ? report.perbaikan.teknisi.toUpperCase() : 'BELUM ADA PENUGASAN'}
                   </p>
@@ -123,7 +123,7 @@ const ReportDetailModal: React.FC<ReportDetailModalProps> = ({ isOpen, onClose, 
           {/* Deskripsi & Catatan */}
           <div className="space-y-4">
             <div className="bg-white dark:bg-cighra-darkcard/30 p-4 border border-slate-200 dark:border-slate-600">
-              <p className="text-[9px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest mb-2">DESKRIPSI KRONOLOGI:</p>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest mb-2">DESKRIPSI KRONOLOGI:</p>
               <p className="text-xs text-slate-600 dark:text-slate-300/80 font-mono leading-relaxed italic">
                 "{report.kerusakan.deskripsi}"
               </p>
@@ -131,7 +131,7 @@ const ReportDetailModal: React.FC<ReportDetailModalProps> = ({ isOpen, onClose, 
 
             {report.kerusakan.jenisPerbaikan === 'Non-Swadaya' && (
               <div className="bg-blue-500/10 p-4 border border-blue-500/30 text-slate-800 dark:text-slate-200">
-                <p className="text-[9px] text-blue-600 dark:text-blue-400 font-mono uppercase tracking-widest mb-2 font-bold">DOKUMEN & KETERANGAN ANGGARAN NON-SWADAYA:</p>
+                <p className="text-[11px] text-blue-600 dark:text-blue-400 font-mono uppercase tracking-widest mb-2 font-bold">DOKUMEN & KETERANGAN ANGGARAN NON-SWADAYA:</p>
                 <p className="text-xs font-mono leading-relaxed uppercase italic mb-3">
                   "{report.kerusakan.keteranganAnggaran || 'Tidak ada keterangan anggaran yang ditulis.'}"
                 </p>
@@ -156,11 +156,11 @@ const ReportDetailModal: React.FC<ReportDetailModalProps> = ({ isOpen, onClose, 
             {/* Dokumentasi Laporan (Kendala) */}
             {(report.kerusakan.foto_bukti || report.kerusakan.fileBukti?.length > 0 || report.kerusakan.tautan_video) && (
               <div className="bg-slate-100 dark:bg-cighra-darkcard/40 p-4 border border-slate-200 dark:border-slate-700/50 space-y-3 mt-4">
-                <p className="text-[9px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest font-bold">DOKUMENTASI KENDALA (DARI PELAPOR):</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest font-bold">DOKUMENTASI KENDALA (DARI PELAPOR):</p>
                 
                 {report.kerusakan.tautan_video && (
                   <div className="mb-4">
-                    <p className="text-[9px] text-slate-500 font-mono uppercase mb-1">Tautan Video G-Drive:</p>
+                    <p className="text-[11px] text-slate-500 font-mono uppercase mb-1">Tautan Video G-Drive:</p>
                     <a href={report.kerusakan.tautan_video} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:text-blue-400 underline break-all font-mono inline-block">
                       {report.kerusakan.tautan_video}
                     </a>
@@ -185,7 +185,7 @@ const ReportDetailModal: React.FC<ReportDetailModalProps> = ({ isOpen, onClose, 
 
             {report.status === 'DITOLAK' && (
               <div className="bg-red-500/10 p-4 border border-red-500/30 text-slate-800 dark:text-slate-200 animate-in fade-in">
-                <p className="text-[9px] text-red-500 font-mono uppercase tracking-widest mb-2 font-bold">ALASAN PENOLAKAN LAPORAN (FEEDBACK STAF):</p>
+                <p className="text-[11px] text-red-500 font-mono uppercase tracking-widest mb-2 font-bold">ALASAN PENOLAKAN LAPORAN (FEEDBACK STAF):</p>
                 <p className="text-xs font-mono leading-relaxed uppercase italic">
                   "{report.perbaikan.alasanPenolakan || 'Tidak ada alasan penolakan yang ditulis.'}"
                 </p>
@@ -194,13 +194,13 @@ const ReportDetailModal: React.FC<ReportDetailModalProps> = ({ isOpen, onClose, 
 
             {report.perbaikan.tindakan && (
               <div className="bg-cighra-primary/5 dark:bg-cighra-gold/5 p-4 border border-cighra-primary dark:border-cighra-gold/30">
-                <p className="text-[9px] text-cighra-primary dark:text-cighra-gold font-mono uppercase tracking-widest mb-2">TINDAKAN PERBAIKAN (TEKNISI):</p>
+                <p className="text-[11px] text-cighra-primary dark:text-cighra-gold font-mono uppercase tracking-widest mb-2">TINDAKAN PERBAIKAN (TEKNISI):</p>
                 <p className="text-xs text-gunmetal dark:text-slate-300 font-mono leading-relaxed">
                   {report.perbaikan.tindakan}
                 </p>
                 {report.perbaikan.metodePerbaikan && (
                   <div className="mt-3 pt-3 border-t border-cighra-primary dark:border-cighra-gold/20">
-                    <span className="text-[9px] font-bold text-cighra-primary dark:text-cighra-gold tracking-tighter uppercase">METODE PERBAIKAN: {report.perbaikan.metodePerbaikan}</span>
+                    <span className="text-[11px] font-bold text-cighra-primary dark:text-cighra-gold tracking-tighter uppercase">METODE PERBAIKAN: {report.perbaikan.metodePerbaikan}</span>
                   </div>
                 )}
               </div>
@@ -209,7 +209,7 @@ const ReportDetailModal: React.FC<ReportDetailModalProps> = ({ isOpen, onClose, 
             {/* Dokumentasi Penyelesaian */}
             {(report.perbaikan.foto_bukti_selesai || report.perbaikan.video_bukti_selesai) && (
               <div className="bg-slate-100 dark:bg-cighra-darkcard/40 p-4 border border-slate-200 dark:border-slate-700/50 space-y-3 mt-4">
-                <p className="text-[9px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest font-bold">DOKUMENTASI HASIL PERBAIKAN:</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest font-bold">DOKUMENTASI HASIL PERBAIKAN:</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {report.perbaikan.foto_bukti_selesai && (
                     <div className="border border-slate-300 dark:border-slate-700 rounded-sm overflow-hidden bg-black/40 flex items-center justify-center h-48">

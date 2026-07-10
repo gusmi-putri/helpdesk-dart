@@ -117,7 +117,7 @@ const Profile = ({ currentUser }: any) => {
         <div className="flex items-center gap-0 border border-slate-200/20 dark:border-slate-700/50 rounded shadow-sm bg-black/5 dark:bg-cighra-dark/40 overflow-hidden">
           <div className="px-4 py-1.5 text-right flex flex-col justify-center border-r border-slate-200/20 dark:border-slate-700/50">
             <span className="block text-xs font-bold text-slate-800 dark:text-white uppercase font-sans tracking-wider">{currentUser?.name || currentUser?.nama_lengkap}</span>
-            <span className="block text-[9px] font-mono tracking-widest text-cighra-primary dark:text-cighra-gold uppercase">{currentUser?.role?.nama_role || 'Pengguna'}</span>
+            <span className="block text-[11px] font-mono tracking-widest text-cighra-primary dark:text-cighra-gold uppercase">{currentUser?.role?.nama_role || 'Pengguna'}</span>
           </div>
           <div className="w-10 h-full bg-black/10 dark:bg-black/20 flex items-center justify-center p-2">
             <UserCog className="w-6 h-6 text-slate-500 dark:text-slate-400" />
@@ -175,7 +175,7 @@ const Profile = ({ currentUser }: any) => {
                     required
                     maxLength={100}
                   />
-                  {profileForm.errors.nama_lengkap && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{profileForm.errors.nama_lengkap}</p>}
+                  {profileForm.errors.nama_lengkap && <p className="text-[11px] text-red-500 mt-1 font-mono uppercase">{profileForm.errors.nama_lengkap}</p>}
                 </div>
 
                 <div>
@@ -190,7 +190,7 @@ const Profile = ({ currentUser }: any) => {
                     required
                     minLength={8}
                   />
-                  {profileForm.errors.nrp_nip && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{profileForm.errors.nrp_nip}</p>}
+                  {profileForm.errors.nrp_nip && <p className="text-[11px] text-red-500 mt-1 font-mono uppercase">{profileForm.errors.nrp_nip}</p>}
                 </div>
 
                 <div>
@@ -203,7 +203,7 @@ const Profile = ({ currentUser }: any) => {
                     required
                     placeholder="EMAIL AKTIF"
                   />
-                  {profileForm.errors.email && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{profileForm.errors.email}</p>}
+                  {profileForm.errors.email && <p className="text-[11px] text-red-500 mt-1 font-mono uppercase">{profileForm.errors.email}</p>}
                 </div>
 
                 <div>
@@ -220,11 +220,11 @@ const Profile = ({ currentUser }: any) => {
                     />
                   </div>
                   {waWarning && (
-                    <p className="text-[9px] text-yellow-600 dark:text-yellow-500 font-mono font-bold flex items-center gap-1 mt-1">
+                    <p className="text-[11px] text-yellow-600 dark:text-yellow-500 font-mono font-bold flex items-center gap-1 mt-1">
                       <Info className="w-3 h-3 shrink-0" /> {waWarning}
                     </p>
                   )}
-                  {profileForm.errors.no_wa && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{profileForm.errors.no_wa}</p>}
+                  {profileForm.errors.no_wa && <p className="text-[11px] text-red-500 mt-1 font-mono uppercase">{profileForm.errors.no_wa}</p>}
                 </div>
 
                 <div>
@@ -284,7 +284,7 @@ const Profile = ({ currentUser }: any) => {
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
-                {passwordForm.errors.current_password && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{passwordForm.errors.current_password}</p>}
+                {passwordForm.errors.current_password && <p className="text-[11px] text-red-500 mt-1 font-mono uppercase">{passwordForm.errors.current_password}</p>}
               </div>
 
               <div>
@@ -306,7 +306,7 @@ const Profile = ({ currentUser }: any) => {
                     {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
-                {passwordForm.errors.password && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{passwordForm.errors.password}</p>}
+                {passwordForm.errors.password && <p className="text-[11px] text-red-500 mt-1 font-mono uppercase">{passwordForm.errors.password}</p>}
               </div>
 
               <div>
@@ -328,7 +328,7 @@ const Profile = ({ currentUser }: any) => {
                     {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
-                {passwordForm.errors.password_confirmation && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{passwordForm.errors.password_confirmation}</p>}
+                {passwordForm.errors.password_confirmation && <p className="text-[11px] text-red-500 mt-1 font-mono uppercase">{passwordForm.errors.password_confirmation}</p>}
               </div>
 
               <div className="pt-2">

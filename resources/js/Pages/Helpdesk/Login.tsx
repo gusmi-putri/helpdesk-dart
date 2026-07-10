@@ -150,7 +150,7 @@ const Login: React.FC = () => {
         </form>
 
         <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-600 text-center">
-          <p className="text-slate-400 dark:text-slate-500 text-[9px] font-mono uppercase tracking-widest">
+          <p className="text-slate-400 dark:text-slate-500 text-[11px] font-mono uppercase tracking-widest">
             SISFO DART Operational Security System
           </p>
         </div>

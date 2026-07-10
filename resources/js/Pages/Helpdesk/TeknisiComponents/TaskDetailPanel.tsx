@@ -63,7 +63,7 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({ selectedTask, activeT
               </div>
             </div>
             <div className="bg-white dark:bg-cighra-darkcard/70 px-4 py-2 text-center border shadow-sm border-slate-300 dark:border-slate-600">
-              <div className="text-[9px] font-mono text-slate-500 dark:text-slate-400 tracking-widest mb-1 uppercase">KODE REFERENSI</div>
+              <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400 tracking-widest mb-1 uppercase">KODE REFERENSI</div>
               <div className="font-mono text-lg font-bold text-slate-800 dark:text-white">{selectedTask.caseId}</div>
             </div>
           </div>

@@ -57,7 +57,7 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
                     <span className={`px-2 py-1 text-xs font-mono font-bold border rounded-sm ${badge.color}`}>
                       {badge.label}
                     </span>
-                    <div className="text-[9px] font-mono mt-1 text-slate-500">
+                    <div className="text-[11px] font-mono mt-1 text-slate-500">
                       Oleh: {m.requested_by?.name || '-'}
                     </div>
                   </td>
@@ -112,7 +112,7 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
                             </button>
                           </div>
                           {isSatuanUnverified && (
-                            <div className="text-[9px] text-cighra-primary dark:text-cighra-gold text-center max-w-[200px]">
+                            <div className="text-[11px] text-cighra-primary dark:text-cighra-gold text-center max-w-[200px]">
                               * Satuan kerja pelapor ini baru dan menunggu persetujuan Anda di tab Satuan.
                             </div>
                           )}

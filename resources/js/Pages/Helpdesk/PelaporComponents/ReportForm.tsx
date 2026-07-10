@@ -341,7 +341,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
               </label>
             ))}
           </div>
-          {errors.tingkat_kerusakan && <p className="text-[9px] text-cighra-primary dark:text-cighra-gold mt-1 font-mono uppercase">{errors.tingkat_kerusakan}</p>}
+          {errors.tingkat_kerusakan && <p className="text-[11px] text-cighra-primary dark:text-cighra-gold mt-1 font-mono uppercase">{errors.tingkat_kerusakan}</p>}
         </div>
 
         <div className="glass-panel p-6 border-l-4 border-l-olive bg-white dark:bg-cighra-darkcard/80 shadow-xl border border-slate-200 dark:border-slate-600">
@@ -398,7 +398,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
               </label>
             ))}
           </div>
-          {errors.urgensi && <p className="text-[9px] text-cighra-primary dark:text-cighra-gold mt-1 font-mono uppercase">{errors.urgensi}</p>}
+          {errors.urgensi && <p className="text-[11px] text-cighra-primary dark:text-cighra-gold mt-1 font-mono uppercase">{errors.urgensi}</p>}
         </div>
 
         <div className="glass-panel p-6 border-l-4 border-l-olive bg-white dark:bg-cighra-darkcard/80 shadow-xl border border-slate-200 dark:border-slate-600">
@@ -406,7 +406,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
           <textarea value={data.deskripsi} onChange={(e) => setData('deskripsi', e.target.value)} required rows={5}
             className="w-full bg-cighra-light/50 dark:bg-cighra-darkcard/80 border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:border-cighra-gold transition-colors resize-none rounded-sm"
             placeholder="Jelaskan secara detail kondisi kerusakan, kronologi kejadian, dan gejala yang dialami..." />
-          {errors.deskripsi && <p className="text-[9px] text-cighra-primary dark:text-cighra-gold mt-1 font-mono uppercase">{errors.deskripsi}</p>}
+          {errors.deskripsi && <p className="text-[11px] text-cighra-primary dark:text-cighra-gold mt-1 font-mono uppercase">{errors.deskripsi}</p>}
         </div>
 
         <button type="submit" disabled={processing}

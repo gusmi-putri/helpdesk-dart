@@ -233,7 +233,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
           { label: 'DALAM PERBAIKAN', value: unitStats.PERBAIKAN, color: 'border-blue-500', text: 'text-blue-500' },
         ].map((s, i) => (
           <div key={i} className={`bg-white dark:bg-cighra-darkcard/80 border-l-4 ${s.color} p-4 shadow-md`}>
-            <p className="text-[9px] font-mono font-bold text-slate-500 dark:text-slate-300 tracking-widest uppercase mb-1">{s.label}</p>
+            <p className="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-300 tracking-widest uppercase mb-1">{s.label}</p>
             <p className={`text-2xl font-tactical font-bold ${s.text}`}>{s.value}</p>
           </div>
         ))}
@@ -277,7 +277,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
         {/* Filter Row */}
         <div className="p-4 bg-slate-50 dark:bg-cighra-dark/30 border-b border-slate-200 dark:border-slate-600 flex flex-col md:flex-row gap-4 items-center">
           <div className="w-full md:w-72">
-            <label className="block text-[9px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">CARI PERANGKAT</label>
+            <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">CARI PERANGKAT</label>
             <div className="relative">
               <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
               <input
@@ -290,7 +290,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
             </div>
           </div>
           <div className="w-full md:w-56">
-            <label className="block text-[9px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">JENIS UNIT</label>
+            <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">JENIS UNIT</label>
             <select
               value={filterJenis}
               onChange={(e) => setFilterJenis(e.target.value)}
@@ -302,7 +302,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
             </select>
           </div>
           <div className="w-full md:w-56">
-            <label className="block text-[9px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">SATUAN</label>
+            <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">SATUAN</label>
             <select
               value={filterSatuan}
               onChange={(e) => setFilterSatuan(e.target.value)}
@@ -390,11 +390,11 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
                       {isDeleteMode && (
                         <td className="p-4 text-center">
                           {isSelected ? (
-                            <span className="px-2.5 py-1 bg-red-600/90 text-white text-[9px] font-mono font-bold tracking-widest uppercase inline-block border border-red-700">
+                            <span className="px-2.5 py-1 bg-red-600/90 text-white text-[11px] font-mono font-bold tracking-widest uppercase inline-block border border-red-700">
                               HAPUS
                             </span>
                           ) : (
-                            <span className="px-2.5 py-1 bg-slate-100 dark:bg-slate-800/50 text-slate-400 dark:text-slate-500 text-[9px] font-mono font-bold tracking-widest uppercase inline-block border border-slate-200 dark:border-slate-700">
+                            <span className="px-2.5 py-1 bg-slate-100 dark:bg-slate-800/50 text-slate-400 dark:text-slate-500 text-[11px] font-mono font-bold tracking-widest uppercase inline-block border border-slate-200 dark:border-slate-700">
                               LEWATI
                             </span>
                           )}
@@ -404,7 +404,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
                       <td className="p-4 font-mono text-xs text-slate-800 dark:text-white uppercase text-center truncate max-w-[150px]" title={u.jenis}>{u.jenis}</td>
                       <td className="p-4 font-mono text-xs text-slate-800 dark:text-white uppercase text-center truncate max-w-[200px]" title={u.asal_satuan}>{u.asal_satuan}</td>
                       <td className="p-4 text-center">
-                        <span className={`px-2 py-0.5 border text-[9px] font-bold tracking-widest uppercase inline-block mx-auto
+                        <span className={`px-2 py-0.5 border text-[11px] font-bold tracking-widest uppercase inline-block mx-auto
                           ${u.status_unit === 'Beroperasi' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40' :
                             u.status_unit === 'Rusak' ? 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/40' :
                               u.status_unit === 'Perbaikan' ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800/40' :
@@ -482,15 +482,15 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
                 <div className="space-y-4">
                   <div className="grid grid-cols-3 gap-3 text-center">
                     <div className="bg-white dark:bg-cighra-darkcard/80 p-3 border border-slate-200 dark:border-slate-600">
-                      <p className="text-[9px] font-mono font-bold text-slate-500 dark:text-slate-300 uppercase tracking-widest mb-1">TOTAL BARIS</p>
+                      <p className="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-300 uppercase tracking-widest mb-1">TOTAL BARIS</p>
                       <p className="text-xl font-tactical font-bold text-slate-800 dark:text-white">{importResult.total}</p>
                     </div>
                     <div className="bg-white dark:bg-cighra-darkcard/80 p-3 border border-camogreen/30">
-                      <p className="text-[9px] font-mono font-bold text-camogreen uppercase tracking-widest mb-1">BERHASIL</p>
+                      <p className="text-[11px] font-mono font-bold text-camogreen uppercase tracking-widest mb-1">BERHASIL</p>
                       <p className="text-xl font-tactical font-bold text-camogreen">{importResult.imported}</p>
                     </div>
                     <div className="bg-white dark:bg-cighra-darkcard/80 p-3 border border-yellow-500/30">
-                      <p className="text-[9px] font-mono font-bold text-yellow-500 uppercase tracking-widest mb-1">DILEWATI</p>
+                      <p className="text-[11px] font-mono font-bold text-yellow-500 uppercase tracking-widest mb-1">DILEWATI</p>
                       <p className="text-xl font-tactical font-bold text-yellow-500">{importResult.skipped}</p>
                     </div>
                   </div>

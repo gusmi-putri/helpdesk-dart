@@ -67,14 +67,14 @@ const SatuanDetailModal: React.FC<SatuanDetailModalProps> = ({
             <h5 className="text-xs font-mono font-bold text-slate-500 uppercase tracking-widest border-l-2 border-cighra-gold pl-2">GEO-SPATIAL INTELLIGENCE</h5>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="p-4 bg-slate-50 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 space-y-1">
-                    <label className="text-[9px] font-mono text-slate-500 uppercase tracking-tighter">COORDINATES (LAT/LNG)</label>
+                    <label className="text-[11px] font-mono text-slate-500 uppercase tracking-tighter">COORDINATES (LAT/LNG)</label>
                     <p className="font-mono text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
                         <MapPin className="w-4 h-4 text-cighra-gold" />
                         {satuan.latitude && satuan.longitude ? `${satuan.latitude}, ${satuan.longitude}` : 'NO DATA'}
                     </p>
                 </div>
                 <div className="p-4 bg-slate-50 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 space-y-1">
-                    <label className="text-[9px] font-mono text-slate-500 uppercase tracking-tighter">PHYSICAL ADDRESS</label>
+                    <label className="text-[11px] font-mono text-slate-500 uppercase tracking-tighter">PHYSICAL ADDRESS</label>
                     <p className="font-mono text-xs font-bold text-slate-800 dark:text-slate-300 leading-relaxed uppercase">
                         {satuan.alamat || 'UNSPECIFIED LOCATION'}
                     </p>
@@ -88,19 +88,19 @@ const SatuanDetailModal: React.FC<SatuanDetailModalProps> = ({
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="p-4 bg-slate-50 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center text-center shadow-sm">
                     <span className="text-3xl font-tactical font-bold text-slate-800 dark:text-white leading-none">{satuanUnits.length}</span>
-                    <span className="text-[9px] font-mono text-slate-500 uppercase mt-2 font-bold tracking-wider">TOTAL ASSETS</span>
+                    <span className="text-[11px] font-mono text-slate-500 uppercase mt-2 font-bold tracking-wider">TOTAL ASSETS</span>
                 </div>
                 <div className="p-4 bg-slate-50 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center text-center shadow-sm">
                     <span className="text-3xl font-tactical font-bold text-green-600 leading-none">{activeUnits.length}</span>
-                    <span className="text-[9px] font-mono text-slate-500 uppercase mt-2 font-bold tracking-wider">OPERATIONAL</span>
+                    <span className="text-[11px] font-mono text-slate-500 uppercase mt-2 font-bold tracking-wider">OPERATIONAL</span>
                 </div>
                 <div className="p-4 bg-slate-50 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center text-center shadow-sm">
                     <span className="text-3xl font-tactical font-bold text-red-500 leading-none">{damagedUnits.length}</span>
-                    <span className="text-[9px] font-mono text-slate-500 uppercase mt-2 font-bold tracking-wider">IN MAINTENANCE</span>
+                    <span className="text-[11px] font-mono text-slate-500 uppercase mt-2 font-bold tracking-wider">IN MAINTENANCE</span>
                 </div>
                 <div className="p-4 bg-slate-50 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center text-center shadow-sm">
                     <span className="text-3xl font-tactical font-bold text-blue-500 leading-none">{satuanUsers.length}</span>
-                    <span className="text-[9px] font-mono text-slate-500 uppercase mt-2 font-bold tracking-wider">AUTHORIZED PERSONNEL</span>
+                    <span className="text-[11px] font-mono text-slate-500 uppercase mt-2 font-bold tracking-wider">AUTHORIZED PERSONNEL</span>
                 </div>
             </div>
         </div>

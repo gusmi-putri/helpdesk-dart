@@ -139,7 +139,7 @@ const StafUnitBatchModal: React.FC<StafUnitBatchModalProps> = ({ isOpen, onClose
                   </label>
                 )}
               </div>
-              <p className="text-[9px] font-mono text-slate-500 mt-1 uppercase">Satu surat ini akan melampirkan seluruh baris di CSV tujuan.</p>
+              <p className="text-[11px] font-mono text-slate-500 mt-1 uppercase">Satu surat ini akan melampirkan seluruh baris di CSV tujuan.</p>
             </div>
 
             <div>

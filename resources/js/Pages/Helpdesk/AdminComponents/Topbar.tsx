@@ -29,7 +29,7 @@ const Topbar: React.FC<TopbarProps> = ({ setIsMobileMenuOpen, currentUser, isMob
         >
           <div className="bg-cighra-dark/40 dark:bg-cighra-darkcard/80 px-4 py-1.5 text-right flex flex-col justify-center border-r border-slate-200/20 dark:border-slate-600">
             <span className="block text-xs font-bold text-white dark:text-white uppercase font-sans tracking-wider">{currentUser?.name || 'Administrator'}</span>
-            <span className="block text-[9px] font-mono tracking-widest text-cighra-gold dark:text-cighra-gold uppercase">{currentUser?.role || 'Admin'}</span>
+            <span className="block text-[11px] font-mono tracking-widest text-cighra-gold dark:text-cighra-gold uppercase">{currentUser?.role || 'Admin'}</span>
           </div>
           <div className="w-10 h-full bg-black/20 dark:bg-cighra-darkcard/70 flex items-center justify-center p-2">
             <CircleUser className="w-6 h-6 text-slate-200 dark:text-slate-400" />

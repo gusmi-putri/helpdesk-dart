@@ -175,7 +175,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
       {/* 2. Filters & Search */}
       <div className="mb-6 flex flex-col md:flex-row gap-4 items-end">
         <div className="w-full md:w-96">
-          <label className="block text-[9px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">CARI TIKET / UNIT</label>
+          <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">CARI TIKET / UNIT</label>
           <div className="relative">
             <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
             <input 
@@ -189,7 +189,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
         </div>
         
         <div className="w-full md:w-48">
-          <label className="block text-[9px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">PRIORITAS</label>
+          <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">PRIORITAS</label>
           <select 
             value={priorityFilter} 
             onChange={e => setPriorityFilter(e.target.value)} 
@@ -204,7 +204,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
         </div>
 
         <div className="w-full md:w-56">
-          <label className="block text-[9px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">STATUS</label>
+          <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">STATUS</label>
           <select 
             value={statusFilter} 
             onChange={e => setStatusFilter(e.target.value)} 
@@ -259,7 +259,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                   <div className="w-full lg:w-1/4 space-y-2 lg:space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="font-mono font-bold text-base text-slate-800 dark:text-white">{report.caseId}</span>
-                      <span className={`text-[9px] font-mono font-bold px-2 py-0.5  uppercase ${priority.bg} ${priority.text} border ${priority.border} flex items-center gap-1`}>
+                      <span className={`text-[11px] font-mono font-bold px-2 py-0.5  uppercase ${priority.bg} ${priority.text} border ${priority.border} flex items-center gap-1`}>
                         {priority.color === 'red' && <AlertTriangle className="w-3 h-3" />} {priority.label}
                       </span>
                     </div>
@@ -364,7 +364,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                 {(() => {
                   const priority = getPriorityInfo(selectedTicket.kerusakan.urgensi, selectedTicket.kerusakan.tingkatKerusakan);
                   return (
-                    <span className={`text-[9px] font-mono font-bold px-2 py-0.5 uppercase ${priority.bg} ${priority.text} border ${priority.border} flex items-center gap-1 rounded-sm`}>
+                    <span className={`text-[11px] font-mono font-bold px-2 py-0.5 uppercase ${priority.bg} ${priority.text} border ${priority.border} flex items-center gap-1 rounded-sm`}>
                       {priority.color === 'red' && <AlertTriangle className="w-3 h-3" />} {priority.label}
                     </span>
                   );

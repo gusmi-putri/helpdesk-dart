@@ -102,8 +102,8 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
               required
               minLength={8}
             />
-            <p className="text-[9px] text-slate-400 mt-1 font-mono">Hanya angka, 8-20 digit.</p>
-            {errors.nrp_nip && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.nrp_nip}</p>}
+            <p className="text-[11px] text-slate-400 mt-1 font-mono">Hanya angka, 8-20 digit.</p>
+            {errors.nrp_nip && <p className="text-[11px] text-red-500 mt-1 font-mono uppercase">{errors.nrp_nip}</p>}
           </div>
 
           {isAddMode ? (
@@ -121,7 +121,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
                   maxLength={50}
                   autoComplete="off"
                 />
-                {errors.username && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.username}</p>}
+                {errors.username && <p className="text-[11px] text-red-500 mt-1 font-mono uppercase">{errors.username}</p>}
               </div>
               <div>
                 <label className="block text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Password</label>
@@ -135,10 +135,10 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
                   minLength={8}
                   placeholder="MIN. 8 KARAKTER"
                 />
-                <p className="text-[9px] text-slate-400 mt-1 font-mono flex items-center gap-1">
+                <p className="text-[11px] text-slate-400 mt-1 font-mono flex items-center gap-1">
                   <Info className="w-3 h-3 shrink-0" /> Min. 8 karakter, harus ada huruf dan angka.
                 </p>
-                {errors.password && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.password}</p>}
+                {errors.password && <p className="text-[11px] text-red-500 mt-1 font-mono uppercase">{errors.password}</p>}
               </div>
             </>
           ) : (
@@ -160,7 +160,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
               required
               maxLength={100}
             />
-            {errors.nama_lengkap && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.nama_lengkap}</p>}
+            {errors.nama_lengkap && <p className="text-[11px] text-red-500 mt-1 font-mono uppercase">{errors.nama_lengkap}</p>}
           </div>
           <div className="col-span-2 md:col-span-1">
             <label className="block text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Email Address</label>
@@ -172,7 +172,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
               required
               placeholder="EMAIL AKTIF"
             />
-            {errors.email && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.email}</p>}
+            {errors.email && <p className="text-[11px] text-red-500 mt-1 font-mono uppercase">{errors.email}</p>}
           </div>
           {data.username === 'admin' ? (
             <div className="flex flex-col">
@@ -196,7 +196,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
                   <option key={role.id} value={role.id}>{role.name.toUpperCase()}</option>
                 ))}
               </select>
-              {errors.role_id && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.role_id}</p>}
+              {errors.role_id && <p className="text-[11px] text-red-500 mt-1 font-mono uppercase">{errors.role_id}</p>}
             </div>
           )}
           <div>
@@ -213,12 +213,12 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
               />
             </div>
             {waWarning && (
-              <p className="text-[9px] text-yellow-600 dark:text-yellow-500 font-mono font-bold flex items-center gap-1 mt-1">
+              <p className="text-[11px] text-yellow-600 dark:text-yellow-500 font-mono font-bold flex items-center gap-1 mt-1">
                 <Info className="w-3 h-3 shrink-0" /> {waWarning}
               </p>
             )}
-            <p className="text-[9px] text-slate-400 mt-1 font-mono italic">Format: 62XXXXXXXXXXX</p>
-            {errors.no_wa && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.no_wa}</p>}
+            <p className="text-[11px] text-slate-400 mt-1 font-mono italic">Format: 62XXXXXXXXXXX</p>
+            {errors.no_wa && <p className="text-[11px] text-red-500 mt-1 font-mono uppercase">{errors.no_wa}</p>}
           </div>
           <div>
             <label className="block text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Asal Satuan / Komando</label>
@@ -239,7 +239,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
                 <option key={satuan.id} value={satuan.id}>{satuan.nama_satuan.toUpperCase()}</option>
               ))}
             </select>
-            {errors.satuan_id && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.satuan_id}</p>}
+            {errors.satuan_id && <p className="text-[11px] text-red-500 mt-1 font-mono uppercase">{errors.satuan_id}</p>}
           </div>
           <div className="col-span-2">
             <label className="block text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">

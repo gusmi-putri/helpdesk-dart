@@ -184,7 +184,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
 
       <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
         <div className="w-full md:w-96">
-          <label className="block text-[9px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">CARI PERSONEL</label>
+          <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">CARI PERSONEL</label>
           <div className="relative">
             <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400 dark:text-slate-500" />
             <input

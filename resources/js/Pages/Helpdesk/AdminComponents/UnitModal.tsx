@@ -69,7 +69,7 @@ const UnitModal: React.FC<UnitModalProps> = ({
               required
               placeholder="CTH: DART-001"
             />
-            {errors.nomor_seri && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.nomor_seri}</p>}
+            {errors.nomor_seri && <p className="text-[11px] text-red-500 mt-1 font-mono uppercase">{errors.nomor_seri}</p>}
           </div>
 
           <div>
@@ -120,7 +120,7 @@ const UnitModal: React.FC<UnitModalProps> = ({
                 <option key={satuan.id} value={satuan.id}>{satuan.nama_satuan.toUpperCase()}</option>
               ))}
             </select>
-            {errors.satuan_id && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.satuan_id}</p>}
+            {errors.satuan_id && <p className="text-[11px] text-red-500 mt-1 font-mono uppercase">{errors.satuan_id}</p>}
           </div>
           {isAddMode && (
             <div className="col-span-2">
@@ -132,7 +132,7 @@ const UnitModal: React.FC<UnitModalProps> = ({
                 required
                 accept=".pdf,.png,.jpg,.jpeg"
               />
-              {errors.document && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.document}</p>}
+              {errors.document && <p className="text-[11px] text-red-500 mt-1 font-mono uppercase">{errors.document}</p>}
             </div>
           )}
         </div>

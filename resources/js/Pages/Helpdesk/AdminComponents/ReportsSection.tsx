@@ -57,7 +57,7 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
           onClick={() => setReportStatusFilter('PENDING')}
           className={`text-left bg-white dark:bg-cighra-darkcard/80 border-l-4 border-amber-400 p-4 shadow-md hover:bg-amber-50 dark:hover:bg-amber-900/10 transition-colors ${reportStatusFilter === 'PENDING' ? 'ring-2 ring-amber-400 ring-inset' : ''}`}
         >
-          <p className="text-[9px] font-mono font-bold text-slate-500 dark:text-slate-300 tracking-widest uppercase mb-1">Laporan Baru</p>
+          <p className="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-300 tracking-widest uppercase mb-1">Laporan Baru</p>
           <p className={`text-2xl font-tactical font-bold ${reportStatusFilter === 'PENDING' ? 'text-amber-500' : 'text-amber-400'}`}>{counts.PENDING}</p>
         </button>
 
@@ -65,7 +65,7 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
           onClick={() => setReportStatusFilter('DIPROSES')}
           className={`text-left bg-white dark:bg-cighra-darkcard/80 border-l-4 border-blue-500 p-4 shadow-md hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-colors ${['DIVERIFIKASI', 'DITERIMA TEKNISI', 'DIPROSES'].includes(reportStatusFilter) ? 'ring-2 ring-blue-400 ring-inset' : ''}`}
         >
-          <p className="text-[9px] font-mono font-bold text-slate-500 dark:text-slate-300 tracking-widest uppercase mb-1">Aktif / Penanganan</p>
+          <p className="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-300 tracking-widest uppercase mb-1">Aktif / Penanganan</p>
           <p className={`text-2xl font-tactical font-bold ${['DIVERIFIKASI', 'DITERIMA TEKNISI', 'DIPROSES'].includes(reportStatusFilter) ? 'text-blue-600' : 'text-blue-500'}`}>{counts.AKTIF}</p>
         </button>
 
@@ -73,7 +73,7 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
           onClick={() => setReportStatusFilter('SELESAI')}
           className={`text-left bg-white dark:bg-cighra-darkcard/80 border-l-4 border-green-500 p-4 shadow-md hover:bg-green-50 dark:hover:bg-green-900/10 transition-colors ${reportStatusFilter === 'SELESAI' ? 'ring-2 ring-green-400 ring-inset' : ''}`}
         >
-          <p className="text-[9px] font-mono font-bold text-slate-500 dark:text-slate-300 tracking-widest uppercase mb-1">Telah Selesai</p>
+          <p className="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-300 tracking-widest uppercase mb-1">Telah Selesai</p>
           <p className={`text-2xl font-tactical font-bold ${reportStatusFilter === 'SELESAI' ? 'text-green-600' : 'text-green-500'}`}>{counts.SELESAI}</p>
         </button>
 
@@ -81,7 +81,7 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
           onClick={() => setReportStatusFilter('DITOLAK')}
           className={`text-left bg-white dark:bg-cighra-darkcard/80 border-l-4 border-red-500 p-4 shadow-md hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors ${reportStatusFilter === 'DITOLAK' ? 'ring-2 ring-red-400 ring-inset' : ''}`}
         >
-          <p className="text-[9px] font-mono font-bold text-slate-500 dark:text-slate-300 tracking-widest uppercase mb-1">Ditolak</p>
+          <p className="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-300 tracking-widest uppercase mb-1">Ditolak</p>
           <p className={`text-2xl font-tactical font-bold ${reportStatusFilter === 'DITOLAK' ? 'text-red-600' : 'text-red-500'}`}>{counts.DITOLAK}</p>
         </button>
       </div>
@@ -109,7 +109,7 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
         <div className="p-4 bg-slate-50 dark:bg-cighra-dark/30 border-b border-slate-200 dark:border-slate-600 flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between">
           
           <div className="flex flex-col gap-2 w-full lg:w-auto">
-            <label className="block text-[9px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">JENIS LAPORAN</label>
+            <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">JENIS LAPORAN</label>
             <div className="flex bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 p-1 shadow-sm">
               <button
                 onClick={() => setActiveSubReport('KERUSAKAN')}
@@ -135,7 +135,7 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
           </div>
 
           <div className="flex flex-col gap-2 w-full lg:w-auto">
-            <label className="block text-[9px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">STATUS LAPORAN</label>
+            <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">STATUS LAPORAN</label>
             <select
               value={reportStatusFilter}
               onChange={(e) => setReportStatusFilter(e.target.value as any)}
@@ -200,7 +200,7 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
                         <td className="p-5 align-top">
                           <div className="flex items-center gap-2 mb-2">
                             <span className="font-semibold text-slate-800 dark:text-white">{c.kerusakan.barangRusak}</span>
-                            <span className="px-2 py-0.5 text-[9px] font-mono font-bold border border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 rounded-sm uppercase tracking-widest">
+                            <span className="px-2 py-0.5 text-[11px] font-mono font-bold border border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 rounded-sm uppercase tracking-widest">
                               {c.kerusakan.jenisPerbaikan || 'SWADAYA'}
                             </span>
                           </div>

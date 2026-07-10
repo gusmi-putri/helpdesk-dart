@@ -78,7 +78,7 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
               placeholder="CTH: SATBRIMOB POLDA JABAR"
               className="w-full bg-white dark:bg-slate-800 border border-gray-400 dark:border-slate-700 p-2 text-sm font-mono focus:border-cighra-primary dark:focus:border-cighra-gold outline-none uppercase"
             />
-            {errors.nama_satuan && <p className="text-red-500 text-[9px] mt-1 font-mono uppercase">{errors.nama_satuan}</p>}
+            {errors.nama_satuan && <p className="text-red-500 text-[11px] mt-1 font-mono uppercase">{errors.nama_satuan}</p>}
           </div>
 
           <div className="col-span-2">
@@ -92,7 +92,7 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
               placeholder="CTH: SBRM-01"
               className="w-full bg-white dark:bg-slate-800 border border-gray-400 dark:border-slate-700 p-2 text-sm font-mono focus:border-cighra-primary dark:focus:border-cighra-gold outline-none uppercase"
             />
-            {errors.kode_satuan && <p className="text-red-500 text-[9px] mt-1 font-mono uppercase">{errors.kode_satuan}</p>}
+            {errors.kode_satuan && <p className="text-red-500 text-[11px] mt-1 font-mono uppercase">{errors.kode_satuan}</p>}
           </div>
 
           <div className="col-span-2">
@@ -106,7 +106,7 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
               rows={2}
               className="w-full bg-white dark:bg-slate-800 border border-gray-400 dark:border-slate-700 p-2 text-sm font-mono focus:border-cighra-primary dark:focus:border-cighra-gold outline-none uppercase"
             />
-            {errors.alamat && <p className="text-red-500 text-[9px] mt-1 font-mono uppercase">{errors.alamat}</p>}
+            {errors.alamat && <p className="text-red-500 text-[11px] mt-1 font-mono uppercase">{errors.alamat}</p>}
           </div>
 
           <div className="grid grid-cols-2 gap-4 col-span-2">
@@ -124,7 +124,7 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
                   className="w-full pl-8 pr-2 py-2 bg-white dark:bg-slate-800 border border-gray-400 dark:border-slate-700 text-sm font-mono focus:border-cighra-primary dark:focus:border-cighra-gold outline-none"
                 />
               </div>
-              {errors.latitude && <p className="text-red-500 text-[9px] mt-1 font-mono uppercase">{errors.latitude}</p>}
+              {errors.latitude && <p className="text-red-500 text-[11px] mt-1 font-mono uppercase">{errors.latitude}</p>}
             </div>
 
             <div>
@@ -141,7 +141,7 @@ const SatuanModal: React.FC<SatuanModalProps> = ({
                   className="w-full pl-8 pr-2 py-2 bg-white dark:bg-slate-800 border border-gray-400 dark:border-slate-700 text-sm font-mono focus:border-cighra-primary dark:focus:border-cighra-gold outline-none"
                 />
               </div>
-              {errors.longitude && <p className="text-red-500 text-[9px] mt-1 font-mono uppercase">{errors.longitude}</p>}
+              {errors.longitude && <p className="text-red-500 text-[11px] mt-1 font-mono uppercase">{errors.longitude}</p>}
             </div>
           </div>
 

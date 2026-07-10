@@ -81,7 +81,7 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
                     </td>
                     <td className="p-4 text-center">
                       <div className="flex flex-col items-center gap-1.5">
-                        <span className={`text-[9px] font-mono font-bold px-2 py-0.5 w-fit border shadow-sm uppercase ${
+                        <span className={`text-[11px] font-mono font-bold px-2 py-0.5 w-fit border shadow-sm uppercase ${
                           report.kerusakan.urgensi === 'Sangat Mendesak'
                             ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-500 border-red-200 dark:border-red-800'
                             : report.kerusakan.urgensi === 'Bisa Menunggu'
@@ -90,7 +90,7 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
                         }`}>
                           {report.kerusakan.urgensi?.toUpperCase() || 'NORMAL'}
                         </span>
-                        <span className={`text-[9px] font-mono font-bold px-2 py-0.5 w-fit border shadow-sm uppercase ${
+                        <span className={`text-[11px] font-mono font-bold px-2 py-0.5 w-fit border shadow-sm uppercase ${
                           ['PARAH', 'BERAT'].includes(report.kerusakan.tingkatKerusakan?.toUpperCase() || '')
                             ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-500 border-red-200 dark:border-red-800'
                             : report.kerusakan.tingkatKerusakan?.toUpperCase() === 'SEDANG'
@@ -102,7 +102,7 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
                         <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                           {report.kerusakan.barangRusak}
                         </span>
-                        <span className={`text-[9px] font-mono font-bold px-2 py-0.5 w-fit border shadow-sm uppercase ${
+                        <span className={`text-[11px] font-mono font-bold px-2 py-0.5 w-fit border shadow-sm uppercase ${
                           report.kerusakan.jenisPerbaikan === 'Non-Swadaya'
                             ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800'
                             : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600'
@@ -144,13 +144,13 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
                             <div className="flex gap-2">
                               <button
                                 onClick={() => onVerify(report.db_id)}
-                                className="flex-1 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-2.5 py-1.5 text-[9px] font-tactical font-bold tracking-wider transition-colors flex items-center justify-center gap-1 border border-cighra-primary dark:border-cighra-gold shadow-sm"
+                                className="flex-1 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-2.5 py-1.5 text-[11px] font-tactical font-bold tracking-wider transition-colors flex items-center justify-center gap-1 border border-cighra-primary dark:border-cighra-gold shadow-sm"
                               >
                                 <CheckCircle className="w-3 h-3" /> SETUJUI
                               </button>
                               <button
                                 onClick={() => onReject(report.db_id)}
-                                className="flex-1 bg-red-600 hover:bg-red-500 text-white px-2.5 py-1.5 text-[9px] font-tactical font-bold tracking-wider transition-colors flex items-center justify-center gap-1 border border-red-600 shadow-sm"
+                                className="flex-1 bg-red-600 hover:bg-red-500 text-white px-2.5 py-1.5 text-[11px] font-tactical font-bold tracking-wider transition-colors flex items-center justify-center gap-1 border border-red-600 shadow-sm"
                               >
                                 <XCircle className="w-3 h-3" /> TOLAK
                               </button>
@@ -185,7 +185,7 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
 
                         {(report.status === 'DITERIMA TEKNISI' || report.status === 'DIPROSES') && (
                           <div className="text-slate-500 dark:text-slate-300 text-xs font-mono border border-slate-200 dark:border-slate-600 p-2 bg-slate-50 dark:bg-cighra-darkcard/80 rounded-sm">
-                            <span className="text-[9px] text-slate-400 block mb-1">TEKNISI DITUGASKAN:</span>
+                            <span className="text-[11px] text-slate-400 block mb-1">TEKNISI DITUGASKAN:</span>
                             <span className="text-blue-600 dark:text-blue-400 font-bold block text-xs uppercase">
                               {report.perbaikan.teknisi || 'Unknown'}
                             </span>
