@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Package, Upload, X, FileText } from 'lucide-react';
 import { BaseModal } from '@/Components/ui/BaseModal';
+import { Button } from '@/Components/ui/Button';
 
 interface StafUnitModalProps {
   isOpen: boolean;
@@ -60,14 +61,14 @@ const StafUnitModal: React.FC<StafUnitModalProps> = ({ isOpen, onClose, onSubmit
       headerColor="primary"
       footer={
         <div className="flex gap-3 w-full">
-          <button type="button" onClick={handleClose}
-            className="flex-1 py-2.5 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 font-tactical text-xs tracking-widest hover:bg-slate-50 dark:hover:bg-slate-800 transition-all rounded-sm">
+          <Button type="button" onClick={handleClose}
+             variant="secondary" className="flex-1 uppercase" size="lg">
             BATAL
-          </button>
-          <button type="submit" form="stafUnitForm" disabled={processing}
-            className="flex-1 py-2.5 bg-cighra-primary dark:bg-cighra-gold text-white dark:text-slate-900 font-tactical font-bold text-xs tracking-widest hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 transition-all disabled:opacity-50 rounded-sm">
+          </Button>
+          <Button type="submit" form="stafUnitForm" disabled={processing}
+             variant="primary" className="flex-[2] uppercase" size="lg">
             {processing ? 'MENGIRIM...' : 'AJUKAN PENAMBAHAN'}
-          </button>
+          </Button>
         </div>
       }
     >

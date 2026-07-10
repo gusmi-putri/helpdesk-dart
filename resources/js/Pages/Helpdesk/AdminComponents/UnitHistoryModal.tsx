@@ -1,7 +1,7 @@
 import React from 'react';
 import { History } from 'lucide-react';
 import { Badge } from '@/Components/ui/Badge';
-import { Modal } from '@/Components/ui/Modal';
+import { BaseModal } from '@/Components/ui/BaseModal';
 import { Button } from '@/Components/ui/Button';
 
 interface UnitHistoryModalProps {
@@ -17,12 +17,13 @@ const UnitHistoryModal: React.FC<UnitHistoryModalProps> = ({ isOpen, onClose, un
   const unitHistory = dbCases.filter((c: any) => c.unit_id === unit.id || c.unit_id === unit.db_id);
 
   return (
-    <Modal
+    <BaseModal
       isOpen={isOpen}
       onClose={onClose}
       title={`RIWAYAT PERBAIKAN: ${unit.nomor_seri}`}
       icon={<History />}
       maxWidth="2xl"
+      headerColor="primary"
       footer={
         <div className="w-full flex justify-end">
           <Button variant="secondary" onClick={onClose} className="uppercase" size="md">
@@ -69,7 +70,7 @@ const UnitHistoryModal: React.FC<UnitHistoryModalProps> = ({ isOpen, onClose, un
           </div>
         )}
       </div>
-    </Modal>
+    </BaseModal>
   );
 };
 

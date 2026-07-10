@@ -1,6 +1,7 @@
 import React from 'react';
 import { Activity, Wrench, Wallet, FileText } from 'lucide-react';
 import { BaseModal } from '@/Components/ui/BaseModal';
+import { Button } from '@/Components/ui/Button';
 
 interface ReportDetailModalProps {
   isOpen: boolean;
@@ -21,12 +22,12 @@ const ReportDetailModal: React.FC<ReportDetailModalProps> = ({ isOpen, onClose, 
       headerColor="primary"
       footer={
         <div className="flex justify-end w-full">
-          <button
+          <Button
             onClick={onClose}
-            className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white px-8 py-2 font-tactical font-bold tracking-widest hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 transition-colors uppercase rounded-sm"
-          >
+            
+           variant="primary" className="flex-[2] uppercase" size="lg">
             Tutup Rincian
-          </button>
+          </Button>
         </div>
       }
     >

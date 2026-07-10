@@ -1,6 +1,7 @@
 import React from 'react';
 import { Package } from 'lucide-react';
 import { BaseModal } from '@/Components/ui/BaseModal';
+import { Button } from '@/Components/ui/Button';
 
 interface UnitModalProps {
   isOpen: boolean;
@@ -39,21 +40,21 @@ const UnitModal: React.FC<UnitModalProps> = ({
       headerColor="primary"
       footer={
         <div className="flex gap-4 w-full">
-          <button
+          <Button
             type="submit"
             form="unitForm"
             disabled={processing}
-            className="flex-[2] bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white p-3.5 font-tactical font-bold tracking-widest hover:brightness-110 active:scale-[0.98] transition-all disabled:opacity-50 shadow-lg rounded-sm"
-          >
+            
+           variant="primary" className="flex-[2] uppercase" size="lg">
             {processing ? 'MEMPROSES...' : (isAddMode ? 'TAMBAHKAN UNIT' : 'SIMPAN PERUBAHAN')}
-          </button>
-          <button 
+          </Button>
+          <Button 
             type="button" 
             onClick={onClose} 
-            className="flex-1 bg-transparent border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 p-3.5 font-tactical font-bold tracking-widest hover:bg-slate-100 dark:hover:bg-slate-800 transition-all uppercase rounded-sm"
-          >
+            
+           variant="secondary" className="flex-1 uppercase" size="lg">
             BATAL
-          </button>
+          </Button>
         </div>
       }
     >
