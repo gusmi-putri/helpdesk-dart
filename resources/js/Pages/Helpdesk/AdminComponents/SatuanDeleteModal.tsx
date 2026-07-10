@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { AlertTriangle, Trash2 } from 'lucide-react';
 import { router } from '@inertiajs/react';
 import { useStore } from '@/store/useStore';
-import { Modal } from '@/Components/ui/Modal';
+import { BaseModal } from '@/Components/ui/BaseModal';
 import { Button } from '@/Components/ui/Button';
 
 interface SatuanDeleteModalProps {
@@ -42,12 +42,13 @@ const SatuanDeleteModal: React.FC<SatuanDeleteModalProps> = ({
   };
 
   return (
-    <Modal
+    <BaseModal
       isOpen={isOpen}
       onClose={onClose}
       title={isPengajuan ? 'AJUKAN PENGHAPUSAN' : 'KONFIRMASI PENGHAPUSAN'}
       icon={<AlertTriangle />}
       maxWidth="lg"
+      headerColor="danger"
       footer={
         <div className="flex gap-4 w-full">
           <Button 
@@ -79,7 +80,7 @@ const SatuanDeleteModal: React.FC<SatuanDeleteModalProps> = ({
             : <>PERINGATAN TINGKAT TINGGI: ANDA AKAN MENGHAPUS DATA SATUAN <span className="text-red-500 font-bold underline decoration-2 underline-offset-4">{satuan.nama_satuan}</span> SECARA PERMANEN DARI SISTEM OPERASIONAL DART.</>}
         </p>
       </div>
-    </Modal>
+    </BaseModal>
   );
 };
 

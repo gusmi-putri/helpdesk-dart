@@ -1,6 +1,6 @@
 import React from 'react';
 import { UserX } from 'lucide-react';
-import { Modal } from '@/Components/ui/Modal';
+import { BaseModal } from '@/Components/ui/BaseModal';
 import { Button } from '@/Components/ui/Button';
 
 interface RejectConfirmModalProps {
@@ -15,12 +15,13 @@ const RejectConfirmModal: React.FC<RejectConfirmModalProps> = ({ isOpen, onClose
   if (!isOpen) return null;
 
   return (
-    <Modal
+    <BaseModal
       isOpen={isOpen}
       onClose={onClose}
       title="KONFIRMASI PENOLAKAN AKSES"
       icon={<UserX />}
       maxWidth="lg"
+      headerColor="danger"
       footer={
         <div className="flex gap-4 w-full">
           <Button variant="danger" onClick={onConfirm} className="flex-[2] uppercase" size="lg">
@@ -50,7 +51,7 @@ const RejectConfirmModal: React.FC<RejectConfirmModalProps> = ({ isOpen, onClose
           )}
         </p>
       </div>
-    </Modal>
+    </BaseModal>
   );
 };
 

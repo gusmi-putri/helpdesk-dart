@@ -1,6 +1,6 @@
 import React from 'react';
 import { Building2, MapPin, FileText } from 'lucide-react';
-import { Modal } from '@/Components/ui/Modal';
+import { BaseModal } from '@/Components/ui/BaseModal';
 import { Button } from '@/Components/ui/Button';
 
 interface SatuanDetailModalProps {
@@ -33,12 +33,13 @@ const SatuanDetailModal: React.FC<SatuanDetailModalProps> = ({
   const pendingCases = satuanCases.filter(c => c.status !== 'SELESAI' && c.status !== 'DITOLAK');
 
   return (
-    <Modal
+    <BaseModal
       isOpen={isOpen}
       onClose={onClose}
       title="DETAIL INFORMASI SATUAN"
       icon={<Building2 />}
       maxWidth="2xl"
+      headerColor="primary"
       footer={
         <div className="w-full flex justify-end">
           <Button variant="secondary" onClick={onClose} className="uppercase" size="lg">
@@ -117,7 +118,7 @@ const SatuanDetailModal: React.FC<SatuanDetailModalProps> = ({
            </div>
         </div>
       </div>
-    </Modal>
+    </BaseModal>
   );
 };
 

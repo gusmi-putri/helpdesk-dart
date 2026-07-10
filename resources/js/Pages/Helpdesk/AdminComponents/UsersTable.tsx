@@ -3,7 +3,7 @@ import { Users, Search, Plus, Eye, Edit, Trash2, Power } from 'lucide-react';
 import { EmptyState } from '@/Components/ui/EmptyState';
 import { useTableSort } from '@/hooks/useTableSort';
 import SortableHeader from '@/Components/Table/SortableHeader';
-import { Modal } from '@/Components/ui/Modal';
+import { BaseModal } from '@/Components/ui/BaseModal';
 import { Button } from '@/Components/ui/Button';
 import { AlertTriangle } from 'lucide-react';
 import { router, useForm } from '@inertiajs/react';
@@ -324,7 +324,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
         itemsPerPage={itemsPerPage}
       />
     </div>
-      <Modal
+      <BaseModal
         isOpen={!!warningUser}
         onClose={() => setWarningUser(null)}
         title="TIDAK DAPAT MENGHAPUS PERSONEL"
@@ -346,7 +346,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
             </p>
           </div>
         </div>
-      </Modal>
+      </BaseModal>
 
       {/* Embedded Modals */}
       <UserDetailModal
@@ -378,15 +378,16 @@ const UsersTable: React.FC<UsersTableProps> = ({
         dbRoles={dbRoles || []}
         dbSatuans={dbSatuans || []}
         isPengajuan={isPengajuan}
-        submitDisabled={!isAddMode && (
-          data.nama_lengkap === editingUser?.name &&
-          data.email === (editingUser?.email || '') &&
-          data.nrp_nip === (editingUser?.nrp_nip || '') &&
-          data.role_id === (editingUser?.role_id || '') &&
-          data.satuan_id === (editingUser?.satuan_id || '') &&
-          data.asal_satuan === (editingUser?.asal_satuan || '') &&
-          data.no_wa === (editingUser?.no_wa || '') &&
-          data.spesialisasi === (editingUser?.spesialisasi || '')
+        submitDisabled={!isAddMode && editingUser && !(
+          data.nama_lengkap !== editingUser.name ||
+          data.email !== editingUser.email ||
+          data.nrp_nip !== (editingUser.nrp_nip || '') ||
+          data.role_id !== (editingUser.role_id || '') ||
+          data.satuan_id !== (editingUser.satuan_id || '') ||
+          data.asal_satuan !== (editingUser.asal_satuan || '') ||
+          data.no_wa !== (editingUser.no_wa || '') ||
+          data.spesialisasi !== (editingUser.spesialisasi || '') ||
+          data.password !== ''
         )}
       />
     </>
