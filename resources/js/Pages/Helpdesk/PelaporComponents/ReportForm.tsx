@@ -320,7 +320,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
                     setLocalErrors((prev: any) => ({ ...prev, keterangan_anggaran: null }));
                   }}
                   rows={4}
-                  className="w-full bg-cighra-light/50 dark:bg-cighra-darkcard/80 border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:border-cighra-gold transition-colors resize-none rounded-sm"
+                  className="w-full bg-cighra-light/50 dark:bg-cighra-darkcard/80 border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold focus:ring-2 focus:ring-cighra-primary/20 dark:focus:ring-cighra-gold/20 hover:border-cighra-primary/50 dark:hover:border-cighra-gold/50 transition-all duration-300 resize-none rounded-sm"
                   placeholder="Tuliskan nomor/rujukan perintah, sumber anggaran, dan keterangan bahwa dana perbaikan tersedia untuk Satkai terkait..."
                 />
                 {(errors.keterangan_anggaran || localErrors.keterangan_anggaran) && <p className="text-xs text-red-500 dark:text-cighra-gold mt-3 font-mono font-bold uppercase">{errors.keterangan_anggaran || localErrors.keterangan_anggaran}</p>}
@@ -404,7 +404,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
         <div className="glass-panel p-6 border-l-4 border-l-olive bg-white dark:bg-cighra-darkcard/80 shadow-xl border border-slate-200 dark:border-slate-600">
           <label className="block text-xs font-bold text-slate-500 dark:text-slate-300 mb-2 uppercase tracking-wider">Deskripsi Kerusakan <span className="text-cighra-primary dark:text-cighra-gold">*</span></label>
           <textarea value={data.deskripsi} onChange={(e) => setData('deskripsi', e.target.value)} required rows={5}
-            className="w-full bg-cighra-light/50 dark:bg-cighra-darkcard/80 border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:border-cighra-gold transition-colors resize-none rounded-sm"
+            className="w-full bg-cighra-light/50 dark:bg-cighra-darkcard/80 border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold focus:ring-2 focus:ring-cighra-primary/20 dark:focus:ring-cighra-gold/20 hover:border-cighra-primary/50 dark:hover:border-cighra-gold/50 transition-all duration-300 resize-none rounded-sm"
             placeholder="Jelaskan secara detail kondisi kerusakan, kronologi kejadian, dan gejala yang dialami..." />
           {errors.deskripsi && <p className="text-[11px] text-cighra-primary dark:text-cighra-gold mt-1 font-mono uppercase">{errors.deskripsi}</p>}
         </div>
@@ -413,7 +413,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
           className="w-full bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white font-tactical font-bold py-4 tracking-[0.3em] transition-all flex items-center justify-center gap-3 group relative overflow-hidden disabled:opacity-50 shadow-lg rounded-sm uppercase">
           <span className="absolute inset-0 bg-white/10 -translate-x-full group-hover:animate-[shimmer_2s_infinite]"></span>
           <Send size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-          {processing ? 'MENGIRIM LAPORAN...' : 'Kirim Laporan Sekarang'}
+          {processing ? 'MENGIRIM LAPORAN...' : 'KIRIM LAPORAN SEKARANG'}
         </button>
           </>
         )}
@@ -421,7 +421,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
 
       {/* Confirmation Modal */}
       {isConfirmOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50" onClick={() => setIsConfirmOpen(false)}>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[9999]" onClick={() => setIsConfirmOpen(false)}>
           <div className="bg-white dark:bg-cighra-dark border border-cighra-primary dark:border-cighra-gold/30 shadow-2xl max-w-lg w-full mx-4 rounded-sm overflow-hidden" onClick={(e) => e.stopPropagation()}>
             <div className="p-4 bg-cighra-primary/10 dark:bg-cighra-gold/10 border-b border-cighra-primary dark:border-cighra-gold/20 flex items-center justify-between">
               <h3 className="font-tactical font-bold tracking-widest text-sm flex items-center gap-2 text-slate-800 dark:text-white uppercase">

@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import React, { useState } from 'react';
 import { ShieldAlert, XCircle } from 'lucide-react';
 
@@ -20,7 +21,7 @@ const ReportRejectModal: React.FC<ReportRejectModalProps> = ({ isOpen, onClose, 
     setReason('');
   };
 
-  return (
+  const modalContent = (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/85 backdrop-blur-md p-4 animate-in fade-in duration-200">
       <div className="bg-cighra-light dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-200">
         <div className="p-4 border-b border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/10 flex justify-between items-center">
@@ -74,6 +75,9 @@ const ReportRejectModal: React.FC<ReportRejectModalProps> = ({ isOpen, onClose, 
       </div>
     </div>
   );
+
+  if (typeof document === 'undefined') return null;
+  return createPortal(modalContent, document.body);
 };
 
 export default ReportRejectModal;

@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import React, { useState } from 'react';
 import { Trash2, Upload, X, FileText, AlertTriangle } from 'lucide-react';
 
@@ -28,7 +29,7 @@ const RequestDeleteModal: React.FC<RequestDeleteModalProps> = ({ isOpen, onClose
     onClose();
   };
 
-  return (
+  const modalContent = (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
       <div className="bg-cighra-light dark:bg-cighra-dark border-2 border-red-600 w-full max-w-lg shadow-2xl animate-in zoom-in-95 duration-200">
         <div className="p-4 border-b border-red-600 bg-red-900/10 flex justify-between items-center">
@@ -97,6 +98,9 @@ const RequestDeleteModal: React.FC<RequestDeleteModalProps> = ({ isOpen, onClose
       </div>
     </div>
   );
+
+  if (typeof document === 'undefined') return null;
+  return createPortal(modalContent, document.body);
 };
 
 export default RequestDeleteModal;

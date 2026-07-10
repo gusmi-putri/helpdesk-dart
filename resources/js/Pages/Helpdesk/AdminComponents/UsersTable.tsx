@@ -128,6 +128,24 @@ const UsersTable: React.FC<UsersTableProps> = ({
         },
       });
     } else {
+      // Check if data changed
+      const hasChanged = data.nama_lengkap !== editingUser.name ||
+        data.email !== editingUser.email ||
+        data.nrp_nip !== (editingUser.nrp_nip || '') ||
+        data.role_id !== (editingUser.role_id || '') ||
+        data.satuan_id !== (editingUser.satuan_id || '') ||
+        data.asal_satuan !== (editingUser.asal_satuan || '') ||
+        data.no_wa !== (editingUser.no_wa || '') ||
+        data.spesialisasi !== (editingUser.spesialisasi || '');
+        
+      if (!hasChanged) {
+        setIsEditModalOpen(false);
+        if (isPengajuan) {
+          addNotification('Tidak ada perubahan', 'info');
+        }
+        return;
+      }
+
       put(`/users/${editingUser.db_id}`, {
         onSuccess: () => {
           setIsEditModalOpen(false);
@@ -197,7 +215,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
           </div>
         </div>
       </div>
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto custom-scrollbar pb-2">
         <table className="w-full text-left font-sans text-sm">
           <thead className="bg-slate-800 border-b border-slate-700">
             <tr>
@@ -213,8 +231,12 @@ const UsersTable: React.FC<UsersTableProps> = ({
           <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50 bg-white dark:bg-transparent">
             {paginatedItems.length === 0 ? (
               <tr>
-                <td colSpan={7} className="p-8 text-center text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest">
-                  {userSearch ? 'Tidak ditemukan personel yang cocok.' : 'Belum ada data personel.'}
+                <td colSpan={7} className="p-8">
+                  <EmptyState 
+                    icon={<Users className="w-16 h-16 opacity-50" />}
+                    title={userSearch ? 'PENCARIAN TIDAK DITEMUKAN' : 'DATA KOSONG'}
+                    description={userSearch ? 'Tidak ditemukan personel yang cocok dengan kata kunci pencarian Anda.' : 'Belum ada data personel yang terdaftar di sistem.'}
+                  />
                 </td>
               </tr>
             ) : paginatedItems.map((u: any) => (
@@ -343,7 +365,10 @@ const UsersTable: React.FC<UsersTableProps> = ({
 
       <UserEditModal
         isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          reset();
+        }}
         onSubmit={handleSaveUser}
         data={data}
         setData={setData}
@@ -353,6 +378,16 @@ const UsersTable: React.FC<UsersTableProps> = ({
         dbRoles={dbRoles || []}
         dbSatuans={dbSatuans || []}
         isPengajuan={isPengajuan}
+        submitDisabled={!isAddMode && (
+          data.nama_lengkap === editingUser?.name &&
+          data.email === (editingUser?.email || '') &&
+          data.nrp_nip === (editingUser?.nrp_nip || '') &&
+          data.role_id === (editingUser?.role_id || '') &&
+          data.satuan_id === (editingUser?.satuan_id || '') &&
+          data.asal_satuan === (editingUser?.asal_satuan || '') &&
+          data.no_wa === (editingUser?.no_wa || '') &&
+          data.spesialisasi === (editingUser?.spesialisasi || '')
+        )}
       />
     </>
   );

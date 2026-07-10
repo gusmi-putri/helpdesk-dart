@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -69,10 +70,10 @@ export const BaseModal: React.FC<BaseModalProps> = ({
     danger: 'text-slate-500 hover:text-white hover:bg-red-600 dark:text-slate-400 dark:hover:text-white dark:hover:bg-red-600'
   };
 
-  return (
+  const modalContent = (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 px-6 overflow-y-auto">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 px-6 overflow-y-auto">
           {/* Backdrop (Click to close) */}
           <motion.div 
             initial={{ opacity: 0 }}
@@ -113,7 +114,7 @@ export const BaseModal: React.FC<BaseModalProps> = ({
             </div>
 
             {/* Content (Scrollable) */}
-            <div className="overflow-y-auto custom-scrollbar flex-1">
+            <div className="overflow-y-auto custom-scrollbar flex-1 min-h-0">
               {children}
             </div>
 
@@ -128,4 +129,7 @@ export const BaseModal: React.FC<BaseModalProps> = ({
       )}
     </AnimatePresence>
   );
+
+  if (typeof document === 'undefined') return null;
+  return createPortal(modalContent, document.body);
 };

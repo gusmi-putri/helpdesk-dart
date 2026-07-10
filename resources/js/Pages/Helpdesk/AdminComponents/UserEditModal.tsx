@@ -14,6 +14,7 @@ interface UserEditModalProps {
   dbRoles: any[];
   dbSatuans?: any[];
   isPengajuan?: boolean;
+  submitDisabled?: boolean;
 }
 
 const UserEditModal: React.FC<UserEditModalProps> = ({
@@ -27,7 +28,8 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
   isAddMode,
   dbRoles,
   dbSatuans,
-  isPengajuan
+  isPengajuan,
+  submitDisabled
 }) => {
   const [waWarning, setWaWarning] = useState('');
 
@@ -73,8 +75,8 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
           <button
             type="submit"
             form="userEditForm"
-            disabled={processing}
-            className="flex-[2] bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white p-3.5 font-tactical font-bold tracking-widest hover:brightness-110 active:scale-[0.98] transition-all disabled:opacity-50 shadow-lg rounded-sm"
+            disabled={processing || submitDisabled}
+            className="flex-[2] bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white p-3.5 font-tactical font-bold tracking-widest hover:brightness-110 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg rounded-sm"
           >
             {processing ? 'MEMPROSES...' : isPengajuan ? (isAddMode ? 'AJUKAN PENDAFTARAN' : 'AJUKAN PERUBAHAN') : (isAddMode ? 'DAFTARKAN PERSONEL' : 'SIMPAN PERUBAHAN')}
           </button>

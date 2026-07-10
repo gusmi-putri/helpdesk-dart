@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import React, { useState } from 'react';
 import { Package, Upload, X, FileText, Download } from 'lucide-react';
 
@@ -72,7 +73,7 @@ const StafUnitBatchModal: React.FC<StafUnitBatchModalProps> = ({ isOpen, onClose
     window.document.body.removeChild(link);
   };
 
-  return (
+  const modalContent = (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
       <div className="bg-cighra-light dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full max-w-lg shadow-2xl animate-in zoom-in-95 duration-200 overflow-hidden flex flex-col max-h-[90vh]">
         <div className="p-4 border-b border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/10 flex justify-between items-center shrink-0">
@@ -167,6 +168,9 @@ const StafUnitBatchModal: React.FC<StafUnitBatchModalProps> = ({ isOpen, onClose
       </div>
     </div>
   );
+
+  if (typeof document === 'undefined') return null;
+  return createPortal(modalContent, document.body);
 };
 
 export default StafUnitBatchModal;

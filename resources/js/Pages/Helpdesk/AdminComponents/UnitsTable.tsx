@@ -466,7 +466,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
       </div>
       {/* Import Result Modal */}
       {importResult && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50" onClick={() => setImportResult(null)}>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[9999]" onClick={() => setImportResult(null)}>
           <div className="bg-white dark:bg-cighra-dark border border-slate-300 dark:border-slate-600 shadow-2xl max-w-md w-full mx-4 rounded-sm overflow-hidden" onClick={(e) => e.stopPropagation()}>
             <div className={`p-4 flex items-center justify-between ${importResult.success ? 'bg-camogreen/10 border-b border-camogreen/20' : 'bg-cighra-primary/10 dark:bg-cighra-gold/10 border-b border-cighra-primary dark:border-cighra-gold/20'}`}>
               <h3 className="font-tactical font-bold tracking-widest text-sm flex items-center gap-2 text-slate-800 dark:text-white uppercase">
