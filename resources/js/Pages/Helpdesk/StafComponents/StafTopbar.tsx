@@ -24,6 +24,10 @@ const StafTopbar: React.FC<StafTopbarProps> = ({ setIsMobileMenuOpen, currentUse
     <>
     <header className="h-16 border-b border-slate-200 dark:border-slate-600 bg-cighra-primary text-white dark:bg-cighra-darkcard/60 backdrop-blur-md flex items-center justify-between px-4 md:px-8 flex-shrink-0 z-50 relative">
       <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 mr-4">
+          <img src="/logo.png" alt="DART Logo" className="w-8 h-10 object-contain drop-shadow-[0_0_8px_rgba(255,215,0,0.5)]" />
+          <h1 className="font-stencil text-xl tracking-widest text-white hidden sm:block leading-none mt-1">SISFO DART</h1>
+        </div>
         <button
           onClick={() => setIsMobileMenuOpen(true)}
           aria-label="Buka menu navigasi"
