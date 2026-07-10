@@ -1,5 +1,6 @@
 import React from 'react';
 import { FileArchive, Download, X, CalendarDays, CalendarRange } from 'lucide-react';
+import { BaseModal } from '@/Components/ui/BaseModal';
 
 interface StafRecapModalProps {
   isOpen: boolean;
@@ -31,18 +32,31 @@ const StafRecapModal: React.FC<StafRecapModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="bg-white dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-600 w-full max-w-2xl shadow-2xl rounded-sm animate-in zoom-in-95 duration-200 overflow-hidden flex flex-col max-h-[90vh]">
-        <div className="p-5 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-black/20 flex justify-between items-center border-t-4 border-t-cighra-primary dark:border-t-cighra-gold">
-          <h3 className="font-tactical font-bold text-slate-800 dark:text-white tracking-widest uppercase flex items-center gap-3 text-lg">
-            <FileArchive className="w-5 h-5 text-cighra-primary dark:text-cighra-gold" /> CETAK REKAPITULASI
-          </h3>
-          <button onClick={onClose} className="text-slate-400 hover:text-cighra-primary dark:hover:text-cighra-gold transition-colors p-1">
-            <X className="w-5 h-5" />
+    <BaseModal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="CETAK REKAPITULASI"
+      icon={<FileArchive />}
+      maxWidth="2xl"
+      headerColor="primary"
+      footer={
+        <div className="flex justify-end gap-3 w-full">
+          <button
+            onClick={onClose}
+            className="px-6 py-2.5 text-xs font-tactical font-bold tracking-widest border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-black/40 transition-colors uppercase rounded-sm"
+          >
+            Batal
+          </button>
+          <button
+            onClick={onExport}
+            className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-8 py-2.5 text-xs font-tactical font-bold tracking-widest transition-colors flex items-center gap-2 uppercase rounded-sm shadow-md"
+          >
+            <Download className="w-4 h-4" /> CETAK PDF
           </button>
         </div>
-        
-        <div className="p-6 md:p-8 overflow-y-auto custom-scrollbar flex-1 space-y-6">
+      }
+    >
+      <div className="p-6 md:p-8 space-y-6">
           <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-800/50 p-4 border-l-4 border-olive rounded-r-sm shadow-sm">
             Pilih periode laporan untuk dicetak ke format PDF (Landscape). Laporan ini mencakup seluruh data inventaris, teknisi pelaksana, dan status penyelesaian perbaikan.
           </p>
@@ -66,7 +80,7 @@ const StafRecapModal: React.FC<StafRecapModalProps> = ({
                   <p className={`text-sm font-bold uppercase tracking-widest ${recapPeriod === period ? 'text-cighra-primary dark:text-cighra-gold' : 'text-slate-700 dark:text-slate-300'}`}>
                     {period === 'weekly' ? 'Mingguan' : period === 'monthly' ? 'Bulanan' : 'Tahunan'}
                   </p>
-                  <p className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-1">S/D Hari Ini</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-1">S/D Hari Ini</p>
                 </button>
               ))}
             </div>
@@ -88,7 +102,7 @@ const StafRecapModal: React.FC<StafRecapModalProps> = ({
                   <CalendarRange size={16} className={recapPeriod === 'custom' ? 'text-cighra-primary dark:text-cighra-gold' : 'text-slate-400'} />
                   <p className={`text-sm font-bold uppercase tracking-widest ${recapPeriod === 'custom' ? 'text-cighra-primary dark:text-cighra-gold' : 'text-slate-700 dark:text-slate-300'}`}>Rentang Khusus</p>
                 </div>
-                <p className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider">Atur Tanggal Awal - Akhir</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider">Atur Tanggal Awal - Akhir</p>
               </button>
 
               <button
@@ -106,7 +120,7 @@ const StafRecapModal: React.FC<StafRecapModalProps> = ({
                   <CalendarDays size={16} className={recapPeriod === 'year_specific' ? 'text-cighra-primary dark:text-cighra-gold' : 'text-slate-400'} />
                   <p className={`text-sm font-bold uppercase tracking-widest ${recapPeriod === 'year_specific' ? 'text-cighra-primary dark:text-cighra-gold' : 'text-slate-700 dark:text-slate-300'}`}>Tahun Tertentu</p>
                 </div>
-                <p className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider">Pilih Satu Tahun Penuh</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider">Pilih Satu Tahun Penuh</p>
               </button>
             </div>
 
@@ -115,7 +129,7 @@ const StafRecapModal: React.FC<StafRecapModalProps> = ({
               {recapPeriod === 'custom' && (
                 <div className="grid grid-cols-2 gap-4 p-5 bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-slate-600 rounded-sm animate-in slide-in-from-top-2">
                   <div>
-                    <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Mulai Tanggal</label>
+                    <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Mulai Tanggal</label>
                     <input 
                       type="date" 
                       value={recapStartDate}
@@ -124,7 +138,7 @@ const StafRecapModal: React.FC<StafRecapModalProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Sampai Tanggal</label>
+                    <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Sampai Tanggal</label>
                     <input 
                       type="date" 
                       value={recapEndDate}
@@ -137,7 +151,7 @@ const StafRecapModal: React.FC<StafRecapModalProps> = ({
 
               {recapPeriod === 'year_specific' && (
                 <div className="p-5 bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-slate-600 rounded-sm animate-in slide-in-from-top-2">
-                  <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Pilih Tahun Evaluasi</label>
+                  <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Pilih Tahun Evaluasi</label>
                   <select 
                     value={recapYear}
                     onChange={(e) => setRecapYear(e.target.value)}
@@ -152,23 +166,7 @@ const StafRecapModal: React.FC<StafRecapModalProps> = ({
             </div>
           </div>
         </div>
-          
-        <div className="p-5 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-black/20 flex justify-end gap-3 shrink-0">
-          <button
-            onClick={onClose}
-            className="px-6 py-2.5 text-xs font-tactical font-bold tracking-widest border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-black/40 transition-colors uppercase rounded-sm"
-          >
-            Batal
-          </button>
-          <button
-            onClick={onExport}
-            className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-8 py-2.5 text-xs font-tactical font-bold tracking-widest transition-colors flex items-center gap-2 uppercase rounded-sm shadow-md"
-          >
-            <Download className="w-4 h-4" /> CETAK PDF
-          </button>
-        </div>
-      </div>
-    </div>
+    </BaseModal>
   );
 };
 

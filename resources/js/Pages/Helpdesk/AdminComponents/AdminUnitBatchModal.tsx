@@ -79,9 +79,9 @@ const AdminUnitBatchModal: React.FC<AdminUnitBatchModalProps> = ({ isOpen, onClo
           <button onClick={handleClose} className="text-slate-400 hover:text-red-500 transition-colors text-xl">✕</button>
         </div>
 
-        <div className="overflow-y-auto custom-scrollbar p-8 space-y-8 flex-1">
+        <div className="overflow-y-auto custom-scrollbar p-8 space-y-8 flex-1 min-h-0">
           <div className="bg-blue-500/5 dark:bg-blue-900/10 border-l-4 border-blue-500 p-6 space-y-2">
-            <div className="text-[10px] font-mono text-blue-700 dark:text-blue-400 uppercase tracking-widest leading-relaxed space-y-1">
+            <div className="text-xs font-mono text-blue-700 dark:text-blue-400 uppercase tracking-widest leading-relaxed space-y-1">
               <span className="font-bold block mb-1">PROSEDUR OPERASIONAL:</span> 
               <p>1. UNDUH TEMPLATE STANDAR CSV DI BAWAH INI.</p>
               <p>2. KOLOM <span className="font-bold">jenis</span> HARUS BERNILAI: DART STD, DART STK, DART Portabel - Swing/Pop/Flip, DART Marathon Target, ATAU Moving Target.</p>
@@ -89,7 +89,7 @@ const AdminUnitBatchModal: React.FC<AdminUnitBatchModalProps> = ({ isOpen, onClo
               <p>4. KOLOM <span className="font-bold">asal_satuan</span> HARUS BERUPA NAMA SATUAN YANG SUDAH TERDAFTAR DI SISTEM (CONTOH: MAKOSTRAD, AKMIL). SATUAN YANG TIDAK TERDAFTAR AKAN DILEWATI.</p>
               <p>5. UNGGAH CSV DATA BESERTA 1 DOKUMEN SURAT PENDUKUNG (HASIL PEMERIKSAAN).</p>
             </div>
-            <button type="button" onClick={downloadTemplate} className="flex items-center gap-2 text-[10px] font-mono font-bold bg-blue-600 text-white dark:bg-blue-800 px-4 py-2 hover:bg-blue-700 transition-all cursor-pointer shadow-lg">
+            <button type="button" onClick={downloadTemplate} className="flex items-center gap-2 text-xs font-mono font-bold bg-blue-600 text-white dark:bg-blue-800 px-4 py-2 hover:bg-blue-700 transition-all cursor-pointer shadow-lg">
               <Download size={14} /> UNDUH TEMPLATE CSV
             </button>
           </div>
@@ -97,7 +97,7 @@ const AdminUnitBatchModal: React.FC<AdminUnitBatchModalProps> = ({ isOpen, onClo
           <form id="adminBatchForm" onSubmit={handleSubmit} className="space-y-8 mt-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-3">
-                    <label className="block text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">DATA UNIT (CSV ONLY) *</label>
+                    <label className="block text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">DATA UNIT (CSV ONLY) *</label>
                     <div className="relative h-48">
                         {csvFile ? (
                         <div className="h-full flex flex-col items-center justify-center gap-3 bg-cighra-primary/5 dark:bg-cighra-gold/5 border border-cighra-primary dark:border-cighra-gold p-4 relative">
@@ -110,7 +110,7 @@ const AdminUnitBatchModal: React.FC<AdminUnitBatchModalProps> = ({ isOpen, onClo
                         ) : (
                         <label className="h-full flex flex-col items-center justify-center gap-2 bg-slate-50 dark:bg-cighra-darkcard border-2 border-dashed border-slate-300 dark:border-slate-800 p-6 cursor-pointer hover:border-cighra-primary dark:hover:border-cighra-gold transition-all group">
                             <Upload className="w-8 h-8 text-slate-400 group-hover:text-cighra-gold transition-colors" />
-                            <span className="text-[10px] font-mono text-slate-500 text-center uppercase tracking-widest">PILIH / SERET CSV</span>
+                            <span className="text-xs font-mono text-slate-500 text-center uppercase tracking-widest">PILIH / SERET CSV</span>
                             <input type="file" accept=".csv" className="hidden" required onChange={(e) => e.target.files?.[0] && setCsvFile(e.target.files[0])} />
                         </label>
                         )}
@@ -118,7 +118,7 @@ const AdminUnitBatchModal: React.FC<AdminUnitBatchModalProps> = ({ isOpen, onClo
                 </div>
 
                 <div className="space-y-3">
-                    <label className="block text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">LAMPIRAN PENDUKUNG (PDF/IMG) *</label>
+                    <label className="block text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">LAMPIRAN PENDUKUNG (PDF/IMG) *</label>
                     <div className="relative h-48">
                         {document ? (
                         <div className="h-full flex flex-col items-center justify-center gap-3 bg-green-500/5 dark:bg-green-900/10 border border-green-500 p-4 relative">
@@ -131,7 +131,7 @@ const AdminUnitBatchModal: React.FC<AdminUnitBatchModalProps> = ({ isOpen, onClo
                         ) : (
                         <label className="h-full flex flex-col items-center justify-center gap-2 bg-slate-50 dark:bg-cighra-darkcard border-2 border-dashed border-slate-300 dark:border-slate-800 p-6 cursor-pointer hover:border-cighra-primary dark:hover:border-cighra-gold transition-all group">
                             <Upload className="w-8 h-8 text-slate-400 group-hover:text-cighra-gold transition-colors" />
-                            <span className="text-[10px] font-mono text-slate-500 text-center uppercase tracking-widest">PILIH LAMPIRAN</span>
+                            <span className="text-xs font-mono text-slate-500 text-center uppercase tracking-widest">PILIH LAMPIRAN</span>
                             <input type="file" accept=".pdf,.png,.jpg,.jpeg" required className="hidden" onChange={(e) => e.target.files?.[0] && setDocument(e.target.files[0])} />
                         </label>
                         )}
@@ -142,7 +142,7 @@ const AdminUnitBatchModal: React.FC<AdminUnitBatchModalProps> = ({ isOpen, onClo
 
           <div className="pt-4 flex gap-4">
             <button type="button" onClick={handleClose}
-              className="flex-1 py-4 border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 font-tactical font-bold tracking-[0.2em] hover:bg-slate-50 dark:hover:bg-slate-800 transition-all uppercase">
+              className="flex-1 min-h-0 py-4 border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 font-tactical font-bold tracking-[0.2em] hover:bg-slate-50 dark:hover:bg-slate-800 transition-all uppercase">
               BATAL
             </button>
             <button type="submit" form="adminBatchForm" disabled={processing || !csvFile || !document}

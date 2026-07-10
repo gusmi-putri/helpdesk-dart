@@ -202,7 +202,7 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
                                     >
                                         <div className="flex flex-col gap-0.5">
                                             <span className="text-[11px] font-bold font-tactical tracking-widest uppercase text-slate-800 dark:text-cighra-gold">{group.name}</span>
-                                            <span className="text-[9px] text-slate-500 dark:text-slate-400 font-mono tracking-tighter">OPERATIONAL ASSETS: {group.units.length} UNITS</span>
+                                            <span className="text-[11px] text-slate-500 dark:text-slate-400 font-mono tracking-tighter">OPERATIONAL ASSETS: {group.units.length} UNITS</span>
                                         </div>
                                         {!group.coords ? (
                                             <span className="text-[8px] font-mono text-red-500 bg-red-500/10 px-1 border border-red-500/20">NO COORDS</span>
@@ -212,7 +212,7 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
                                     </button>
                                 ))
                             ) : (
-                                <div className="p-4 text-center text-[10px] font-mono text-slate-500 italic">
+                                <div className="p-4 text-center text-xs font-mono text-slate-500 italic">
                                     DATA TIDAK DITEMUKAN
                                 </div>
                             )}
@@ -279,14 +279,14 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
                                                 <div className="flex justify-between items-start mb-1">
                                                     <div className="flex flex-col">
                                                         <span className="font-bold text-xs text-slate-800 dark:text-slate-200">{unit.nomor_seri}</span>
-                                                        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono mt-0.5 flex items-center gap-1">
+                                                        <span className="text-xs text-slate-500 dark:text-slate-400 font-mono mt-0.5 flex items-center gap-1">
                                                             <Target size={10} className="text-cighra-gold" /> {unit.jenis || 'DART'}
                                                         </span>
                                                     </div>
                                                     {hasCase ? (
-                                                        <span className="bg-orange-500/20 text-orange-600 dark:text-orange-500 px-1.5 py-0.5 rounded text-[9px] font-bold border border-orange-500/30">RUSAK</span>
+                                                        <span className="bg-orange-500/20 text-orange-600 dark:text-orange-500 px-1.5 py-0.5 rounded text-[11px] font-bold border border-orange-500/30">RUSAK</span>
                                                     ) : (
-                                                        <span className="bg-green-500/20 text-green-600 dark:text-green-500 px-1.5 py-0.5 rounded text-[9px] font-bold border border-green-500/30">BEROPERASI</span>
+                                                        <span className="bg-green-500/20 text-green-600 dark:text-green-500 px-1.5 py-0.5 rounded text-[11px] font-bold border border-green-500/30">BEROPERASI</span>
                                                     )}
                                                 </div>
                                             </div>
@@ -295,7 +295,7 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
                                 </div>
                                 
                                 <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700 shrink-0">
-                                    <div className="text-[9px] text-slate-500 font-mono text-center">
+                                    <div className="text-[11px] text-slate-500 font-mono text-center">
                                         COORD: {selectedGroup.coords[0].toFixed(4)}, {selectedGroup.coords[1].toFixed(4)}
                                     </div>
                                 </div>
@@ -315,8 +315,8 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
                                                 {group.hasDamage ? <AlertTriangle size={14} className="text-orange-500" /> : <Shield size={14} className="text-green-500" />}
                                             </div>
                                             <div className="flex justify-between items-center">
-                                                <span className="text-[10px] text-slate-500 uppercase">{group.units.length} Unit</span>
-                                                <span className={`text-[10px] font-bold ${!group.coords ? 'text-slate-400' : (group.hasDamage ? 'text-orange-500' : 'text-green-500')}`}>
+                                                <span className="text-xs text-slate-500 uppercase">{group.units.length} Unit</span>
+                                                <span className={`text-xs font-bold ${!group.coords ? 'text-slate-400' : (group.hasDamage ? 'text-orange-500' : 'text-green-500')}`}>
                                                     {!group.coords ? 'TANPA KOORDINAT' : (group.hasDamage ? 'PERLU ATENSI' : 'NORMAL')}
                                                 </span>
                                             </div>
@@ -330,7 +330,7 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
 
                 {/* Map Container */}
                 <div className="lg:col-span-3 glass-panel p-2 h-[600px] overflow-hidden relative group">
-                    <div className="absolute top-4 right-4 z-[1000] bg-cighra-dark/80 backdrop-blur-md border border-cighra-gold/30 p-2 rounded-sm text-[10px] font-mono text-cighra-gold uppercase tracking-widest pointer-events-none">
+                    <div className="absolute top-4 right-4 z-[1000] bg-cighra-dark/80 backdrop-blur-md border border-cighra-gold/30 p-2 rounded-sm text-xs font-mono text-cighra-gold uppercase tracking-widest pointer-events-none">
                         Tactical View Enabled
                     </div>
                     
@@ -370,7 +370,7 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
                                         <Popup className="tactical-popup">
                                             <div className="p-1">
                                                 <div className="font-tactical font-bold text-xs border-b border-slate-200 pb-1 mb-1 uppercase">{group.name}</div>
-                                                <div className="text-[10px] font-mono">{group.units.length} UNIT BERTAHAN</div>
+                                                <div className="text-xs font-mono">{group.units.length} UNIT BERTAHAN</div>
                                             </div>
                                         </Popup>
                                     </Marker>
@@ -404,7 +404,7 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
                         </div>
                         <div className="p-8 flex flex-col md:flex-row gap-8">
                             <div className="flex-1 border-r border-slate-200 dark:border-slate-800 pr-8">
-                                <h4 className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest mb-4">DAFTAR SATUAN (PENDING GEO):</h4>
+                                <h4 className="text-xs font-mono font-bold text-slate-500 uppercase tracking-widest mb-4">DAFTAR SATUAN (PENDING GEO):</h4>
                                 <div className="space-y-3 max-h-[400px] overflow-y-auto custom-scrollbar pr-2">
                                     {pendingSatuans.map(s => (
                                         <div 
@@ -425,7 +425,7 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
                                             <h4 className="text-sm font-bold text-cighra-primary dark:text-cighra-gold truncate uppercase">Edit Data Satuan</h4>
                                             <button 
                                                 onClick={() => setShowDeleteConfirm(true)}
-                                                className="text-[10px] text-red-500 hover:underline font-mono"
+                                                className="text-xs text-red-500 hover:underline font-mono"
                                             >
                                                 HAPUS SATUAN
                                             </button>
@@ -435,18 +435,18 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
                                             <div className="bg-red-500/10 border border-red-500/50 p-4 rounded-sm animate-in zoom-in-95 duration-200">
                                                 <p className="text-xs text-red-600 dark:text-red-400 font-bold mb-3 uppercase tracking-tighter">
                                                     ANDA YAKIN INGIN MENGHAPUS SATUAN "{pendingSatuanEdit.nama_satuan}"? 
-                                                    <span className="block font-normal mt-1 opacity-70 italic text-[10px]">Tindakan ini tidak dapat dibatalkan.</span>
+                                                    <span className="block font-normal mt-1 opacity-70 italic text-xs">Tindakan ini tidak dapat dibatalkan.</span>
                                                 </p>
                                                 <div className="flex gap-2">
                                                     <button 
                                                         onClick={handleDeleteSatuan}
-                                                        className="flex-1 bg-red-600 text-white py-2 text-[10px] font-bold font-tactical tracking-widest uppercase hover:bg-red-700"
+                                                        className="flex-1 bg-red-600 text-white py-2 text-xs font-bold font-tactical tracking-widest uppercase hover:bg-red-700"
                                                     >
                                                         IYA, HAPUS SEKARANG
                                                     </button>
                                                     <button 
                                                         onClick={() => setShowDeleteConfirm(false)}
-                                                        className="px-4 py-2 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold"
+                                                        className="px-4 py-2 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold"
                                                     >
                                                         BATAL
                                                     </button>
@@ -455,7 +455,7 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
                                         ) : (
                                             <>
                                                 <div>
-                                                    <label className="block text-[10px] font-mono font-bold mb-1">NAMA SATUAN (Huruf Kapital)</label>
+                                                    <label className="block text-xs font-mono font-bold mb-1">NAMA SATUAN (Huruf Kapital)</label>
                                                     <input 
                                                         type="text" 
                                                         value={pendingSatuanEdit.nama_satuan} 
@@ -466,11 +466,11 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
 
                                                 <div className="grid grid-cols-2 gap-4">
                                                     <div>
-                                                        <label className="block text-[10px] font-mono font-bold mb-1">LATITUDE</label>
+                                                        <label className="block text-xs font-mono font-bold mb-1">LATITUDE</label>
                                                         <input type="number" step="0.000001" value={latInput} onChange={e => setLatInput(e.target.value)} placeholder="-6.2..." className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm font-mono" />
                                                     </div>
                                                     <div>
-                                                        <label className="block text-[10px] font-mono font-bold mb-1">LONGITUDE</label>
+                                                        <label className="block text-xs font-mono font-bold mb-1">LONGITUDE</label>
                                                         <input type="number" step="0.000001" value={lngInput} onChange={e => setLngInput(e.target.value)} placeholder="106.8..." className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm font-mono" />
                                                     </div>
                                                 </div>
@@ -482,7 +482,7 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
                                                     >
                                                         SIMPAN & VERIFIKASI SEKARANG
                                                     </button>
-                                                    <p className="text-[9px] text-center opacity-50 font-mono">Menyimpan akan membuat satuan ini muncul di pilihan pendaftaran.</p>
+                                                    <p className="text-[11px] text-center opacity-50 font-mono">Menyimpan akan membuat satuan ini muncul di pilihan pendaftaran.</p>
                                                 </div>
                                             </>
                                         )}

@@ -59,6 +59,10 @@ class ReportController extends Controller
     {
         $report = Report::findOrFail($id);
         
+        if (!in_array($report->status_laporan, ['Pending', 'Diverifikasi'])) {
+            return redirect()->back()->with('error', 'Laporan tidak dapat ditugaskan karena status saat ini: ' . $report->status_laporan);
+        }
+        
         $request->validate([
             'teknisi_id' => 'nullable|exists:users,id',
             'teknisi_username' => 'nullable|exists:users,username',
@@ -109,6 +113,10 @@ class ReportController extends Controller
             return redirect()->back()->with('error', 'Akses Ditolak: Anda tidak ditugaskan untuk laporan ini.');
         }
 
+        if ($report->status_laporan !== 'Diproses') {
+            return redirect()->back()->with('error', 'Tindakan Ditolak: Laporan belum diproses atau sudah selesai.');
+        }
+
         $request->validate([
             'catatan' => 'required|string',
             'metode' => 'required|in:Online,Offline',
@@ -140,6 +148,10 @@ class ReportController extends Controller
     public function verify($id)
     {
         $report = Report::findOrFail($id);
+        
+        if ($report->status_laporan !== 'Pending') {
+            return redirect()->back()->with('error', 'Hanya laporan Pending yang bisa diverifikasi.');
+        }
         $report->update(['status_laporan' => 'Diverifikasi']);
         $report->unit->syncStatus();
 
@@ -151,6 +163,10 @@ class ReportController extends Controller
     public function reject(Request $request, $id)
     {
         $report = Report::findOrFail($id);
+
+        if (in_array($report->status_laporan, ['Selesai', 'Ditolak'])) {
+            return redirect()->back()->with('error', 'Laporan sudah Selesai atau Ditolak dan tidak dapat ditolak lagi.');
+        }
         $request->validate([
             'alasan' => 'required|string',
         ]);
@@ -173,6 +189,10 @@ class ReportController extends Controller
             return redirect()->back()->with('error', 'Akses Ditolak: Anda tidak ditugaskan untuk laporan ini.');
         }
 
+        if ($report->status_laporan !== 'Diverifikasi') {
+            return redirect()->back()->with('error', 'Tindakan Ditolak: Status laporan tidak valid untuk diterima.');
+        }
+
         $report->update(['status_laporan' => 'Diterima Teknisi']);
         $report->unit->syncStatus();
 
@@ -187,6 +207,10 @@ class ReportController extends Controller
 
         if ($report->teknisi_id !== auth()->id()) {
             return redirect()->back()->with('error', 'Akses Ditolak: Anda tidak ditugaskan untuk laporan ini.');
+        }
+
+        if ($report->status_laporan !== 'Diterima Teknisi') {
+            return redirect()->back()->with('error', 'Tindakan Ditolak: Laporan belum diterima atau sudah mulai diproses.');
         }
 
         $report->update(['status_laporan' => 'Diproses']);

@@ -104,7 +104,7 @@ const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
         >
           <Users className="w-4 h-4" /> PERSONEL
           {pendingPersonelCount > 0 && (
-            <span className="bg-cighra-gold text-slate-900 font-bold text-[10px] px-1.5 py-0.5 rounded-full ml-1">{pendingPersonelCount}</span>
+            <span className="bg-cighra-gold text-slate-900 font-bold text-xs px-1.5 py-0.5 rounded-full ml-1">{pendingPersonelCount}</span>
           )}
         </button>
         <button
@@ -117,7 +117,7 @@ const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
         >
           <Package className="w-4 h-4" /> INVENTARIS
           {pendingMutationsCount > 0 && (
-            <span className="bg-cighra-gold text-slate-900 font-bold text-[10px] px-1.5 py-0.5 rounded-full ml-1">{pendingMutationsCount}</span>
+            <span className="bg-cighra-gold text-slate-900 font-bold text-xs px-1.5 py-0.5 rounded-full ml-1">{pendingMutationsCount}</span>
           )}
         </button>
         <button
@@ -130,7 +130,7 @@ const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
         >
           <MapPin className="w-4 h-4" /> SATUAN
           {pendingSatuansCount > 0 && (
-            <span className="bg-cighra-gold text-slate-900 font-bold text-[10px] px-1.5 py-0.5 rounded-full ml-1">{pendingSatuansCount}</span>
+            <span className="bg-cighra-gold text-slate-900 font-bold text-xs px-1.5 py-0.5 rounded-full ml-1">{pendingSatuansCount}</span>
           )}
         </button>
       </div>
@@ -169,7 +169,7 @@ const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
                   <tr key={satuan.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/60 transition-colors group text-slate-800 dark:text-slate-200">
                     <td className="p-4 text-center font-mono font-bold">{satuan.nama_satuan}</td>
                     <td className="p-4 text-center">
-                      <span className={`px-2 py-1 text-[10px] font-mono font-bold border rounded-sm uppercase ${
+                      <span className={`px-2 py-1 text-xs font-mono font-bold border rounded-sm uppercase ${
                         satuan.pending_action === 'create' ? 'bg-green-100 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800' :
                         satuan.pending_action === 'edit' ? 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800' :
                         'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800'
@@ -178,7 +178,7 @@ const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
                       </span>
                     </td>
                     <td className="p-4">
-                      <div className="text-[10px] font-mono text-slate-800 dark:text-white">
+                      <div className="text-xs font-mono text-slate-800 dark:text-white">
                         {satuan.pending_action === 'edit' && satuan.pending_changes ? (
                           <div className="whitespace-pre-wrap">{JSON.stringify(JSON.parse(satuan.pending_changes), null, 2)}</div>
                         ) : (
@@ -187,10 +187,10 @@ const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
                       </div>
                     </td>
                     <td className="p-4 flex gap-3 justify-center items-center h-full mt-2">
-                      <button onClick={() => handleApproveSatuan(satuan)} className="flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-4 py-2 text-[10px] font-tactical font-bold tracking-widest transition-all shadow-lg">
+                      <button onClick={() => handleApproveSatuan(satuan)} className="flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest transition-all shadow-lg">
                         <CheckSquare className="w-4 h-4" /> SETUJUI
                       </button>
-                      <button onClick={() => handleRejectSatuan(satuan)} className="flex items-center gap-2 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-4 py-2 text-[10px] font-tactical font-bold tracking-widest transition-all shadow-lg">
+                      <button onClick={() => handleRejectSatuan(satuan)} className="flex items-center gap-2 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest transition-all shadow-lg">
                         <CheckSquare className="w-4 h-4" /> TOLAK
                       </button>
                     </td>

@@ -84,7 +84,7 @@ class UnitController extends Controller
         $isAdmin = $user->role && $user->role->nama_role === 'Admin';
 
         if ($isAdmin) {
-            $unit->update($request->all());
+            $unit->update($request->validated());
             SystemLog::log('INFO', $user->id, "Memperbarui data unit DART secara langsung: {$unit->nomor_seri}");
             return redirect()->back()->with('message', 'Data unit DART telah diperbarui.');
         } else {

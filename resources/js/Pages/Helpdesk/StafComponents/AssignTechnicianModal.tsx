@@ -35,10 +35,10 @@ const AssignTechnicianModal: React.FC<AssignTechnicianModalProps> = ({
                   <span className="font-bold text-slate-800 dark:text-white text-lg uppercase">{tek.name}</span>
                   <span className="text-xs text-cighra-primary dark:text-cighra-gold font-mono uppercase tracking-widest mt-1">{tek.spesialisasi || 'GENERALIST'} | {tek.username}</span>
                   <div className="flex items-center gap-4 mt-2">
-                    <span className="text-[10px] font-mono bg-sand/40 dark:bg-soft-gunmetal/40 px-2 py-1 text-slate-600 dark:text-slate-300 uppercase">
+                    <span className="text-xs font-mono bg-sand/40 dark:bg-soft-gunmetal/40 px-2 py-1 text-slate-600 dark:text-slate-300 uppercase">
                       TOTAL DITERIMA: <span className="font-bold">{tek.tasksReceived || 0}</span>
                     </span>
-                    <span className="text-[10px] font-mono bg-blue-900/10 px-2 py-1 text-blue-700 dark:text-blue-400 uppercase">
+                    <span className="text-xs font-mono bg-blue-900/10 px-2 py-1 text-blue-700 dark:text-blue-400 uppercase">
                       SEDANG DIKERJAKAN: <span className="font-bold">{tek.tasksInProgress || 0}</span>
                     </span>
                   </div>

@@ -221,7 +221,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
               );
             })}
           </div>
-          {(errors.jenis_perbaikan || localErrors.jenis_perbaikan) && <p className="text-[10px] text-red-500 dark:text-cighra-gold mt-3 font-mono font-bold uppercase">{errors.jenis_perbaikan || localErrors.jenis_perbaikan}</p>}
+          {(errors.jenis_perbaikan || localErrors.jenis_perbaikan) && <p className="text-xs text-red-500 dark:text-cighra-gold mt-3 font-mono font-bold uppercase">{errors.jenis_perbaikan || localErrors.jenis_perbaikan}</p>}
         </div>
 
         {data.jenis_perbaikan && (
@@ -246,7 +246,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
               <input type="text" readOnly value={authUser?.no_wa || '-'} className="w-full bg-white dark:bg-cighra-darkcard/80 border border-slate-300 dark:border-slate-600 px-4 py-2.5 text-sm text-gunmetal dark:text-slate-300 cursor-not-allowed rounded-sm" />
             </div>
           </div>
-          <p className="text-[10px] text-slate-500 dark:text-slate-400 italic uppercase tracking-tighter">Data diambil otomatis dari profil akun Anda. Hubungi Admin jika ada kesalahan.</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 italic uppercase tracking-tighter">Data diambil otomatis dari profil akun Anda. Hubungi Admin jika ada kesalahan.</p>
         </div>
 
         <div className="glass-panel p-6 border-l-4 border-l-olive !overflow-visible relative z-20 bg-white dark:bg-cighra-darkcard/80 shadow-xl border border-slate-200 dark:border-slate-600">
@@ -294,7 +294,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
                         <div className="flex items-center gap-2 text-sm text-gunmetal dark:text-slate-300 truncate">
                           <FileText size={14} className="text-cighra-primary dark:text-cighra-gold flex-shrink-0" />
                           <span className="truncate">{file.name}</span>
-                          <span className="text-[10px] text-slate-500 flex-shrink-0">({(file.size / 1024 / 1024).toFixed(1)} MB)</span>
+                          <span className="text-xs text-slate-500 flex-shrink-0">({(file.size / 1024 / 1024).toFixed(1)} MB)</span>
                         </div>
                         <button
                           type="button"
@@ -305,10 +305,10 @@ const ReportForm: React.FC<ReportFormProps> = ({
                         </button>
                       </div>
                     ))}
-                    <p className="text-[10px] text-slate-500">{data.dokumen_anggaran.length}/10 dokumen pendukung terpilih</p>
+                    <p className="text-xs text-slate-500">{data.dokumen_anggaran.length}/10 dokumen pendukung terpilih</p>
                   </div>
                 )}
-                {(errors.dokumen_anggaran || localErrors.dokumen_anggaran) && <p className="text-[10px] text-red-500 dark:text-cighra-gold mt-3 font-mono font-bold uppercase">{errors.dokumen_anggaran || localErrors.dokumen_anggaran}</p>}
+                {(errors.dokumen_anggaran || localErrors.dokumen_anggaran) && <p className="text-xs text-red-500 dark:text-cighra-gold mt-3 font-mono font-bold uppercase">{errors.dokumen_anggaran || localErrors.dokumen_anggaran}</p>}
               </div>
 
               <div>
@@ -323,7 +323,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
                   className="w-full bg-cighra-light/50 dark:bg-cighra-darkcard/80 border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:border-cighra-gold transition-colors resize-none rounded-sm"
                   placeholder="Tuliskan nomor/rujukan perintah, sumber anggaran, dan keterangan bahwa dana perbaikan tersedia untuk Satkai terkait..."
                 />
-                {(errors.keterangan_anggaran || localErrors.keterangan_anggaran) && <p className="text-[10px] text-red-500 dark:text-cighra-gold mt-3 font-mono font-bold uppercase">{errors.keterangan_anggaran || localErrors.keterangan_anggaran}</p>}
+                {(errors.keterangan_anggaran || localErrors.keterangan_anggaran) && <p className="text-xs text-red-500 dark:text-cighra-gold mt-3 font-mono font-bold uppercase">{errors.keterangan_anggaran || localErrors.keterangan_anggaran}</p>}
               </div>
             </div>
           </div>
@@ -337,11 +337,11 @@ const ReportForm: React.FC<ReportFormProps> = ({
                 <input type="radio" name="tingkat_kerusakan" value={level} checked={data.tingkat_kerusakan === level} onChange={(e) => setData('tingkat_kerusakan', e.target.value)} required
                   className="w-4 h-4 accent-olive" />
                 <span className="text-sm text-gunmetal dark:text-slate-300 font-medium uppercase">{level}</span>
-                <span className="text-[10px] text-slate-500 dark:text-slate-400 ml-auto uppercase">{level === 'Ringan' ? 'Masih bisa beroperasi' : level === 'Sedang' ? 'Fungsi terganggu sebagian' : 'Tidak dapat beroperasi'}</span>
+                <span className="text-xs text-slate-500 dark:text-slate-400 ml-auto uppercase">{level === 'Ringan' ? 'Masih bisa beroperasi' : level === 'Sedang' ? 'Fungsi terganggu sebagian' : 'Tidak dapat beroperasi'}</span>
               </label>
             ))}
           </div>
-          {errors.tingkat_kerusakan && <p className="text-[9px] text-cighra-primary dark:text-cighra-gold mt-1 font-mono uppercase">{errors.tingkat_kerusakan}</p>}
+          {errors.tingkat_kerusakan && <p className="text-[11px] text-cighra-primary dark:text-cighra-gold mt-1 font-mono uppercase">{errors.tingkat_kerusakan}</p>}
         </div>
 
         <div className="glass-panel p-6 border-l-4 border-l-olive bg-white dark:bg-cighra-darkcard/80 shadow-xl border border-slate-200 dark:border-slate-600">
@@ -359,15 +359,15 @@ const ReportForm: React.FC<ReportFormProps> = ({
                   <div className="flex items-center gap-2 text-sm text-gunmetal dark:text-slate-300 truncate">
                     <Camera size={14} className="text-cighra-primary dark:text-cighra-gold flex-shrink-0" />
                     <span className="truncate">{file.name}</span>
-                    <span className="text-[10px] text-slate-500 flex-shrink-0">({(file.size / 1024 / 1024).toFixed(1)} MB)</span>
+                    <span className="text-xs text-slate-500 flex-shrink-0">({(file.size / 1024 / 1024).toFixed(1)} MB)</span>
                   </div>
                   <button type="button" onClick={() => removeFile(i)} className="text-slate-500 hover:text-cighra-primary dark:text-cighra-gold transition-colors p-1"><Trash2 size={14} /></button>
                 </div>
               ))}
-              <p className="text-[10px] text-slate-500">{data.file_bukti.length}/5 file terpilih</p>
+              <p className="text-xs text-slate-500">{data.file_bukti.length}/5 file terpilih</p>
             </div>
           )}
-          {(errors.file_bukti || localErrors.file_bukti) && <p className="text-[10px] text-red-500 dark:text-cighra-gold mt-3 font-mono font-bold uppercase bg-red-50 dark:bg-cighra-gold/10 p-2 border border-red-200 dark:border-cighra-gold/30 rounded-sm shadow-sm">{errors.file_bukti || localErrors.file_bukti}</p>}
+          {(errors.file_bukti || localErrors.file_bukti) && <p className="text-xs text-red-500 dark:text-cighra-gold mt-3 font-mono font-bold uppercase bg-red-50 dark:bg-cighra-gold/10 p-2 border border-red-200 dark:border-cighra-gold/30 rounded-sm shadow-sm">{errors.file_bukti || localErrors.file_bukti}</p>}
         </div>
 
         <div className="glass-panel p-6 border-l-4 border-l-olive bg-white dark:bg-cighra-darkcard/80 shadow-xl border border-slate-200 dark:border-slate-600">
@@ -376,7 +376,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
           <input type="url" value={data.tautan_video || ''} onChange={(e) => { setData('tautan_video', e.target.value); setLocalErrors((prev: any) => ({ ...prev, tautan_video: null })); }} required
             className={`w-full bg-cighra-light/50 dark:bg-cighra-darkcard/80 border ${errors.tautan_video || localErrors.tautan_video ? 'border-red-500 shadow-[0_0_10px_rgba(239,68,68,0.3)]' : 'border-slate-300 dark:border-slate-600'} px-4 py-3 text-sm text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:border-cighra-gold transition-all rounded-sm`}
             placeholder="https://drive.google.com/file/d/..." />
-          {(errors.tautan_video || localErrors.tautan_video) && <p className="text-[10px] text-red-500 dark:text-cighra-gold mt-3 font-mono font-bold uppercase">{errors.tautan_video || localErrors.tautan_video}</p>}
+          {(errors.tautan_video || localErrors.tautan_video) && <p className="text-xs text-red-500 dark:text-cighra-gold mt-3 font-mono font-bold uppercase">{errors.tautan_video || localErrors.tautan_video}</p>}
         </div>
 
         <div className="glass-panel p-6 border-l-4 border-l-olive bg-white dark:bg-cighra-darkcard/80 shadow-xl border border-slate-200 dark:border-slate-600">
@@ -393,12 +393,12 @@ const ReportForm: React.FC<ReportFormProps> = ({
                   className="w-4 h-4 accent-olive" />
                 <div>
                   <span className="text-sm text-gunmetal dark:text-slate-300 font-medium uppercase">{opt.val}</span>
-                  <span className="block text-[10px] text-slate-500 dark:text-slate-400 uppercase">{opt.desc}</span>
+                  <span className="block text-xs text-slate-500 dark:text-slate-400 uppercase">{opt.desc}</span>
                 </div>
               </label>
             ))}
           </div>
-          {errors.urgensi && <p className="text-[9px] text-cighra-primary dark:text-cighra-gold mt-1 font-mono uppercase">{errors.urgensi}</p>}
+          {errors.urgensi && <p className="text-[11px] text-cighra-primary dark:text-cighra-gold mt-1 font-mono uppercase">{errors.urgensi}</p>}
         </div>
 
         <div className="glass-panel p-6 border-l-4 border-l-olive bg-white dark:bg-cighra-darkcard/80 shadow-xl border border-slate-200 dark:border-slate-600">
@@ -406,7 +406,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
           <textarea value={data.deskripsi} onChange={(e) => setData('deskripsi', e.target.value)} required rows={5}
             className="w-full bg-cighra-light/50 dark:bg-cighra-darkcard/80 border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:border-cighra-gold transition-colors resize-none rounded-sm"
             placeholder="Jelaskan secara detail kondisi kerusakan, kronologi kejadian, dan gejala yang dialami..." />
-          {errors.deskripsi && <p className="text-[9px] text-cighra-primary dark:text-cighra-gold mt-1 font-mono uppercase">{errors.deskripsi}</p>}
+          {errors.deskripsi && <p className="text-[11px] text-cighra-primary dark:text-cighra-gold mt-1 font-mono uppercase">{errors.deskripsi}</p>}
         </div>
 
         <button type="submit" disabled={processing}

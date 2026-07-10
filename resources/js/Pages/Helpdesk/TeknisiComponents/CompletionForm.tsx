@@ -39,7 +39,7 @@ const CompletionForm: React.FC<CompletionFormProps> = ({
             className={`w-full bg-white dark:bg-cighra-darkcard/80 border ${errors.catatan ? 'border-cighra-primary dark:border-cighra-gold' : 'border-slate-300 dark:border-slate-600'} text-slate-800 dark:text-white p-4 focus:outline-none focus:border-cighra-primary dark:border-cighra-gold transition-colors font-sans text-sm resize-y`}
             placeholder="Jelaskan tindakan perbaikan yang telah dilakukan secara detail..."
           />
-          {errors.catatan && <p className="text-[9px] text-cighra-primary dark:text-cighra-gold mt-1 font-mono uppercase">{errors.catatan}</p>}
+          {errors.catatan && <p className="text-[11px] text-cighra-primary dark:text-cighra-gold mt-1 font-mono uppercase">{errors.catatan}</p>}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -66,7 +66,7 @@ const CompletionForm: React.FC<CompletionFormProps> = ({
                 <div className="relative w-full max-w-[200px] h-32 border-2 border-cighra-primary dark:border-cighra-gold shadow-lg overflow-hidden group-hover:scale-105 transition-transform">
                   <img src={imagePreview} className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span className="text-[10px] text-white font-bold font-mono">GANTI FOTO</span>
+                    <span className="text-xs text-white font-bold font-mono">GANTI FOTO</span>
                   </div>
                 </div>
               ) : (
@@ -77,11 +77,11 @@ const CompletionForm: React.FC<CompletionFormProps> = ({
                       UNGGAH FOTO BUKTI SELESAI <span className="text-cighra-primary dark:text-cighra-gold ml-1">*</span>
                     </span>
                   </div>
-                  <span className="text-[9px] font-mono text-slate-500 dark:text-slate-400 uppercase">Klik untuk unggah foto hasil perbaikan</span>
+                  <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400 uppercase">Klik untuk unggah foto hasil perbaikan</span>
                 </div>
               )}
             </div>
-            {errors.foto_selesai && <p className="text-[9px] text-cighra-primary dark:text-cighra-gold mt-1 font-mono uppercase">{errors.foto_selesai}</p>}
+            {errors.foto_selesai && <p className="text-[11px] text-cighra-primary dark:text-cighra-gold mt-1 font-mono uppercase">{errors.foto_selesai}</p>}
           </div>
 
           {/* Video Upload (Required Link) */}
@@ -97,8 +97,8 @@ const CompletionForm: React.FC<CompletionFormProps> = ({
               className={`w-full bg-white dark:bg-cighra-darkcard/80 border ${errors.tautan_video_selesai ? 'border-red-500 shadow-[0_0_10px_rgba(239,68,68,0.3)]' : 'border-slate-300 dark:border-slate-600'} text-slate-800 dark:text-white px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors font-sans text-sm rounded-sm`}
               placeholder="https://drive.google.com/file/d/..."
             />
-            <p className="text-[9px] font-mono text-slate-500 mt-2">Pastikan video memiliki akses publik 'Anyone with the link'.</p>
-            {errors.tautan_video_selesai && <p className="text-[9px] text-red-500 mt-1 font-mono uppercase">{errors.tautan_video_selesai}</p>}
+            <p className="text-[11px] font-mono text-slate-500 mt-2">Pastikan video memiliki akses publik 'Anyone with the link'.</p>
+            {errors.tautan_video_selesai && <p className="text-[11px] text-red-500 mt-1 font-mono uppercase">{errors.tautan_video_selesai}</p>}
           </div>
         </div>
 

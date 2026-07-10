@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Search, Plus, MapPin, Edit, Trash2, Eye } from 'lucide-react';
 import { useTableSort } from '@/hooks/useTableSort';
 import SortableHeader from '@/Components/Table/SortableHeader';
-import { router, useForm } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 import { useStore } from '@/store/useStore';
 import SatuanModal from './SatuanModal';
 import SatuanDetailModal from './SatuanDetailModal';
@@ -134,7 +134,7 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
       {/* Filter Row */}
       <div className="p-4 bg-slate-50 dark:bg-cighra-dark/30 border-b border-slate-200 dark:border-slate-600 flex flex-col md:flex-row gap-4 items-center">
         <div className="w-full md:w-72">
-          <label className="block text-[9px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">CARI SATUAN</label>
+          <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">CARI SATUAN</label>
           <div className="relative">
             <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
             <input
@@ -172,16 +172,16 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
             ) : (
               filteredSatuans.map((satuan: any) => (
                 <tr key={satuan.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group bg-white dark:bg-transparent">
-                  <td className="p-2 px-2 text-[9px] font-mono text-slate-800 dark:text-white text-center" title={satuan.kode_satuan || '-'}>
+                  <td className="p-2 px-2 text-[11px] font-mono text-slate-800 dark:text-white text-center" title={satuan.kode_satuan || '-'}>
                     <span className="block truncate max-w-[80px]">{satuan.kode_satuan || '-'}</span>
                   </td>
                   <td className="p-2 px-3 font-mono font-bold text-[11px] text-slate-800 dark:text-white" title={satuan.nama_satuan}>
                     <span className="block truncate max-w-[180px]">{satuan.nama_satuan}</span>
                   </td>
-                  <td className="p-2 px-3 text-[10px] font-mono text-slate-600 dark:text-slate-300" title={satuan.alamat || '-'}>
+                  <td className="p-2 px-3 text-xs font-mono text-slate-600 dark:text-slate-300" title={satuan.alamat || '-'}>
                     <span className="block truncate max-w-[200px]">{satuan.alamat || '-'}</span>
                   </td>
-                  <td className="p-2 px-2 text-[9px] font-mono text-slate-600 dark:text-slate-400 text-center w-[140px]">
+                  <td className="p-2 px-2 text-[11px] font-mono text-slate-600 dark:text-slate-400 text-center w-[140px]">
                     {satuan.latitude && satuan.longitude
                       ? <span className="block truncate">{satuan.latitude}, {satuan.longitude}</span>
                       : <span className="text-slate-400 italic">Belum diset</span>}

@@ -35,11 +35,11 @@ const UserMutationHistory: React.FC<UserMutationHistoryProps> = ({ dbMutations }
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'pending':
-        return <span className="bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800/40 px-2 py-0.5 text-[9px] font-mono font-bold animate-pulse">MENUNGGU VERIFIKASI</span>;
+        return <span className="bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800/40 px-2 py-0.5 text-[11px] font-mono font-bold animate-pulse">MENUNGGU VERIFIKASI</span>;
       case 'approved':
-        return <span className="bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800/40 px-2 py-0.5 text-[9px] font-mono font-bold">DISETUJUI</span>;
+        return <span className="bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800/40 px-2 py-0.5 text-[11px] font-mono font-bold">DISETUJUI</span>;
       case 'rejected':
-        return <span className="bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800/40 px-2 py-0.5 text-[9px] font-mono font-bold">DITOLAK</span>;
+        return <span className="bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800/40 px-2 py-0.5 text-[11px] font-mono font-bold">DITOLAK</span>;
       default:
         return null;
     }
@@ -87,10 +87,10 @@ const UserMutationHistory: React.FC<UserMutationHistoryProps> = ({ dbMutations }
                       <div className="font-mono text-xs text-slate-800 dark:text-white">{new Date(m.created_at).toLocaleDateString()}</div>
                     </td>
                     <td className="p-4 text-center">
-                      <span className={`px-2 py-1 text-[10px] font-mono font-bold border rounded-sm flex items-center justify-center gap-1 mx-auto w-max ${badge.color}`}>
+                      <span className={`px-2 py-1 text-xs font-mono font-bold border rounded-sm flex items-center justify-center gap-1 mx-auto w-max ${badge.color}`}>
                         {badge.icon} {badge.label}
                       </span>
-                      <div className="text-[9px] font-mono mt-1 text-slate-500 uppercase">
+                      <div className="text-[11px] font-mono mt-1 text-slate-500 uppercase">
                         Oleh: {m.requested_by?.name || '-'}
                       </div>
                     </td>
@@ -99,18 +99,24 @@ const UserMutationHistory: React.FC<UserMutationHistoryProps> = ({ dbMutations }
                       <div className="font-bold text-slate-500 dark:text-slate-400 text-xs mt-1">{targetName}</div>
                     </td>
                     <td className="p-4">
-                      {m.type === 'request_add' ? (
-                        <div className="text-[10px] font-mono text-slate-800 dark:text-white space-y-0.5">
-                          <div>NRP/NIP: {m.user_data?.nrp_nip}</div>
-                          <div>Satuan: {m.user_data?.asal_satuan}</div>
-                          <div>WA: {m.user_data?.no_wa}</div>
+                      {m.type.includes('add') ? (
+                        <div className="text-xs font-mono text-slate-800 dark:text-white space-y-0.5">
+                          <div>NRP/NIP: {m.user_data?.nrp_nip || '-'}</div>
+                          <div>Satuan: {m.user_data?.asal_satuan || '-'}</div>
+                          <div>WA: {m.user_data?.no_wa || '-'}</div>
                         </div>
-                      ) : m.type === 'request_delete' ? (
-                        <div className="text-[10px] font-mono text-red-500 dark:text-red-400 italic">Penghapusan akun dari sistem.</div>
+                      ) : m.type.includes('delete') ? (
+                        <div className="text-xs font-mono text-red-500 dark:text-red-400 italic">Penghapusan akun dari sistem.</div>
                       ) : (
-                        <div className="text-[10px] font-mono text-slate-800 dark:text-white">
-                          {Object.entries(m.user_data || {}).map(([key, val]) => (
-                            <div key={key}><span className="text-blue-500 dark:text-blue-400 font-bold uppercase">{key}:</span> {String(val)}</div>
+                        <div className="text-xs font-mono text-slate-800 dark:text-white space-y-0.5">
+                          {Object.entries(m.user_data || {})
+                            .filter(([key]) => !['password', 'role_id', 'satuan_id', 'is_approved'].includes(key.toLowerCase()))
+                            .map(([key, val]) => (
+                            <div key={key}>
+                              <span className="text-blue-500 dark:text-blue-400 font-bold uppercase">
+                                {key.replace(/_/g, ' ')}:
+                              </span> {String(val || '-')}
+                            </div>
                           ))}
                         </div>
                       )}
@@ -119,12 +125,12 @@ const UserMutationHistory: React.FC<UserMutationHistoryProps> = ({ dbMutations }
                       <div className="space-y-1">
                         {getStatusBadge(m.status)}
                         {m.status !== 'pending' && m.approved_by && (
-                          <div className="text-[9px] font-mono text-slate-500 uppercase mt-1">
+                          <div className="text-[11px] font-mono text-slate-500 uppercase mt-1">
                             Oleh: {m.approved_by.name}
                           </div>
                         )}
                         {m.status === 'rejected' && m.admin_notes && (
-                          <div className="text-[9px] font-mono text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-1 mt-1 rounded border border-red-100 dark:border-red-900/50 text-left">
+                          <div className="text-[11px] font-mono text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-1 mt-1 rounded border border-red-100 dark:border-red-900/50 text-left">
                             <strong>Alasan:</strong> {m.admin_notes}
                           </div>
                         )}

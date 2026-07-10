@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\SystemLog;
 
 class ProfileController extends Controller
 {
@@ -18,46 +17,60 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
-        return Inertia::render('Profile/Edit', [
-            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
-            'status' => session('status'),
+        return Inertia::render('Helpdesk/Profile', [
+            'currentUser' => $request->user()->load('role', 'satuan'),
         ]);
     }
 
     /**
-     * Update the user's profile information.
+     * Update the user's password.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function updatePassword(Request $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
-
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
-
-        $request->user()->save();
-
-        return Redirect::route('profile.edit');
-    }
-
-    /**
-     * Delete the user's account.
-     */
-    public function destroy(Request $request): RedirectResponse
-    {
-        $request->validate([
-            'password' => ['required', 'current_password'],
+        $validated = $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ], [
+            'current_password.current_password' => 'Kata sandi saat ini tidak cocok.',
+            'password.confirmed' => 'Konfirmasi kata sandi tidak cocok.',
+            'password.min' => 'Kata sandi baru minimal 8 karakter.',
         ]);
 
+        $request->user()->update([
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        SystemLog::log('SUCCESS', $request->user()->id, "Mengubah kata sandi secara mandiri");
+
+        return back()->with('message', 'Kata sandi berhasil diubah.');
+    }
+    public function updateProfile(Request $request): RedirectResponse
+    {
         $user = $request->user();
 
-        Auth::logout();
+        $validated = $request->validate([
+            'email' => 'required|email|max:100|unique:users,email,' . $user->id,
+            'nama_lengkap' => 'required|string|max:100',
+            'nrp_nip' => 'nullable|string|max:50',
+            'no_wa' => 'nullable|string|max:20',
+            'spesialisasi' => 'nullable|string|max:100',
+        ]);
 
-        $user->delete();
+        $changedData = [];
+        foreach ($validated as $key => $value) {
+            if ($user->{$key} != $value) {
+                $changedData[$key] = $value;
+            }
+        }
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        if (empty($changedData)) {
+            return back()->with('error', 'Tidak ada perubahan data.');
+        }
 
-        return Redirect::to('/');
+        $user->update($changedData);
+
+        SystemLog::log('SUCCESS', $user->id, "Mengubah data profil secara mandiri");
+
+        return back()->with('message', 'Data profil berhasil diperbarui.');
     }
 }

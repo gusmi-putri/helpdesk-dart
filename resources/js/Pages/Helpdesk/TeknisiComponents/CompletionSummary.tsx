@@ -15,33 +15,33 @@ const CompletionSummary: React.FC<CompletionSummaryProps> = ({ selectedTask, onB
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="space-y-4">
           <div>
-            <p className="text-[10px] font-mono text-slate-600 dark:text-slate-300 uppercase tracking-widest mb-1">Metode Perbaikan</p>
+            <p className="text-xs font-mono text-slate-600 dark:text-slate-300 uppercase tracking-widest mb-1">Metode Perbaikan</p>
             <p className="text-sm font-bold text-slate-800 dark:text-white bg-cighra-light dark:bg-cighra-darkcard/30 p-3 border-l-4 border-cighra-primary dark:border-cighra-gold uppercase">
               {selectedTask.perbaikan.metode || 'LANGSUNG'}
             </p>
           </div>
           <div>
-            <p className="text-[10px] font-mono text-slate-600 dark:text-slate-300 uppercase tracking-widest mb-1">Catatan Pelaksanaan</p>
+            <p className="text-xs font-mono text-slate-600 dark:text-slate-300 uppercase tracking-widest mb-1">Catatan Pelaksanaan</p>
             <div className="text-sm text-gunmetal dark:text-slate-300 bg-white/40 dark:bg-cighra-darkcard/80 p-4 border border-slate-200 dark:border-slate-600 italic uppercase">
               {selectedTask.perbaikan.tindakan || 'Tidak ada catatan tambahan.'}
             </div>
           </div>
         </div>
         <div>
-           <p className="text-[10px] font-mono text-slate-600 dark:text-slate-300 uppercase tracking-widest mb-1">Bukti Penyelesaian</p>
+           <p className="text-xs font-mono text-slate-600 dark:text-slate-300 uppercase tracking-widest mb-1">Bukti Penyelesaian</p>
            {selectedTask.perbaikan.foto_bukti_selesai ? (
              <div className="border-4 border-white dark:border-black/40 shadow-xl overflow-hidden rounded-sm h-48">
                <img src={selectedTask.perbaikan.foto_bukti_selesai} alt="Bukti Selesai" className="w-full h-full object-cover" />
              </div>
            ) : (
-             <div className="h-48 border-2 border-dashed border-slate-300 dark:border-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-400 font-mono text-[10px] uppercase">
+             <div className="h-48 border-2 border-dashed border-slate-300 dark:border-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-400 font-mono text-xs uppercase">
                 FOTO TIDAK DILAMPIRKAN
              </div>
            )}
         </div>
       </div>
       <div className="pt-6 border-t border-slate-200 dark:border-slate-600 flex justify-between items-center">
-        <div className="text-[10px] font-mono text-slate-500 dark:text-slate-300 uppercase">
+        <div className="text-xs font-mono text-slate-500 dark:text-slate-300 uppercase">
           Selesai pada: {selectedTask.perbaikan.tanggalSelesai}
         </div>
         <button 

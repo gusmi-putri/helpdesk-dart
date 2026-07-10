@@ -13,6 +13,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\AiDiagnosticController;
 use App\Http\Controllers\RecapController;
+use App\Http\Controllers\ProfileController;
 
 // ==========================================
 // PUBLIC ROUTES (GUEST)
@@ -46,6 +47,11 @@ Route::post('/api/satuans', [SatuanController::class, 'store'])->middleware('thr
 // AUTHENTICATED ROUTES (WAJIB LOGIN)
 // ==========================================
 Route::middleware(['auth'])->group(function () {
+    
+    // --- Profile Routes ---
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'updateProfile'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
     
     // --- Dashboard Routes ---
     Route::get('/admin', [DashboardController::class, 'admin'])->middleware('role:Admin');

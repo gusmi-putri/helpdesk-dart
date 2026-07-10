@@ -33,13 +33,13 @@ const TaskList: React.FC<TaskListProps> = ({
         <div className="flex gap-1 bg-cighra-light dark:bg-cighra-darkcard/80 p-1 border border-slate-200 dark:border-slate-600">
           <button 
             onClick={() => { setActiveTab('ACTIVE'); setSelectedTaskId(null); }}
-            className={`flex-1 py-1.5 text-[10px] font-tactical font-bold transition-all uppercase ${activeTab === 'ACTIVE' ? 'bg-cighra-gold text-slate-900 shadow-lg' : 'text-slate-500 dark:text-slate-300 hover:text-gunmetal dark:hover:text-white'}`}
+            className={`flex-1 py-1.5 text-xs font-tactical font-bold transition-all uppercase ${activeTab === 'ACTIVE' ? 'bg-cighra-gold text-slate-900 shadow-lg' : 'text-slate-500 dark:text-slate-300 hover:text-gunmetal dark:hover:text-white'}`}
           >
             DAFTAR TUGAS
           </button>
           <button 
             onClick={() => { setActiveTab('HISTORY'); setSelectedTaskId(null); }}
-            className={`flex-1 py-1.5 text-[10px] font-tactical font-bold transition-all uppercase ${activeTab === 'HISTORY' ? 'bg-cighra-gold text-slate-900 shadow-lg' : 'text-slate-500 dark:text-slate-300 hover:text-gunmetal dark:hover:text-white'}`}
+            className={`flex-1 py-1.5 text-xs font-tactical font-bold transition-all uppercase ${activeTab === 'HISTORY' ? 'bg-cighra-gold text-slate-900 shadow-lg' : 'text-slate-500 dark:text-slate-300 hover:text-gunmetal dark:hover:text-white'}`}
           >
             RIWAYAT SELESAI
           </button>
@@ -51,7 +51,7 @@ const TaskList: React.FC<TaskListProps> = ({
             placeholder="CARI KODE / UNIT..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-white dark:bg-cighra-dark/30 border border-slate-200 dark:border-slate-600 p-2 pl-8 text-[10px] font-mono focus:outline-none focus:border-cighra-primary dark:border-cighra-gold uppercase text-slate-800 dark:text-white"
+            className="w-full bg-white dark:bg-cighra-dark/30 border border-slate-200 dark:border-slate-600 p-2 pl-8 text-xs font-mono focus:outline-none focus:border-cighra-primary dark:border-cighra-gold uppercase text-slate-800 dark:text-white"
           />
           <Activity className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500" />
         </div>
@@ -75,7 +75,7 @@ const TaskList: React.FC<TaskListProps> = ({
               `}
             >
               <div className="flex justify-between items-start mb-2">
-                <span className="bg-cighra-gold text-slate-900 text-[10px] px-2 py-0.5 font-mono font-bold tracking-widest shadow-sm">
+                <span className="bg-cighra-gold text-slate-900 text-xs px-2 py-0.5 font-mono font-bold tracking-widest shadow-sm">
                   {task.caseId}
                 </span>
                 <span className="text-slate-600 dark:text-slate-300 text-xs font-mono flex items-center gap-1 uppercase">

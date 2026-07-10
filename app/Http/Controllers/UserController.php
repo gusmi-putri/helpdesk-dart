@@ -82,18 +82,35 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         $adminRoleId = Role::where('nama_role', 'Admin')->first()?->id;
+        $currentUser = auth()->user();
+        $isSelfEdit = $user->id === $currentUser->id;
 
         $updateData = $request->only('email', 'nama_lengkap', 'nrp_nip', 'asal_satuan', 'satuan_id', 'no_wa', 'spesialisasi');
-        if ($user->role_id !== $adminRoleId) {
+        
+        if ($isSelfEdit) {
+            // User can't change their own role or satuan via profile edit
+            unset($updateData['asal_satuan'], $updateData['satuan_id'], $updateData['role_id']);
+        } elseif ($user->role_id !== $adminRoleId) {
             $updateData['role_id'] = $request->role_id;
         }
 
-        $isAdmin = auth()->user()->role->nama_role === 'Admin';
-        $currentUser = auth()->user();
+        $changedData = [];
+        foreach ($updateData as $key => $value) {
+            // Loose comparison to account for type juggling, e.g., string "2" vs integer 2
+            if ($user->{$key} != $value) {
+                $changedData[$key] = $value;
+            }
+        }
 
-        DB::transaction(function () use ($user, $updateData, $isAdmin, $currentUser) {
-            if ($isAdmin) {
-                $user->update($updateData);
+        if (empty($changedData)) {
+            return redirect()->back()->with('error', 'Tidak ada perubahan data yang diajukan.');
+        }
+
+        $isAdmin = $currentUser->role->nama_role === 'Admin';
+
+        DB::transaction(function () use ($user, $changedData, $isAdmin, $isSelfEdit, $currentUser) {
+            if ($isAdmin || $isSelfEdit) {
+                $user->update($changedData);
 
                 UserMutation::create([
                     'target_user_id' => $user->id,
@@ -101,24 +118,28 @@ class UserController extends Controller
                     'requested_by' => $currentUser->id,
                     'approved_by' => $currentUser->id,
                     'status' => 'approved',
-                    'user_data' => $updateData,
+                    'user_data' => $changedData,
                 ]);
 
-                SystemLog::log('SUCCESS', $currentUser->id, "Mengubah data personel secara langsung: {$user->nama_lengkap}");
+                if ($isSelfEdit && !$isAdmin) {
+                    SystemLog::log('SUCCESS', $currentUser->id, "Mengubah data profil secara mandiri");
+                } else {
+                    SystemLog::log('SUCCESS', $currentUser->id, "Mengubah data personel secara langsung: {$user->nama_lengkap}");
+                }
             } else {
                 UserMutation::create([
                     'target_user_id' => $user->id,
                     'type' => 'request_edit',
                     'requested_by' => $currentUser->id,
                     'status' => 'pending',
-                    'user_data' => $updateData,
+                    'user_data' => $changedData,
                 ]);
 
                 SystemLog::log('INFO', $currentUser->id, "Mengajukan edit data personel: {$user->nama_lengkap}");
             }
         });
 
-        if ($isAdmin) {
+        if ($isAdmin || $isSelfEdit) {
             return redirect()->back()->with('message', 'Data personel berhasil diubah.');
         }
         return redirect()->back()->with('message', 'Pengajuan edit data personel telah dikirim ke Admin untuk disetujui.');
@@ -153,6 +174,10 @@ class UserController extends Controller
                     'requested_by' => $currentUser->id,
                     'approved_by' => $currentUser->id,
                     'status' => 'approved',
+                    'user_data' => [
+                        'username' => $user->username,
+                        'nama_lengkap' => $user->nama_lengkap
+                    ]
                 ]);
 
                 $user->delete();
@@ -163,6 +188,10 @@ class UserController extends Controller
                     'type' => 'request_delete',
                     'requested_by' => $currentUser->id,
                     'status' => 'pending',
+                    'user_data' => [
+                        'username' => $user->username,
+                        'nama_lengkap' => $user->nama_lengkap
+                    ]
                 ]);
 
                 SystemLog::log('INFO', $currentUser->id, "Mengajukan penghapusan personel: {$user->nama_lengkap}");

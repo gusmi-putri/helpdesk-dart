@@ -96,7 +96,7 @@ class DashboardController extends Controller
     {
         $cases = ReportResource::collection(Report::with(['unit.satuan', 'pelapor.satuan', 'teknisi'])->get());
         $users = UserResource::collection(User::with(['role', 'satuan'])->get());
-        $logs = SystemLog::with('user')->get()->map(function($l) {
+        $logs = SystemLog::with('user')->orderBy('created_at', 'desc')->take(1000)->get()->map(function($l) {
             return [
                 'id' => $l->id,
                 'time' => $l->created_at->format('Y-m-d H:i:s'),
@@ -116,7 +116,7 @@ class DashboardController extends Controller
         $units = UnitResource::collection(Unit::with('satuan')->get());
         $unreadFeedbackCount = Feedback::where('status_baca', false)->count();
         Feedback::where('status_baca', false)->update(['status_baca' => true]);
-        $feedbacks = Feedback::orderBy('created_at', 'desc')->get()->map(function($f) {
+        $feedbacks = Feedback::orderBy('created_at', 'desc')->take(500)->get()->map(function($f) {
             return [
                 'id' => $f->id,
                 'nama_pengirim' => $f->nama_pengirim,
@@ -131,6 +131,7 @@ class DashboardController extends Controller
         $mutations = UnitMutationResource::collection(
             UnitMutation::with(['unit', 'requester', 'approver'])
                 ->orderBy('created_at', 'desc')
+                ->take(500)
                 ->get()
         );
 
@@ -141,6 +142,7 @@ class DashboardController extends Controller
         $userMutations = UserMutationResource::collection(
             UserMutation::with(['targetUser', 'requester', 'approver'])
                 ->orderBy('created_at', 'desc')
+                ->take(500)
                 ->get()
         );
 

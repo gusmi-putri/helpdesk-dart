@@ -2,7 +2,7 @@ import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { FileArchive } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { router, usePage } from '@inertiajs/react';
-import LogoutConfirmModal from '@/Components/LogoutConfirmModal';
+
 
 // Sub-components
 import StafSidebar from './StafComponents/StafSidebar';
@@ -32,11 +32,11 @@ const DashboardStaf = (props: any) => {
   const [activeMenu, setActiveMenu] = useState<MenuTab>('MASUK');
   const [assigningReportId, setAssigningReportId] = useState<number | null>(null);
   const [rejectingReportId, setRejectingReportId] = useState<number | null>(null);
-  const [viewingProof, setViewingProof] = useState<any[] | null>(null);
+  const [viewingProof, setViewingProof] = useState<{ report: any; type: 'rusak' | 'selesai' } | null>(null);
   const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [isRecapModalOpen, setIsRecapModalOpen] = useState(false);
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+
 
   // Recap States
   const [recapPeriod, setRecapPeriod] = useState<'weekly' | 'monthly' | 'yearly' | 'custom' | 'year_specific'>('monthly');
@@ -106,15 +106,6 @@ const DashboardStaf = (props: any) => {
         addNotification('Gagal menugaskan teknisi. Silakan periksa kembali koneksi Anda.', 'error');
       }
     });
-  };
-
-  const handleLogout = () => {
-    setIsLogoutModalOpen(true);
-  };
-
-  const confirmLogout = () => {
-    logoutAction();
-    router.visit('/login');
   };
 
   const handleExportRecap = () => {
@@ -259,7 +250,6 @@ const DashboardStaf = (props: any) => {
         setIsMobileMenuOpen={setIsMobileMenuOpen}
         activeMenu={activeMenu}
         setActiveMenu={setActiveMenu}
-        handleLogout={handleLogout}
         pendingCount={incomingReports.filter((r: any) => r.status === 'PENDING').length}
         mutationPendingCount={pendingMutations.length}
       />
@@ -411,12 +401,6 @@ const DashboardStaf = (props: any) => {
         recapYear={recapYear}
         setRecapYear={setRecapYear}
         onExport={handleExportRecap}
-      />
-
-      <LogoutConfirmModal
-        isOpen={isLogoutModalOpen}
-        onClose={() => setIsLogoutModalOpen(false)}
-        onConfirm={confirmLogout}
       />
 
       <ReportRejectModal

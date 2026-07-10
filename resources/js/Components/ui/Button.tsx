@@ -1,6 +1,8 @@
 import React from 'react';
+import { motion, HTMLMotionProps } from 'framer-motion';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+type BaseButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement>;
+interface ButtonProps extends BaseButtonProps {
   variant?: 'primary' | 'secondary' | 'outline' | 'danger';
   size?: 'sm' | 'md' | 'lg';
   icon?: React.ReactNode;
@@ -10,7 +12,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className = '', variant = 'primary', size = 'md', icon, isLoading, children, disabled, ...props }, ref) => {
     
-    const baseStyles = "inline-flex items-center justify-center gap-2 font-tactical tracking-widest uppercase transition-all rounded-sm disabled:opacity-50 disabled:cursor-not-allowed shadow-xl active:scale-95";
+    const baseStyles = "inline-flex items-center justify-center gap-2 font-tactical tracking-widest uppercase rounded-sm disabled:opacity-50 disabled:cursor-not-allowed shadow-xl focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none";
     
     const variants = {
       primary: "bg-cighra-primary text-white dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 border border-cighra-primary dark:border-cighra-gold",
@@ -26,11 +28,12 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     };
 
     return (
-      <button
+      <motion.button
         ref={ref}
+        whileTap={{ scale: disabled || isLoading ? 1 : 0.95 }}
         className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
         disabled={disabled || isLoading}
-        {...props}
+        {...(props as any)}
       >
         {isLoading && (
           <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -40,7 +43,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         )}
         {!isLoading && icon && <span className="flex-shrink-0">{icon}</span>}
         {children}
-      </button>
+      </motion.button>
     );
   }
 );

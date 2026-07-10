@@ -60,7 +60,7 @@ const ForgotPassword = () => {
 
                 <div className="p-8">
                     <div className="mb-8">
-                        <Link href="/login" className="inline-flex items-center gap-2 text-[10px] font-mono font-bold uppercase tracking-widest text-slate-500 hover:text-cighra-primary dark:text-slate-400 dark:hover:text-cighra-gold mb-6 transition-colors">
+                        <Link href="/login" className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-widest text-slate-500 hover:text-cighra-primary dark:text-slate-400 dark:hover:text-cighra-gold mb-6 transition-colors">
                             <ArrowLeft className="w-3 h-3" /> Kembali ke Login
                         </Link>
                         <h2 className="text-2xl font-tactical text-slate-800 dark:text-white font-black tracking-tighter flex items-center gap-3">
@@ -95,7 +95,7 @@ const ForgotPassword = () => {
                     {step === 1 ? (
                         <form onSubmit={handleSendCode} className="space-y-6">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300/80 uppercase flex items-center gap-2">
+                                <label className="text-xs font-mono font-bold text-slate-600 dark:text-slate-300/80 uppercase flex items-center gap-2">
                                     <Mail className="w-3 h-3" /> Nama Pengguna atau Email
                                 </label>
                                 <div className="group relative">
@@ -131,13 +131,13 @@ const ForgotPassword = () => {
                     ) : (
                         <form onSubmit={handleVerifyAndReset} className="space-y-6">
                             <div className="p-3 bg-cighra-primary/5 dark:bg-cighra-gold/5 border border-cighra-primary/20 dark:border-cighra-gold/20 rounded-sm text-center">
-                                <p className="text-[10px] font-mono text-slate-600 dark:text-slate-400">Kode telah dikirim ke email terhubung:</p>
+                                <p className="text-xs font-mono text-slate-600 dark:text-slate-400">Kode telah dikirim ke email terhubung:</p>
                                 <p className="text-sm font-bold text-cighra-primary dark:text-cighra-gold">{maskedEmail}</p>
-                                <p className="text-[9px] text-red-500 font-bold mt-1 uppercase">Masa aktif kode: 5 Menit</p>
+                                <p className="text-[11px] text-red-500 font-bold mt-1 uppercase">Masa aktif kode: 5 Menit</p>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300/80 uppercase flex items-center gap-2">
+                                <label className="text-xs font-mono font-bold text-slate-600 dark:text-slate-300/80 uppercase flex items-center gap-2">
                                     <KeyRound className="w-3 h-3" /> Kode OTP (6 Digit)
                                 </label>
                                 <input
@@ -153,7 +153,7 @@ const ForgotPassword = () => {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300/80 uppercase flex items-center gap-2">
+                                <label className="text-xs font-mono font-bold text-slate-600 dark:text-slate-300/80 uppercase flex items-center gap-2">
                                     <Lock className="w-3 h-3" /> Kata Sandi Baru
                                 </label>
                                 <div className="relative">
@@ -173,7 +173,7 @@ const ForgotPassword = () => {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300/80 uppercase flex items-center gap-2">
+                                <label className="text-xs font-mono font-bold text-slate-600 dark:text-slate-300/80 uppercase flex items-center gap-2">
                                     <Lock className="w-3 h-3" /> Konfirmasi Kata Sandi Baru
                                 </label>
                                 <div className="relative">

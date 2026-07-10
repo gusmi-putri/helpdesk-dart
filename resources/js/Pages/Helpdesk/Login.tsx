@@ -54,7 +54,7 @@ const Login: React.FC = () => {
           <h2 className="text-3xl font-tactical text-slate-800 dark:text-white font-bold tracking-widest mb-2 drop-shadow-sm">
             MASUK KE SISTEM
           </h2>
-          <p className="text-slate-500 dark:text-slate-400 text-sm font-sans tracking-wide uppercase font-bold text-[10px]">
+          <p className="text-slate-500 dark:text-slate-400 text-sm font-sans tracking-wide uppercase font-bold text-xs">
             AKSES PUSAT KOMANDO SISFO DART
           </p>
         </div>
@@ -77,7 +77,7 @@ const Login: React.FC = () => {
 
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
-            <label className="block text-slate-600 dark:text-slate-300 text-[10px] font-mono font-bold mb-2 tracking-widest uppercase">
+            <label className="block text-slate-600 dark:text-slate-300 text-xs font-mono font-bold mb-2 tracking-widest uppercase">
               Nama Pengguna
             </label>
             <input
@@ -89,14 +89,14 @@ const Login: React.FC = () => {
               required
             />
             {errors.username && (
-              <p className="mt-1 text-cighra-primary dark:text-cighra-gold text-[10px] font-mono uppercase italic">
+              <p className="mt-1 text-cighra-primary dark:text-cighra-gold text-xs font-mono uppercase italic">
                 {errors.username}
               </p>
             )}
           </div>
 
           <div>
-            <label className="block text-slate-600 dark:text-slate-300 text-[10px] font-mono font-bold mb-2 tracking-widest uppercase">
+            <label className="block text-slate-600 dark:text-slate-300 text-xs font-mono font-bold mb-2 tracking-widest uppercase">
               Kata Sandi
             </label>
             <div className="relative">
@@ -117,12 +117,12 @@ const Login: React.FC = () => {
               </button>
             </div>
             {errors.password && (
-              <p className="mt-1 text-cighra-primary dark:text-cighra-gold text-[10px] font-mono uppercase italic">
+              <p className="mt-1 text-cighra-primary dark:text-cighra-gold text-xs font-mono uppercase italic">
                 {errors.password}
               </p>
             )}
             <div className="mt-2 text-right">
-              <Link href="/forgot-password" className="text-[10px] font-mono font-bold text-slate-500 hover:text-cighra-primary dark:text-slate-400 dark:hover:text-cighra-gold uppercase tracking-widest transition-colors">
+              <Link href="/forgot-password" className="text-xs font-mono font-bold text-slate-500 hover:text-cighra-primary dark:text-slate-400 dark:hover:text-cighra-gold uppercase tracking-widest transition-colors">
                 Lupa Kata Sandi?
               </Link>
             </div>
@@ -140,7 +140,7 @@ const Login: React.FC = () => {
             </span>
           </button>
           <div className="mt-6 text-center">
-            <p className="text-slate-500 dark:text-slate-400 text-[10px] font-mono uppercase tracking-widest">
+            <p className="text-slate-500 dark:text-slate-400 text-xs font-mono uppercase tracking-widest">
               Belum punya akun?{' '}
               <Link href="/register" className="text-cighra-primary dark:text-cighra-gold hover:text-cighra-primary/80 dark:hover:text-cighra-gold/80 font-bold transition-colors">
                 Daftar di sini
@@ -150,7 +150,7 @@ const Login: React.FC = () => {
         </form>
 
         <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-600 text-center">
-          <p className="text-slate-400 dark:text-slate-500 text-[9px] font-mono uppercase tracking-widest">
+          <p className="text-slate-400 dark:text-slate-500 text-[11px] font-mono uppercase tracking-widest">
             SISFO DART Operational Security System
           </p>
         </div>

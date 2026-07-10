@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Search, Plus, Trash2, CheckSquare, Upload, Package } from 'lucide-react';
 import SortableHeader from '@/Components/Table/SortableHeader';
+import { EmptyState } from '@/Components/ui/EmptyState';
+import { Button } from '@/Components/ui/Button';
 
 interface InventorySectionProps {
   dbUnits: any[];
@@ -98,7 +100,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
           { label: 'DALAM PERBAIKAN', value: unitStats.PERBAIKAN, color: 'border-blue-500', text: 'text-blue-500' },
         ].map((s, i) => (
           <div key={i} className={`bg-white dark:bg-cighra-darkcard/80 border-l-4 ${s.color} p-4 shadow-md`}>
-            <p className="text-[9px] font-mono font-bold text-slate-500 dark:text-slate-300 tracking-widest uppercase mb-1">{s.label}</p>
+            <p className="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-300 tracking-widest uppercase mb-1">{s.label}</p>
             <p className={`text-2xl font-tactical font-bold ${s.text}`}>{s.value}</p>
           </div>
         ))}
@@ -134,7 +136,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
                   setIsDeleteMode(!isDeleteMode);
                   setSelectedUnitIds([]);
                 }}
-                className={`px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-all border shadow-lg uppercase cursor-pointer ${
+                className={`px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-all border shadow-lg uppercase cursor-pointer rounded-none ${
                   isDeleteMode 
                     ? 'bg-slate-700 hover:bg-slate-600 text-white border-slate-700' 
                     : 'bg-red-600 hover:bg-red-500 text-white border-red-600'
@@ -146,7 +148,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
             {onAddBatch && (
               <button
                 onClick={onAddBatch}
-                className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-blue-600 shadow-lg uppercase cursor-pointer"
+                className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-blue-600 shadow-lg uppercase cursor-pointer rounded-none"
               >
                 <Upload className="w-4 h-4" /> AJUKAN MASSAL (CSV)
               </button>
@@ -154,7 +156,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
             {onAddUnit && (
               <button
                 onClick={onAddUnit}
-                className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-cighra-primary dark:border-cighra-gold shadow-lg uppercase cursor-pointer"
+                className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-cighra-primary dark:border-cighra-gold shadow-lg uppercase cursor-pointer rounded-none"
               >
                 <Plus className="w-4 h-4" /> AJUKAN TAMBAH UNIT
               </button>
@@ -165,7 +167,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
         {/* Filter Row */}
         <div className="p-4 bg-slate-50 dark:bg-cighra-dark/30 border-b border-slate-200 dark:border-slate-600 flex flex-col md:flex-row gap-4 items-center">
           <div className="w-full md:w-72">
-            <label className="block text-[9px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">CARI PERANGKAT</label>
+            <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">CARI PERANGKAT</label>
             <div className="relative">
               <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
               <input
@@ -178,7 +180,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
             </div>
           </div>
           <div className="w-full md:w-56">
-            <label className="block text-[9px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">JENIS UNIT</label>
+            <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">JENIS UNIT</label>
             <select
               value={filterJenis}
               onChange={(e) => setFilterJenis(e.target.value)}
@@ -190,7 +192,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
             </select>
           </div>
           <div className="w-full md:w-56">
-            <label className="block text-[9px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">SATUAN</label>
+            <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">SATUAN</label>
             <select
               value={filterSatuan}
               onChange={(e) => setFilterSatuan(e.target.value)}
@@ -204,7 +206,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
         </div>
 
         {isDeleteMode && (
-          <div className="p-4 bg-red-500/5 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center text-[10px] font-mono text-red-600 dark:text-red-400">
+          <div className="p-4 bg-red-500/5 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center text-xs font-mono text-red-600 dark:text-red-400">
             <span className="font-bold flex items-center gap-2">
               ⚠️ MODE HAPUS MASSAL AKTIF: KLIK PADA BARIS UNIT UNTUK MENANDAI PENGHAPUSAN.
             </span>
@@ -244,7 +246,9 @@ const InventorySection: React.FC<InventorySectionProps> = ({
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700/50">
               {filteredUnits.length === 0 ? (
                 <tr>
-                  <td colSpan={isDeleteMode ? 7 : (onRequestDelete ? 6 : 5)} className="p-10 text-center text-slate-500 dark:text-slate-400 font-mono italic uppercase tracking-widest">Tidak ada unit yang ditemukan.</td>
+                  <td colSpan={isDeleteMode ? 7 : (onRequestDelete ? 6 : 5)} className="p-0 text-center">
+                    <EmptyState title="TIDAK ADA UNIT" description="Belum ada unit inventaris yang ditemukan." />
+                  </td>
                 </tr>
               ) : (
                 filteredUnits.map((u: any) => {
@@ -268,11 +272,11 @@ const InventorySection: React.FC<InventorySectionProps> = ({
                       {isDeleteMode && (
                         <td className="p-4 text-center">
                           {isSelected ? (
-                            <span className="px-2.5 py-1 bg-red-600/90 text-white text-[9px] font-mono font-bold tracking-widest uppercase inline-block border border-red-700">
+                            <span className="px-2.5 py-1 bg-red-600/90 text-white text-[11px] font-mono font-bold tracking-widest uppercase inline-block border border-red-700">
                               HAPUS
                             </span>
                           ) : (
-                            <span className="px-2.5 py-1 bg-slate-100 dark:bg-slate-800/50 text-slate-400 dark:text-slate-500 text-[9px] font-mono font-bold tracking-widest uppercase inline-block border border-slate-200 dark:border-slate-700">
+                            <span className="px-2.5 py-1 bg-slate-100 dark:bg-slate-800/50 text-slate-400 dark:text-slate-500 text-[11px] font-mono font-bold tracking-widest uppercase inline-block border border-slate-200 dark:border-slate-700">
                               LEWATI
                             </span>
                           )}
@@ -282,7 +286,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
                       <td className="p-4 font-mono text-xs text-slate-500 dark:text-slate-300 uppercase text-center">{u.jenis}</td>
                       <td className="p-4 text-gunmetal dark:text-slate-300 uppercase text-center">{u.asal_satuan}</td>
                       <td className="p-4 text-center">
-                        <span className={`px-2 py-0.5 border text-[9px] font-bold tracking-widest uppercase inline-block mx-auto
+                        <span className={`px-2 py-0.5 border text-[11px] font-bold tracking-widest uppercase inline-block mx-auto
                           ${u.status_unit === 'Beroperasi' ? 'bg-camogreen/10 text-camogreen border-camogreen/30' :
                             u.status_unit === 'Rusak' ? 'bg-cighra-primary/10 dark:bg-cighra-gold/10 text-cighra-primary dark:text-cighra-gold border-cighra-primary dark:border-cighra-gold/30' :
                               u.status_unit === 'Perbaikan' ? 'bg-blue-900/10 text-blue-500 border-blue-800/30' :
@@ -291,7 +295,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
                           {u.status_unit === 'Perbaikan' ? 'Dalam Perbaikan' : u.status_unit}
                         </span>
                       </td>
-                      <td className="p-4 font-mono text-[10px] text-slate-500 dark:text-slate-400 text-center">{u.last_maintenance}</td>
+                      <td className="p-4 font-mono text-xs text-slate-500 dark:text-slate-400 text-center">{u.last_maintenance}</td>
 
                       {onRequestDelete && !isDeleteMode && (
                         <td className="p-4 text-center">

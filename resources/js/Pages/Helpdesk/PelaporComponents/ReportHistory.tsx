@@ -33,7 +33,7 @@ const ReportHistory: React.FC<ReportHistoryProps> = ({
           { label: 'SELESAI', value: stats.selesai, color: 'border-camogreen', text: 'text-camogreen' },
         ].map((s, i) => (
           <div key={i} className={`bg-white dark:bg-cighra-darkcard/80 border-l-4 ${s.color} p-3 shadow-md`}>
-            <p className="text-[9px] font-mono font-bold text-slate-500 dark:text-slate-300 tracking-widest uppercase mb-0.5">{s.label}</p>
+            <p className="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-300 tracking-widest uppercase mb-0.5">{s.label}</p>
             <p className={`text-xl font-tactical font-bold ${s.text}`}>{s.value}</p>
           </div>
         ))}
@@ -51,14 +51,14 @@ const ReportHistory: React.FC<ReportHistoryProps> = ({
               <button
                 key={t}
                 onClick={() => setFilterTime(t)}
-                className={`px-3 py-1.5 text-[9px] font-tactical font-bold tracking-widest transition-all ${filterTime === t ? 'bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white shadow-md' : 'text-slate-500 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
+                className={`px-3 py-1.5 text-[11px] font-tactical font-bold tracking-widest transition-all ${filterTime === t ? 'bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white shadow-md' : 'text-slate-500 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
               >
                 {t === 'ALL' ? 'SEMUA' : t === 'TODAY' ? 'HARI INI' : 'MINGGU INI'}
               </button>
             ))}
           </div>
           <div className="bg-cighra-primary/10 dark:bg-cighra-gold/10 border border-cighra-primary dark:border-cighra-gold/30 px-4 py-2 hidden sm:block">
-            <span className="text-[10px] font-mono text-cighra-primary dark:text-cighra-gold font-bold tracking-widest">TOTAL: {history.length} TIKET</span>
+            <span className="text-xs font-mono text-cighra-primary dark:text-cighra-gold font-bold tracking-widest">TOTAL: {history.length} TIKET</span>
           </div>
         </div>
       </div>
@@ -77,10 +77,10 @@ const ReportHistory: React.FC<ReportHistoryProps> = ({
             >
               <div className="flex justify-between items-start mb-3">
                 <div className="flex items-center gap-3">
-                  <span className="text-[10px] font-mono text-slate-500 dark:text-slate-300 bg-slate-100 dark:bg-cighra-darkcard/80 px-2 py-1 tracking-widest">{item.caseId}</span>
+                  <span className="text-xs font-mono text-slate-500 dark:text-slate-300 bg-slate-100 dark:bg-cighra-darkcard/80 px-2 py-1 tracking-widest">{item.caseId}</span>
                   <span className="text-xs font-mono text-slate-400 dark:text-slate-400 tracking-tighter uppercase">{item.kerusakan.tanggal}</span>
                 </div>
-                <div className={`px-3 py-1 text-[9px] font-tactical font-bold tracking-[0.2em] flex items-center gap-2 border uppercase shadow-sm
+                <div className={`px-3 py-1 text-[11px] font-tactical font-bold tracking-[0.2em] flex items-center gap-2 border uppercase shadow-sm
                   ${item.status === 'SELESAI' ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-500 border-green-200 dark:border-green-800' :
                     item.status === 'DITOLAK' ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-500 border-red-200 dark:border-red-800' :
                     item.status === 'PENDING' ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-500 border-yellow-200 dark:border-yellow-800' :
@@ -98,16 +98,16 @@ const ReportHistory: React.FC<ReportHistoryProps> = ({
               </p>
               <div className="mt-4 flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="text-[10px] text-slate-500 dark:text-slate-300 flex items-center gap-1 font-mono uppercase">
+                  <div className="text-xs text-slate-500 dark:text-slate-300 flex items-center gap-1 font-mono uppercase">
                     <Activity size={12} className="text-cighra-primary dark:text-cighra-gold" /> {item.kerusakan.lokasi}
                   </div>
                   {item.status === 'SELESAI' && item.perbaikan.tanggalSelesai && (
-                    <div className="text-[10px] text-camogreen font-bold font-mono flex items-center gap-1 uppercase">
+                    <div className="text-xs text-camogreen font-bold font-mono flex items-center gap-1 uppercase">
                       <CheckCircle2 size={12} /> SELESAI: {item.perbaikan.tanggalSelesai}
                     </div>
                   )}
                   {item.perbaikan.teknisi && item.status !== 'SELESAI' && (
-                    <div className="text-[10px] text-cighra-primary dark:text-cighra-gold font-bold font-mono flex items-center gap-1 uppercase">
+                    <div className="text-xs text-cighra-primary dark:text-cighra-gold font-bold font-mono flex items-center gap-1 uppercase">
                       [TEKNISI: {item.perbaikan.teknisi.toUpperCase()}]
                       {item.perbaikan.teknisi_wa && (
                         <a

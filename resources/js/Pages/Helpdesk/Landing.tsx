@@ -19,7 +19,7 @@ export default function Landing() {
             <p className="text-slate-600 dark:text-slate-300 font-tactical tracking-widest text-sm">
               &copy; {new Date().getFullYear()} SISFO DART (DYNAMIC AUTONOMOUS RETALIATORY TARGET) COMMAND CENTER.
             </p>
-            <p className="text-slate-500 dark:text-slate-400 text-[10px] mt-2 font-mono uppercase">
+            <p className="text-slate-500 dark:text-slate-400 text-xs mt-2 font-mono uppercase">
               CIGRHA APTA NIRBHAYA
             </p>
           </div>

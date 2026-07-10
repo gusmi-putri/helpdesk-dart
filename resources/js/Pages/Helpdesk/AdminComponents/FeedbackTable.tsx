@@ -17,7 +17,7 @@ const FeedbackTable: React.FC<FeedbackTableProps> = ({ dbFeedbacks }) => {
         <h3 className="text-white font-tactical font-bold text-lg tracking-widest flex items-center gap-3 uppercase">
           <MessageSquare className="text-yellow-500 w-6 h-6" /> PANEL EVALUASI & PENGADUAN
         </h3>
-        <span className="bg-yellow-500 text-black text-[10px] font-mono font-bold px-3 py-1 tracking-widest uppercase">
+        <span className="bg-yellow-500 text-black text-xs font-mono font-bold px-3 py-1 tracking-widest uppercase">
           {dbFeedbacks.length} Total Evaluasi
         </span>
       </div>
@@ -43,10 +43,10 @@ const FeedbackTable: React.FC<FeedbackTableProps> = ({ dbFeedbacks }) => {
                 <tr key={f.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/60 transition-colors group text-slate-800 dark:text-slate-200">
                   <td className="p-4 text-center">
                     <div className="font-bold text-slate-800 dark:text-white uppercase">{f.nama_pengirim}</div>
-                    <div className="text-[10px] font-mono text-slate-500">{f.tanggal}</div>
+                    <div className="text-xs font-mono text-slate-500">{f.tanggal}</div>
                   </td>
                   <td className="p-4 text-center">
-                    <span className="px-2 py-1 text-[10px] font-mono font-bold bg-gray-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-600 tracking-tighter uppercase">
+                    <span className="px-2 py-1 text-xs font-mono font-bold bg-gray-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-600 tracking-tighter uppercase">
                       {f.kategori}
                     </span>
                   </td>

@@ -167,7 +167,7 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
     };
     const b = badges[type] || { bg: 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200', icon: Clock, label: type };
     const Icon = b.icon;
-    return <span className={`${b.bg} border px-2 py-0.5 text-[9px] font-mono font-bold flex items-center gap-1`}><Icon size={10} /> {b.label}</span>;
+    return <span className={`${b.bg} border px-2 py-0.5 text-[11px] font-mono font-bold flex items-center gap-1`}><Icon size={10} /> {b.label}</span>;
   };
   return (
     <div className="space-y-6 animate-in fade-in duration-700">
@@ -216,7 +216,7 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                     <div className="flex-1 space-y-2 w-full">
                       <div className="flex flex-wrap items-center gap-2">
                         {getTypeBadge(m.type, isBatch)}
-                        <span className="bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800/40 px-2 py-0.5 text-[9px] font-mono font-bold animate-pulse">MENUNGGU</span>
+                        <span className="bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800/40 px-2 py-0.5 text-[11px] font-mono font-bold animate-pulse">MENUNGGU</span>
                       </div>
                       
                       {isBatch ? (
@@ -224,7 +224,7 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                           <p className="text-sm font-bold text-slate-800 dark:text-white uppercase">
                             PENGAJUAN TAMBAH MASSAL ({m.unit_data.length} UNIT)
                           </p>
-                          <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400">
+                          <p className="text-xs font-mono text-slate-500 dark:text-slate-400">
                             Diajukan: {m.created_at} oleh {m.requested_by}
                           </p>
                         </div>
@@ -233,7 +233,7 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                           <p className="text-sm font-bold text-slate-800 dark:text-white uppercase">
                             [{m.unit_data?.nomor_seri || '-'}]
                           </p>
-                          <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400">
+                          <p className="text-xs font-mono text-slate-500 dark:text-slate-400">
                             {m.unit_data?.jenis} — {m.unit_data?.asal_satuan} | Diajukan: {m.created_at} oleh {m.requested_by}
                           </p>
                         </div>
@@ -244,7 +244,7 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                       )}
                       {m.document_path && (
                         <a href={m.document_path} target="_blank" rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-[10px] font-mono text-cighra-primary dark:text-cighra-gold hover:underline mt-1">
+                          className="inline-flex items-center gap-1 text-xs font-mono text-cighra-primary dark:text-cighra-gold hover:underline mt-1">
                           <FileText size={12} /> LIHAT SURAT PENDUKUNG <ExternalLink size={10} />
                         </a>
                       )}
@@ -267,17 +267,17 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                       <textarea placeholder="Catatan Admin (opsional)..." value={reviewingMutation === m.id ? adminNotes : ''}
                         onChange={(e) => { setReviewingMutation(m.id); setAdminNotes(e.target.value); }}
                         onFocus={() => setReviewingMutation(m.id)}
-                        className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-2 py-1.5 text-[10px] font-mono resize-none h-16 focus:border-cighra-gold outline-none text-slate-800 dark:text-white" />
+                        className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-2 py-1.5 text-xs font-mono resize-none h-16 focus:border-cighra-gold outline-none text-slate-800 dark:text-white" />
                       <div className="flex gap-2">
                         {isBatch ? (
                           <>
                             <button onClick={() => handleApprove(m.id)} disabled={processing || pendingUnits.length === 0}
-                              className="flex-1 py-2 bg-green-600 text-white font-tactical text-[10px] tracking-widest hover:bg-green-700 transition-all flex items-center justify-center gap-1 disabled:opacity-50"
+                              className="flex-1 py-2 bg-green-600 text-white font-tactical text-xs tracking-widest hover:bg-green-700 transition-all flex items-center justify-center gap-1 disabled:opacity-50"
                               title="Setujui seluruh sisa unit yang pending">
                               <CheckCircle size={12} /> TERIMA SEMUA
                             </button>
                             <button onClick={() => handleReject(m.id)} disabled={processing || pendingUnits.length === 0}
-                              className="flex-1 py-2 bg-red-600 text-white font-tactical text-[10px] tracking-widest hover:bg-red-700 transition-all flex items-center justify-center gap-1 disabled:opacity-50"
+                              className="flex-1 py-2 bg-red-600 text-white font-tactical text-xs tracking-widest hover:bg-red-700 transition-all flex items-center justify-center gap-1 disabled:opacity-50"
                               title="Tolak seluruh sisa unit yang pending">
                               <XCircle size={12} /> TOLAK SEMUA
                             </button>
@@ -285,11 +285,11 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                         ) : (
                           <>
                             <button onClick={() => handleApprove(m.id)} disabled={processing}
-                              className="flex-1 py-2 bg-green-600 text-white font-tactical text-[10px] tracking-widest hover:bg-green-700 transition-all flex items-center justify-center gap-1 disabled:opacity-50">
+                              className="flex-1 py-2 bg-green-600 text-white font-tactical text-xs tracking-widest hover:bg-green-700 transition-all flex items-center justify-center gap-1 disabled:opacity-50">
                               <CheckCircle size={12} /> SETUJUI
                             </button>
                             <button onClick={() => handleReject(m.id)} disabled={processing}
-                              className="flex-1 py-2 bg-red-600 text-white font-tactical text-[10px] tracking-widest hover:bg-red-700 transition-all flex items-center justify-center gap-1 disabled:opacity-50">
+                              className="flex-1 py-2 bg-red-600 text-white font-tactical text-xs tracking-widest hover:bg-red-700 transition-all flex items-center justify-center gap-1 disabled:opacity-50">
                               <XCircle size={12} /> TOLAK
                             </button>
                           </>
@@ -421,10 +421,10 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                                   <td className="p-3 font-mono text-center">{idx + 1}</td>
                                   <td className="p-3 font-mono font-bold text-slate-800 dark:text-white text-center">{u.nomor_seri}</td>
 
-                                  <td className="p-3 uppercase font-mono text-[10px] text-center text-slate-800 dark:text-white">{u.jenis}</td>
+                                  <td className="p-3 uppercase font-mono text-xs text-center text-slate-800 dark:text-white">{u.jenis}</td>
                                   <td className="p-3 uppercase text-center text-slate-800 dark:text-white">{u.asal_satuan}</td>
                                   <td className="p-3 text-center">
-                                    <span className={`px-2 py-0.5 text-[9px] font-mono font-bold border rounded-sm
+                                    <span className={`px-2 py-0.5 text-[11px] font-mono font-bold border rounded-sm
                                       ${u.status === 'approved' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40' :
                                         u.status === 'rejected' ? 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/40' :
                                         'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800/40 animate-pulse'
@@ -439,7 +439,7 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                                         type="button"
                                         disabled={processing || !isItemPending}
                                         onClick={() => handleApproveUnit(m.id, idx)}
-                                        className="px-2 py-1 bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white font-mono text-[10px] rounded-sm transition-colors cursor-pointer"
+                                        className="px-2 py-1 bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white font-mono text-xs rounded-sm transition-colors cursor-pointer"
                                         title="Setujui unit ini saja"
                                       >
                                         Terima
@@ -448,7 +448,7 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                                         type="button"
                                         disabled={processing || !isItemPending}
                                         onClick={() => handleRejectUnit(m.id, idx)}
-                                        className="px-2 py-1 bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white font-mono text-[10px] rounded-sm transition-colors cursor-pointer"
+                                        className="px-2 py-1 bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white font-mono text-xs rounded-sm transition-colors cursor-pointer"
                                         title="Tolak unit ini saja"
                                       >
                                         Tolak
@@ -498,10 +498,10 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                       <td className="p-4 uppercase text-slate-800 dark:text-white text-center">{u.nama_satuan || '-'}</td>
                       <td className="p-4 uppercase text-slate-800 dark:text-white text-center">{u.jenis}</td>
                       <td className="p-4 uppercase text-slate-800 dark:text-white text-center">{u.asal_satuan}</td>
-                      <td className="p-4 text-slate-800 dark:text-white font-mono text-[10px] text-center">{u.deleted_at}</td>
+                      <td className="p-4 text-slate-800 dark:text-white font-mono text-xs text-center">{u.deleted_at}</td>
                       <td className="p-4 text-center">
                         <button onClick={() => setRestoreModal({ isOpen: true, unit: u })}
-                          className="px-3 py-1.5 bg-purple-600 text-white font-tactical text-[10px] tracking-widest hover:bg-purple-700 transition-all flex items-center gap-1 mx-auto cursor-pointer">
+                          className="px-3 py-1.5 bg-purple-600 text-white font-tactical text-xs tracking-widest hover:bg-purple-700 transition-all flex items-center gap-1 mx-auto cursor-pointer">
                           <RotateCcw size={12} /> KEMBALIKAN
                         </button>
                       </td>
@@ -541,7 +541,7 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                     <div className="flex-1 space-y-1 w-full">
                       <div className="flex flex-wrap items-center gap-2">
                         {getTypeBadge(m.type, isBatch)}
-                        <span className={`px-2 py-0.5 text-[9px] font-mono font-bold border ${m.status === 'approved' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40' : 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/40'}`}>
+                        <span className={`px-2 py-0.5 text-[11px] font-mono font-bold border ${m.status === 'approved' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40' : 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/40'}`}>
                           {m.status === 'approved' ? 'DISETUJUI' : 'DITOLAK'}
                         </span>
                       </div>
@@ -579,10 +579,10 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                                     <tr key={uIdx} className="hover:bg-slate-100 dark:hover:bg-slate-800/30">
                                       <td className="p-2 font-mono text-center">{uIdx + 1}</td>
                                       <td className="p-2 font-mono font-bold text-slate-800 dark:text-white text-center">{u.nomor_seri}</td>
-                                      <td className="p-2 uppercase text-[10px] text-center text-slate-800 dark:text-white">{u.jenis}</td>
-                                      <td className="p-2 uppercase text-[10px] text-center text-slate-800 dark:text-white">{u.asal_satuan}</td>
+                                      <td className="p-2 uppercase text-xs text-center text-slate-800 dark:text-white">{u.jenis}</td>
+                                      <td className="p-2 uppercase text-xs text-center text-slate-800 dark:text-white">{u.asal_satuan}</td>
                                       <td className="p-2 text-center">
-                                        <span className={`px-2 py-0.5 text-[9px] font-mono font-bold border rounded-sm
+                                        <span className={`px-2 py-0.5 text-[11px] font-mono font-bold border rounded-sm
                                           ${u.status === 'approved' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40' :
                                             u.status === 'rejected' ? 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/40' :
                                             'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800/40'
@@ -605,7 +605,7 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                       {m.reason && <p className="text-xs text-slate-600 dark:text-slate-300 italic">"{m.reason}"</p>}
                       {m.admin_notes && <p className="text-xs text-blue-700 dark:text-blue-400"><strong>Admin:</strong> {m.admin_notes}</p>}
                     </div>
-                    <div className="text-right text-[10px] font-mono text-slate-500 dark:text-slate-400 shrink-0 space-y-0.5">
+                    <div className="text-right text-xs font-mono text-slate-500 dark:text-slate-400 shrink-0 space-y-0.5">
                       <p>Diajukan: {m.created_at}</p>
                       <p>Oleh: {m.requested_by}</p>
                       {m.approved_by && <p>Diproses: {m.approved_by}</p>}
@@ -647,7 +647,7 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                 <p className="text-sm font-bold text-purple-700 dark:text-purple-300 uppercase">
                   [{restoreModal.unit?.nomor_seri}]
                 </p>
-                <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400">
+                <p className="text-xs font-mono text-slate-500 dark:text-slate-400">
                   {restoreModal.unit?.jenis} — {restoreModal.unit?.asal_satuan}
                 </p>
               </div>

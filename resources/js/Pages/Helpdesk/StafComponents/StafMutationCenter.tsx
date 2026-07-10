@@ -33,7 +33,7 @@ const StafMutationCenter: React.FC<StafMutationCenterProps> = ({
         >
           <Users className="w-4 h-4" /> PERSONEL
           {pendingPersonelCount > 0 && (
-            <span className="bg-cighra-gold text-slate-900 font-bold text-[10px] px-1.5 py-0.5 rounded-full ml-1">{pendingPersonelCount}</span>
+            <span className="bg-cighra-gold text-slate-900 font-bold text-xs px-1.5 py-0.5 rounded-full ml-1">{pendingPersonelCount}</span>
           )}
         </button>
         <button
@@ -46,7 +46,7 @@ const StafMutationCenter: React.FC<StafMutationCenterProps> = ({
         >
           <Package className="w-4 h-4" /> INVENTARIS
           {pendingMutationsCount > 0 && (
-            <span className="bg-cighra-gold text-slate-900 font-bold text-[10px] px-1.5 py-0.5 rounded-full ml-1">{pendingMutationsCount}</span>
+            <span className="bg-cighra-gold text-slate-900 font-bold text-xs px-1.5 py-0.5 rounded-full ml-1">{pendingMutationsCount}</span>
           )}
         </button>
       </div>

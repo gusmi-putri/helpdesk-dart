@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Users, Search, Plus, Eye, Edit, Trash2, Power } from 'lucide-react';
+import { EmptyState } from '@/Components/ui/EmptyState';
 import { useTableSort } from '@/hooks/useTableSort';
 import SortableHeader from '@/Components/Table/SortableHeader';
 import { Modal } from '@/Components/ui/Modal';
@@ -172,22 +173,28 @@ const UsersTable: React.FC<UsersTableProps> = ({
           <Users className="text-cighra-gold w-6 h-6" /> MANAJEMEN PERSONEL
         </h3>
         <div className="flex items-center gap-4">
-          <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400 dark:text-slate-300" />
-            <input
-              type="text"
-              placeholder="CARI NAMA / NRP / HAK AKSES..."
-              value={userSearch}
-              onChange={(e) => setUserSearch(e.target.value)}
-              className="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 pl-9 pr-4 py-2 text-sm font-mono text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:border-cighra-gold transition-colors w-64 uppercase shadow-sm"
-            />
-          </div>
           <button
             onClick={handleAddUser}
             className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-cighra-primary dark:border-cighra-gold shadow-lg uppercase"
           >
             <Plus className="w-4 h-4" /> TAMBAH USER
           </button>
+        </div>
+      </div>
+
+      <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+        <div className="w-full md:w-96">
+          <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">CARI PERSONEL</label>
+          <div className="relative">
+            <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400 dark:text-slate-500" />
+            <input
+              type="text"
+              placeholder="CARI NAMA / NRP / HAK AKSES..."
+              value={userSearch}
+              onChange={(e) => setUserSearch(e.target.value)}
+              className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 pl-9 pr-4 py-2 text-sm font-mono text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold transition-colors uppercase shadow-sm"
+            />
+          </div>
         </div>
       </div>
       <div className="overflow-x-auto">
@@ -217,7 +224,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
                 <td className="p-4 text-slate-800 dark:text-white font-bold text-center">{u.name}</td>
                 <td className="p-4 font-mono text-xs text-slate-800 dark:text-white lowercase text-center">{u.email}</td>
                 <td className="p-4 text-center">
-                  <span className={`px-3 py-1 text-[10px] font-mono font-bold tracking-widest border
+                  <span className={`px-3 py-1 text-xs font-mono font-bold tracking-widest border
                     ${u.role === 'Admin' ? 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800/40' :
                       u.role === 'Staf' ? 'bg-olive/10 dark:bg-green-900/20 text-olive dark:text-green-400 border-olive/30 dark:border-green-800/40' :
                         u.role === 'Teknisi' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800/40' :
@@ -229,7 +236,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
                 <td className="p-4 text-center">
                   <div className="flex items-center justify-center gap-2">
                     <span className={`w-2 h-2 rounded-full ${u.status === 'Aktif' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-pulse' : 'bg-slate-300 dark:bg-slate-600'}`}></span>
-                    <span className={`text-[10px] font-bold tracking-widest uppercase ${u.status === 'Aktif' ? 'text-green-600 dark:text-green-500' : 'text-slate-400 dark:text-slate-500'}`}>
+                    <span className={`text-xs font-bold tracking-widest uppercase ${u.status === 'Aktif' ? 'text-green-600 dark:text-green-500' : 'text-slate-400 dark:text-slate-500'}`}>
                       {u.status}
                     </span>
                   </div>
