@@ -51,7 +51,7 @@ const LogsTable: React.FC<LogsTableProps> = ({
 
       <div className="bg-white dark:bg-cighra-darkcard/70 border border-slate-200 dark:border-slate-600 shadow-xl overflow-hidden relative">
         <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-cighra-gold via-yellow-400 to-transparent shadow-[0_0_10px_rgba(234,179,8,0.3)]"></div>
-        <div className="p-3 border-b border-slate-200 dark:border-slate-600/50 flex justify-between items-center bg-slate-800">
+        <div className="p-3 border-b border-white/10 flex justify-between items-center bg-cighra-primary dark:bg-slate-800">
           <h3 className="text-white font-mono font-bold text-xs tracking-widest flex items-center gap-2 uppercase">
             <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div> /var/log/helpdesk_audit.log
           </h3>
@@ -59,7 +59,7 @@ const LogsTable: React.FC<LogsTableProps> = ({
         </div>
         <div className="overflow-x-auto max-h-[600px] overflow-y-auto custom-scrollbar">
           <table className="w-full text-left font-mono text-xs border-collapse">
-            <thead className="bg-slate-800 border-b border-slate-700 sticky top-0 z-10">
+            <thead className="bg-cighra-primary dark:bg-slate-800 border-b border-white/10 text-white sticky top-0 z-10">
               <tr>
                 <SortableHeader label="TIMESTAMP" sortKey="time" currentSort={sortConfig} onSort={handleSort} className="w-44 uppercase" />
                 <SortableHeader label="SEVERITY" sortKey="level" currentSort={sortConfig} onSort={handleSort} className="w-28 uppercase" />
@@ -67,7 +67,7 @@ const LogsTable: React.FC<LogsTableProps> = ({
                 <SortableHeader label="ACTION PAYLOAD" sortKey="activity" currentSort={sortConfig} onSort={handleSort} className="uppercase" />
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-gray-800 bg-white dark:bg-cighra-dark">
+            <tbody className="divide-y divide-slate-200/60 dark:divide-slate-700/50 bg-blue-50/40 dark:bg-transparent">
               {filteredLogs.length === 0 ? (
                 <tr>
                   <td colSpan={4} className="p-10 text-center text-slate-400 italic tracking-widest uppercase">No records found for filter: {logFilter}</td>

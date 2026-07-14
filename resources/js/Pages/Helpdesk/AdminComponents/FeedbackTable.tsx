@@ -13,7 +13,7 @@ const FeedbackTable: React.FC<FeedbackTableProps> = ({ dbFeedbacks }) => {
   return (
     <div className="bg-white dark:bg-cighra-darkcard/70 border border-slate-200 dark:border-slate-600 shadow-xl overflow-hidden animate-in fade-in relative">
       <div className="absolute top-0 left-0 w-full h-[2px] bg-yellow-500"></div>
-      <div className="p-5 border-b border-slate-200 dark:border-slate-600/50 flex justify-between items-center bg-slate-800">
+      <div className="p-5 border-b border-white/10 flex justify-between items-center bg-cighra-primary dark:bg-slate-800">
         <h3 className="text-white font-tactical font-bold text-lg tracking-widest flex items-center gap-3 uppercase">
           <MessageSquare className="text-yellow-500 w-6 h-6" /> PANEL EVALUASI & PENGADUAN
         </h3>
@@ -23,7 +23,7 @@ const FeedbackTable: React.FC<FeedbackTableProps> = ({ dbFeedbacks }) => {
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-left font-sans text-sm">
-          <thead className="bg-slate-800 border-b border-slate-700">
+          <thead className="bg-cighra-primary dark:bg-slate-800 border-b border-white/10 text-white">
             <tr>
               <SortableHeader label="PENGIRIM" sortKey="nama_pengirim" currentSort={sortConfig} onSort={handleSort} className="w-48" />
               <SortableHeader label="KATEGORI" sortKey="kategori" currentSort={sortConfig} onSort={handleSort} className="w-32" />
@@ -31,7 +31,7 @@ const FeedbackTable: React.FC<FeedbackTableProps> = ({ dbFeedbacks }) => {
               <SortableHeader label="RINCIAN EVALUASI" />
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100 dark:divide-gray-800 bg-white dark:bg-transparent">
+          <tbody className="divide-y divide-slate-200/60 dark:divide-slate-700/50 bg-blue-50/40 dark:bg-transparent">
             {dbFeedbacks.length === 0 ? (
               <tr>
                 <td colSpan={4} className="p-20 text-center text-slate-500 italic font-mono uppercase tracking-widest">
