@@ -91,7 +91,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
         </div>
       }
     >
-      <form id="userEditForm" onSubmit={onSubmit} className="p-8 space-y-8">
+      <form id="userEditForm" onSubmit={onSubmit} className="space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
           <div>
             <label className="block text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">NRP / NIP</label>

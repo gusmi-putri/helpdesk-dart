@@ -37,15 +37,15 @@ const PelaporReportDetailModal: React.FC<PelaporReportDetailModalProps> = ({ isO
             <div className="space-y-4">
               <h4 className="text-xs font-mono font-bold text-slate-500 tracking-[0.2em] border-b border-slate-200 dark:border-slate-600/50 pb-2 uppercase">DATA PELAPORAN</h4>
               <div className="space-y-3">
-                <div>
+                <div className="p-4 bg-slate-50 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 space-y-1 rounded-sm">
                   <p className="text-[11px] text-slate-500 font-mono uppercase tracking-widest">Barang Rusak</p>
                   <p className="text-sm font-bold text-slate-800 dark:text-white uppercase">{report.kerusakan.barangRusak}</p>
                 </div>
-                <div>
+                <div className="p-4 bg-slate-50 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 space-y-1 rounded-sm">
                   <p className="text-[11px] text-slate-500 font-mono uppercase tracking-widest">Lokasi Kejadian</p>
                   <p className="text-sm font-bold text-cighra-primary dark:text-cighra-gold uppercase">{report.kerusakan.lokasi}</p>
                 </div>
-                <div>
+                <div className="p-4 bg-slate-50 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 space-y-1 rounded-sm">
                   <p className="text-[11px] text-slate-500 font-mono uppercase tracking-widest">Jenis Perbaikan</p>
                   <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-mono font-bold border mt-1 uppercase ${
                     report.kerusakan.jenisPerbaikan === 'Non-Swadaya'
@@ -55,7 +55,7 @@ const PelaporReportDetailModal: React.FC<PelaporReportDetailModalProps> = ({ isO
                     <Wallet className="w-3 h-3" /> {report.kerusakan.jenisPerbaikan || 'Swadaya'}
                   </span>
                 </div>
-                <div>
+                <div className="p-4 bg-slate-50 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 space-y-1 rounded-sm">
                   <p className="text-[11px] text-slate-500 font-mono uppercase tracking-widest font-bold">Prioritas Penanganan</p>
                   <span className={`inline-block px-2 py-0.5 text-xs font-mono font-bold border mt-1 uppercase ${
                     report.kerusakan.urgensi?.toUpperCase() === 'SANGAT MENDESAK'
@@ -67,7 +67,7 @@ const PelaporReportDetailModal: React.FC<PelaporReportDetailModalProps> = ({ isO
                     {report.kerusakan.urgensi || 'NORMAL'}
                   </span>
                 </div>
-                <div>
+                <div className="p-4 bg-slate-50 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 space-y-1 rounded-sm">
                   <p className="text-[11px] text-slate-500 font-mono uppercase tracking-widest font-bold">Tingkat Kerusakan</p>
                   <span className={`inline-block px-2 py-0.5 text-xs font-mono font-bold border mt-1 uppercase ${
                     ['PARAH', 'BERAT'].includes(report.kerusakan.tingkatKerusakan?.toUpperCase() || '')
@@ -79,7 +79,7 @@ const PelaporReportDetailModal: React.FC<PelaporReportDetailModalProps> = ({ isO
                     {report.kerusakan.tingkatKerusakan || 'UMUM'}
                   </span>
                 </div>
-                <div>
+                <div className="p-4 bg-slate-50 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 space-y-1 rounded-sm">
                   <p className="text-[11px] text-slate-500 font-mono uppercase tracking-widest">Waktu Selesai</p>
                   <p className="text-sm font-mono text-slate-600 dark:text-slate-300">{report.perbaikan.tanggalSelesai || '-'}</p>
                 </div>
@@ -90,7 +90,7 @@ const PelaporReportDetailModal: React.FC<PelaporReportDetailModalProps> = ({ isO
             <div className="space-y-4">
               <h4 className="text-xs font-mono font-bold text-slate-500 tracking-[0.2em] border-b border-slate-200 dark:border-slate-600/50 pb-2 uppercase">STATUS SISTEM</h4>
               <div className="space-y-3">
-                <div>
+                <div className="p-4 bg-slate-50 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 space-y-1 rounded-sm">
                   <p className="text-[11px] text-slate-500 font-mono uppercase tracking-widest">Status Perbaikan</p>
                   <span className={`inline-block px-3 py-1 text-xs font-tactical font-bold tracking-widest border mt-1
                     ${report.status === 'SELESAI' ? 'bg-green-900/20 text-green-500 border-green-800' :
@@ -101,7 +101,7 @@ const PelaporReportDetailModal: React.FC<PelaporReportDetailModalProps> = ({ isO
                     {report.perbaikan.statusPerbaikan || report.status}
                   </span>
                 </div>
-                <div>
+                <div className="p-4 bg-slate-50 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 space-y-1 rounded-sm">
                   <p className="text-[11px] text-slate-500 font-mono uppercase tracking-widest">Teknisi Penanggung Jawab</p>
                   <p className="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-2">
                     <Wrench size={14} className="text-cighra-primary dark:text-cighra-gold" /> {report.perbaikan.teknisi ? report.perbaikan.teknisi.toUpperCase() : 'MENUNGGU KONFIRMASI'}
