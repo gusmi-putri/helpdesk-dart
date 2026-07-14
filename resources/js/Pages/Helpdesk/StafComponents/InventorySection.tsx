@@ -279,9 +279,10 @@ const InventorySection: React.FC<InventorySectionProps> = ({
       <div className="bg-white dark:bg-cighra-darkcard/70 border border-slate-200 dark:border-slate-600 rounded-sm overflow-hidden shadow-xl mt-4">
         
         {/* Card Header (Navy) */}
-        <div className="p-4 border-b border-slate-200 dark:border-slate-600 bg-slate-800 flex items-center justify-between text-white">
+        <div className="p-4 border-b border-white/10 bg-cighra-primary dark:bg-slate-800 flex items-center justify-between text-white">
           <h3 className="font-tactical tracking-widest text-sm flex items-center gap-2">
-            <Package className="w-4 h-4 text-cighra-gold" /> DATABASE INVENTARIS UNIT
+            <Package className="w-4 h-4 text-cighra-gold" />
+            <span className="font-bold">DATABASE INVENTARIS UNIT</span>
           </h3>
           <span className="bg-slate-700 text-slate-300 text-[10px] font-mono px-2.5 py-1 rounded-sm uppercase font-bold tracking-widest">
             {filteredUnits.length} Unit
@@ -309,7 +310,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
         <div className="overflow-x-auto custom-scrollbar">
           <table className="w-full text-left font-sans table-fixed min-w-[800px]">
             {/* Table Header */}
-            <thead className="bg-slate-800 border-b border-slate-700">
+            <thead className="bg-cighra-primary dark:bg-slate-800 border-b border-white/10 text-white">
               <tr>
                 {isDeleteMode && (
                   <th className="p-4 w-[8%] text-center text-red-400 font-tactical tracking-widest uppercase">
@@ -328,7 +329,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
             </thead>
             
             {/* Table Body */}
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50 bg-white dark:bg-transparent">
+            <tbody className="divide-y divide-slate-200/60 dark:divide-slate-700/50 bg-blue-50/40 dark:bg-transparent">
               {paginatedUnits.length === 0 ? (
                 <tr>
                   <td colSpan={isDeleteMode ? 7 : 6} className="p-12 text-center">
@@ -343,7 +344,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
                 paginatedUnits.map((u: any) => (
                   <tr 
                     key={u.db_id} 
-                    className={`hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group cursor-pointer ${
+                    className={`hover:bg-blue-100/50 dark:hover:bg-slate-700/30 transition-colors group cursor-pointer ${
                       selectedUnitIds.includes(u.db_id) ? 'bg-red-50/50' : ''
                     }`}
                     onClick={() => isDeleteMode && toggleSelectUnit(u.db_id)}

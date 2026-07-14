@@ -91,7 +91,7 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
         <div className="absolute top-0 left-0 w-full h-[2px] bg-cighra-primary dark:bg-cighra-gold"></div>
 
         {/* 2. Header Area (Row 1) */}
-        <div className="p-5 border-b border-slate-200 dark:border-slate-600 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-800">
+        <div className="p-5 border-b border-white/10 bg-cighra-primary dark:bg-slate-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-white">
           <h3 className="text-white font-tactical font-bold text-lg tracking-widest flex items-center gap-3 uppercase">
             <Radar className="text-cighra-gold w-6 h-6" /> {activeSubReport === 'KERUSAKAN' ? 'LAPORAN KERUSAKAN' : 'LAPORAN PERBAIKAN'}
           </h3>

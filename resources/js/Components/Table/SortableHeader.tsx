@@ -23,7 +23,7 @@ const SortableHeader: React.FC<SortableHeaderProps> = ({
   
   return (
     <th 
-      className={`p-4 text-center whitespace-nowrap tracking-widest uppercase ${sortKey ? 'cursor-pointer transition-colors' : ''} ${isDark ? 'text-white font-tactical hover:bg-slate-700/50' : ''} ${className}`}
+      className={`p-4 text-xs text-center whitespace-nowrap tracking-widest uppercase font-bold ${sortKey ? 'cursor-pointer transition-colors' : ''} ${isDark ? 'text-white font-tactical hover:bg-slate-700/50' : ''} ${className}`}
       style={width ? { width } : undefined}
       onClick={() => { if (sortKey && onSort) onSort(sortKey); }}
     >

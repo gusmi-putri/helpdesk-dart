@@ -244,7 +244,7 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
       <div className="bg-white dark:bg-cighra-darkcard/70 border border-slate-200 dark:border-slate-600 rounded-sm overflow-hidden shadow-xl mt-4">
 
         {/* Card Header (Navy) */}
-        <div className="p-4 border-b border-slate-200 dark:border-slate-600 bg-slate-800 flex items-center justify-between text-white">
+        <div className="p-4 border-b border-white/10 bg-cighra-primary dark:bg-slate-800 flex items-center justify-between text-white">
           <h3 className="font-tactical tracking-widest text-sm flex items-center gap-2">
             <CheckCircle className="w-4 h-4 text-cighra-gold" /> DAFTAR ARSIP
           </h3>
@@ -255,7 +255,7 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
           <table className="w-full text-center font-sans">
 
             {/* Table Header */}
-            <thead className="bg-slate-800 border-b border-slate-700">
+            <thead className="bg-cighra-primary dark:bg-slate-800 border-b border-white/10 text-white">
               <tr>
                 <SortableHeader label="ID TIKET" sortKey="caseId" currentSort={sortConfig} onSort={handleSort} />
                 <SortableHeader label="DETAIL KERUSAKAN" />
@@ -266,7 +266,7 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
             </thead>
 
             {/* Table Body */}
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-600 bg-white dark:bg-transparent">
+            <tbody className="divide-y divide-slate-200/60 dark:divide-slate-700/50 bg-blue-50/40 dark:bg-transparent">
               {paginatedReports.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="p-8">
@@ -281,7 +281,7 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                 paginatedReports.map((report: any) => (
                   <tr
                     key={report.db_id}
-                    className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors text-slate-800 dark:text-white"
+                    className="hover:bg-blue-100/50 dark:hover:bg-slate-700/30 transition-colors text-slate-800 dark:text-white"
                   >
                     {/* TIKET & STATUS */}
                     <td className="p-4 text-center">

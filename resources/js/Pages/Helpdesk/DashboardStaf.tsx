@@ -269,7 +269,7 @@ const DashboardStaf = (props: any) => {
           {/* Scrollable Content Container */}
           <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar z-10">
             <div className="max-w-[1400px] mx-auto">
-              <div className="mb-4 flex justify-between items-end border-b border-slate-200 dark:border-slate-600 pb-3">
+              <div className="mb-2 flex justify-between items-end border-b border-slate-200 dark:border-slate-600 pb-3">
                 <div>
                   <h2 className="text-2xl font-tactical font-bold text-slate-800 dark:text-white tracking-widest uppercase">
                     {activeMenu === 'MASUK' ? 'MANAJEMEN LAPORAN MASUK' :

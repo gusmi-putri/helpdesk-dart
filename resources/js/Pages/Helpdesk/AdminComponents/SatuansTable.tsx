@@ -156,7 +156,7 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
       <div className="absolute top-0 left-0 w-full h-[2px] bg-cighra-primary dark:bg-cighra-gold"></div>
       
       {/* Header */}
-      <div className="px-5 py-3.5 border-b border-slate-200 dark:border-slate-600 flex items-center justify-between bg-slate-800">
+      <div className="px-5 py-3.5 border-b border-white/10 bg-cighra-primary dark:bg-slate-800 flex items-center justify-between text-white">
         <h3 className="text-white font-tactical font-bold text-base tracking-widest flex items-center gap-3 uppercase m-0 leading-none">
           <MapPin className="text-cighra-gold w-5 h-5" /> DATA SATUAN
         </h3>
@@ -173,7 +173,7 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
       {/* Table */}
       <div className="overflow-x-auto custom-scrollbar">
         <table className="w-full text-left font-sans text-xs block md:table">
-          <thead className="bg-slate-800 border-b border-slate-700 hidden md:table-header-group">
+          <thead className="bg-cighra-primary dark:bg-slate-800 border-b border-white/10 hidden md:table-header-group text-white">
             <tr>
               <SortableHeader label="KODE" sortKey="kode_satuan" currentSort={sortConfig} onSort={handleSort} width="10%" />
               <SortableHeader label="NAMA SATUAN" sortKey="nama_satuan" currentSort={sortConfig} onSort={handleSort} width="24%" />
@@ -184,7 +184,7 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
               <SortableHeader label="AKSI" width="5%" />
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50 block md:table-row-group w-full">
+          <tbody className="divide-y divide-slate-200/60 dark:divide-slate-700/50 bg-blue-50/40 dark:bg-transparent block md:table-row-group w-full">
             {filteredSatuans.length === 0 ? (
               <tr>
                 <td colSpan={7} className="p-8">
@@ -197,7 +197,7 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
               </tr>
             ) : (
               filteredSatuans.map((satuan: any) => (
-                <tr key={satuan.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group bg-white dark:bg-transparent flex flex-col md:table-row border-b md:border-b-0 border-slate-100 dark:border-slate-700/50">
+                <tr key={satuan.id} className="hover:bg-blue-100/50 dark:hover:bg-slate-700/30 transition-colors group bg-white dark:bg-transparent flex flex-col md:table-row border-b md:border-b-0 border-slate-100 dark:border-slate-700/50">
                   <td className="p-4 md:p-3 md:px-5 font-mono text-slate-600 dark:text-slate-400 md:text-left block md:table-cell relative" title={satuan.kode_satuan || '-'}>
                     <span className="md:hidden text-[10px] font-bold text-slate-400 uppercase block mb-1">KODE</span>
                     <span className="block truncate font-bold text-[11px] md:font-normal">{satuan.kode_satuan || '-'}</span>
