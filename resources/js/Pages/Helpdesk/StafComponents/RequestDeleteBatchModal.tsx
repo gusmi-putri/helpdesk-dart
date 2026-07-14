@@ -20,7 +20,7 @@ const RequestDeleteBatchModal: React.FC<RequestDeleteBatchModalProps> = ({ isOpe
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!document) return;
-    
+
     onSubmit(reason, document);
   };
 
@@ -71,8 +71,8 @@ const RequestDeleteBatchModal: React.FC<RequestDeleteBatchModalProps> = ({ isOpe
               <div className="max-h-24 overflow-y-auto custom-scrollbar mt-2 border border-red-200 dark:border-red-800/40 divide-y divide-red-200 dark:divide-red-800/40">
                 {selectedUnits.map((u, i) => (
                   <div key={u.db_id} className="text-xs font-mono text-red-700 dark:text-red-400 bg-white/50 dark:bg-black/20 p-1.5 flex gap-2">
-                     <span className="font-bold w-4">{i + 1}.</span> 
-                     <span>[{u.nomor_seri}]</span>
+                    <span className="font-bold w-4">{i + 1}.</span>
+                    <span>[{u.nomor_seri}]</span>
                   </div>
                 ))}
               </div>

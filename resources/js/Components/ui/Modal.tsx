@@ -41,7 +41,7 @@ export const Modal: React.FC<ModalProps> = ({
 
       {/* Modal Dialog */}
       <div className={`relative bg-white dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full ${maxWidthClasses[maxWidth]} shadow-[0_0_80px_rgba(0,0,0,0.5)] animate-in zoom-in-95 duration-200 rounded-sm overflow-hidden flex flex-col max-h-[90vh]`}>
-        
+
         {/* Header */}
         <div className="p-5 border-b border-cighra-primary dark:border-cighra-gold bg-red-500/10 dark:bg-red-900/10 flex items-center justify-between shrink-0 relative">
           <div className="flex items-center gap-4">
@@ -54,9 +54,9 @@ export const Modal: React.FC<ModalProps> = ({
               {title}
             </h3>
           </div>
-          
-          <button 
-            onClick={onClose} 
+
+          <button
+            onClick={onClose}
             className="p-2 text-slate-500 hover:text-white hover:bg-red-600 dark:text-slate-400 dark:hover:text-white dark:hover:bg-red-600 transition-colors rounded-sm"
           >
             <X className="w-5 h-5" />
