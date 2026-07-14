@@ -239,6 +239,46 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
         ))}
       </div>
 
+      <div className="flex flex-col md:flex-row flex-wrap gap-4 items-end mb-4 mt-2">
+        <div className="w-full md:w-72">
+          <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">CARI PERANGKAT</label>
+          <div className="relative">
+            <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
+            <input
+              type="text"
+              placeholder="SN / KETERANGAN..."
+              value={unitSearch}
+              onChange={(e) => setUnitSearch(e.target.value)}
+              className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 pl-10 pr-4 py-2.5 text-xs font-mono font-medium text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold focus:ring-1 focus:ring-cighra-primary/30 transition-all uppercase rounded-none"
+            />
+          </div>
+        </div>
+        <div className="w-full md:w-56">
+          <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">JENIS UNIT</label>
+          <select
+            value={filterJenis}
+            onChange={(e) => setFilterJenis(e.target.value)}
+            className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-3 py-2.5 text-xs font-mono font-medium text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold focus:ring-1 focus:ring-cighra-primary/30 transition-all uppercase rounded-none"
+          >
+            {jenisOptions.map((o: any) => (
+              <option key={o} value={o}>{o === 'ALL' ? 'SEMUA JENIS' : o}</option>
+            ))}
+          </select>
+        </div>
+        <div className="w-full md:w-56">
+          <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">SATUAN</label>
+          <select
+            value={filterSatuan}
+            onChange={(e) => setFilterSatuan(e.target.value)}
+            className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-3 py-2.5 text-xs font-mono font-medium text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold focus:ring-1 focus:ring-cighra-primary/30 transition-all uppercase rounded-none"
+          >
+            {satuanOptions.map((o: any) => (
+              <option key={o} value={o}>{o === 'ALL' ? 'SEMUA SATUAN' : o}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
       <div className="bg-white dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600 shadow-2xl overflow-hidden relative">
         <div className="absolute top-0 left-0 w-full h-[2px] bg-cighra-primary dark:bg-cighra-gold"></div>
         <div className="p-5 border-b border-slate-200 dark:border-slate-600 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-800">
@@ -274,46 +314,9 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
           </div>
         </div>
 
-        {/* Filter Row */}
-        <div className="p-4 bg-slate-50 dark:bg-cighra-dark/30 border-b border-slate-200 dark:border-slate-600 flex flex-col md:flex-row gap-4 items-center">
-          <div className="w-full md:w-72">
-            <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">CARI PERANGKAT</label>
-            <div className="relative">
-              <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
-              <input
-                type="text"
-                placeholder="SN / KETERANGAN..."
-                value={unitSearch}
-                onChange={(e) => setUnitSearch(e.target.value)}
-                className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 pl-9 pr-4 py-2 text-xs font-mono text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold transition-colors uppercase"
-              />
-            </div>
-          </div>
-          <div className="w-full md:w-56">
-            <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">JENIS UNIT</label>
-            <select
-              value={filterJenis}
-              onChange={(e) => setFilterJenis(e.target.value)}
-              className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-3 py-2 text-xs font-mono text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold transition-colors uppercase"
-            >
-              {jenisOptions.map((o: any) => (
-                <option key={o} value={o}>{o === 'ALL' ? 'SEMUA JENIS' : o}</option>
-              ))}
-            </select>
-          </div>
-          <div className="w-full md:w-56">
-            <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">SATUAN</label>
-            <select
-              value={filterSatuan}
-              onChange={(e) => setFilterSatuan(e.target.value)}
-              className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-3 py-2 text-xs font-mono text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold transition-colors uppercase"
-            >
-              {satuanOptions.map((o: any) => (
-                <option key={o} value={o}>{o === 'ALL' ? 'SEMUA SATUAN' : o}</option>
-              ))}
-            </select>
-          </div>
-        </div>
+
+
+
 
         {isDeleteMode && (
           <div className="p-4 bg-red-500/5 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center text-xs font-mono text-red-600 dark:text-red-400">

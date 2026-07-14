@@ -1,5 +1,10 @@
-import React, { useState } from 'react';
-import { Search, Plus, Trash2, CheckSquare, Upload, Package } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { 
+  Search, Plus, Trash2, CheckSquare, Upload, Package, 
+  CheckCircle, Wrench, XCircle, ChevronLeft, ChevronRight,
+  MoreVertical, FileArchive, Trash, CheckCircle2, AlertTriangle, Calendar,
+  RotateCcw
+} from 'lucide-react';
 import SortableHeader from '@/Components/Table/SortableHeader';
 import { EmptyState } from '@/Components/ui/EmptyState';
 import { Button } from '@/Components/ui/Button';
@@ -37,6 +42,9 @@ const InventorySection: React.FC<InventorySectionProps> = ({
 }) => {
   const [selectedUnitIds, setSelectedUnitIds] = useState<number[]>([]);
   const [isDeleteMode, setIsDeleteMode] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
   const baseJenisOptions = [
     'DART STD',
     'DART STK',
@@ -57,7 +65,6 @@ const InventorySection: React.FC<InventorySectionProps> = ({
     setSortConfig({ key, direction });
   };
 
-
   const toggleSelectUnit = (id: number) => {
     if (selectedUnitIds.includes(id)) {
       setSelectedUnitIds(selectedUnitIds.filter(v => v !== id));
@@ -66,7 +73,6 @@ const InventorySection: React.FC<InventorySectionProps> = ({
     }
   };
 
-
   const unitStats = {
     TOTAL: dbUnits.length,
     SIAP: dbUnits.filter((u: any) => u.status_unit === 'Beroperasi').length,
@@ -74,254 +80,391 @@ const InventorySection: React.FC<InventorySectionProps> = ({
     PERBAIKAN: dbUnits.filter((u: any) => u.status_unit === 'Perbaikan').length,
   };
 
-  const filteredUnits = dbUnits.filter((u: any) => {
-    const matchesSearch =
-      u.nomor_seri.toLowerCase().includes(unitSearch.toLowerCase()) ||
-      u.asal_satuan.toLowerCase().includes(unitSearch.toLowerCase());
-    const matchesJenis = filterJenis === 'ALL' || u.jenis === filterJenis;
-    const matchesSatuan = filterSatuan === 'ALL' || u.asal_satuan === filterSatuan;
-    return matchesSearch && matchesJenis && matchesSatuan;
-  }).sort((a: any, b: any) => {
-    if (!sortConfig) return 0;
-    const { key, direction } = sortConfig;
-    if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
-    if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
-    return 0;
-  });
+  const filteredUnits = useMemo(() => {
+    return dbUnits.filter((u: any) => {
+      const matchesSearch =
+        u.nomor_seri.toLowerCase().includes(unitSearch.toLowerCase()) ||
+        u.asal_satuan.toLowerCase().includes(unitSearch.toLowerCase());
+      const matchesJenis = filterJenis === 'ALL' || u.jenis === filterJenis;
+      const matchesSatuan = filterSatuan === 'ALL' || u.asal_satuan === filterSatuan;
+      return matchesSearch && matchesJenis && matchesSatuan;
+    }).sort((a: any, b: any) => {
+      if (!sortConfig) return 0;
+      const { key, direction } = sortConfig;
+      if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
+      if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }, [dbUnits, unitSearch, filterJenis, filterSatuan, sortConfig]);
+
+  const totalPages = Math.ceil(filteredUnits.length / itemsPerPage);
+  const paginatedUnits = filteredUnits.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
-      {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {[
-          { label: 'TOTAL UNIT', value: unitStats.TOTAL, color: 'border-cighra-primary dark:border-cighra-gold', text: 'text-cighra-primary dark:text-cighra-gold' },
-          { label: 'BEROPERASI', value: unitStats.SIAP, color: 'border-green-500', text: 'text-green-500' },
-          { label: 'RUSAK / KENDALA', value: unitStats.RUSAK, color: 'border-cighra-primary dark:border-cighra-gold', text: 'text-cighra-primary dark:text-cighra-gold' },
-          { label: 'DALAM PERBAIKAN', value: unitStats.PERBAIKAN, color: 'border-blue-500', text: 'text-blue-500' },
-        ].map((s, i) => (
-          <div key={i} className={`bg-white dark:bg-cighra-darkcard/80 border-l-4 ${s.color} p-4 shadow-md`}>
-            <p className="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-300 tracking-widest uppercase mb-1">{s.label}</p>
-            <p className={`text-2xl font-tactical font-bold ${s.text}`}>{s.value}</p>
-          </div>
-        ))}
+    <div className="space-y-6 animate-in fade-in duration-500 pb-12">
+      
+      {/* 1. TOP ACTIONS INJECTION */}
+      <div className="flex flex-col md:flex-row justify-end items-center gap-3">
+        {onRequestDeleteBatch && (
+          <button
+            onClick={() => {
+              setIsDeleteMode(!isDeleteMode);
+              setSelectedUnitIds([]);
+            }}
+            className={`px-5 py-2.5 rounded-none text-[11px] font-tactical font-bold tracking-widest flex items-center justify-center gap-2 transition-all border shadow-sm uppercase cursor-pointer ${
+              isDeleteMode 
+                ? 'bg-slate-700 hover:bg-slate-600 text-white border-slate-700' 
+                : 'bg-transparent text-red-600 border-red-600 hover:bg-red-50'
+            }`}
+          >
+            <Trash2 className="w-4 h-4" /> {isDeleteMode ? 'TUTUP MODE HAPUS' : 'MODE HAPUS MASSAL'}
+          </button>
+        )}
+        {onAddBatch && (
+          <button
+            onClick={onAddBatch}
+            className="px-5 py-2.5 rounded-none bg-white dark:bg-transparent border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-[11px] font-tactical font-bold tracking-widest flex items-center justify-center gap-2 transition-colors shadow-sm uppercase cursor-pointer"
+          >
+            <Upload className="w-4 h-4" /> AJUKAN MASSAL (CSV)
+          </button>
+        )}
+        {onAddUnit && (
+          <button
+            onClick={onAddUnit}
+            className="px-5 py-2.5 rounded-none bg-cighra-primary hover:bg-cighra-primary/90 text-white text-[11px] font-tactical font-bold tracking-widest flex items-center justify-center gap-2 transition-colors border border-cighra-primary shadow-sm uppercase cursor-pointer"
+          >
+            <Plus className="w-4 h-4 text-cighra-gold" /> TAMBAH UNIT
+          </button>
+        )}
       </div>
 
-      {onRequestDeleteBatch && selectedUnitIds.length > 0 && (
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/40 p-3 flex justify-between items-center shadow-md animate-in slide-in-from-top-2">
-          <p className="text-sm font-tactical font-bold text-red-700 dark:text-red-400 uppercase tracking-widest flex items-center gap-2">
-            <CheckSquare className="w-4 h-4" /> {selectedUnitIds.length} UNIT TERPILIH
+      {/* 2. KPI SUMMARY CARDS */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        {/* TOTAL UNIT */}
+        <div className="bg-white dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-700/50 p-3 rounded-none flex items-center gap-4 shadow-sm relative overflow-hidden">
+          <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-slate-500"></div>
+          <div className="p-2.5 rounded-none bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 ml-1">
+            <Package className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-[10px] font-tactical tracking-widest text-slate-500 dark:text-slate-400 uppercase">Total Unit</p>
+            <div className="flex items-baseline gap-2">
+              <h4 className="text-xl font-bold font-mono text-slate-800 dark:text-white">{unitStats.TOTAL}</h4>
+            </div>
+          </div>
+        </div>
+
+        {/* BEROPERASI */}
+        <div className="bg-white dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-700/50 p-3 rounded-none flex items-center gap-4 shadow-sm relative overflow-hidden">
+          <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-green-500"></div>
+          <div className="p-2.5 rounded-none bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-500 ml-1">
+            <CheckCircle className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-[10px] font-tactical tracking-widest text-slate-500 dark:text-slate-400 uppercase">Beroperasi</p>
+            <div className="flex items-baseline gap-2">
+              <h4 className="text-xl font-bold font-mono text-slate-800 dark:text-white">{unitStats.SIAP}</h4>
+            </div>
+          </div>
+        </div>
+
+        {/* DALAM PERBAIKAN */}
+        <div className="bg-white dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-700/50 p-3 rounded-none flex items-center gap-4 shadow-sm relative overflow-hidden">
+          <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-500"></div>
+          <div className="p-2.5 rounded-none bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-500 ml-1">
+            <Wrench className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-[10px] font-tactical tracking-widest text-slate-500 dark:text-slate-400 uppercase">Dlm Perbaikan</p>
+            <div className="flex items-baseline gap-2">
+              <h4 className="text-xl font-bold font-mono text-slate-800 dark:text-white">{unitStats.PERBAIKAN}</h4>
+            </div>
+          </div>
+        </div>
+
+        {/* RUSAK */}
+        <div className="bg-white dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-700/50 p-3 rounded-none flex items-center gap-4 shadow-sm relative overflow-hidden">
+          <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-red-500"></div>
+          <div className="p-2.5 rounded-none bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-500 ml-1">
+            <XCircle className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-[10px] font-tactical tracking-widest text-slate-500 dark:text-slate-400 uppercase">Rusak</p>
+            <div className="flex items-baseline gap-2">
+              <h4 className="text-xl font-bold font-mono text-slate-800 dark:text-white">{unitStats.RUSAK}</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* DELETE BATCH WARNING */}
+      {onRequestDeleteBatch && selectedUnitIds.length > 0 && isDeleteMode && (
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/40 p-4 flex justify-between items-center shadow-sm animate-in slide-in-from-top-2 rounded-none">
+          <p className="text-[11px] font-mono font-bold text-red-700 dark:text-red-400 uppercase tracking-widest flex items-center gap-2">
+            <CheckSquare className="w-5 h-5" /> {selectedUnitIds.length} UNIT TERPILIH UNTUK DIHAPUS
           </p>
           <button
             onClick={() => {
               const selected = dbUnits.filter(u => selectedUnitIds.includes(u.db_id));
               onRequestDeleteBatch(selected);
             }}
-            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 font-tactical font-bold text-xs tracking-widest transition-colors flex items-center gap-2 shadow-sm cursor-pointer"
+            className="bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-none font-tactical font-bold text-[11px] tracking-widest transition-colors flex items-center gap-2 shadow-sm cursor-pointer"
           >
-            <Trash2 className="w-4 h-4" /> AJUKAN PENGHAPUSAN MASSAL
+            <Trash2 className="w-4 h-4" /> EKSEKUSI HAPUS
           </button>
         </div>
       )}
 
-      <div className="bg-white dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600 shadow-2xl overflow-hidden relative">
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-cighra-primary dark:bg-cighra-gold"></div>
-        <div className="p-5 border-b border-slate-200 dark:border-slate-600 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-800">
-          <h3 className="text-white font-tactical font-bold text-lg tracking-widest flex items-center gap-3 uppercase">
-            <Package className="text-cighra-gold w-6 h-6" /> DATA INVENTARIS UNIT
-          </h3>
-          <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-            {onRequestDeleteBatch && (
-              <button
-                onClick={() => {
-                  setIsDeleteMode(!isDeleteMode);
-                  setSelectedUnitIds([]);
-                }}
-                className={`px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-all border shadow-lg uppercase cursor-pointer rounded-none ${
-                  isDeleteMode 
-                    ? 'bg-slate-700 hover:bg-slate-600 text-white border-slate-700' 
-                    : 'bg-red-600 hover:bg-red-500 text-white border-red-600'
-                }`}
-              >
-                <Trash2 className="w-4 h-4" /> {isDeleteMode ? 'TUTUP MODE HAPUS' : 'MODE HAPUS MASSAL'}
-              </button>
-            )}
-            {onAddBatch && (
-              <button
-                onClick={onAddBatch}
-                className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-blue-600 shadow-lg uppercase cursor-pointer rounded-none"
-              >
-                <Upload className="w-4 h-4" /> AJUKAN MASSAL (CSV)
-              </button>
-            )}
-            {onAddUnit && (
-              <button
-                onClick={onAddUnit}
-                className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-cighra-primary dark:border-cighra-gold shadow-lg uppercase cursor-pointer rounded-none"
-              >
-                <Plus className="w-4 h-4" /> AJUKAN TAMBAH UNIT
-              </button>
-            )}
+      {/* 3. FILTER TOOLBAR */}
+      <div className="flex flex-col md:flex-row flex-wrap gap-4 items-end">
+        <div className="w-full md:flex-1">
+          <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Cari Perangkat</label>
+          <div className="relative">
+            <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
+            <input
+              type="text"
+              placeholder="NOMOR SERI / LOKASI..."
+              value={unitSearch}
+              onChange={(e) => { setUnitSearch(e.target.value); setCurrentPage(1); }}
+              className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 pl-10 pr-4 py-2.5 text-xs font-mono font-medium text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold focus:ring-1 focus:ring-cighra-primary/30 transition-all uppercase rounded-none"
+            />
           </div>
         </div>
 
-        {/* Filter Row */}
-        <div className="p-4 bg-slate-50 dark:bg-cighra-dark/30 border-b border-slate-200 dark:border-slate-600 flex flex-col md:flex-row gap-4 items-center">
-          <div className="w-full md:w-72">
-            <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">CARI PERANGKAT</label>
-            <div className="relative">
-              <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
-              <input
-                type="text"
-                placeholder="SN / KETERANGAN..."
-                value={unitSearch}
-                onChange={(e) => setUnitSearch(e.target.value)}
-                className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 pl-9 pr-4 py-2 text-xs font-mono text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold transition-colors uppercase"
-              />
-            </div>
-          </div>
-          <div className="w-full md:w-56">
-            <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">JENIS UNIT</label>
-            <select
-              value={filterJenis}
-              onChange={(e) => setFilterJenis(e.target.value)}
-              className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-3 py-2 text-xs font-mono text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold transition-colors uppercase"
-            >
-              {jenisOptions.map((o: any) => (
-                <option key={o} value={o}>{o === 'ALL' ? 'SEMUA JENIS' : o}</option>
-              ))}
-            </select>
-          </div>
-          <div className="w-full md:w-56">
-            <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">SATUAN</label>
-            <select
-              value={filterSatuan}
-              onChange={(e) => setFilterSatuan(e.target.value)}
-              className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-3 py-2 text-xs font-mono text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold transition-colors uppercase"
-            >
-              {satuanOptions.map((o: any) => (
-                <option key={o} value={o}>{o === 'ALL' ? 'SEMUA SATUAN' : o}</option>
-              ))}
-            </select>
-          </div>
+        <div className="w-full md:w-44">
+          <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Jenis</label>
+          <select
+            value={filterJenis}
+            onChange={(e) => { setFilterJenis(e.target.value); setCurrentPage(1); }}
+            className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-3 py-2.5 text-xs font-mono font-medium text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold focus:ring-1 focus:ring-cighra-primary/30 transition-all uppercase rounded-none"
+          >
+            {jenisOptions.map((o: any) => (
+              <option key={o} value={o}>{o === 'ALL' ? 'SEMUA JENIS' : o}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="w-full md:w-44">
+          <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Satuan</label>
+          <select
+            value={filterSatuan}
+            onChange={(e) => { setFilterSatuan(e.target.value); setCurrentPage(1); }}
+            className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-3 py-2.5 text-xs font-mono font-medium text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold focus:ring-1 focus:ring-cighra-primary/30 transition-all uppercase rounded-none"
+          >
+            {satuanOptions.map((o: any) => (
+              <option key={o} value={o}>{o === 'ALL' ? 'SEMUA SATUAN' : o}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="w-full md:w-auto">
+          <button 
+            onClick={() => {
+              setUnitSearch('');
+              setFilterJenis('ALL');
+              setFilterSatuan('ALL');
+              setCurrentPage(1);
+            }}
+            className="w-full md:w-auto px-5 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 text-[11px] font-bold font-mono uppercase tracking-wider rounded-none transition-colors flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-700"
+          >
+            <RotateCcw className="w-4 h-4" /> Reset
+          </button>
+        </div>
+      </div>
+
+      {/* 4. TABLE SECTION */}
+      <div className="bg-white dark:bg-cighra-darkcard/70 border border-slate-200 dark:border-slate-600 rounded-sm overflow-hidden shadow-xl mt-4">
+        
+        {/* Card Header (Navy) */}
+        <div className="p-4 border-b border-slate-200 dark:border-slate-600 bg-slate-800 flex items-center justify-between text-white">
+          <h3 className="font-tactical tracking-widest text-sm flex items-center gap-2">
+            <Package className="w-4 h-4 text-cighra-gold" /> DATABASE INVENTARIS UNIT
+          </h3>
+          <span className="bg-slate-700 text-slate-300 text-[10px] font-mono px-2.5 py-1 rounded-sm uppercase font-bold tracking-widest">
+            {filteredUnits.length} Unit
+          </span>
         </div>
 
         {isDeleteMode && (
-          <div className="p-4 bg-red-500/5 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center text-xs font-mono text-red-600 dark:text-red-400">
-            <span className="font-bold flex items-center gap-2">
-              ⚠️ MODE HAPUS MASSAL AKTIF: KLIK PADA BARIS UNIT UNTUK MENANDAI PENGHAPUSAN.
+          <div className="p-3 bg-red-50 border-b border-red-100 flex justify-between items-center text-[11px] font-mono font-bold text-red-600 tracking-wider uppercase">
+            <span className="flex items-center gap-2">
+              ⚠️ MODE HAPUS MASSAL AKTIF: KLIK BARIS UNTUK MENANDAI
             </span>
             <button
               type="button"
               onClick={() => {
-                if (selectedUnitIds.length === filteredUnits.length) {
-                  setSelectedUnitIds([]);
-                } else {
-                  setSelectedUnitIds(filteredUnits.map((u: any) => u.db_id));
-                }
+                if (selectedUnitIds.length === filteredUnits.length) setSelectedUnitIds([]);
+                else setSelectedUnitIds(filteredUnits.map((u: any) => u.db_id));
               }}
-              className="bg-red-500/10 hover:bg-red-500/20 text-red-700 dark:text-red-300 px-3 py-1 font-mono font-bold tracking-widest uppercase border border-red-500/30 transition-colors cursor-pointer"
+              className="bg-red-100 hover:bg-red-200 text-red-700 px-4 py-1.5 rounded-none transition-colors cursor-pointer"
             >
               {selectedUnitIds.length === filteredUnits.length ? 'BATAL PILIH SEMUA' : 'PILIH SEMUA'}
             </button>
           </div>
         )}
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left font-sans text-sm">
+        <div className="overflow-x-auto custom-scrollbar">
+          <table className="w-full text-left font-sans table-fixed min-w-[800px]">
+            {/* Table Header */}
             <thead className="bg-slate-800 border-b border-slate-700">
               <tr>
                 {isDeleteMode && (
-                  <th className="p-4 w-28 text-center text-red-500 font-mono text-xs uppercase tracking-wider">
-                    PILIHAN HAPUS
+                  <th className="p-4 w-[8%] text-center text-red-400 font-tactical tracking-widest uppercase">
+                    PILIH
                   </th>
                 )}
-                <SortableHeader label="NOMOR SERI" sortKey="nomor_seri" currentSort={sortConfig} onSort={handleSort} />
-                <SortableHeader label="JENIS" sortKey="jenis" currentSort={sortConfig} onSort={handleSort} />
-                <SortableHeader label="ASAL SATUAN / LOKASI" sortKey="asal_satuan" currentSort={sortConfig} onSort={handleSort} />
-                <SortableHeader label="STATUS" sortKey="status_unit" currentSort={sortConfig} onSort={handleSort} />
-                <SortableHeader label="MAINTENANCE" sortKey="last_maintenance" currentSort={sortConfig} onSort={handleSort} />
-                {onRequestDelete && !isDeleteMode && <SortableHeader label="OPSI" />}
+                <SortableHeader label="NOMOR SERI" sortKey="nomor_seri" currentSort={sortConfig} onSort={handleSort} width="20%" />
+                <SortableHeader label="JENIS" sortKey="jenis" currentSort={sortConfig} onSort={handleSort} width="20%" />
+                <SortableHeader label="ASAL SATUAN" sortKey="asal_satuan" currentSort={sortConfig} onSort={handleSort} width="24%" />
+                <SortableHeader label="STATUS" sortKey="status_unit" currentSort={sortConfig} onSort={handleSort} width="15%" />
+                <SortableHeader label="MAINTENANCE" sortKey="last_maintenance" currentSort={sortConfig} onSort={handleSort} width="15%" />
+                {!isDeleteMode && (
+                  <SortableHeader label="OPSI" width="6%" />
+                )}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200 dark:divide-slate-700/50">
-              {filteredUnits.length === 0 ? (
+            
+            {/* Table Body */}
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50 bg-white dark:bg-transparent">
+              {paginatedUnits.length === 0 ? (
                 <tr>
-                  <td colSpan={isDeleteMode ? 7 : (onRequestDelete ? 6 : 5)} className="p-0 text-center">
-                    <EmptyState title="TIDAK ADA UNIT" description="Belum ada unit inventaris yang ditemukan." />
+                  <td colSpan={isDeleteMode ? 7 : 6} className="p-12 text-center">
+                    <EmptyState 
+                      icon={<Package className="w-12 h-12 text-slate-300 mx-auto mb-4" />}
+                      title="BELUM ADA DATA INVENTARIS" 
+                      description="Silakan tambahkan unit baru menggunakan tombol di atas." 
+                    />
                   </td>
                 </tr>
               ) : (
-                filteredUnits.map((u: any) => {
-                  const isSelected = selectedUnitIds.includes(u.db_id);
-                  return (
-                    <tr
-                      key={u.db_id}
-                      onClick={isDeleteMode ? () => toggleSelectUnit(u.db_id) : undefined}
-                      className={`transition-colors group bg-white dark:bg-transparent ${
-                        isDeleteMode 
-                          ? 'cursor-pointer select-none' 
-                          : ''
-                      } ${
-                        isSelected 
-                          ? 'bg-red-500/5 dark:bg-red-950/20 border-l-4 border-l-red-600' 
-                          : isDeleteMode 
-                            ? 'hover:bg-slate-50 dark:hover:bg-slate-800/30 border-l-4 border-l-transparent' 
-                            : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'
-                      }`}
-                    >
-                      {isDeleteMode && (
-                        <td className="p-4 text-center">
-                          {isSelected ? (
-                            <span className="px-2.5 py-1 bg-red-600/90 text-white text-[11px] font-mono font-bold tracking-widest uppercase inline-block border border-red-700">
-                              HAPUS
-                            </span>
-                          ) : (
-                            <span className="px-2.5 py-1 bg-slate-100 dark:bg-slate-800/50 text-slate-400 dark:text-slate-500 text-[11px] font-mono font-bold tracking-widest uppercase inline-block border border-slate-200 dark:border-slate-700">
-                              LEWATI
-                            </span>
-                          )}
-                        </td>
-                      )}
-                      <td className="p-4 font-mono font-bold text-slate-800 dark:text-white text-center">{u.nomor_seri}</td>
-                      <td className="p-4 font-mono text-xs text-slate-500 dark:text-slate-300 uppercase text-center">{u.jenis}</td>
-                      <td className="p-4 text-gunmetal dark:text-slate-300 uppercase text-center">{u.asal_satuan}</td>
-                      <td className="p-4 text-center">
-                        <span className={`px-2 py-0.5 border text-[11px] font-bold tracking-widest uppercase inline-block mx-auto
-                          ${u.status_unit === 'Beroperasi' ? 'bg-camogreen/10 text-camogreen border-camogreen/30' :
-                            u.status_unit === 'Rusak' ? 'bg-cighra-primary/10 dark:bg-cighra-gold/10 text-cighra-primary dark:text-cighra-gold border-cighra-primary dark:border-cighra-gold/30' :
-                              u.status_unit === 'Perbaikan' ? 'bg-blue-900/10 text-blue-500 border-blue-800/30' :
-                                'bg-slate-900/10 text-slate-500 border-slate-800/30'}
-                        `}>
-                          {u.status_unit === 'Perbaikan' ? 'Dalam Perbaikan' : u.status_unit}
-                        </span>
+                paginatedUnits.map((u: any) => (
+                  <tr 
+                    key={u.db_id} 
+                    className={`hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group cursor-pointer ${
+                      selectedUnitIds.includes(u.db_id) ? 'bg-red-50/50' : ''
+                    }`}
+                    onClick={() => isDeleteMode && toggleSelectUnit(u.db_id)}
+                  >
+                    {isDeleteMode && (
+                      <td className="p-4 text-center" onClick={(e) => e.stopPropagation()}>
+                        <div 
+                          className={`w-5 h-5 mx-auto rounded-sm border flex items-center justify-center cursor-pointer transition-colors ${
+                            selectedUnitIds.includes(u.db_id) 
+                              ? 'bg-red-500 border-red-500' 
+                              : 'border-slate-300 dark:border-slate-600 hover:border-red-400'
+                          }`}
+                          onClick={() => toggleSelectUnit(u.db_id)}
+                        >
+                          {selectedUnitIds.includes(u.db_id) && <CheckSquare className="w-3 h-3 text-white" />}
+                        </div>
                       </td>
-                      <td className="p-4 font-mono text-xs text-slate-500 dark:text-slate-400 text-center">{u.last_maintenance}</td>
+                    )}
+                    
+                    {/* NOMOR SERI */}
+                    <td className="p-4 align-middle">
+                      <div className="text-[16px] font-[700] font-mono text-slate-800 dark:text-white uppercase tracking-tight">
+                        {u.nomor_seri}
+                      </div>
+                    </td>
 
-                      {onRequestDelete && !isDeleteMode && (
-                        <td className="p-4 text-center">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onRequestDelete(u);
-                            }}
-                            className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-500 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm cursor-pointer mx-auto block"
-                            title="Ajukan Penghapusan"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </td>
-                      )}
-                    </tr>
-                  );
-                })
+                    {/* JENIS */}
+                    <td className="p-4 align-middle text-center">
+                      <span className="text-[13px] font-mono font-medium text-slate-700 dark:text-slate-300 uppercase">
+                        {u.jenis}
+                      </span>
+                    </td>
+
+                    {/* LOKASI */}
+                    <td className="p-4 align-middle text-center">
+                      <span className="text-[13px] font-mono font-medium text-slate-600 dark:text-slate-400 uppercase line-clamp-2" title={u.asal_satuan}>
+                        {u.asal_satuan}
+                      </span>
+                    </td>
+
+                    {/* STATUS */}
+                    <td className="p-4 align-middle text-center">
+                      <span className={`inline-block px-3 py-1 text-[11px] font-bold uppercase tracking-widest font-mono border ${
+                        u.status_unit === 'Beroperasi' ? 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800' :
+                        u.status_unit === 'Perbaikan' ? 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800' :
+                        'bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800'
+                      }`}>
+                        {u.status_unit === 'Perbaikan' ? 'DALAM PERBAIKAN' : u.status_unit}
+                      </span>
+                    </td>
+
+                    {/* MAINTENANCE */}
+                    <td className="p-4 align-middle text-center">
+                      <span className="text-slate-600 dark:text-slate-400 font-mono text-[12px] font-medium uppercase">
+                        {u.last_maintenance || '-'}
+                      </span>
+                    </td>
+
+                    {/* OPSI */}
+                    {!isDeleteMode && (
+                      <td className="p-4 text-center align-middle" onClick={(e) => e.stopPropagation()}>
+                        {onRequestDelete && (
+                          <div className="flex justify-center">
+                            <button
+                              type="button"
+                              onClick={() => onRequestDelete(u)}
+                              className="inline-flex items-center justify-center w-8 h-8 bg-white dark:bg-transparent text-slate-400 border border-slate-200 dark:border-slate-700 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 hover:border-red-200 dark:hover:border-red-800 transition-colors rounded-sm"
+                              title="Hapus Unit"
+                            >
+                              <Trash className="w-4 h-4" />
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                    )}
+                  </tr>
+                ))
               )}
             </tbody>
           </table>
         </div>
+
+        {/* 5. PAGINATION */}
+        <div className="bg-slate-50 dark:bg-slate-800/30 border-t border-slate-200 dark:border-slate-700 p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <span className="text-[10px] font-tactical font-bold text-slate-500 uppercase tracking-widest">Tampilkan:</span>
+            <select
+              value={itemsPerPage}
+              onChange={(e) => { setItemsPerPage(Number(e.target.value)); setCurrentPage(1); }}
+              className="bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 rounded-none text-[11px] font-mono px-2 py-1.5 focus:outline-none focus:border-cighra-primary text-slate-700 dark:text-slate-300"
+            >
+              <option value={10}>10 Baris</option>
+              <option value={20}>20 Baris</option>
+              <option value={50}>50 Baris</option>
+            </select>
+          </div>
+
+          <div className="flex items-center gap-2 font-mono">
+            <button
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="px-2 py-1 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-none disabled:opacity-50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-xs uppercase tracking-wider font-bold"
+            >
+              SEBELUMNYA
+            </button>
+            <div className="px-3 text-xs font-bold text-slate-700 dark:text-slate-300">
+              HALAMAN {currentPage} DARI {Math.max(1, totalPages)}
+            </div>
+            <button
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages || totalPages === 0}
+              className="px-2 py-1 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-none disabled:opacity-50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-xs uppercase tracking-wider font-bold"
+            >
+              SELANJUTNYA
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>
   );
 };
 
 export default InventorySection;
-

@@ -4,7 +4,7 @@ import {
   Clock, Activity, ShieldAlert, Eye, XCircle, CheckCircle, Wallet, 
   Search, SlidersHorizontal, User, MapPin, 
   Calendar, Image as ImageIcon, X, FileText,
-  AlertTriangle, Link as LinkIcon
+  AlertTriangle, Link as LinkIcon, RotateCcw
 } from 'lucide-react';
 import { BaseModal } from '@/Components/ui/BaseModal';
 import { Button } from '@/Components/ui/Button';
@@ -220,7 +220,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
              onClick={() => { setSearchQuery(''); setPriorityFilter('ALL'); setStatusFilter('ALL'); setSortOrder('terbaru'); }}
              className="w-full md:w-auto px-5 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 text-[11px] font-bold font-mono uppercase tracking-wider rounded-none transition-colors flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-700"
            >
-             <XCircle className="w-4 h-4" /> Reset
+             <RotateCcw className="w-4 h-4" /> Reset
            </button>
         </div>
       </div>

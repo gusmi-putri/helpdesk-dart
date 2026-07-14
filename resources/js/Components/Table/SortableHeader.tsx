@@ -19,9 +19,11 @@ const SortableHeader: React.FC<SortableHeaderProps> = ({
   className = "",
   width
 }) => {
+  const isDark = className === "" || className.includes("text-white") || !className.includes("text-");
+  
   return (
     <th 
-      className={`p-4 text-center whitespace-nowrap text-white font-tactical tracking-widest uppercase ${sortKey ? 'cursor-pointer hover:bg-slate-700/50 transition-colors' : ''} ${className}`}
+      className={`p-4 text-center whitespace-nowrap tracking-widest uppercase ${sortKey ? 'cursor-pointer transition-colors' : ''} ${isDark ? 'text-white font-tactical hover:bg-slate-700/50' : ''} ${className}`}
       style={width ? { width } : undefined}
       onClick={() => { if (sortKey && onSort) onSort(sortKey); }}
     >
@@ -31,10 +33,10 @@ const SortableHeader: React.FC<SortableHeaderProps> = ({
           <div className="flex items-center">
             {currentSort?.key === sortKey ? (
               currentSort.direction === 'asc' 
-                ? <ArrowUp className="w-3 h-3 text-white" /> 
-                : <ArrowDown className="w-3 h-3 text-white" />
+                ? <ArrowUp className="w-3 h-3" /> 
+                : <ArrowDown className="w-3 h-3" />
             ) : (
-              <Filter className="w-3 h-3 opacity-30 text-white" />
+              <Filter className="w-3 h-3 opacity-30" />
             )}
           </div>
         )}
