@@ -71,29 +71,29 @@ const Profile = ({ currentUser }: any) => {
                         currentUser?.role?.nama_role === 'Teknisi' ? '/teknisi' : '/';
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 font-sans text-slate-800 dark:text-slate-200">
+    <div className="min-h-screen bg-slate-50 dark:bg-cighra-dark font-sans text-slate-800 dark:text-slate-200">
       <Head title="Pengaturan Profil - DART Helpdesk" />
       <GlobalNotification />
       
       {/* Top Header */}
-      <header className="h-16 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 flex items-center justify-between px-4 md:px-8">
+      <header className="h-16 border-b border-cighra-primary/10 dark:border-cighra-gold/20 bg-cighra-primary dark:bg-cighra-darkcard flex items-center justify-between px-4 md:px-8 shadow-md relative z-10">
         <div className="flex items-center gap-4">
           <Link 
             href={dashboardLink}
-            className="flex items-center gap-2 px-3 py-1.5 text-xs font-tactical font-bold tracking-wider text-slate-600 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold transition-colors bg-slate-100 dark:bg-slate-700/50 rounded-sm shadow-sm"
+            className="flex items-center gap-2 px-3 py-1.5 text-xs font-tactical font-bold tracking-wider text-white dark:text-slate-300 hover:text-white dark:hover:text-cighra-gold transition-colors bg-white/10 dark:bg-slate-700/50 hover:bg-white/20 rounded-sm shadow-sm"
           >
             <ArrowLeft className="w-4 h-4" />
             KEMBALI KE DASHBOARD
           </Link>
         </div>
         
-        <div className="flex items-center gap-0 border border-slate-200 dark:border-slate-700 rounded shadow-sm bg-slate-50 dark:bg-slate-900/50 overflow-hidden">
-          <div className="px-4 py-1.5 text-right flex flex-col justify-center border-r border-slate-200 dark:border-slate-700">
-            <span className="block text-xs font-bold text-slate-800 dark:text-white uppercase font-sans tracking-wider">{currentUser?.name || currentUser?.nama_lengkap}</span>
-            <span className="block text-[11px] font-mono tracking-widest text-cighra-primary dark:text-cighra-gold uppercase">{currentUser?.role?.nama_role || 'Pengguna'}</span>
+        <div className="flex items-center gap-0 border border-white/10 dark:border-slate-700 rounded shadow-sm bg-black/10 dark:bg-slate-900/50 overflow-hidden">
+          <div className="px-4 py-1.5 text-right flex flex-col justify-center border-r border-white/10 dark:border-slate-700">
+            <span className="block text-xs font-bold text-white dark:text-white uppercase font-sans tracking-wider">{currentUser?.name || currentUser?.nama_lengkap}</span>
+            <span className="block text-[11px] font-mono tracking-widest text-cighra-gold uppercase">{currentUser?.role?.nama_role || 'Pengguna'}</span>
           </div>
-          <div className="w-10 h-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center p-2">
-            <UserCog className="w-6 h-6 text-slate-500 dark:text-slate-400" />
+          <div className="w-10 h-full bg-white/5 dark:bg-slate-800 flex items-center justify-center p-2">
+            <UserCog className="w-6 h-6 text-white/70 dark:text-slate-400" />
           </div>
         </div>
       </header>
@@ -102,18 +102,18 @@ const Profile = ({ currentUser }: any) => {
       <main className="max-w-3xl mx-auto p-4 md:p-8 space-y-6">
         
         {/* Banner Profil */}
-        <div className="bg-white dark:bg-slate-800 border-l-4 border-cighra-primary dark:border-cighra-gold p-6 rounded-sm shadow-md border-y border-r border-y-slate-200 border-r-slate-200 dark:border-y-slate-700 dark:border-r-slate-700 flex items-center gap-4">
-           <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center border-2 border-slate-200 dark:border-slate-600 shadow-sm shrink-0">
-             <UserCog className="w-8 h-8 text-slate-400 dark:text-slate-400" />
+        <div className="bg-cighra-primary dark:bg-cighra-darkcard border-l-4 border-cighra-gold p-6 rounded-sm shadow-md border-y border-r border-y-cighra-primary border-r-cighra-primary dark:border-y-slate-700 dark:border-r-slate-700 flex items-center gap-4">
+           <div className="w-16 h-16 rounded-full bg-white/10 dark:bg-slate-700 flex items-center justify-center border-2 border-white/20 dark:border-slate-600 shadow-sm shrink-0">
+             <UserCog className="w-8 h-8 text-white/80 dark:text-slate-400" />
            </div>
            <div>
-             <h2 className="text-xl font-bold font-tactical tracking-widest text-slate-800 dark:text-white">PENGATURAN PROFIL</h2>
-             <p className="text-sm font-mono text-slate-500 dark:text-slate-400 mt-1 uppercase tracking-wider">Lengkapi dan Perbarui Data Diri Anda</p>
+             <h2 className="text-xl font-bold font-tactical tracking-widest text-white">PENGATURAN PROFIL</h2>
+             <p className="text-sm font-mono text-white/70 dark:text-slate-400 mt-1 uppercase tracking-wider">Lengkapi dan Perbarui Data Diri Anda</p>
            </div>
         </div>
 
         {/* Form Container */}
-        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-sm shadow-md overflow-hidden relative">
+        <div className="bg-white dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-700 rounded-sm shadow-md overflow-hidden relative">
           {/* Yellow Accent at top */}
           <div className="absolute top-0 left-0 w-full h-1 bg-cighra-primary dark:bg-cighra-gold"></div>
           
@@ -166,7 +166,7 @@ const Profile = ({ currentUser }: any) => {
                   type="text"
                   value={profileForm.data.nama_lengkap}
                   onChange={(e) => profileForm.setData('nama_lengkap', e.target.value)}
-                  className={`w-full bg-white dark:bg-slate-900 border ${profileForm.errors.nama_lengkap ? 'border-red-500' : 'border-slate-300 dark:border-slate-600'} p-3 text-sm font-bold font-sans focus:border-cighra-primary dark:focus:border-cighra-gold outline-none transition-all dark:text-white rounded-sm shadow-sm`}
+                  className={`w-full bg-white dark:bg-black/20 border ${profileForm.errors.nama_lengkap ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} p-3 text-sm font-bold font-sans focus:border-cighra-primary dark:focus:border-cighra-gold outline-none transition-all dark:text-white rounded-sm shadow-sm`}
                   required
                   maxLength={100}
                 />
@@ -180,7 +180,7 @@ const Profile = ({ currentUser }: any) => {
                   value={profileForm.data.nrp_nip}
                   onChange={(e) => handleNumericInput('nrp_nip', e.target.value)}
                   maxLength={20}
-                  className={`w-full bg-white dark:bg-slate-900 border ${profileForm.errors.nrp_nip ? 'border-red-500' : 'border-slate-300 dark:border-slate-600'} p-3 text-sm font-mono font-bold focus:border-cighra-primary dark:focus:border-cighra-gold outline-none uppercase rounded-sm shadow-sm`}
+                  className={`w-full bg-white dark:bg-black/20 border ${profileForm.errors.nrp_nip ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} p-3 text-sm font-mono font-bold focus:border-cighra-primary dark:focus:border-cighra-gold outline-none uppercase rounded-sm shadow-sm`}
                   placeholder="8-20 DIGIT ANGKA"
                   required
                   minLength={8}
@@ -194,7 +194,7 @@ const Profile = ({ currentUser }: any) => {
                   type="email"
                   value={profileForm.data.email}
                   onChange={(e) => profileForm.setData('email', e.target.value)}
-                  className={`w-full bg-white dark:bg-slate-900 border ${profileForm.errors.email ? 'border-red-500' : 'border-slate-300 dark:border-slate-600'} p-3 text-sm font-mono font-bold focus:border-cighra-primary dark:focus:border-cighra-gold outline-none transition-all dark:text-white rounded-sm shadow-sm`}
+                  className={`w-full bg-white dark:bg-black/20 border ${profileForm.errors.email ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} p-3 text-sm font-mono font-bold focus:border-cighra-primary dark:focus:border-cighra-gold outline-none transition-all dark:text-white rounded-sm shadow-sm`}
                   required
                   placeholder="EMAIL AKTIF"
                 />
@@ -210,7 +210,7 @@ const Profile = ({ currentUser }: any) => {
                     value={profileForm.data.no_wa}
                     onChange={(e) => handleWaInput(e.target.value)}
                     maxLength={15}
-                    className={`w-full bg-white dark:bg-slate-900 border ${profileForm.errors.no_wa || waWarning ? 'border-yellow-500' : 'border-slate-300 dark:border-slate-600'} pl-8 pr-3 py-3 text-sm font-mono font-bold focus:border-cighra-primary dark:focus:border-cighra-gold outline-none transition-all dark:text-white rounded-sm shadow-sm`}
+                    className={`w-full bg-white dark:bg-black/20 border ${profileForm.errors.no_wa || waWarning ? 'border-yellow-500' : 'border-slate-300 dark:border-slate-700'} pl-8 pr-3 py-3 text-sm font-mono font-bold focus:border-cighra-primary dark:focus:border-cighra-gold outline-none transition-all dark:text-white rounded-sm shadow-sm`}
                     placeholder="6281234567890"
                   />
                 </div>
@@ -231,7 +231,7 @@ const Profile = ({ currentUser }: any) => {
                   value={profileForm.data.spesialisasi}
                   onChange={(e) => profileForm.setData('spesialisasi', e.target.value)}
                   disabled={currentUser?.role?.nama_role?.toLowerCase() !== 'teknisi'}
-                  className={`w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 p-3 text-sm font-mono font-bold focus:border-cighra-primary dark:focus:border-cighra-gold outline-none transition-all rounded-sm shadow-sm ${currentUser?.role?.nama_role?.toLowerCase() !== 'teknisi' ? 'opacity-40 cursor-not-allowed italic' : 'dark:text-white'}`}
+                  className={`w-full bg-white dark:bg-black/20 border border-slate-300 dark:border-slate-700 p-3 text-sm font-mono font-bold focus:border-cighra-primary dark:focus:border-cighra-gold outline-none transition-all rounded-sm shadow-sm ${currentUser?.role?.nama_role?.toLowerCase() !== 'teknisi' ? 'opacity-40 cursor-not-allowed italic' : 'dark:text-white'}`}
                   placeholder={currentUser?.role?.nama_role?.toLowerCase() !== 'teknisi' ? 'NON-TEKNISI' : 'MISAL: KOMUNIKASI SATELIT'}
                   maxLength={100}
                 />

@@ -22,14 +22,14 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
     <div className="animate-in fade-in space-y-6 mt-6">
       <div className="bg-white dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600 shadow-2xl overflow-hidden relative">
         <div className="absolute top-0 left-0 w-full h-[2px] bg-cighra-primary dark:bg-cighra-gold"></div>
-        <div className="p-5 border-b border-slate-200 dark:border-slate-600 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-800">
+        <div className="p-5 border-b border-white/10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-cighra-primary dark:bg-slate-800">
           <h3 className="text-white font-tactical font-bold text-lg tracking-widest flex items-center gap-3 uppercase">
             <CheckCircle className="text-cighra-gold w-6 h-6" /> ARSIP PERBAIKAN SELESAI
           </h3>
         </div>
         <div className="overflow-x-auto p-2">
           <table className="w-full text-left font-sans">
-            <thead className="bg-slate-800 border-b border-slate-600">
+            <thead className="bg-cighra-primary dark:bg-slate-800 border-b border-white/10 text-white">
               <tr>
                 <SortableHeader label="ID TIKET" sortKey="caseId" currentSort={sortConfig} onSort={handleSort} className="w-32" />
                 <SortableHeader label="DETAIL KERUSAKAN" />
@@ -38,7 +38,7 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                 <SortableHeader label="DOKUMENTASI" />
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200 dark:divide-slate-700/50 bg-white dark:bg-transparent text-slate-800 dark:text-white">
+            <tbody className="divide-y divide-slate-200/60 dark:divide-slate-700/50 bg-blue-50/40 dark:bg-transparent text-slate-800 dark:text-white">
               {reports.length === 0 && (
                 <tr>
                   <td colSpan={5} className="p-0 text-center">
@@ -49,7 +49,7 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
               {sortedReports.map((report: any) => (
                 <tr
                   key={report.db_id}
-                  className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors cursor-pointer"
+                  className="hover:bg-blue-100/50 dark:hover:bg-slate-700/30 transition-colors cursor-pointer"
                   onClick={() => onSelectReport(report.db_id)}
                 >
                   <td className="p-4 text-center">

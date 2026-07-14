@@ -40,12 +40,12 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
       </div>
 
       <div className="bg-white dark:bg-cighra-darkcard/70 border border-slate-200 dark:border-slate-600 rounded-sm overflow-hidden shadow-xl">
-        <div className="p-4 border-b border-slate-200 dark:border-slate-600 bg-slate-800 flex items-center justify-between text-white">
+        <div className="p-4 border-b border-white/10 bg-cighra-primary dark:bg-slate-800 flex items-center justify-between text-white">
           <h3 className="font-tactical tracking-widest text-sm flex items-center gap-2"><AlertTriangle className="w-4 h-4 text-yellow-500" /> DAFTAR PENANGANAN KERUSAKAN</h3>
         </div>
         <div className="overflow-x-auto p-2 custom-scrollbar pb-4">
           <table className="w-full text-left font-sans">
-            <thead className="bg-slate-800 border-b border-slate-700">
+            <thead className="bg-cighra-primary dark:bg-slate-800 border-b border-white/10 text-white">
               <tr>
                 <SortableHeader label="ID TIKET" sortKey="caseId" currentSort={sortConfig} onSort={handleSort} />
                 <SortableHeader label="PELAPOR & WAKTU" />
@@ -55,7 +55,7 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
                 <SortableHeader label="TINDAKAN" />
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-600 bg-white dark:bg-transparent">
+            <tbody className="divide-y divide-slate-200/60 dark:divide-slate-700/50 bg-blue-50/40 dark:bg-transparent">
               {reports.length === 0 && (
                 <tr>
                   <td colSpan={6} className="p-8">

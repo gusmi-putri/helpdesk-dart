@@ -271,7 +271,7 @@ const DashboardStaf = (props: any) => {
           <div className="max-w-[1400px] mx-auto">
             <div className="mb-6 flex justify-between items-end border-b border-slate-200 dark:border-slate-600 pb-4">
               <div>
-                <h2 className="text-2xl font-tactical font-bold text-slate-800 dark:text-white tracking-widest uppercase">
+                <h2 className="text-2xl font-tactical font-bold text-cighra-primary dark:text-white tracking-widest uppercase">
                   {activeMenu === 'MASUK' ? 'MODUL PENUGASAN TEKNISI' :
                     activeMenu === 'SELESAI' ? 'ARSIP DOKUMEN PENYELESAIAN' :
                       activeMenu === 'INVENTARIS' ? 'DATABASE INVENTARIS' :

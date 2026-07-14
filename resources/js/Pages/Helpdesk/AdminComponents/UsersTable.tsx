@@ -186,14 +186,14 @@ const UsersTable: React.FC<UsersTableProps> = ({
     <>
     <div className="bg-white dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600 shadow-xl overflow-hidden animate-in fade-in relative">
       <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-olive via-camogreen to-transparent"></div>
-      <div className="p-5 border-b border-slate-200 dark:border-slate-600 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-800">
+      <div className="p-5 border-b border-white/10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-cighra-primary dark:bg-slate-800">
         <h3 className="text-white font-tactical font-bold text-lg tracking-widest flex items-center gap-3 uppercase">
           <Users className="text-cighra-gold w-6 h-6" /> MANAJEMEN PERSONEL
         </h3>
         <div className="flex items-center gap-4">
           <button
             onClick={handleAddUser}
-            className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-cighra-primary dark:border-cighra-gold shadow-lg uppercase"
+            className="bg-white dark:bg-cighra-gold text-cighra-primary dark:text-slate-900 hover:bg-slate-100 dark:hover:bg-cighra-gold/90 px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border-2 border-white dark:border-cighra-gold shadow-lg uppercase"
           >
             <Plus className="w-4 h-4" /> TAMBAH USER
           </button>
@@ -217,7 +217,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
       </div>
       <div className="overflow-x-auto custom-scrollbar pb-2">
         <table className="w-full text-left font-sans text-sm">
-          <thead className="bg-slate-800 border-b border-slate-700">
+          <thead className="bg-cighra-primary dark:bg-slate-800 border-b border-white/10 text-white">
             <tr>
               <SortableHeader label="ID PERSONEL" sortKey="id" currentSort={sortConfig} onSort={handleSort} />
               <SortableHeader label="NRP / NIP" sortKey="nrp_nip" currentSort={sortConfig} onSort={handleSort} />
@@ -228,7 +228,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
               <SortableHeader label="TINDAKAN" />
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50 bg-white dark:bg-transparent">
+          <tbody className="divide-y divide-slate-200/60 dark:divide-slate-700/50 bg-blue-50/40 dark:bg-transparent">
             {paginatedItems.length === 0 ? (
               <tr>
                 <td colSpan={7} className="p-8">
