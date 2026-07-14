@@ -95,7 +95,13 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-cighra-dark flex font-sans selection:bg-cighra-primary dark:selection:bg-cighra-gold dark:selection:text-slate-900 selection:text-white relative text-gunmetal dark:text-slate-300">
+    <div className="h-screen bg-slate-50 dark:bg-cighra-dark flex flex-col font-sans selection:bg-cighra-primary dark:selection:bg-cighra-gold dark:selection:text-slate-900 selection:text-white relative text-gunmetal dark:text-slate-300">
+
+      <TeknisiTopbar
+          setIsMobileMenuOpen={setIsMobileMenuOpen}
+          currentUser={currentUser}
+        />
+      <div className="flex-1 flex overflow-hidden">
 
       <TeknisiSidebar
         isMobileMenuOpen={isMobileMenuOpen}
@@ -105,13 +111,10 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
       />
 
       {/* MAIN CONTENT AREA */}
-      <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
+      <main className="flex-1 flex flex-col relative overflow-hidden h-full">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-paper.png')] opacity-[0.05] pointer-events-none"></div>
 
-        <TeknisiTopbar
-          setIsMobileMenuOpen={setIsMobileMenuOpen}
-          currentUser={currentUser}
-        />
+        
 
         {/* Scrollable Content Container */}
         <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar z-10">
@@ -186,6 +189,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
           </div>
         </div>
       </main>
+      </div>
     </div>
   );
 };

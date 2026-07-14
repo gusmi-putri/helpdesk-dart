@@ -63,7 +63,13 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
 
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-cighra-dark flex font-sans selection:bg-cighra-primary dark:selection:bg-cighra-gold dark:selection:text-slate-900 selection:text-gunmetal relative text-slate-800 dark:text-slate-200">
+    <div className="h-screen bg-slate-50 dark:bg-cighra-dark flex flex-col font-sans selection:bg-cighra-primary dark:selection:bg-cighra-gold dark:selection:text-slate-900 selection:text-gunmetal relative text-slate-800 dark:text-slate-200">
+
+      <PelaporTopbar
+          setIsMobileMenuOpen={setIsMobileMenuOpen}
+          currentUser={currentUser}
+        />
+      <div className="flex-1 flex overflow-hidden">
 
       <PelaporSidebar
         isMobileMenuOpen={isMobileMenuOpen}
@@ -76,10 +82,7 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
       <main className="flex-1 relative overflow-y-auto custom-scrollbar bg-slate-50 dark:bg-cighra-dark">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-paper.png')] opacity-[0.05] pointer-events-none"></div>
 
-        <PelaporTopbar
-          setIsMobileMenuOpen={setIsMobileMenuOpen}
-          currentUser={currentUser}
-        />
+        
 
         <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
           {activeMenu === 'WIZARD' && lastReportedData && (
@@ -115,6 +118,7 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
           )}
         </div>
       </main>
+      </div>
 
       <PelaporReportDetailModal
         isOpen={!!selectedItemId}
