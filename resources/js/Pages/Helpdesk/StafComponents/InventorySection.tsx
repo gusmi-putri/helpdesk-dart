@@ -125,7 +125,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
 
       <div className="bg-white dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600 shadow-2xl overflow-hidden relative">
         <div className="absolute top-0 left-0 w-full h-[2px] bg-cighra-primary dark:bg-cighra-gold"></div>
-        <div className="p-5 border-b border-slate-200 dark:border-slate-600 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-800">
+        <div className="p-5 border-b border-white/10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-cighra-primary dark:bg-slate-800">
           <h3 className="text-white font-tactical font-bold text-lg tracking-widest flex items-center gap-3 uppercase">
             <Package className="text-cighra-gold w-6 h-6" /> DATA INVENTARIS UNIT
           </h3>
@@ -156,7 +156,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
             {onAddUnit && (
               <button
                 onClick={onAddUnit}
-                className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-cighra-primary dark:border-cighra-gold shadow-lg uppercase cursor-pointer rounded-none"
+                className="bg-white dark:bg-cighra-gold text-cighra-primary dark:text-slate-900 hover:bg-slate-100 dark:hover:bg-cighra-gold/90 px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border-2 border-white dark:border-cighra-gold shadow-lg uppercase cursor-pointer rounded-none"
               >
                 <Plus className="w-4 h-4" /> AJUKAN TAMBAH UNIT
               </button>
@@ -228,7 +228,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
 
         <div className="overflow-x-auto">
           <table className="w-full text-left font-sans text-sm">
-            <thead className="bg-slate-800 border-b border-slate-700">
+            <thead className="bg-cighra-primary dark:bg-slate-800 border-b border-white/10 text-white">
               <tr>
                 {isDeleteMode && (
                   <th className="p-4 w-28 text-center text-red-500 font-mono text-xs uppercase tracking-wider">
@@ -243,7 +243,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
                 {onRequestDelete && !isDeleteMode && <SortableHeader label="OPSI" />}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200 dark:divide-slate-700/50">
+            <tbody className="divide-y divide-slate-200/60 dark:divide-slate-700/50 bg-blue-50/40 dark:bg-transparent">
               {filteredUnits.length === 0 ? (
                 <tr>
                   <td colSpan={isDeleteMode ? 7 : (onRequestDelete ? 6 : 5)} className="p-0 text-center">
@@ -265,8 +265,8 @@ const InventorySection: React.FC<InventorySectionProps> = ({
                         isSelected 
                           ? 'bg-red-500/5 dark:bg-red-950/20 border-l-4 border-l-red-600' 
                           : isDeleteMode 
-                            ? 'hover:bg-slate-50 dark:hover:bg-slate-800/30 border-l-4 border-l-transparent' 
-                            : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'
+                            ? 'hover:bg-blue-100/50 dark:hover:bg-slate-800/30 border-l-4 border-l-transparent' 
+                            : 'hover:bg-blue-100/50 dark:hover:bg-slate-800/50'
                       }`}
                     >
                       {isDeleteMode && (
