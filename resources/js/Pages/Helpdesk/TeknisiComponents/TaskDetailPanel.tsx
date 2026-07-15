@@ -28,49 +28,49 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({ selectedTask, activeT
         <div className="absolute top-0 left-0 w-1 h-full bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900"></div>
 
         {/* SECTION 1: Informasi Tiket */}
-        <div className="p-6 bg-cighra-light dark:bg-cighra-darkcard/80 border-b border-slate-200 dark:border-slate-600 relative flex flex-col justify-center min-h-[125px] md:min-h-[145px] gap-2.5 shrink-0">
+        <div className="p-6 bg-cighra-primary dark:bg-cighra-darkcard/80 border-b border-slate-200 dark:border-slate-600 relative flex flex-col justify-center min-h-[125px] md:min-h-[145px] gap-2.5 shrink-0">
           {activeTab === 'HISTORY' && (
-            <div className="absolute top-0 right-0 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white px-4 py-1 font-tactical font-bold text-xs tracking-widest uppercase">
+            <div className="absolute top-0 right-0 bg-cighra-gold text-slate-900 px-4 py-1 font-tactical font-bold text-xs tracking-widest uppercase">
               ARSIP LAPORAN SELESAI
             </div>
           )}
           
           <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2 mt-2">
-            <h2 className="text-2xl md:text-3xl font-tactical font-bold text-slate-800 dark:text-white leading-tight uppercase">
+            <h2 className="text-2xl md:text-3xl font-tactical font-bold text-white leading-tight uppercase">
               {selectedTask.kerusakan.barangRusak}
             </h2>
-            <div className="bg-white dark:bg-cighra-darkcard/70 px-3 py-1 border border-slate-300 dark:border-slate-600 inline-block w-fit">
-              <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 tracking-wider mr-2 uppercase">REF:</span>
-              <span className="font-mono text-sm font-bold text-slate-800 dark:text-white">{selectedTask.caseId}</span>
+            <div className="bg-white/10 dark:bg-cighra-darkcard/70 px-3 py-1 border border-white/20 dark:border-slate-600 inline-block w-fit">
+              <span className="text-[10px] font-mono text-slate-300 dark:text-slate-400 tracking-wider mr-2 uppercase">REF:</span>
+              <span className="font-mono text-sm font-bold text-white">{selectedTask.caseId}</span>
             </div>
           </div>
 
           <div className="flex flex-wrap gap-2 text-[11px] font-mono font-bold mt-1">
             <span className={`flex items-center gap-1.5 px-2 py-0.5 uppercase ${
               selectedTask.kerusakan.urgensi?.toUpperCase() === 'SANGAT MENDESAK'
-                ? 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-300 dark:border-red-500/30'
+                ? 'bg-red-500/20 text-red-200 border border-red-500/40'
                 : selectedTask.kerusakan.urgensi?.toUpperCase() === 'BISA MENUNGGU'
-                ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-300 dark:border-amber-500/30'
-                : 'bg-green-500/10 text-green-600 dark:text-green-400 border border-green-300 dark:border-green-500/30'
+                ? 'bg-amber-500/20 text-amber-200 border border-amber-500/40'
+                : 'bg-green-500/20 text-green-200 border border-green-500/40'
             }`}><AlertCircle className="w-3.5 h-3.5" /> PRIORITAS: {selectedTask.kerusakan.urgensi?.toUpperCase() || 'NORMAL'}</span>
             
             <span className={`flex items-center gap-1.5 px-2 py-0.5 uppercase ${
               ['PARAH', 'BERAT'].includes(selectedTask.kerusakan.tingkatKerusakan?.toUpperCase() || '')
-                ? 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-300 dark:border-red-500/30'
+                ? 'bg-red-500/20 text-red-200 border border-red-500/40'
                 : selectedTask.kerusakan.tingkatKerusakan?.toUpperCase() === 'SEDANG'
-                ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-300 dark:border-amber-500/30'
-                : 'bg-green-500/10 text-green-600 dark:text-green-400 border border-green-300 dark:border-green-500/30'
+                ? 'bg-amber-500/20 text-amber-200 border border-amber-500/40'
+                : 'bg-green-500/20 text-green-200 border border-green-500/40'
             }`}><Wrench className="w-3.5 h-3.5" /> LEVEL: {selectedTask.kerusakan.tingkatKerusakan?.toUpperCase() || 'UMUM'}</span>
             
             <span className={`flex items-center gap-1.5 px-2 py-0.5 uppercase ${
               selectedTask.kerusakan.jenisPerbaikan === 'Non-Swadaya'
-                ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-300 dark:border-blue-500/30'
-                : 'bg-slate-100 dark:bg-soft-gunmetal/40 border border-slate-200 dark:border-slate-600 text-gunmetal dark:text-slate-300'
+                ? 'bg-blue-500/20 text-blue-200 border border-blue-500/40'
+                : 'bg-slate-700/50 text-slate-200 border border-slate-600/40'
             }`}><Wallet className="w-3.5 h-3.5" /> {selectedTask.kerusakan.jenisPerbaikan || 'Swadaya'}</span>
             
-            <span className="flex items-center gap-1.5 px-2 py-0.5 bg-sand/40 dark:bg-soft-gunmetal/40 border border-slate-200 dark:border-slate-600 text-gunmetal dark:text-slate-300 uppercase"><MapPin className="w-3.5 h-3.5 text-cighra-primary dark:text-cighra-gold" /> LOKASI: {selectedTask.kerusakan.lokasi}</span>
+            <span className="flex items-center gap-1.5 px-2 py-0.5 bg-slate-800/40 text-slate-200 border border-slate-700/30 uppercase"><MapPin className="w-3.5 h-3.5 text-cighra-gold" /> LOKASI: {selectedTask.kerusakan.lokasi}</span>
             
-            <span className="flex items-center gap-2 px-2 py-0.5 bg-sand/40 dark:bg-soft-gunmetal/40 border border-slate-200 dark:border-slate-600 text-gunmetal dark:text-slate-300 uppercase">
+            <span className="flex items-center gap-2 px-2 py-0.5 bg-slate-800/40 text-slate-200 border border-slate-700/30 uppercase">
               PELAPOR: {selectedTask.kerusakan.pelapor}
               {selectedTask.kerusakan.pelapor_wa && (
                 <a

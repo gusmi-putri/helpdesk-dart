@@ -50,7 +50,7 @@ const CompletionForm: React.FC<CompletionFormProps> = ({
             <label className="block text-slate-600 dark:text-slate-300 text-xs font-mono font-bold mb-2 tracking-widest uppercase">
               Dokumentasi Foto Hasil Perbaikan <span className="text-cighra-primary dark:text-cighra-gold">*</span>
             </label>
-            <div className={`border-2 border-dashed ${errors.foto_selesai ? 'border-red-500 dark:border-red-500 bg-red-50 dark:bg-red-900/10' : 'border-slate-300 dark:border-slate-600 bg-cighra-light dark:bg-cighra-darkcard/10'} p-4 text-center hover:border-cighra-primary dark:hover:border-cighra-gold transition-all group cursor-pointer relative flex flex-col justify-center min-h-[100px]`}>
+            <div className={`border-2 border-dashed ${errors.foto_selesai ? 'border-red-500 dark:border-red-500 bg-red-50 dark:bg-red-900/10' : 'border-cighra-primary dark:border-slate-600 bg-cighra-primary dark:bg-cighra-darkcard/10'} p-4 text-center hover:border-cighra-gold dark:hover:border-cighra-gold transition-all group cursor-pointer relative flex flex-col justify-center min-h-[100px]`}>
               <input
                 type="file"
                 accept="image/*"
@@ -79,12 +79,12 @@ const CompletionForm: React.FC<CompletionFormProps> = ({
               />
               <div className="flex flex-col items-center justify-center gap-2">
                 <div className="flex items-center gap-2">
-                  <Activity className="w-4 h-4 text-slate-500 group-hover:text-cighra-primary dark:group-hover:text-cighra-gold transition-colors" />
-                  <span className="text-[11px] font-mono text-slate-500 dark:text-slate-300 group-hover:text-cighra-primary dark:group-hover:text-cighra-gold uppercase font-bold">
+                  <Activity className="w-4 h-4 text-slate-300 group-hover:text-cighra-gold transition-colors" />
+                  <span className="text-[11px] font-mono text-slate-200 dark:text-slate-300 group-hover:text-cighra-gold uppercase font-bold">
                     UNGGAH FOTO SELESAI
                   </span>
                 </div>
-                <span className="text-[10px] font-mono text-slate-400 uppercase">Klik untuk pilih beberapa foto</span>
+                <span className="text-[10px] font-mono text-slate-300 dark:text-slate-400 group-hover:text-cighra-gold/80 uppercase">Klik untuk pilih beberapa foto</span>
               </div>
             </div>
             {errors.foto_selesai && <p className="text-[11px] text-cighra-primary dark:text-cighra-gold mt-1 font-mono uppercase">{errors.foto_selesai}</p>}

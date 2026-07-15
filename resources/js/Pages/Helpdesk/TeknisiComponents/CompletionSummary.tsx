@@ -16,7 +16,7 @@ const CompletionSummary: React.FC<CompletionSummaryProps> = ({ selectedTask, onB
         <div className="space-y-4">
           <div>
             <p className="text-xs font-mono text-slate-600 dark:text-slate-300 uppercase tracking-widest mb-1">Metode Perbaikan</p>
-            <p className="text-sm font-bold text-slate-800 dark:text-white bg-cighra-light dark:bg-cighra-darkcard/30 p-3 border-l-4 border-cighra-primary dark:border-cighra-gold uppercase">
+            <p className="text-sm font-bold text-white bg-cighra-primary dark:bg-cighra-darkcard/30 p-3 border-l-4 border-cighra-gold uppercase">
               {selectedTask.perbaikan.metode || 'LANGSUNG'}
             </p>
           </div>

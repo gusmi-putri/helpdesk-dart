@@ -42,17 +42,17 @@ const TaskList: React.FC<TaskListProps> = ({
         </div>
       </div>
       
-      <div className={`${isCollapsed ? 'hidden md:block' : 'block'} space-y-4 flex flex-col flex-1 overflow-hidden`}>
-        <div className="flex gap-1 bg-cighra-light dark:bg-cighra-dark/30 p-1 border border-slate-200 dark:border-slate-600 h-[44px] items-center shrink-0">
+      <div className={`${isCollapsed ? 'hidden md:flex' : 'flex'} flex-col flex-1 overflow-hidden space-y-4`}>
+        <div className="flex gap-1 bg-cighra-primary dark:bg-cighra-dark/30 p-1 border border-cighra-primary dark:border-slate-600 h-[44px] items-center shrink-0 rounded-sm">
           <button 
             onClick={() => { setActiveTab('ACTIVE'); setSelectedTaskId(null); }}
-            className={`flex-1 py-1.5 text-[11px] font-tactical font-bold transition-all uppercase h-full ${activeTab === 'ACTIVE' ? 'bg-cighra-gold text-slate-900 shadow-lg' : 'text-slate-500 dark:text-slate-300 hover:text-gunmetal dark:hover:text-white'}`}
+            className={`flex-1 py-1.5 text-[11px] font-tactical font-bold transition-all uppercase h-full rounded-sm ${activeTab === 'ACTIVE' ? 'bg-cighra-gold text-slate-900 shadow-lg' : 'text-slate-300 dark:text-slate-300 hover:text-white dark:hover:text-white'}`}
           >
             DAFTAR TUGAS
           </button>
           <button 
             onClick={() => { setActiveTab('HISTORY'); setSelectedTaskId(null); }}
-            className={`flex-1 py-1.5 text-[11px] font-tactical font-bold transition-all uppercase h-full ${activeTab === 'HISTORY' ? 'bg-cighra-gold text-slate-900 shadow-lg' : 'text-slate-500 dark:text-slate-300 hover:text-gunmetal dark:hover:text-white'}`}
+            className={`flex-1 py-1.5 text-[11px] font-tactical font-bold transition-all uppercase h-full rounded-sm ${activeTab === 'HISTORY' ? 'bg-cighra-gold text-slate-900 shadow-lg' : 'text-slate-300 dark:text-slate-300 hover:text-white dark:hover:text-white'}`}
           >
             RIWAYAT SELESAI
           </button>
