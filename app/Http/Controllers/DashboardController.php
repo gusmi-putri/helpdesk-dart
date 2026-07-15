@@ -94,8 +94,8 @@ class DashboardController extends Controller
 
     public function admin()
     {
-        $cases = ReportResource::collection(Report::with(['unit.satuan', 'pelapor.satuan', 'teknisi'])->get());
-        $users = UserResource::collection(User::with(['role', 'satuan'])->get());
+        $cases = ReportResource::collection(Report::with(['unit.satuan', 'pelapor.satuan', 'teknisi'])->orderBy('created_at', 'desc')->take(2000)->get());
+        $users = UserResource::collection(User::with(['role', 'satuan'])->take(2000)->get());
         $logs = SystemLog::with('user')->orderBy('created_at', 'desc')->take(1000)->get()->map(function($l) {
             return [
                 'id' => $l->id,
@@ -113,7 +113,7 @@ class DashboardController extends Controller
             ];
         });
 
-        $units = UnitResource::collection(Unit::with('satuan')->get());
+        $units = UnitResource::collection(Unit::with('satuan')->orderBy('created_at', 'desc')->take(3000)->get());
         $unreadFeedbackCount = Feedback::where('status_baca', false)->count();
         Feedback::where('status_baca', false)->update(['status_baca' => true]);
         $feedbacks = Feedback::orderBy('created_at', 'desc')->take(500)->get()->map(function($f) {
@@ -135,7 +135,7 @@ class DashboardController extends Controller
                 ->get()
         );
 
-        $archivedUnits = UnitResource::collection(Unit::with('satuan')->onlyTrashed()->get());
+        $archivedUnits = UnitResource::collection(Unit::with('satuan')->onlyTrashed()->orderBy('deleted_at', 'desc')->take(1000)->get());
 
         $satuans = Satuan::all();
 
@@ -170,21 +170,21 @@ class DashboardController extends Controller
                 if ($auth->satuan_id) {
                     $q->where('satuan_id', $auth->satuan_id);
                 }
-            })->get());
+            })->orderBy('created_at', 'desc')->take(2000)->get());
             
         $units = UnitResource::collection(Unit::with('satuan')
             ->where(function($q) use ($auth) {
                 if ($auth->satuan_id) {
                     $q->where('satuan_id', $auth->satuan_id);
                 }
-            })->get());
+            })->orderBy('created_at', 'desc')->take(2000)->get());
             
         $users = UserResource::collection(User::with('satuan')
             ->where(function($q) use ($auth) {
                 if ($auth->satuan_id) {
                     $q->where('satuan_id', $auth->satuan_id);
                 }
-            })->get());
+            })->take(1000)->get());
 
         // Kirim data profil user yang sedang login untuk auto-fill form
         $authUser = $auth ? [
@@ -209,7 +209,7 @@ class DashboardController extends Controller
     public function teknisi()
     {
         // Teknisi hanya melihat tugas yang diberikan kepadanya
-        $cases = ReportResource::collection(Report::with(['unit.satuan', 'pelapor', 'teknisi'])->where('teknisi_id', auth()->id())->get());
+        $cases = ReportResource::collection(Report::with(['unit.satuan', 'pelapor', 'teknisi'])->where('teknisi_id', auth()->id())->orderBy('created_at', 'desc')->take(2000)->get());
         
         return Inertia::render('Helpdesk/DashboardTeknisi', [
             'dbCases' => $cases
@@ -218,20 +218,21 @@ class DashboardController extends Controller
 
     public function staf()
     {
-        $cases = ReportResource::collection(Report::with(['unit.satuan', 'pelapor', 'teknisi'])->get());
+        $cases = ReportResource::collection(Report::with(['unit.satuan', 'pelapor', 'teknisi'])->orderBy('created_at', 'desc')->take(2000)->get());
         
         // Ambil semua teknisi untuk ditugaskan (tetap diperlukan untuk AssignTechnicianModal)
         $technicians = UserResource::collection(User::whereHas('role', function($q) {
             $q->where('nama_role', 'Teknisi');
-        })->with('reportsDitangani')->get());
+        })->with('reportsDitangani')->take(500)->get());
 
-        $allUsers = UserResource::collection(User::with(['role', 'satuan'])->get());
+        $allUsers = UserResource::collection(User::with(['role', 'satuan'])->take(2000)->get());
 
-        $units = UnitResource::collection(Unit::with('satuan')->get());
+        $units = UnitResource::collection(Unit::with('satuan')->orderBy('created_at', 'desc')->take(3000)->get());
 
         $mutations = UnitMutationResource::collection(
             UnitMutation::with(['unit', 'requester', 'approver'])
                 ->orderBy('created_at', 'desc')
+                ->take(500)
                 ->get()
         );
 
@@ -247,6 +248,7 @@ class DashboardController extends Controller
         $userMutations = UserMutationResource::collection(
             UserMutation::with(['targetUser', 'requester', 'approver'])
                 ->orderBy('created_at', 'desc')
+                ->take(500)
                 ->get()
         );
 

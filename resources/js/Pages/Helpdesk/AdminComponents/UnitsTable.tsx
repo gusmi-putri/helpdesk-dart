@@ -9,6 +9,7 @@ import UnitHistoryModal from './UnitHistoryModal';
 import AdminUnitBatchModal from './AdminUnitBatchModal';
 import { usePagination } from '@/hooks/usePagination';
 import Pagination from '@/Components/Table/Pagination';
+import { Badge } from '@/Components/ui/Badge';
 
 interface UnitsTableProps {
   dbUnits: any[];
@@ -419,14 +420,14 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
                       <td className="p-4 font-mono text-xs text-slate-800 dark:text-white uppercase text-center truncate max-w-[150px]" title={u.jenis}>{u.jenis}</td>
                       <td className="p-4 font-mono text-xs text-slate-800 dark:text-white uppercase text-center truncate max-w-[200px]" title={u.asal_satuan}>{u.asal_satuan}</td>
                       <td className="p-4 text-center">
-                        <span className={`px-2 py-0.5 border text-[11px] font-bold tracking-widest uppercase inline-block mx-auto
-                          ${u.status_unit === 'Beroperasi' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40' :
-                            u.status_unit === 'Rusak' ? 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/40' :
-                              u.status_unit === 'Perbaikan' ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800/40' :
-                                'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-300 dark:border-slate-600'}
-                        `}>
+                        <Badge variant={
+                          u.status_unit === 'Beroperasi' ? 'success' :
+                          u.status_unit === 'Rusak' ? 'danger' :
+                          u.status_unit === 'Perbaikan' ? 'info' :
+                          'default'
+                        }>
                           {u.status_unit === 'Perbaikan' ? 'Dalam Perbaikan' : u.status_unit}
-                        </span>
+                        </Badge>
                       </td>
                       <td className="p-4 font-mono text-xs text-slate-800 dark:text-white text-center">{u.last_maintenance}</td>
 

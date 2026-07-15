@@ -9,6 +9,8 @@ interface TaskListProps {
   setSelectedTaskId: (id: number | null) => void;
   searchQuery: string;
   setSearchQuery: (q: string) => void;
+  isMobileListOpen?: boolean;
+  setIsMobileListOpen?: (isOpen: boolean) => void;
 }
 
 const TaskList: React.FC<TaskListProps> = ({
@@ -18,10 +20,10 @@ const TaskList: React.FC<TaskListProps> = ({
   selectedTaskId,
   setSelectedTaskId,
   searchQuery,
-  setSearchQuery
+  setSearchQuery,
+  isMobileListOpen = false,
+  setIsMobileListOpen
 }) => {
-  const [isCollapsed, setIsCollapsed] = useState(true);
-
   return (
     <div className="w-full h-full flex flex-col bg-white dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-600 shadow-xl p-6 gap-4 rounded-sm">
       <div className="flex justify-between items-center pb-2 border-b border-slate-100 dark:border-slate-700">
@@ -34,15 +36,15 @@ const TaskList: React.FC<TaskListProps> = ({
           </span>
           <button
             type="button"
-            onClick={() => setIsCollapsed(!isCollapsed)}
+            onClick={() => setIsMobileListOpen?.(!isMobileListOpen)}
             className="md:hidden text-[10px] bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 px-2 py-1 font-mono font-bold uppercase rounded-sm cursor-pointer border border-slate-300 dark:border-slate-600"
           >
-            {isCollapsed ? 'BUKA DAFTAR' : 'TUTUP DAFTAR'}
+            {!isMobileListOpen ? 'BUKA DAFTAR' : 'TUTUP DAFTAR'}
           </button>
         </div>
       </div>
       
-      <div className={`${isCollapsed ? 'hidden md:flex' : 'flex'} flex-col flex-1 overflow-hidden space-y-4`}>
+      <div className={`${!isMobileListOpen ? 'hidden md:flex' : 'flex'} flex-col flex-1 overflow-hidden space-y-4`}>
         <div className="flex gap-1 bg-cighra-primary dark:bg-cighra-dark/30 p-1 border border-cighra-primary dark:border-slate-600 h-[44px] items-center shrink-0 rounded-sm">
           <button 
             onClick={() => { setActiveTab('ACTIVE'); setSelectedTaskId(null); }}
@@ -80,7 +82,7 @@ const TaskList: React.FC<TaskListProps> = ({
                 key={task.db_id}
                 onClick={() => {
                   setSelectedTaskId(task.db_id);
-                  setIsCollapsed(true);
+                  setIsMobileListOpen?.(false);
                 }}
                 className={`p-4 border-2 transition-all cursor-pointer rounded-sm group flex flex-col gap-2
                   ${selectedTaskId === task.db_id

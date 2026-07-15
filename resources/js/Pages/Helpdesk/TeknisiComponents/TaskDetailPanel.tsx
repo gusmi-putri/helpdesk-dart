@@ -11,7 +11,7 @@ const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({ selectedTask, activeT
   if (!selectedTask) {
     return (
       <div className="flex-1 w-full">
-        <div className="h-full min-h-[500px] border-2 border-dashed border-slate-300 dark:border-slate-600 bg-white/40 dark:bg-cighra-darkcard/10 flex flex-col items-center justify-center rounded-sm text-center p-8">
+        <div className="h-full min-h-[300px] md:min-h-[500px] border-2 border-dashed border-slate-300 dark:border-slate-600 bg-white/40 dark:bg-cighra-darkcard/10 flex flex-col items-center justify-center rounded-sm text-center p-8">
           <Wrench className="w-20 h-20 text-slate-600/20 dark:text-slate-300/10 mb-6" />
           <h3 className="text-slate-500 dark:text-slate-300 font-tactical text-2xl tracking-widest mb-2 uppercase">Menunggu Pilihan Tugas</h3>
           <p className="text-slate-500 dark:text-slate-400 font-mono text-sm max-w-md uppercase tracking-tighter">

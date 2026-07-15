@@ -5,6 +5,7 @@ import SortableHeader from '@/Components/Table/SortableHeader';
 import { router } from '@inertiajs/react';
 import { BaseModal } from '@/Components/ui/BaseModal';
 import { Button } from '@/Components/ui/Button';
+import { Badge } from '@/Components/ui/Badge';
 
 interface MutationApprovalProps {
   dbMutations: any[];
@@ -425,14 +426,13 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                                   <td className="p-3 uppercase font-mono text-xs text-center text-slate-800 dark:text-white">{u.jenis}</td>
                                   <td className="p-3 uppercase text-center text-slate-800 dark:text-white">{u.asal_satuan}</td>
                                   <td className="p-3 text-center">
-                                    <span className={`px-2 py-0.5 text-[11px] font-mono font-bold border rounded-sm
-                                      ${u.status === 'approved' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40' :
-                                        u.status === 'rejected' ? 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/40' :
-                                        'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800/40 animate-pulse'
-                                      }
-                                    `}>
+                                    <Badge variant={
+                                      u.status === 'approved' ? 'success' :
+                                      u.status === 'rejected' ? 'danger' :
+                                      'warning'
+                                    } className={u.status !== 'approved' && u.status !== 'rejected' ? 'animate-pulse' : ''}>
                                       {u.status === 'approved' ? 'DISETUJUI' : u.status === 'rejected' ? 'DITOLAK' : 'MENUNGGU'}
-                                    </span>
+                                    </Badge>
                                   </td>
                                   <td className="p-3 text-center">
                                     <div className="flex gap-2 justify-center">
@@ -542,9 +542,9 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                     <div className="flex-1 space-y-1 w-full">
                       <div className="flex flex-wrap items-center gap-2">
                         {getTypeBadge(m.type, isBatch)}
-                        <span className={`px-2 py-0.5 text-[11px] font-mono font-bold border ${m.status === 'approved' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40' : 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/40'}`}>
+                        <Badge variant={m.status === 'approved' ? 'success' : 'danger'}>
                           {m.status === 'approved' ? 'DISETUJUI' : 'DITOLAK'}
-                        </span>
+                        </Badge>
                       </div>
                       
                       {isBatch ? (
@@ -583,14 +583,13 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                                       <td className="p-2 uppercase text-xs text-center text-slate-800 dark:text-white">{u.jenis}</td>
                                       <td className="p-2 uppercase text-xs text-center text-slate-800 dark:text-white">{u.asal_satuan}</td>
                                       <td className="p-2 text-center">
-                                        <span className={`px-2 py-0.5 text-[11px] font-mono font-bold border rounded-sm
-                                          ${u.status === 'approved' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40' :
-                                            u.status === 'rejected' ? 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/40' :
-                                            'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800/40'
-                                          }
-                                        `}>
+                                        <Badge variant={
+                                          u.status === 'approved' ? 'success' :
+                                          u.status === 'rejected' ? 'danger' :
+                                          'warning'
+                                        }>
                                           {u.status === 'approved' ? 'DISETUJUI' : u.status === 'rejected' ? 'DITOLAK' : 'MENUNGGU'}
-                                        </span>
+                                        </Badge>
                                       </td>
                                     </tr>
                                   ))}

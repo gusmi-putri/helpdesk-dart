@@ -47,10 +47,10 @@ class StoreReportRequest extends FormRequest
             'jenis_perbaikan' => 'required|in:Swadaya,Non-Swadaya',
             'keterangan_anggaran' => 'required_if:jenis_perbaikan,Non-Swadaya|nullable|string|max:2000',
             'dokumen_anggaran' => $dokumenAnggaranRules,
-            'dokumen_anggaran.*' => 'file|mimes:pdf,doc,docx,jpg,jpeg,png|max:20480',
+            'dokumen_anggaran.*' => 'file|mimes:pdf,doc,docx,jpg,jpeg,png|mimetypes:application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png|max:20480',
             'klasifikasi' => 'nullable|in:RINGAN,SEDANG,DARURAT',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:20480',
-            'file_bukti.*' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:20480',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|mimetypes:image/jpeg,image/png|max:20480',
+            'file_bukti.*' => 'nullable|file|mimes:jpg,jpeg,png,gif|mimetypes:image/jpeg,image/png,image/gif|max:20480',
             'tautan_video' => 'required|url',
         ];
     }

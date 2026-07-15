@@ -22,5 +22,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Vite::prefetch(concurrency: 3);
         \Illuminate\Http\Resources\Json\JsonResource::withoutWrapping();
+        \App\Models\Report::observe(\App\Observers\ReportObserver::class);
+        \App\Models\UnitMutation::observe(\App\Observers\UnitMutationObserver::class);
     }
 }

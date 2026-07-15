@@ -13,6 +13,8 @@ import UserDeleteModal from './UserDeleteModal';
 import UserEditModal from './UserEditModal';
 import { usePagination } from '@/hooks/usePagination';
 import Pagination from '@/Components/Table/Pagination';
+import { RoleBadge } from '@/Components/ui/RoleBadge';
+import { StatusBadge } from '@/Components/ui/StatusBadge';
 
 interface UsersTableProps {
   dbUsers: any[];
@@ -249,22 +251,10 @@ const UsersTable: React.FC<UsersTableProps> = ({
                 <td className="p-4 text-slate-800 dark:text-white font-bold text-center">{u.name}</td>
                 <td className="p-4 font-mono text-xs text-slate-800 dark:text-white lowercase text-center">{u.email}</td>
                 <td className="p-4 text-center">
-                  <span className={`px-3 py-1 text-xs font-mono font-bold tracking-widest border
-                    ${u.role === 'Admin' ? 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800/40' :
-                      u.role === 'Staf' ? 'bg-olive/10 dark:bg-green-900/20 text-olive dark:text-green-400 border-olive/30 dark:border-green-800/40' :
-                        u.role === 'Teknisi' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800/40' :
-                          'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-300 dark:border-slate-600'}
-                  `}>
-                    {u.role.toUpperCase()}
-                  </span>
+                  <RoleBadge role={u.role} />
                 </td>
                 <td className="p-4 text-center">
-                  <div className="flex items-center justify-center gap-2">
-                    <span className={`w-2 h-2 rounded-full ${u.status === 'Aktif' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-pulse' : 'bg-slate-300 dark:bg-slate-600'}`}></span>
-                    <span className={`text-xs font-bold tracking-widest uppercase ${u.status === 'Aktif' ? 'text-green-600 dark:text-green-500' : 'text-slate-400 dark:text-slate-500'}`}>
-                      {u.status}
-                    </span>
-                  </div>
+                  <StatusBadge status={u.status} />
                 </td>
                 <td className="p-4 text-center whitespace-nowrap">
                   <div className="flex items-center justify-center gap-1.5">

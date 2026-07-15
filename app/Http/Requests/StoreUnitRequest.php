@@ -27,7 +27,7 @@ class StoreUnitRequest extends FormRequest
             'asal_satuan' => 'required|string|max:100',
             'satuan_id' => 'nullable|exists:satuans,id',
             'status_unit' => 'required|in:Beroperasi,Rusak,Perbaikan,Nonaktif',
-            'document' => 'required|file|mimes:pdf,png,jpg,jpeg|max:10240',
+            'document' => 'required|file|mimes:pdf,png,jpg,jpeg|mimetypes:application/pdf,image/png,image/jpeg|max:10240',
         ];
     }
 }

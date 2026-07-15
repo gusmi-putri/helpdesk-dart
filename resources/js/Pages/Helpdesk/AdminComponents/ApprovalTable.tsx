@@ -2,6 +2,7 @@ import React from 'react';
 import { CheckCircle, XCircle } from 'lucide-react';
 import { useTableSort } from '@/hooks/useTableSort';
 import SortableHeader from '@/Components/Table/SortableHeader';
+import { Badge } from '@/Components/ui/Badge';
 
 interface ApprovalTableProps {
   dbUserMutations: any[];
@@ -17,12 +18,19 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
   const pending = dbUserMutations.filter((m: any) => m.status === 'pending');
   const { sortedItems: pendingMutations, sortConfig, handleSort } = useTableSort(pending, { key: 'created_at', direction: 'desc' });
 
-  const getBadgeInfo = (type: string) => {
-    if (type === 'request_add') return { label: 'TAMBAH PERSONEL', color: 'bg-green-100 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800' };
-    if (type === 'request_register') return { label: 'PENDAFTARAN BARU', color: 'bg-green-100 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800' };
-    if (type === 'request_edit') return { label: 'UBAH PROFIL', color: 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800' };
-    if (type === 'request_delete') return { label: 'HAPUS PERSONEL', color: 'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800' };
-    return { label: 'UNKNOWN', color: 'bg-gray-100' };
+  const getBadgeVariant = (type: string): 'success' | 'info' | 'danger' | 'default' => {
+    if (type === 'request_add' || type === 'request_register') return 'success';
+    if (type === 'request_edit') return 'info';
+    if (type === 'request_delete') return 'danger';
+    return 'default';
+  };
+
+  const getBadgeLabel = (type: string) => {
+    if (type === 'request_add') return 'TAMBAH PERSONEL';
+    if (type === 'request_register') return 'PENDAFTARAN BARU';
+    if (type === 'request_edit') return 'UBAH PROFIL';
+    if (type === 'request_delete') return 'HAPUS PERSONEL';
+    return 'UNKNOWN';
   };
 
   return (
@@ -46,17 +54,15 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
                 </td>
               </tr>
             ) : pendingMutations.map((m: any) => {
-              const badge = getBadgeInfo(m.type);
-              
               const targetName = m.user_data?.name || m.user_data?.nama_lengkap || m.target_user?.name || '-';
               const targetUsername = m.user_data?.username || m.target_user?.username || '-';
 
               return (
                 <tr key={m.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/60 transition-colors group text-slate-800 dark:text-slate-200">
                   <td className="p-4 text-center">
-                    <span className={`px-2 py-1 text-xs font-mono font-bold border rounded-sm ${badge.color}`}>
-                      {badge.label}
-                    </span>
+                    <Badge variant={getBadgeVariant(m.type)}>
+                      {getBadgeLabel(m.type)}
+                    </Badge>
                     <div className="text-[11px] font-mono mt-1 text-slate-500">
                       Oleh: {m.requested_by?.name || '-'}
                     </div>

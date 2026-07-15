@@ -6,6 +6,7 @@ import { useStore } from '@/store/useStore';
 import { router } from '@inertiajs/react';
 import { useTableSort } from '@/hooks/useTableSort';
 import SortableHeader from '@/Components/Table/SortableHeader';
+import { Badge } from '@/Components/ui/Badge';
 
 interface ApprovalCenterProps {
   dbUsers: any[];
@@ -169,13 +170,13 @@ const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
                   <tr key={satuan.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/60 transition-colors group text-slate-800 dark:text-slate-200">
                     <td className="p-4 text-center font-mono font-bold">{satuan.nama_satuan}</td>
                     <td className="p-4 text-center">
-                      <span className={`px-2 py-1 text-xs font-mono font-bold border rounded-sm uppercase ${
-                        satuan.pending_action === 'create' ? 'bg-green-100 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800' :
-                        satuan.pending_action === 'edit' ? 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800' :
-                        'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800'
-                      }`}>
+                      <Badge variant={
+                        satuan.pending_action === 'create' ? 'success' :
+                        satuan.pending_action === 'edit' ? 'info' :
+                        'danger'
+                      }>
                         {satuan.pending_action === 'create' ? 'Tambah' : satuan.pending_action === 'edit' ? 'Edit' : 'Hapus'}
-                      </span>
+                      </Badge>
                     </td>
                     <td className="p-4">
                       <div className="text-xs font-mono text-slate-800 dark:text-white">

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useStore } from '@/store/useStore';
-import { router, useForm } from '@inertiajs/react';
+import { router, useForm, Head } from '@inertiajs/react';
 
 
 // Sub-components
@@ -22,6 +22,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const [isMobileListOpen, setIsMobileListOpen] = useState<boolean>(false);
 
 
   // Filter tasks
@@ -85,6 +86,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
     post(`/reports/${selectedTaskId}/complete`, {
       onSuccess: () => {
         reset();
+        imagePreviews.forEach(url => URL.revokeObjectURL(url));
         setImagePreviews([]);
         setSelectedTaskId(null);
       },
@@ -96,6 +98,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
 
   return (
     <div className="h-screen bg-slate-50 dark:bg-cighra-dark flex flex-col font-sans selection:bg-cighra-primary dark:selection:bg-cighra-gold dark:selection:text-slate-900 selection:text-white relative text-gunmetal dark:text-slate-300 overflow-hidden">
+      <Head title="Portal Perbaikan DART" />
 
       <TeknisiTopbar
         setIsMobileMenuOpen={setIsMobileMenuOpen}
@@ -121,7 +124,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
           {/* Content Grid */}
           <div className="flex-1 flex flex-col md:flex-row gap-6 md:gap-8 overflow-y-auto md:overflow-hidden h-auto md:h-full items-stretch">
             {/* LEFT PANEL */}
-            <div className="w-full md:w-[40%] lg:w-[35%] shrink-0 h-[450px] md:h-full overflow-hidden">
+            <div className={`w-full md:w-[40%] lg:w-[35%] shrink-0 ${isMobileListOpen ? 'h-[450px]' : 'h-auto'} md:h-full overflow-hidden transition-all duration-300`}>
               <TaskList
                 tasks={filteredTasks}
                 activeTab={activeTab}
@@ -130,6 +133,8 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
                 setSelectedTaskId={setSelectedTaskId}
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
+                isMobileListOpen={isMobileListOpen}
+                setIsMobileListOpen={setIsMobileListOpen}
               />
             </div>
 
