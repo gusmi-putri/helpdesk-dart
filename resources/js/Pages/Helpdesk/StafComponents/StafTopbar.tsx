@@ -42,7 +42,7 @@ const StafTopbar: React.FC<StafTopbarProps> = ({ setIsMobileMenuOpen, currentUse
 
   return (
     <>
-    <header className="h-16 border-b border-slate-200 dark:border-slate-600 bg-cighra-primary text-white dark:bg-cighra-darkcard/60 backdrop-blur-md flex items-center justify-between px-4 md:px-8 flex-shrink-0 z-50 relative">
+    <header className="h-16 border-b border-slate-200 dark:border-slate-600 bg-cighra-primary dark:bg-cighra-darkcard/60 backdrop-blur-md flex items-center justify-between px-4 md:px-8 flex-shrink-0 z-50 relative">
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-3 mr-4">
           <img src="/logo.png" alt="DART Logo" className="w-8 h-10 object-contain drop-shadow-[0_0_8px_rgba(255,215,0,0.5)]" />
@@ -59,12 +59,12 @@ const StafTopbar: React.FC<StafTopbarProps> = ({ setIsMobileMenuOpen, currentUse
       </div>
 
       <Menu as="div" className="relative ml-auto">
-        <Menu.Button
+        <Menu.Button 
           className="flex items-center gap-0 border border-slate-200/20 dark:border-slate-600 rounded shadow-sm bg-black/10 dark:bg-cighra-darkcard/80 overflow-hidden focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none hover:bg-black/20 dark:hover:bg-cighra-darkcard transition-all active:scale-95 duration-300 cursor-pointer text-left"
         >
           <div className="bg-cighra-dark/40 dark:bg-cighra-darkcard/80 px-4 py-1.5 text-right flex flex-col justify-center border-r border-slate-200/20 dark:border-slate-600">
-            <span className="block text-xs font-bold text-white dark:text-white uppercase font-sans tracking-wider">{currentUser?.name || 'Staf Admin'}</span>
-            <span className="block text-[11px] font-mono tracking-widest text-cighra-gold dark:text-cighra-gold">OPERATOR DASHBOARD</span>
+            <span className="block text-xs font-bold text-white dark:text-white uppercase font-sans tracking-wider">{currentUser?.name || currentUser?.nama_lengkap || 'Staf Admin'}</span>
+            <span className="block text-[11px] font-mono tracking-widest text-cighra-gold dark:text-cighra-gold uppercase">{currentUser?.role?.nama_role || currentUser?.role || 'STAF'}</span>
           </div>
           <div className="w-10 h-full bg-black/20 dark:bg-cighra-darkcard/70 flex items-center justify-center p-2">
             <CircleUser className="w-6 h-6 text-slate-200 dark:text-slate-400" />
@@ -85,11 +85,12 @@ const StafTopbar: React.FC<StafTopbarProps> = ({ setIsMobileMenuOpen, currentUse
                 {({ active }) => (
                   <Link
                     href="/profile"
-                    className={`${active ? 'bg-cighra-primary/10 dark:bg-slate-800 text-cighra-primary dark:text-white' : 'text-slate-700 dark:text-slate-300'
-                      } group flex w-full items-center rounded-sm px-2 py-2 text-sm font-sans uppercase tracking-wider`}
+                    className={`${
+                      active ? 'bg-cighra-primary/10 dark:bg-slate-800 text-cighra-primary dark:text-white' : 'text-slate-700 dark:text-slate-300'
+                    } group flex w-full items-center rounded-sm px-2 py-2 text-sm font-sans uppercase tracking-wider`}
                   >
                     <Settings className="mr-2 h-4 w-4" aria-hidden="true" />
-                    Pengaturan Profil
+                    Profil
                   </Link>
                 )}
               </Menu.Item>
@@ -109,7 +110,7 @@ const StafTopbar: React.FC<StafTopbarProps> = ({ setIsMobileMenuOpen, currentUse
                   >
                     <div className="flex items-center">
                       {isDarkMode ? <Moon className="mr-2 h-4 w-4" aria-hidden="true" /> : <Sun className="mr-2 h-4 w-4" aria-hidden="true" />}
-                      Mode Gelap
+                      {isDarkMode ? 'MODE GELAP' : 'MODE TERANG'}
                     </div>
                     <div className={`w-8 h-4 rounded-full flex items-center p-0.5 transition-colors duration-300 ease-in-out ${isDarkMode ? 'bg-cighra-gold' : 'bg-slate-300 dark:bg-slate-600'}`}>
                       <div className={`w-3 h-3 rounded-full bg-white shadow-sm transform transition-transform duration-300 ease-in-out ${isDarkMode ? 'translate-x-4' : 'translate-x-0'}`} />
@@ -138,8 +139,9 @@ const StafTopbar: React.FC<StafTopbarProps> = ({ setIsMobileMenuOpen, currentUse
                 {({ active }) => (
                   <button
                     onClick={() => setIsLogoutModalOpen(true)}
-                    className={`${active ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400' : 'text-slate-700 dark:text-slate-300'
-                      } group flex w-full items-center rounded-sm px-2 py-2 text-sm font-sans uppercase tracking-wider text-left`}
+                    className={`${
+                      active ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400' : 'text-slate-700 dark:text-slate-300'
+                    } group flex w-full items-center rounded-sm px-2 py-2 text-sm font-sans uppercase tracking-wider text-left`}
                   >
                     <LogOut className="mr-2 h-4 w-4" aria-hidden="true" />
                     Keluar / Logout
@@ -200,4 +202,3 @@ const StafTopbar: React.FC<StafTopbarProps> = ({ setIsMobileMenuOpen, currentUse
 };
 
 export default StafTopbar;
-
