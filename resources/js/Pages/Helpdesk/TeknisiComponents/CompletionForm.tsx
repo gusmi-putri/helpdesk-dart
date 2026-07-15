@@ -7,8 +7,8 @@ interface CompletionFormProps {
   errors: any;
   processing: boolean;
   handleSubmit: (e: React.FormEvent) => void;
-  imagePreview: string | null;
-  setImagePreview: (src: string | null) => void;
+  imagePreviews: string[];
+  setImagePreviews: (srcs: string[]) => void;
 }
 
 const CompletionForm: React.FC<CompletionFormProps> = ({
@@ -17,8 +17,8 @@ const CompletionForm: React.FC<CompletionFormProps> = ({
   errors,
   processing,
   handleSubmit,
-  imagePreview,
-  setImagePreview
+  imagePreviews,
+  setImagePreviews
 }) => {
   return (
     <>
@@ -50,45 +50,67 @@ const CompletionForm: React.FC<CompletionFormProps> = ({
             <label className="block text-slate-600 dark:text-slate-300 text-xs font-mono font-bold mb-2 tracking-widest uppercase">
               Dokumentasi Foto Hasil Perbaikan <span className="text-cighra-primary dark:text-cighra-gold">*</span>
             </label>
-            <div className={`border-2 border-dashed ${errors.foto_selesai ? 'border-red-500 dark:border-red-500 bg-red-50 dark:bg-red-900/10' : 'border-slate-300 dark:border-slate-600 bg-cighra-light dark:bg-cighra-darkcard/10'} p-4 text-center hover:border-cighra-primary dark:hover:border-cighra-gold transition-all group cursor-pointer relative flex flex-col justify-center h-[100px]`}>
+            <div className={`border-2 border-dashed ${errors.foto_selesai ? 'border-red-500 dark:border-red-500 bg-red-50 dark:bg-red-900/10' : 'border-slate-300 dark:border-slate-600 bg-cighra-light dark:bg-cighra-darkcard/10'} p-4 text-center hover:border-cighra-primary dark:hover:border-cighra-gold transition-all group cursor-pointer relative flex flex-col justify-center min-h-[100px]`}>
               <input
                 type="file"
                 accept="image/*"
+                multiple
                 className="absolute inset-0 opacity-0 cursor-pointer z-10"
                 onChange={(e) => {
-                  const file = e.target.files ? e.target.files[0] : null;
-                  setData('foto_selesai', file);
-                  if (file) {
-                    const reader = new FileReader();
-                    reader.onloadend = () => setImagePreview(reader.result as string);
-                    reader.readAsDataURL(file);
-                  } else {
-                    setImagePreview(null);
+                  if (e.target.files) {
+                    const files = Array.from(e.target.files);
+                    setData('foto_selesai', [...data.foto_selesai, ...files]);
+                    
+                    const newPreviews: string[] = [];
+                    let loaded = 0;
+                    files.forEach((file) => {
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        newPreviews.push(reader.result as string);
+                        loaded++;
+                        if (loaded === files.length) {
+                          setImagePreviews([...imagePreviews, ...newPreviews]);
+                        }
+                      };
+                      reader.readAsDataURL(file);
+                    });
                   }
                 }}
               />
-              <div className="flex flex-col items-center justify-center gap-3">
-                {imagePreview ? (
-                  <div className="relative w-full max-w-[200px] h-16 border border-cighra-primary dark:border-cighra-gold overflow-hidden group-hover:scale-105 transition-transform">
-                    <img src={imagePreview} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <span className="text-[10px] text-white font-bold font-mono">GANTI FOTO</span>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center gap-0.5">
-                    <div className="flex items-center gap-2">
-                      <Activity className="w-4 h-4 text-slate-500 group-hover:text-cighra-primary dark:group-hover:text-cighra-gold transition-colors" />
-                      <span className="text-[11px] font-mono text-slate-500 dark:text-slate-300 group-hover:text-cighra-primary dark:group-hover:text-cighra-gold uppercase font-bold">
-                        UNGGAH FOTO SELESAI
-                      </span>
-                    </div>
-                    <span className="text-[10px] font-mono text-slate-400 uppercase">Klik untuk unggah</span>
-                  </div>
-                )}
+              <div className="flex flex-col items-center justify-center gap-2">
+                <div className="flex items-center gap-2">
+                  <Activity className="w-4 h-4 text-slate-500 group-hover:text-cighra-primary dark:group-hover:text-cighra-gold transition-colors" />
+                  <span className="text-[11px] font-mono text-slate-500 dark:text-slate-300 group-hover:text-cighra-primary dark:group-hover:text-cighra-gold uppercase font-bold">
+                    UNGGAH FOTO SELESAI
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono text-slate-400 uppercase">Klik untuk pilih beberapa foto</span>
               </div>
             </div>
             {errors.foto_selesai && <p className="text-[11px] text-cighra-primary dark:text-cighra-gold mt-1 font-mono uppercase">{errors.foto_selesai}</p>}
+
+            {/* Thumbnail previews of uploaded files */}
+            {imagePreviews.length > 0 && (
+              <div className="grid grid-cols-5 gap-2 mt-3 bg-slate-50 dark:bg-slate-800/20 p-2 border border-slate-200 dark:border-slate-700/60 rounded-sm">
+                {imagePreviews.map((preview, index) => (
+                  <div key={index} className="relative aspect-square border border-slate-300 dark:border-slate-600 rounded-sm overflow-hidden group">
+                    <img src={preview} className="w-full h-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updatedFiles = data.foto_selesai.filter((_: File, i: number) => i !== index);
+                        const updatedPreviews = imagePreviews.filter((_: string, i: number) => i !== index);
+                        setData('foto_selesai', updatedFiles);
+                        setImagePreviews(updatedPreviews);
+                      }}
+                      className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-white hover:text-red-400 cursor-pointer text-[10px] font-bold"
+                    >
+                      Hapus
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Video Upload (Required Link) */}

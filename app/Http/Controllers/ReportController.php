@@ -120,13 +120,21 @@ class ReportController extends Controller
         $request->validate([
             'catatan' => 'required|string',
             'metode' => 'required|in:Online,Offline',
-            'foto_selesai' => 'required|image|mimes:jpeg,png,jpg|max:20480',
+            'foto_selesai' => 'required',
+            'foto_selesai.*' => 'image|mimes:jpeg,png,jpg|max:20480',
             'tautan_video_selesai' => 'required|url',
         ]);
 
         $fotoSelesai = $report->file_bukti_selesai;
         if ($request->hasFile('foto_selesai')) {
-            $fotoSelesai = $this->fileService->uploadSingleFile($request->file('foto_selesai'), 'reports', 'done_');
+            $files = $request->file('foto_selesai');
+            if (is_array($files)) {
+                $fotoSelesaiPaths = $this->fileService->uploadMultipleFiles($files, 'reports', 5);
+                $fotoSelesai = !empty($fotoSelesaiPaths) ? json_encode($fotoSelesaiPaths) : $report->file_bukti_selesai;
+            } else {
+                $uploaded = $this->fileService->uploadSingleFile($files, 'reports', 'done_');
+                $fotoSelesai = $uploaded ? json_encode([$uploaded]) : $report->file_bukti_selesai;
+            }
         }
 
         $report->catatan_teknisi = $request->catatan;

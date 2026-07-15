@@ -19,7 +19,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
   // States
   const [activeTab, setActiveTab] = useState<'ACTIVE' | 'HISTORY'>('ACTIVE');
   const [searchQuery, setSearchQuery] = useState('');
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
@@ -41,7 +41,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
   const { data, setData, post, processing, reset, errors } = useForm({
     catatan: '',
     metode: '',
-    foto_selesai: null as File | null,
+    foto_selesai: [] as File[],
     tautan_video_selesai: '',
   });
 
@@ -77,7 +77,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
     e.preventDefault();
     if (!selectedTaskId) return;
 
-    if (!data.foto_selesai) {
+    if (!data.foto_selesai || data.foto_selesai.length === 0) {
       addNotification('PERINGATAN: FOTO DOKUMENTASI WAJIB DIUNGGAH.', 'error');
       return;
     }
@@ -85,7 +85,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
     post(`/reports/${selectedTaskId}/complete`, {
       onSuccess: () => {
         reset();
-        setImagePreview(null);
+        setImagePreviews([]);
         setSelectedTaskId(null);
       },
       onError: () => {
@@ -175,8 +175,8 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
                       errors={errors}
                       processing={processing}
                       handleSubmit={handleSubmitLaporan}
-                      imagePreview={imagePreview}
-                      setImagePreview={setImagePreview}
+                      imagePreviews={imagePreviews}
+                      setImagePreviews={setImagePreviews}
                     />
                   )
                 ) : null}

@@ -29,9 +29,13 @@ const CompletionSummary: React.FC<CompletionSummaryProps> = ({ selectedTask, onB
         </div>
         <div>
            <p className="text-xs font-mono text-slate-600 dark:text-slate-300 uppercase tracking-widest mb-1">Bukti Penyelesaian</p>
-           {selectedTask.perbaikan.foto_bukti_selesai ? (
-             <div className="border-4 border-white dark:border-black/40 shadow-xl overflow-hidden rounded-sm h-48">
-               <img src={selectedTask.perbaikan.foto_bukti_selesai} alt="Bukti Selesai" className="w-full h-full object-cover" />
+           {selectedTask.perbaikan.foto_bukti_selesai && selectedTask.perbaikan.foto_bukti_selesai.length > 0 ? (
+             <div className="grid grid-cols-2 gap-2">
+               {selectedTask.perbaikan.foto_bukti_selesai.map((img: string, idx: number) => (
+                 <div key={idx} className="border border-slate-200 dark:border-slate-700 shadow-md overflow-hidden rounded-sm h-24">
+                   <img src={img} alt={`Bukti Selesai ${idx + 1}`} className="w-full h-full object-cover" />
+                 </div>
+               ))}
              </div>
            ) : (
              <div className="h-48 border-2 border-dashed border-slate-300 dark:border-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-400 font-mono text-xs uppercase">
