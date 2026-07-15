@@ -127,57 +127,62 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
 
   return (
     <>
-    <div className="bg-white dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600 shadow-2xl overflow-hidden relative mt-6 animate-in fade-in duration-500">
+    {/* Filter / Search Row (Moved outside and above card container) */}
+    <div className="flex flex-col md:flex-row justify-between items-end mt-4 mb-5 animate-in fade-in duration-500 gap-4">
+      <div className="w-full md:flex-1">
+        <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Cari Satuan</label>
+        <div className="relative">
+          <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
+          <input
+            type="text"
+            placeholder="NAMA SATUAN..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 pl-10 pr-4 py-2.5 text-xs font-mono font-medium text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold focus:ring-1 focus:ring-cighra-primary/30 transition-all uppercase rounded-none shadow-sm"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div className="bg-white dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600 shadow-xl overflow-hidden relative animate-in fade-in duration-500 mt-4">
       <div className="absolute top-0 left-0 w-full h-[2px] bg-cighra-primary dark:bg-cighra-gold"></div>
       
       {/* Header */}
-      <div className="p-5 border-b border-white/10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-cighra-primary dark:bg-slate-800">
+      <div className="p-5 border-b border-white/10 bg-cighra-primary dark:bg-slate-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-white">
         <h3 className="text-white font-tactical font-bold text-lg tracking-widest flex items-center gap-3 uppercase">
           <MapPin className="text-cighra-gold w-6 h-6" /> DATA SATUAN
         </h3>
 
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+          <span className="bg-slate-700 text-slate-300 text-[10px] font-mono px-2.5 py-1.5 rounded-sm uppercase font-bold tracking-widest shadow-inner">
+            {filteredSatuans.length} DATA
+          </span>
           <button
             onClick={handleAddSatuan}
-            className="bg-white dark:bg-cighra-gold text-cighra-primary dark:text-slate-900 hover:bg-slate-100 dark:hover:bg-cighra-gold/90 px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border-2 border-white dark:border-cighra-gold shadow-lg uppercase cursor-pointer"
+            className="bg-white dark:bg-cighra-gold hover:bg-slate-100 dark:hover:bg-cighra-gold/90 text-cighra-primary dark:text-slate-900 px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-white dark:border-cighra-gold shadow-lg uppercase cursor-pointer"
           >
             <Plus className="w-4 h-4" /> TAMBAH SATUAN
           </button>
         </div>
       </div>
 
-      {/* Filter Row */}
-      <div className="p-4 bg-slate-50 dark:bg-cighra-dark/30 border-b border-slate-200 dark:border-slate-600 flex flex-col md:flex-row gap-4 items-center">
-        <div className="w-full md:w-72">
-          <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">CARI SATUAN</label>
-          <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
-            <input
-              type="text"
-              placeholder="NAMA SATUAN..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 pl-9 pr-4 py-2 text-xs font-mono text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold transition-colors uppercase"
-            />
-          </div>
-        </div>
-      </div>
+
 
       {/* Table */}
-      <div className="overflow-x-auto custom-scrollbar pb-2">
-        <table className="w-full text-left font-sans text-xs">
-          <thead className="bg-cighra-primary dark:bg-slate-800 border-b border-white/10 text-white">
+      <div className="overflow-x-auto custom-scrollbar">
+        <table className="w-full text-left font-sans text-xs block md:table">
+          <thead className="bg-cighra-primary dark:bg-slate-800 border-b border-white/10 hidden md:table-header-group text-white">
             <tr>
-              <SortableHeader label="KODE" sortKey="kode_satuan" currentSort={sortConfig} onSort={handleSort} width="80px" />
-              <SortableHeader label="NAMA SATUAN" sortKey="nama_satuan" currentSort={sortConfig} onSort={handleSort} />
-              <SortableHeader label="ALAMAT / LOKASI" sortKey="alamat" currentSort={sortConfig} onSort={handleSort} />
-              <SortableHeader label="KOORDINAT" sortKey="latitude" currentSort={sortConfig} onSort={handleSort} width="140px" />
-              <SortableHeader label="JML" width="60px" />
-              <SortableHeader label="STATUS" width="90px" />
-              <SortableHeader label="AKSI" width="110px" />
+              <SortableHeader label="KODE" sortKey="kode_satuan" currentSort={sortConfig} onSort={handleSort} width="10%" />
+              <SortableHeader label="NAMA SATUAN" sortKey="nama_satuan" currentSort={sortConfig} onSort={handleSort} width="24%" />
+              <SortableHeader label="ALAMAT / LOKASI" sortKey="alamat" currentSort={sortConfig} onSort={handleSort} width="28%" />
+              <SortableHeader label="KOORDINAT" sortKey="latitude" currentSort={sortConfig} onSort={handleSort} width="18%" />
+              <SortableHeader label="JML" width="8%" />
+              <SortableHeader label="STATUS" width="7%" />
+              <SortableHeader label="AKSI" width="5%" />
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-200/60 dark:divide-slate-700/50 bg-blue-50/40 dark:bg-transparent">
+          <tbody className="divide-y divide-slate-200/60 dark:divide-slate-700/50 bg-blue-50/40 dark:bg-transparent block md:table-row-group w-full">
             {filteredSatuans.length === 0 ? (
               <tr>
                 <td colSpan={7} className="p-8">
@@ -190,57 +195,64 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
               </tr>
             ) : (
               filteredSatuans.map((satuan: any) => (
-                <tr key={satuan.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group bg-white dark:bg-transparent">
-                  <td className="p-2 px-2 text-[11px] font-mono text-slate-800 dark:text-white text-center" title={satuan.kode_satuan || '-'}>
-                    <span className="block truncate max-w-[80px]">{satuan.kode_satuan || '-'}</span>
+                <tr key={satuan.id} className="hover:bg-blue-100/50 dark:hover:bg-slate-700/30 transition-colors group bg-white dark:bg-transparent flex flex-col md:table-row border-b md:border-b-0 border-slate-100 dark:border-slate-700/50">
+                  <td className="p-4 md:p-3 md:px-5 font-mono text-slate-600 dark:text-slate-400 md:text-left block md:table-cell relative" title={satuan.kode_satuan || '-'}>
+                    <span className="md:hidden text-[10px] font-bold text-slate-400 uppercase block mb-1">KODE</span>
+                    <span className="block truncate font-bold text-[11px] md:font-normal">{satuan.kode_satuan || '-'}</span>
                   </td>
-                  <td className="p-2 px-3 font-mono font-bold text-[11px] text-slate-800 dark:text-white" title={satuan.nama_satuan}>
-                    <span className="block truncate max-w-[180px]">{satuan.nama_satuan}</span>
+                  <td className="p-4 md:p-3 md:px-5 font-bold text-sm md:text-xs text-slate-800 dark:text-white block md:table-cell relative tracking-wide" title={satuan.nama_satuan}>
+                    <span className="md:hidden text-[10px] font-bold text-slate-400 uppercase block mb-1">NAMA SATUAN</span>
+                    <span className="block truncate">{satuan.nama_satuan}</span>
                   </td>
-                  <td className="p-2 px-3 text-xs font-mono text-slate-600 dark:text-slate-300" title={satuan.alamat || '-'}>
-                    <span className="block truncate max-w-[200px]">{satuan.alamat || '-'}</span>
+                  <td className="p-4 md:p-3 md:px-5 text-xs text-slate-600 dark:text-slate-300 block md:table-cell relative" title={satuan.alamat || '-'}>
+                    <span className="md:hidden text-[10px] font-bold text-slate-400 uppercase block mb-1">ALAMAT / LOKASI</span>
+                    <span className="block truncate leading-relaxed max-w-[300px]">{satuan.alamat || '-'}</span>
                   </td>
-                  <td className="p-2 px-2 text-[11px] font-mono text-slate-600 dark:text-slate-400 text-center w-[140px]">
+                  <td className="p-4 md:p-3 md:px-5 text-[11px] font-mono text-slate-500 dark:text-slate-400 md:text-left block md:table-cell relative">
+                    <span className="md:hidden text-[10px] font-bold text-slate-400 uppercase block mb-1">KOORDINAT</span>
                     {satuan.latitude && satuan.longitude
                       ? <span className="block truncate">{satuan.latitude}, {satuan.longitude}</span>
                       : <span className="text-slate-400 italic">Belum diset</span>}
                   </td>
-                  <td className="p-2 px-2 font-tactical text-[11px] text-slate-800 dark:text-white text-center w-[60px]">
+                  <td className="p-4 md:p-3 md:px-5 font-tactical text-sm md:text-[11px] text-slate-800 dark:text-white md:text-center block md:table-cell relative">
+                    <span className="md:hidden text-[10px] font-bold text-slate-400 uppercase block mb-1">JUMLAH</span>
                     {dbUnits ? dbUnits.filter(u => u.satuan_id === satuan.id).length : 0}
                   </td>
-                  <td className="p-2 px-3 text-center">
+                  <td className="p-4 md:p-3 md:px-5 md:text-center block md:table-cell relative">
+                    <span className="md:hidden text-[10px] font-bold text-slate-400 uppercase block mb-1">STATUS</span>
                     {satuan.latitude && satuan.longitude ? (
-                      <span className="px-1.5 py-0.5 border text-[8px] font-bold tracking-widest uppercase bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40">
+                      <span className="inline-block px-2 py-1 border text-[9px] font-bold tracking-widest uppercase bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40 rounded-none shadow-sm">
                         Siap
                       </span>
                     ) : (
-                      <span className="px-1.5 py-0.5 border text-[8px] font-bold tracking-widest uppercase bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800/40">
+                      <span className="inline-block px-2 py-1 border text-[9px] font-bold tracking-widest uppercase bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800/40 rounded-none shadow-sm">
                         Belum
                       </span>
                     )}
                   </td>
-                  <td className="p-2 px-3 text-center">
-                    <div className="flex items-center justify-center gap-1">
+                  <td className="p-4 md:p-3 md:px-5 md:text-center block md:table-cell relative bg-slate-50 md:bg-transparent dark:bg-slate-800/20">
+                    <span className="md:hidden text-[10px] font-bold text-slate-400 uppercase block mb-2">AKSI</span>
+                    <div className="flex items-center justify-start md:justify-center gap-2">
                       <button
                         onClick={() => handleViewOnMap ? handleViewOnMap(satuan) : handleShowDetailSatuan(satuan)}
-                        className="p-1.5 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm"
+                        className="inline-flex items-center justify-center w-8 h-8 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-none shadow-sm"
                         title={handleViewOnMap ? "Lihat di Peta" : "Lihat Detail"}
                       >
-                        <Eye className="w-3 h-3" />
+                        <Eye className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handleEditSatuan(satuan)}
-                        className="p-1.5 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm"
+                        className="inline-flex items-center justify-center w-8 h-8 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-none shadow-sm"
                         title="Edit Satuan"
                       >
-                        <Edit className="w-3 h-3" />
+                        <Edit className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handleDeleteSatuan(satuan)}
-                        className="p-1.5 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-600 dark:text-white hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm"
+                        className="inline-flex items-center justify-center w-8 h-8 bg-white dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-600 dark:text-white hover:text-red-600 dark:hover:text-red-400 hover:border-red-200 dark:hover:border-red-800/50 transition-colors border border-slate-200 dark:border-slate-600 rounded-none shadow-sm"
                         title="Hapus Satuan"
                       >
-                        <Trash2 className="w-3 h-3" />
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
                   </td>
