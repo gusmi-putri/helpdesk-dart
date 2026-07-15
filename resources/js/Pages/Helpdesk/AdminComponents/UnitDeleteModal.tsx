@@ -45,11 +45,11 @@ const UnitDeleteModal: React.FC<UnitDeleteModalProps> = ({ isOpen, onClose, onCo
       }
     >
       <div className="space-y-4">
-        <p className="text-sm font-mono text-slate-600 dark:text-slate-300 leading-relaxed uppercase tracking-wider">
+        <div className="p-4 bg-cighra-primary/5 dark:bg-cighra-darkcard border border-cighra-primary/20 dark:border-slate-800 text-sm font-mono font-bold text-slate-800 dark:text-slate-300 leading-relaxed uppercase tracking-wider">
           {isPengajuan
             ? <>SISTEM MENDETEKSI PERMINTAAN PENGHAPUSAN UNIT DART NO. SERI <span className="text-red-500 font-bold underline decoration-2 underline-offset-4">{unit.nomor_seri}</span>. UNIT INI AKAN DIHAPUS DARI DAFTAR JIKA ADMIN MENYETUJUI.</>
             : <>PERINGATAN TINGKAT TINGGI: ANDA AKAN MENGHAPUS DATA UNIT DART NO. SERI <span className="text-red-500 font-bold underline decoration-2 underline-offset-4">{unit.nomor_seri}</span> SECARA PERMANEN DARI SISTEM OPERASIONAL.</>}
-        </p>
+        </div>
       </div>
     </BaseModal>
   );

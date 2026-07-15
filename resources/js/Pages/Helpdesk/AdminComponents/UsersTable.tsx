@@ -328,7 +328,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
         isOpen={!!warningUser}
         onClose={() => setWarningUser(null)}
         title="TIDAK DAPAT MENGHAPUS PERSONEL"
-        icon={<AlertTriangle className="text-amber-500" />}
+        icon={<AlertTriangle className="text-cighra-gold" />}
         maxWidth="md"
         footer={
           <Button variant="secondary" onClick={() => setWarningUser(null)} className="w-full">
@@ -337,11 +337,11 @@ const UsersTable: React.FC<UsersTableProps> = ({
         }
       >
         <div className="space-y-4">
-          <p className="text-sm font-mono text-slate-600 dark:text-slate-300 leading-relaxed uppercase tracking-wider">
-            SISTEM MENDETEKSI BAHWA PERSONEL <span className="font-bold text-amber-600 dark:text-amber-400">{warningUser?.name}</span> MASIH MEMILIKI LAPORAN ON GOING (SEDANG DITANGANI / BELUM SELESAI).
+          <p className="text-sm font-mono font-bold text-slate-800 dark:text-slate-300 leading-relaxed uppercase tracking-wider">
+            SISTEM MENDETEKSI BAHWA PERSONEL <span className="font-bold text-cighra-gold">{warningUser?.name}</span> MASIH MEMILIKI LAPORAN ON GOING (SEDANG DITANGANI / BELUM SELESAI).
           </p>
-          <div className="bg-amber-50 border-l-4 border-amber-500 p-4 dark:bg-amber-900/20">
-            <p className="text-xs font-mono text-amber-800 dark:text-amber-200 uppercase">
+          <div className="bg-cighra-primary/5 border-l-4 border-cighra-gold p-4 dark:bg-cighra-darkcard">
+            <p className="text-xs font-mono font-bold text-slate-800 dark:text-slate-300 uppercase">
               PERSONEL BARU BISA DIHAPUS SETELAH SELURUH LAPORAN DI AKUNNYA BERHASIL DISELESAIKAN ATAU DITOLAK UNTUK MENJAGA INTEGRITAS DATA.
             </p>
           </div>

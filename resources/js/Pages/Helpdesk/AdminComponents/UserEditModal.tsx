@@ -147,7 +147,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
           ) : (
             <div className="flex flex-col col-span-2">
               <label className="block text-xs font-mono text-slate-500 uppercase tracking-widest mb-1">Username (LOCKED)</label>
-              <div className="bg-slate-50 dark:bg-slate-800/80 p-2.5 border border-slate-200 dark:border-slate-800 text-sm font-mono font-bold text-slate-400 dark:text-slate-500 italic flex items-center gap-2 rounded-sm">
+              <div className="bg-cighra-primary/5 dark:bg-slate-800/80 p-2.5 border border-slate-200 dark:border-slate-800 text-sm font-mono font-bold text-slate-400 dark:text-slate-500 italic flex items-center gap-2 rounded-sm">
                 <span className="w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-700"></span>
                 {data.username}
               </div>
@@ -159,7 +159,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
               type="text"
               value={data.nama_lengkap}
               onChange={(e) => setData('nama_lengkap', e.target.value)}
-              className={`w-full bg-slate-50 dark:bg-cighra-darkcard border ${errors.nama_lengkap ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} p-3 text-sm font-mono focus:ring-1 focus:ring-cighra-gold outline-none transition-all dark:text-white rounded-sm`}
+              className={`w-full bg-cighra-primary/5 dark:bg-cighra-darkcard border ${errors.nama_lengkap ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} p-3 text-sm font-mono focus:ring-1 focus:ring-cighra-gold outline-none transition-all dark:text-white rounded-sm`}
               required
               maxLength={100}
             />
@@ -171,7 +171,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
               type="email"
               value={data.email}
               onChange={(e) => setData('email', e.target.value)}
-              className={`w-full bg-slate-50 dark:bg-cighra-darkcard border ${errors.email ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} p-3 text-sm font-mono focus:ring-1 focus:ring-cighra-gold outline-none transition-all dark:text-white rounded-sm`}
+              className={`w-full bg-cighra-primary/5 dark:bg-cighra-darkcard border ${errors.email ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} p-3 text-sm font-mono focus:ring-1 focus:ring-cighra-gold outline-none transition-all dark:text-white rounded-sm`}
               required
               placeholder="EMAIL AKTIF"
             />
@@ -180,7 +180,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
           {data.username === 'admin' ? (
             <div className="flex flex-col">
               <label className="block text-xs font-mono text-slate-500 uppercase tracking-widest mb-1">Hak Akses (LOCKED)</label>
-              <div className="bg-slate-100 dark:bg-slate-800/80 p-3 border border-slate-200 dark:border-slate-800 text-sm font-mono font-bold text-slate-400 dark:text-slate-500 italic flex items-center gap-2 rounded-sm">
+              <div className="bg-cighra-primary/5 dark:bg-slate-800/80 p-3 border border-slate-200 dark:border-slate-800 text-sm font-mono font-bold text-slate-400 dark:text-slate-500 italic flex items-center gap-2 rounded-sm">
                 <span className="w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-700"></span>
                 ADMINISTRATOR
               </div>
@@ -191,7 +191,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
               <select
                 value={data.role_id}
                 onChange={(e) => setData('role_id', e.target.value)}
-                className={`w-full bg-slate-50 dark:bg-cighra-darkcard border ${errors.role_id ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} p-3 text-sm font-mono focus:ring-1 focus:ring-cighra-gold outline-none transition-all dark:text-white rounded-sm`}
+                className={`w-full bg-cighra-primary/5 dark:bg-cighra-darkcard border ${errors.role_id ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} p-3 text-sm font-mono focus:ring-1 focus:ring-cighra-gold outline-none transition-all dark:text-white rounded-sm`}
                 required
               >
                 <option value="">PILIH ROLE</option>
@@ -211,7 +211,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
                 value={data.no_wa}
                 onChange={(e) => handleWaInput(e.target.value)}
                 maxLength={15}
-                className={`w-full bg-slate-50 dark:bg-cighra-darkcard border ${errors.no_wa || waWarning ? 'border-yellow-500/50' : 'border-slate-300 dark:border-slate-700'} pl-8 pr-3 py-3 text-sm font-mono focus:ring-1 focus:ring-cighra-gold outline-none transition-all dark:text-white rounded-sm`}
+                className={`w-full bg-cighra-primary/5 dark:bg-cighra-darkcard border ${errors.no_wa || waWarning ? 'border-yellow-500/50' : 'border-slate-300 dark:border-slate-700'} pl-8 pr-3 py-3 text-sm font-mono focus:ring-1 focus:ring-cighra-gold outline-none transition-all dark:text-white rounded-sm`}
                 placeholder="6281234567890"
               />
             </div>
@@ -234,7 +234,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
                      setData('asal_satuan', selectedSatuan.nama_satuan);
                  }
               }}
-              className={`w-full bg-slate-50 dark:bg-cighra-darkcard border ${errors.satuan_id ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} p-3 text-sm font-mono focus:ring-1 focus:ring-cighra-gold outline-none transition-all dark:text-white rounded-sm`}
+              className={`w-full bg-cighra-primary/5 dark:bg-cighra-darkcard border ${errors.satuan_id ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} p-3 text-sm font-mono focus:ring-1 focus:ring-cighra-gold outline-none transition-all dark:text-white rounded-sm`}
               required
             >
               <option value="">PILIH SATUAN</option>
@@ -253,7 +253,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
               value={data.spesialisasi}
               onChange={(e) => setData('spesialisasi', e.target.value)}
               disabled={dbRoles?.find((r: any) => r.id == data.role_id)?.name !== 'Teknisi'}
-              className={`w-full bg-slate-50 dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-700 p-3 text-sm font-mono focus:ring-1 focus:ring-cighra-gold outline-none transition-all rounded-sm ${dbRoles?.find((r: any) => r.id == data.role_id)?.name !== 'Teknisi' ? 'opacity-40 cursor-not-allowed italic' : 'dark:text-white'}`}
+              className={`w-full bg-cighra-primary/5 dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-700 p-3 text-sm font-mono focus:ring-1 focus:ring-cighra-gold outline-none transition-all rounded-sm ${dbRoles?.find((r: any) => r.id == data.role_id)?.name !== 'Teknisi' ? 'opacity-40 cursor-not-allowed italic' : 'dark:text-white'}`}
               placeholder={dbRoles?.find((r: any) => r.id == data.role_id)?.name !== 'Teknisi' ? 'SISTEM DETEKSI: NON-TEKNISI' : 'MISAL: JARINGAN / HARDWARE'}
               maxLength={100}
             />
