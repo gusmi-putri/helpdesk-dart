@@ -4,7 +4,7 @@ import {
   Clock, Activity, ShieldAlert, Eye, XCircle, CheckCircle, Wallet, 
   Search, SlidersHorizontal, User, MapPin, 
   Calendar, Image as ImageIcon, X, FileText,
-  AlertTriangle, Link as LinkIcon
+  AlertTriangle, Link as LinkIcon, RotateCcw
 } from 'lucide-react';
 import { BaseModal } from '@/Components/ui/BaseModal';
 import { Button } from '@/Components/ui/Button';
@@ -115,87 +115,83 @@ const TicketManager: React.FC<TicketManagerProps> = ({
     <div className="animate-in fade-in space-y-6 mt-6">
       {/* 1. Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-700/50  p-4 flex items-center gap-4 shadow-sm relative overflow-hidden">
-          <div className="absolute left-0 top-0 bottom-0 w-1 bg-yellow-500"></div>
-          <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20  text-yellow-600 dark:text-yellow-500">
-            <Clock className="w-6 h-6" />
+        <div className="bg-white dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-700/50 p-3 rounded-none flex items-center gap-4 shadow-sm relative overflow-hidden">
+          <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-yellow-500"></div>
+          <div className="p-2.5 rounded-none bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-500 ml-1">
+            <Clock className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-xs font-tactical tracking-widest text-slate-500 dark:text-slate-400 uppercase">Menunggu Verifikasi</p>
+            <p className="text-[10px] font-tactical tracking-widest text-slate-500 dark:text-slate-400 uppercase">Menunggu</p>
             <div className="flex items-baseline gap-2">
-              <h4 className="text-2xl font-bold font-mono text-slate-800 dark:text-white">{countMenunggu}</h4>
-              <span className="text-xs text-slate-400">Butuh verifikasi awal</span>
+              <h4 className="text-xl font-bold font-mono text-slate-800 dark:text-white">{countMenunggu}</h4>
             </div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-700/50  p-4 flex items-center gap-4 shadow-sm relative overflow-hidden">
-          <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-500"></div>
-          <div className="p-3 bg-blue-50 dark:bg-blue-900/20  text-blue-600 dark:text-blue-500">
-            <User className="w-6 h-6" />
+        <div className="bg-white dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-700/50 p-3 rounded-none flex items-center gap-4 shadow-sm relative overflow-hidden">
+          <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-500"></div>
+          <div className="p-2.5 rounded-none bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-500 ml-1">
+            <User className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-xs font-tactical tracking-widest text-slate-500 dark:text-slate-400 uppercase">Ditugaskan</p>
+            <p className="text-[10px] font-tactical tracking-widest text-slate-500 dark:text-slate-400 uppercase">Ditugaskan</p>
             <div className="flex items-baseline gap-2">
-              <h4 className="text-2xl font-bold font-mono text-slate-800 dark:text-white">{countDitugaskan}</h4>
-              <span className="text-xs text-slate-400">Menunggu teknisi</span>
+              <h4 className="text-xl font-bold font-mono text-slate-800 dark:text-white">{countDitugaskan}</h4>
             </div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-700/50  p-4 flex items-center gap-4 shadow-sm relative overflow-hidden">
-          <div className="absolute left-0 top-0 bottom-0 w-1 bg-purple-500"></div>
-          <div className="p-3 bg-purple-50 dark:bg-purple-900/20  text-purple-600 dark:text-purple-500">
-            <Activity className="w-6 h-6" />
+        <div className="bg-white dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-700/50 p-3 rounded-none flex items-center gap-4 shadow-sm relative overflow-hidden">
+          <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-purple-500"></div>
+          <div className="p-2.5 rounded-none bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-500 ml-1">
+            <Activity className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-xs font-tactical tracking-widest text-slate-500 dark:text-slate-400 uppercase">Sedang Ditangani</p>
+            <p className="text-[10px] font-tactical tracking-widest text-slate-500 dark:text-slate-400 uppercase">Diproses</p>
             <div className="flex items-baseline gap-2">
-              <h4 className="text-2xl font-bold font-mono text-slate-800 dark:text-white">{countDikerjakan}</h4>
-              <span className="text-xs text-slate-400">Dalam proses perbaikan</span>
+              <h4 className="text-xl font-bold font-mono text-slate-800 dark:text-white">{countDikerjakan}</h4>
             </div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-700/50  p-4 flex items-center gap-4 shadow-sm relative overflow-hidden">
-          <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500"></div>
-          <div className="p-3 bg-green-50 dark:bg-green-900/20  text-green-600 dark:text-green-500">
-            <CheckCircle className="w-6 h-6" />
+        <div className="bg-white dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-700/50 p-3 rounded-none flex items-center gap-4 shadow-sm relative overflow-hidden">
+          <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-green-500"></div>
+          <div className="p-2.5 rounded-none bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-500 ml-1">
+            <CheckCircle className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-xs font-tactical tracking-widest text-slate-500 dark:text-slate-400 uppercase">Selesai</p>
+            <p className="text-[10px] font-tactical tracking-widest text-slate-500 dark:text-slate-400 uppercase">Selesai</p>
             <div className="flex items-baseline gap-2">
-              <h4 className="text-2xl font-bold font-mono text-slate-800 dark:text-white">{countSelesai}</h4>
-              <span className="text-xs text-slate-400">Selesai ditangani</span>
+              <h4 className="text-xl font-bold font-mono text-slate-800 dark:text-white">{countSelesai}</h4>
             </div>
           </div>
         </div>
       </div>
 
       {/* 2. Filters & Search */}
-      <div className="mb-6 flex flex-col md:flex-row gap-4 items-end">
-        <div className="w-full md:w-96">
-          <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">CARI TIKET / UNIT</label>
+      <div className="mb-6 flex flex-col md:flex-row flex-wrap gap-4 items-end">
+        <div className="w-full md:flex-1">
+          <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Cari Tiket / Unit</label>
           <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
+            <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
             <input 
               type="text" 
               placeholder="ID TIKET, UNIT, PELAPOR..." 
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 pl-9 pr-4 py-2 text-xs font-mono text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold transition-colors uppercase"
+              className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 pl-10 pr-4 py-2.5 text-xs font-mono font-medium text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold focus:ring-1 focus:ring-cighra-primary/30 transition-all uppercase rounded-none"
             />
           </div>
         </div>
         
-        <div className="w-full md:w-48">
-          <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">PRIORITAS</label>
+        <div className="w-full md:w-44">
+          <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Prioritas</label>
           <select 
             value={priorityFilter} 
             onChange={e => setPriorityFilter(e.target.value)} 
-            className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-3 py-2 text-xs font-mono text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold transition-colors uppercase"
+            className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-3 py-2.5 text-xs font-mono font-medium text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold focus:ring-1 focus:ring-cighra-primary/30 transition-all uppercase rounded-none"
           >
-            <option value="ALL">SEMUA PRIORITAS</option>
+            <option value="ALL">Semua Prioritas</option>
             <option value="KRITIS">KRITIS</option>
             <option value="TINGGI">TINGGI</option>
             <option value="SEDANG">SEDANG</option>
@@ -203,40 +199,50 @@ const TicketManager: React.FC<TicketManagerProps> = ({
           </select>
         </div>
 
-        <div className="w-full md:w-56">
-          <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">STATUS</label>
+        <div className="w-full md:w-44">
+          <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Status</label>
           <select 
             value={statusFilter} 
             onChange={e => setStatusFilter(e.target.value)} 
-            className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-3 py-2 text-xs font-mono text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold transition-colors uppercase"
+            className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-3 py-2.5 text-xs font-mono font-medium text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold focus:ring-1 focus:ring-cighra-primary/30 transition-all uppercase rounded-none"
           >
-            <option value="ALL">SEMUA STATUS</option>
-            <option value="PENDING">MENUNGGU VERIFIKASI</option>
-            <option value="DIVERIFIKASI">DIVERIFIKASI</option>
-            <option value="DIPROSES">DALAM PENANGANAN</option>
-            <option value="SELESAI">SELESAI</option>
+            <option value="ALL">Semua Status</option>
+            <option value="PENDING">Menunggu Verifikasi</option>
+            <option value="DIVERIFIKASI">Diverifikasi</option>
+            <option value="DIPROSES">Sedang Diproses</option>
+            <option value="SELESAI">Selesai</option>
           </select>
+        </div>
+
+        {/* ADDED RESET FILTER */}
+        <div className="w-full md:w-auto">
+           <button 
+             onClick={() => { setSearchQuery(''); setPriorityFilter('ALL'); setStatusFilter('ALL'); setSortOrder('terbaru'); }}
+             className="w-full md:w-auto px-5 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 text-[11px] font-bold font-mono uppercase tracking-wider rounded-none transition-colors flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-700"
+           >
+             <RotateCcw className="w-4 h-4" /> Reset
+           </button>
         </div>
       </div>
 
       {/* 3. Ticket List Area */}
-      <div className="bg-white dark:bg-cighra-darkcard/50  border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
-        <div className="p-4 border-b border-slate-200 dark:border-slate-700/50 flex justify-between items-center bg-slate-50 dark:bg-slate-800/30">
+      <div className="space-y-4">
+        <div className="flex justify-between items-center mb-2 px-1">
           <h3 className="font-tactical tracking-widest text-sm flex items-center gap-2 text-slate-800 dark:text-white">
             <Activity className="w-4 h-4 text-cighra-primary dark:text-cighra-gold" /> DAFTAR PENANGANAN KERUSAKAN
           </h3>
-          <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 font-medium">
+          <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 font-medium bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-none shadow-sm">
             <span>Urutkan:</span>
-            <select value={sortOrder} onChange={e => setSortOrder(e.target.value)} className="bg-transparent border-none font-bold text-slate-700 dark:text-slate-200 focus:ring-0 cursor-pointer p-0">
+            <select value={sortOrder} onChange={e => setSortOrder(e.target.value)} className="bg-transparent border-none font-bold text-slate-700 dark:text-slate-200 focus:ring-0 cursor-pointer p-0 text-xs outline-none">
               <option value="terbaru">Terbaru</option>
               <option value="terlama">Terlama</option>
             </select>
           </div>
         </div>
 
-        <div className="p-4 space-y-3">
+        <div>
           {filteredReports.length === 0 ? (
-             <div className="py-8">
+             <div className="py-8 bg-white dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-700 rounded-none shadow-sm">
                <EmptyState title="TIDAK ADA TIKET" description="Belum ada tiket atau laporan kerusakan yang ditemukan." />
              </div>
           ) : (
@@ -253,44 +259,45 @@ const TicketManager: React.FC<TicketManagerProps> = ({
               return (
                 <div 
                   key={report.db_id} 
-                  className={`relative flex flex-col lg:flex-row gap-4 p-4  border-y border-r border-l-4 ${borderColorClass} ${isSelected ? 'bg-slate-50 dark:bg-slate-800/60 border-y-cighra-gold border-r-cighra-gold shadow-md' : 'bg-white dark:bg-cighra-darkcard border-y-slate-200 dark:border-y-slate-700 border-r-slate-200 dark:border-r-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/40 hover:-translate-y-0.5 hover:shadow-lg'} transition-all duration-300 group`}
+                  className={`relative flex flex-col lg:flex-row gap-5 p-5 mb-4 rounded-none border border-l-4 ${borderColorClass} ${isSelected ? 'bg-slate-50 dark:bg-slate-800/60 border-cighra-gold shadow-md' : 'bg-white dark:bg-cighra-darkcard border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/40 hover:-translate-y-0.5 hover:shadow-md'} transition-all duration-300 group`}
                 >
                   {/* Column 1: Ticket Info */}
-                  <div className="w-full lg:w-1/4 space-y-2 lg:space-y-3">
+                  <div className="w-full lg:w-1/4 space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="font-mono font-bold text-base text-slate-800 dark:text-white">{report.caseId}</span>
-                      <span className={`text-[11px] font-mono font-bold px-2 py-0.5  uppercase ${priority.bg} ${priority.text} border ${priority.border} flex items-center gap-1`}>
+                      <span className="font-mono font-black text-xl text-slate-900 dark:text-white tracking-tight">{report.caseId}</span>
+                      <span className={`text-[10px] font-mono font-bold px-2.5 py-1 rounded-none uppercase ${priority.bg} ${priority.text} border ${priority.border} flex items-center gap-1`}>
                         {priority.color === 'red' && <AlertTriangle className="w-3 h-3" />} {priority.label}
                       </span>
                     </div>
-                    <div className="flex flex-row lg:flex-col justify-between items-start lg:gap-2">
-                      <div className="pt-1 lg:pt-2 text-left">
-                        <p className="font-bold text-sm text-slate-800 dark:text-white truncate">{report.kerusakan.barangRusak}</p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 font-mono uppercase mt-0.5">Unit DART</p>
-                      </div>
-                      <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-mono mt-1 lg:mt-0 text-right lg:text-left">
-                        <Calendar className="w-3 h-3" /> {report.kerusakan.tanggal}
-                      </div>
+                    <div className="flex flex-col gap-1">
+                      <p className="font-bold text-sm text-slate-700 dark:text-slate-200 truncate">{report.kerusakan.barangRusak}</p>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium truncate uppercase tracking-wider">Unit DART</p>
                     </div>
                   </div>
 
                   {/* Divider mobile */}
-                  <div className="hidden lg:block w-px bg-slate-200 dark:bg-slate-700 my-1"></div>
+                  <div className="hidden lg:block w-px bg-slate-100 dark:bg-slate-700/50 my-2"></div>
 
                   {/* Details Grid (Mobile: 2 cols, Desktop: flex) */}
-                  <div className="w-full lg:w-2/4 grid grid-cols-2 lg:flex lg:gap-0 gap-4">
+                  <div className="w-full lg:w-2/4 grid grid-cols-2 lg:flex lg:gap-0 gap-5">
                     {/* Reporter & Location */}
-                    <div className="w-full lg:w-1/2 space-y-4 py-1">
+                    <div className="w-full lg:w-1/2 space-y-4 py-1 lg:px-4">
                       <div>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 font-mono uppercase mb-1">Pelapor</p>
-                        <div className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-200">
-                          <User className="w-4 h-4 text-slate-400" />
-                          <span className="truncate">{report.kerusakan.pelapor}</span>
+                        <p className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold uppercase tracking-wider mb-1.5">Pelapor & Tanggal</p>
+                        <div className="flex flex-col gap-1.5">
+                          <div className="flex items-center gap-2 text-sm font-semibold text-slate-800 dark:text-slate-200">
+                            <User className="w-4 h-4 text-slate-400" />
+                            <span className="truncate">{report.kerusakan.pelapor}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                            <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                            <span>{report.kerusakan.tanggal}</span>
+                          </div>
                         </div>
                       </div>
                       <div>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 font-mono uppercase mb-1">Lokasi</p>
-                        <div className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-200">
+                        <p className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold uppercase tracking-wider mb-1.5">Lokasi</p>
+                        <div className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300">
                           <MapPin className="w-4 h-4 text-slate-400" />
                           <span className="truncate">{report.kerusakan.lokasi}</span>
                         </div>
@@ -298,14 +305,14 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                     </div>
 
                     {/* Status & Technician */}
-                    <div className="w-full lg:w-1/2 space-y-4 py-1">
+                    <div className="w-full lg:w-1/2 space-y-4 py-1 lg:px-4">
                       <div>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 font-mono uppercase mb-1">Status</p>
+                        <p className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold uppercase tracking-wider mb-1.5">Status</p>
                         {getStatusBadge(report.status)}
                       </div>
                       <div>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 font-mono uppercase mb-1">Teknisi Ditugaskan</p>
-                        <div className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-200">
+                        <p className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold uppercase tracking-wider mb-1.5">Teknisi Ditugaskan</p>
+                        <div className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300">
                           <User className="w-4 h-4 text-slate-400" />
                           <span className="truncate">{report.perbaikan.teknisi || '-'}</span>
                         </div>
@@ -314,32 +321,53 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                   </div>
 
                   {/* Column 4: Actions */}
-                  <div className="w-full lg:w-1/4 flex flex-row lg:flex-col justify-center items-center gap-2 lg:pl-4 lg:border-l border-slate-200 dark:border-slate-700 pt-3 lg:pt-0 border-t border-slate-200 dark:border-slate-700 lg:border-t-0 relative">
-                    <Button 
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setSelectedTicketId(report.db_id)}
-                      className="w-full max-w-[190px] text-xs"
-                    >
-                      <Eye className="w-3.5 h-3.5 text-blue-500" /> DETAIL
-                    </Button>
-
-                    {report.status === 'PENDING' && (
-                      <div className="flex gap-2 w-full max-w-[190px]">
-                        <Button variant="primary" size="sm" onClick={() => onVerify(report.db_id)} className="flex-1 text-xs px-1">
-                          <CheckCircle className="w-3.5 h-3.5" /> SETUJUI
-                        </Button>
-                        <Button variant="danger" size="sm" onClick={() => onReject(report.db_id)} className="flex-1 text-xs px-1">
-                          <XCircle className="w-3.5 h-3.5" /> TOLAK
-                        </Button>
-                      </div>
-                    )}
-
-                    {report.status === 'DIVERIFIKASI' && (
-                      <Button variant="primary" size="sm" onClick={() => onAssignTechnician(report.db_id)} className="w-full max-w-[190px] text-xs">
-                        <User className="w-3.5 h-3.5" /> TUGASKAN TEKNISI
+                  <div className="w-full lg:w-1/4 flex justify-center items-center lg:pl-5 lg:border-l border-slate-100 dark:border-slate-700/50 pt-4 lg:pt-0 border-t lg:border-t-0 relative">
+                    <div className="w-full max-w-[220px] flex flex-col gap-2.5">
+                      <Button 
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setSelectedTicketId(report.db_id)}
+                        className="w-full"
+                        icon={<Eye className="w-4 h-4" />}
+                      >
+                        DETAIL
                       </Button>
-                    )}
+
+                      {report.status === 'PENDING' && (
+                        <div className="grid grid-cols-2 gap-2 w-full">
+                          <Button 
+                            variant="primary"
+                            size="sm"
+                            onClick={() => onVerify(report.db_id)} 
+                            className="w-full px-1"
+                            icon={<CheckCircle className="w-3.5 h-3.5" />}
+                          >
+                            SETUJUI
+                          </Button>
+                          <Button 
+                            variant="danger"
+                            size="sm"
+                            onClick={() => onReject(report.db_id)} 
+                            className="w-full px-1"
+                            icon={<XCircle className="w-3.5 h-3.5" />}
+                          >
+                            TOLAK
+                          </Button>
+                        </div>
+                      )}
+
+                      {report.status === 'DIVERIFIKASI' && (
+                        <Button 
+                          variant="primary"
+                          size="sm"
+                          onClick={() => onAssignTechnician(report.db_id)} 
+                          className="w-full"
+                          icon={<User className="w-4 h-4" />}
+                        >
+                          TUGASKAN TEKNISI
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </div>
               );
@@ -364,7 +392,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                 {(() => {
                   const priority = getPriorityInfo(selectedTicket.kerusakan.urgensi, selectedTicket.kerusakan.tingkatKerusakan);
                   return (
-                    <span className={`text-[11px] font-mono font-bold px-2 py-0.5 uppercase ${priority.bg} ${priority.text} border ${priority.border} flex items-center gap-1 rounded-sm`}>
+                    <span className={`text-[11px] font-mono font-bold px-2 py-0.5 uppercase ${priority.bg} ${priority.text} border ${priority.border} flex items-center gap-1 rounded-none`}>
                       {priority.color === 'red' && <AlertTriangle className="w-3 h-3" />} {priority.label}
                     </span>
                   );
@@ -375,17 +403,17 @@ const TicketManager: React.FC<TicketManagerProps> = ({
           }
           footer={
             <div className="flex justify-end gap-3 w-full">
-              <button onClick={() => setSelectedTicketId(null)} className="px-6 py-2.5 bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-tactical font-bold tracking-widest transition-colors border border-slate-300 dark:border-slate-600 rounded-sm uppercase">
+              <button onClick={() => setSelectedTicketId(null)} className="px-6 py-2.5 bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-tactical font-bold tracking-widest transition-colors border border-slate-300 dark:border-slate-600 rounded-none uppercase">
                 TUTUP
               </button>
               
               {selectedTicket.status === 'PENDING' && (
-                <button onClick={() => onVerify(selectedTicket.db_id)} className="px-6 py-2.5 bg-cighra-primary hover:bg-cighra-primary/90 dark:bg-cighra-gold dark:hover:bg-cighra-gold/90 text-white dark:text-slate-900 text-xs font-tactical font-bold tracking-widest transition-colors shadow-md rounded-sm uppercase flex items-center gap-2">
+                <button onClick={() => onVerify(selectedTicket.db_id)} className="px-6 py-2.5 bg-cighra-primary hover:bg-cighra-primary/90 dark:bg-cighra-gold dark:hover:bg-cighra-gold/90 text-white dark:text-slate-900 text-xs font-tactical font-bold tracking-widest transition-colors shadow-md rounded-none uppercase flex items-center gap-2">
                   <CheckCircle className="w-4 h-4" /> SETUJUI
                 </button>
               )}
               {['DIVERIFIKASI', 'DITERIMA TEKNISI', 'DIPROSES'].includes(selectedTicket.status) && (
-                <button onClick={() => onAssignTechnician(selectedTicket.db_id)} className="px-6 py-2.5 bg-cighra-primary hover:bg-cighra-primary/90 dark:bg-cighra-gold dark:hover:bg-cighra-gold/90 text-white dark:text-slate-900 text-xs font-tactical font-bold tracking-widest transition-colors shadow-md rounded-sm uppercase flex items-center gap-2">
+                <button onClick={() => onAssignTechnician(selectedTicket.db_id)} className="px-6 py-2.5 bg-cighra-primary hover:bg-cighra-primary/90 dark:bg-cighra-gold dark:hover:bg-cighra-gold/90 text-white dark:text-slate-900 text-xs font-tactical font-bold tracking-widest transition-colors shadow-md rounded-none uppercase flex items-center gap-2">
                   <User className="w-4 h-4" /> {selectedTicket.perbaikan.teknisi ? 'TUGASKAN ULANG' : 'TUGASKAN TEKNISI'}
                 </button>
               )}
@@ -395,7 +423,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
           <div className="p-6 md:p-8 space-y-8">
               
               {/* Section 1: Info Unit */}
-              <div className="bg-slate-50 dark:bg-slate-800/30 p-4 border border-slate-200 dark:border-slate-700 rounded-sm">
+              <div className="bg-slate-50 dark:bg-slate-800/30 p-4 border border-slate-200 dark:border-slate-700 rounded-none">
                 <h4 className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3">Informasi Unit DART</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
@@ -418,7 +446,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
               </div>
 
               {/* Section 2: Info Pelapor */}
-              <div className="bg-slate-50 dark:bg-slate-800/30 p-4 border border-slate-200 dark:border-slate-700 rounded-sm">
+              <div className="bg-slate-50 dark:bg-slate-800/30 p-4 border border-slate-200 dark:border-slate-700 rounded-none">
                 <h4 className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3">Informasi Pelapor</h4>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="col-span-2">
@@ -427,7 +455,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                   </div>
                   <div className="col-span-2">
                     <p className="text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 uppercase">Metode Perbaikan Diajukan</p>
-                    <span className="inline-flex items-center px-2 py-0.5 text-xs font-mono font-bold border rounded-sm uppercase bg-slate-100 text-slate-600 border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600">
+                    <span className="inline-flex items-center px-2 py-0.5 text-xs font-mono font-bold border rounded-none uppercase bg-slate-100 text-slate-600 border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600">
                       <Wallet className="w-3 h-3 mr-1" /> {selectedTicket.kerusakan.jenisPerbaikan || 'Swadaya'}
                     </span>
                   </div>
@@ -439,7 +467,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                 <h4 className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
                   <FileText size={14} /> DESKRIPSI KERUSAKAN
                 </h4>
-                <div className="bg-slate-50 dark:bg-slate-900/50 p-4 border border-slate-200 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-sans italic relative rounded-sm">
+                <div className="bg-slate-50 dark:bg-slate-900/50 p-4 border border-slate-200 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-sans italic relative rounded-none">
                    <span className="absolute top-2 left-2 text-2xl text-slate-300 dark:text-slate-700 font-serif leading-none">"</span>
                    <p className="pl-4 z-10 relative">{selectedTicket.kerusakan.deskripsi || 'Tidak ada deskripsi.'}</p>
                 </div>
@@ -452,20 +480,20 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                     </h4>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                       {selectedTicket.kerusakan.foto_bukti && (
-                        <a href={selectedTicket.kerusakan.foto_bukti} target="_blank" rel="noopener noreferrer" className="block border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 rounded-sm overflow-hidden aspect-video relative group">
+                        <a href={selectedTicket.kerusakan.foto_bukti} target="_blank" rel="noopener noreferrer" className="block border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 rounded-none overflow-hidden aspect-video relative group">
                           <img src={selectedTicket.kerusakan.foto_bukti} alt="Foto Bukti" className="w-full h-full object-cover group-hover:opacity-75 transition-opacity" />
                           <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30 backdrop-blur-sm">
-                            <span className="text-white text-xs font-mono font-bold uppercase tracking-wider px-3 py-1 border border-white/50 rounded-sm">Perbesar</span>
+                            <span className="text-white text-xs font-mono font-bold uppercase tracking-wider px-3 py-1 border border-white/50 rounded-none">Perbesar</span>
                           </div>
                         </a>
                       )}
                       {selectedTicket.kerusakan.fileBukti?.map((foto: string, idx: number) => {
                         if (foto.match(/\.(jpeg|jpg|gif|png)$/i)) {
                           return (
-                            <a key={idx} href={foto} target="_blank" rel="noopener noreferrer" className="block border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 rounded-sm overflow-hidden aspect-video relative group">
+                            <a key={idx} href={foto} target="_blank" rel="noopener noreferrer" className="block border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 rounded-none overflow-hidden aspect-video relative group">
                               <img src={foto} alt={`Foto Bukti ${idx+1}`} className="w-full h-full object-cover group-hover:opacity-75 transition-opacity" />
                               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30 backdrop-blur-sm">
-                                <span className="text-white text-xs font-mono font-bold uppercase tracking-wider px-3 py-1 border border-white/50 rounded-sm">Perbesar</span>
+                                <span className="text-white text-xs font-mono font-bold uppercase tracking-wider px-3 py-1 border border-white/50 rounded-none">Perbesar</span>
                               </div>
                             </a>
                           );
@@ -486,9 +514,9 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                       {selectedTicket.kerusakan.dokumenAnggaran.map((doc: string, idx: number) => {
                         const fileName = doc.split('/').pop() || `Dokumen_${idx+1}.pdf`;
                         return (
-                          <div key={idx} className="flex items-center justify-between p-3 border border-slate-200 dark:border-slate-700 rounded-sm bg-white dark:bg-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                          <div key={idx} className="flex items-center justify-between p-3 border border-slate-200 dark:border-slate-700 rounded-none bg-white dark:bg-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                             <div className="flex items-center gap-3 overflow-hidden">
-                              <div className="p-2 bg-slate-100 dark:bg-slate-700 rounded-sm shrink-0">
+                              <div className="p-2 bg-slate-100 dark:bg-slate-700 rounded-none shrink-0">
                                 <FileText size={16} className="text-slate-600 dark:text-slate-300" />
                               </div>
                               <div className="min-w-0">
@@ -496,7 +524,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                                 <p className="text-xs text-slate-500 font-mono mt-0.5">Berkas Terlampir</p>
                               </div>
                             </div>
-                            <a href={doc} target="_blank" rel="noopener noreferrer" title="Unduh Dokumen" className="shrink-0 ml-3 p-2 text-slate-500 dark:text-slate-400 border border-slate-300 dark:border-slate-600 hover:text-cighra-primary dark:hover:text-cighra-gold hover:border-cighra-primary dark:hover:border-cighra-gold hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors rounded-sm">
+                            <a href={doc} target="_blank" rel="noopener noreferrer" title="Unduh Dokumen" className="shrink-0 ml-3 p-2 text-slate-500 dark:text-slate-400 border border-slate-300 dark:border-slate-600 hover:text-cighra-primary dark:hover:text-cighra-gold hover:border-cighra-primary dark:hover:border-cighra-gold hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors rounded-none">
                               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                             </a>
                           </div>
@@ -512,9 +540,9 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                     <h4 className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest flex items-center gap-2">
                       <LinkIcon size={14} /> TAUTAN MEDIA EKSTERNAL
                     </h4>
-                    <div className="flex items-center justify-between p-4 border border-slate-200 dark:border-slate-700 rounded-sm bg-white dark:bg-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                    <div className="flex items-center justify-between p-4 border border-slate-200 dark:border-slate-700 rounded-none bg-white dark:bg-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                       <div className="flex items-center gap-3 overflow-hidden">
-                        <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-sm shrink-0">
+                        <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-none shrink-0">
                           <LinkIcon size={18} className="text-blue-600 dark:text-blue-400" />
                         </div>
                         <div className="min-w-0">
@@ -522,7 +550,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                           <p className="text-xs text-blue-600 dark:text-blue-400 font-mono truncate cursor-pointer hover:underline" onClick={() => window.open(selectedTicket.kerusakan.tautan_video, '_blank')} title={selectedTicket.kerusakan.tautan_video}>{selectedTicket.kerusakan.tautan_video}</p>
                         </div>
                       </div>
-                      <a href={selectedTicket.kerusakan.tautan_video} target="_blank" rel="noopener noreferrer" className="shrink-0 ml-3 px-4 py-2 text-xs font-tactical font-bold tracking-widest uppercase bg-blue-600 text-white hover:bg-blue-700 transition-colors rounded-sm flex items-center gap-2 shadow-sm">
+                      <a href={selectedTicket.kerusakan.tautan_video} target="_blank" rel="noopener noreferrer" className="shrink-0 ml-3 px-4 py-2 text-xs font-tactical font-bold tracking-widest uppercase bg-blue-600 text-white hover:bg-blue-700 transition-colors rounded-none flex items-center gap-2 shadow-sm">
                         Buka Tautan <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                       </a>
                     </div>
@@ -531,7 +559,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
               </section>
 
               {/* Section 4: Riwayat Status */}
-              <div className="bg-slate-50 dark:bg-slate-800/30 p-4 border border-slate-200 dark:border-slate-700 rounded-sm">
+              <div className="bg-slate-50 dark:bg-slate-800/30 p-4 border border-slate-200 dark:border-slate-700 rounded-none">
                 <h4 className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4">Riwayat Status</h4>
                 <div className="space-y-4 relative before:absolute before:inset-0 before:ml-2.5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-300 dark:before:via-slate-700 before:to-transparent">
                   {/* Item 1: Dilaporkan */}
@@ -539,7 +567,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                     <div className="flex items-center justify-center w-5 h-5  border border-white bg-slate-300 dark:bg-slate-700 text-slate-500 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
                       <div className="w-2 h-2  bg-slate-500"></div>
                     </div>
-                    <div className="w-[calc(100%-2.5rem)] md:w-[calc(50%-1.5rem)] bg-white dark:bg-slate-800 p-3 rounded-sm border border-slate-200 dark:border-slate-700">
+                    <div className="w-[calc(100%-2.5rem)] md:w-[calc(50%-1.5rem)] bg-white dark:bg-slate-800 p-3 rounded-none border border-slate-200 dark:border-slate-700">
                       <div className="flex items-center justify-between mb-1">
                         <span className="font-bold text-xs text-slate-800 dark:text-white uppercase">Dilaporkan</span>
                       </div>
@@ -553,7 +581,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                       <div className="flex items-center justify-center w-5 h-5  border border-white bg-yellow-100 dark:bg-yellow-900/50 text-yellow-500 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
                         <div className="w-2 h-2  bg-yellow-500"></div>
                       </div>
-                      <div className="w-[calc(100%-2.5rem)] md:w-[calc(50%-1.5rem)] bg-white dark:bg-slate-800 p-3 rounded-sm border border-slate-200 dark:border-slate-700">
+                      <div className="w-[calc(100%-2.5rem)] md:w-[calc(50%-1.5rem)] bg-white dark:bg-slate-800 p-3 rounded-none border border-slate-200 dark:border-slate-700">
                         <div className="flex items-center justify-between mb-1">
                           <span className="font-bold text-xs text-yellow-600 dark:text-yellow-500 uppercase">Diverifikasi</span>
                         </div>
@@ -567,7 +595,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                       <div className="flex items-center justify-center w-5 h-5  border border-white bg-blue-100 dark:bg-blue-900/50 text-blue-500 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
                         <div className="w-2 h-2  bg-blue-500"></div>
                       </div>
-                      <div className="w-[calc(100%-2.5rem)] md:w-[calc(50%-1.5rem)] bg-white dark:bg-slate-800 p-3 rounded-sm border border-slate-200 dark:border-slate-700">
+                      <div className="w-[calc(100%-2.5rem)] md:w-[calc(50%-1.5rem)] bg-white dark:bg-slate-800 p-3 rounded-none border border-slate-200 dark:border-slate-700">
                         <div className="flex items-center justify-between mb-1">
                           <span className="font-bold text-xs text-blue-600 dark:text-blue-500 uppercase">Ditugaskan</span>
                         </div>
@@ -581,7 +609,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                       <div className={`flex items-center justify-center w-5 h-5  border border-white ${selectedTicket.status === 'SELESAI' ? 'bg-green-100 dark:bg-green-900/50' : 'bg-red-100 dark:bg-red-900/50'} shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2`}>
                         <div className={`w-2 h-2  ${selectedTicket.status === 'SELESAI' ? 'bg-green-500' : 'bg-red-500'}`}></div>
                       </div>
-                      <div className="w-[calc(100%-2.5rem)] md:w-[calc(50%-1.5rem)] bg-white dark:bg-slate-800 p-3 rounded-sm border border-slate-200 dark:border-slate-700">
+                      <div className="w-[calc(100%-2.5rem)] md:w-[calc(50%-1.5rem)] bg-white dark:bg-slate-800 p-3 rounded-none border border-slate-200 dark:border-slate-700">
                         <div className="flex items-center justify-between mb-1">
                           <span className={`font-bold text-xs uppercase ${selectedTicket.status === 'SELESAI' ? 'text-green-600 dark:text-green-500' : 'text-red-600 dark:text-red-500'}`}>{selectedTicket.status}</span>
                         </div>
@@ -594,7 +622,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
               </div>
 
               {/* Section 5: Info Teknisi */}
-              <div className="bg-slate-50 dark:bg-slate-800/30 p-4 border border-slate-200 dark:border-slate-700 rounded-sm">
+              <div className="bg-slate-50 dark:bg-slate-800/30 p-4 border border-slate-200 dark:border-slate-700 rounded-none">
                 <h4 className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2"><User className="w-3.5 h-3.5" /> Teknisi Ditugaskan</h4>
                 {selectedTicket.perbaikan.teknisi ? (
                   <div className="flex justify-between items-center">
@@ -603,7 +631,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                       <p className="text-sm font-bold text-slate-800 dark:text-white">{selectedTicket.perbaikan.teknisi}</p>
                     </div>
                     {selectedTicket.status === 'DIVERIFIKASI' && (
-                      <button onClick={() => onAssignTechnician(selectedTicket.db_id)} className="bg-cighra-primary hover:bg-cighra-primary/90 dark:bg-cighra-gold dark:hover:bg-cighra-gold/90 text-white dark:text-slate-900 px-3 py-1.5 text-xs font-tactical tracking-widest  transition-colors border border-cighra-primary dark:border-cighra-gold shadow-sm rounded-sm">
+                      <button onClick={() => onAssignTechnician(selectedTicket.db_id)} className="bg-cighra-primary hover:bg-cighra-primary/90 dark:bg-cighra-gold dark:hover:bg-cighra-gold/90 text-white dark:text-slate-900 px-3 py-1.5 text-xs font-tactical tracking-widest  transition-colors border border-cighra-primary dark:border-cighra-gold shadow-sm rounded-none">
                         UBAH TEKNISI
                       </button>
                     )}
@@ -612,7 +640,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                   <div className="text-center py-4">
                     <p className="text-slate-500 dark:text-slate-400 text-xs font-mono uppercase italic mb-2">Belum ada teknisi ditugaskan.</p>
                     {selectedTicket.status === 'DIVERIFIKASI' && (
-                      <button onClick={() => onAssignTechnician(selectedTicket.db_id)} className="bg-cighra-primary hover:bg-cighra-primary/90 dark:bg-cighra-gold dark:hover:bg-cighra-gold/90 text-white dark:text-slate-900 px-4 py-2 text-xs font-tactical tracking-widest  transition-colors flex items-center gap-2 mx-auto shadow-md rounded-sm">
+                      <button onClick={() => onAssignTechnician(selectedTicket.db_id)} className="bg-cighra-primary hover:bg-cighra-primary/90 dark:bg-cighra-gold dark:hover:bg-cighra-gold/90 text-white dark:text-slate-900 px-4 py-2 text-xs font-tactical tracking-widest  transition-colors flex items-center gap-2 mx-auto shadow-md rounded-none">
                         <ShieldAlert className="w-3.5 h-3.5" /> TUGASKAN SEKARANG
                       </button>
                     )}

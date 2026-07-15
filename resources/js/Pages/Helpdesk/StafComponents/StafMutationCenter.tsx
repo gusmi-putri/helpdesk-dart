@@ -25,7 +25,7 @@ const StafMutationCenter: React.FC<StafMutationCenterProps> = ({
       <div className="flex border-b border-slate-200 dark:border-slate-700">
         <button
           onClick={() => setActiveTab('PERSONEL')}
-          className={`flex-1 py-4 px-6 text-sm font-tactical tracking-widest uppercase transition-all border-b-2 flex items-center justify-center gap-2 ${
+          className={`flex-1 py-3 px-6 text-sm font-tactical tracking-widest uppercase transition-all border-b-2 flex items-center justify-center gap-2 ${
             activeTab === 'PERSONEL'
               ? 'border-cighra-primary dark:border-cighra-gold text-cighra-primary dark:text-cighra-gold bg-white dark:bg-slate-800/50'
               : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/30'
@@ -38,7 +38,7 @@ const StafMutationCenter: React.FC<StafMutationCenterProps> = ({
         </button>
         <button
           onClick={() => setActiveTab('INVENTARIS')}
-          className={`flex-1 py-4 px-6 text-sm font-tactical tracking-widest uppercase transition-all border-b-2 flex items-center justify-center gap-2 ${
+          className={`flex-1 py-3 px-6 text-sm font-tactical tracking-widest uppercase transition-all border-b-2 flex items-center justify-center gap-2 ${
             activeTab === 'INVENTARIS'
               ? 'border-cighra-primary dark:border-cighra-gold text-cighra-primary dark:text-cighra-gold bg-white dark:bg-slate-800/50'
               : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/30'

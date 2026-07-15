@@ -246,131 +246,131 @@ const DashboardStaf = (props: any) => {
     <div className="h-screen bg-slate-50 dark:bg-cighra-dark flex flex-col font-sans selection:bg-cighra-primary dark:selection:bg-cighra-gold dark:selection:text-slate-900 selection:text-white relative text-gunmetal dark:text-slate-300">
 
       <StafTopbar
-          setIsMobileMenuOpen={setIsMobileMenuOpen}
-          currentUser={currentUser}
-        />
+        setIsMobileMenuOpen={setIsMobileMenuOpen}
+        currentUser={currentUser}
+      />
       <div className="flex-1 flex overflow-hidden">
 
-      <StafSidebar
-        isMobileMenuOpen={isMobileMenuOpen}
-        setIsMobileMenuOpen={setIsMobileMenuOpen}
-        activeMenu={activeMenu}
-        setActiveMenu={setActiveMenu}
-        pendingCount={incomingReports.filter((r: any) => r.status === 'PENDING').length}
-        mutationPendingCount={pendingMutations.length}
-      />
+        <StafSidebar
+          isMobileMenuOpen={isMobileMenuOpen}
+          setIsMobileMenuOpen={setIsMobileMenuOpen}
+          activeMenu={activeMenu}
+          setActiveMenu={setActiveMenu}
+          pendingCount={incomingReports.filter((r: any) => r.status === 'PENDING').length}
+          mutationPendingCount={pendingMutations.length}
+        />
 
-      {/* MAIN CONTENT AREA */}
-      <main className="flex-1 flex flex-col relative overflow-hidden h-full">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-paper.png')] opacity-[0.05] pointer-events-none"></div>
+        {/* MAIN CONTENT AREA */}
+        <main className="flex-1 flex flex-col relative overflow-hidden h-full">
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-paper.png')] opacity-[0.05] pointer-events-none"></div>
 
-        
 
-        {/* Scrollable Content Container */}
-        <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar z-10">
-          <div className="max-w-[1400px] mx-auto">
-            <div className="mb-6 flex justify-between items-end border-b border-slate-200 dark:border-slate-600 pb-4">
-              <div>
-                <h2 className="text-2xl font-tactical font-bold text-cighra-primary dark:text-white tracking-widest uppercase">
-                  {activeMenu === 'MASUK' ? 'MODUL PENUGASAN TEKNISI' :
-                    activeMenu === 'SELESAI' ? 'ARSIP DOKUMEN PENYELESAIAN' :
-                      activeMenu === 'INVENTARIS' ? 'DATABASE INVENTARIS' :
-                        activeMenu === 'MUTASI' ? 'RIWAYAT PENGAJUAN' :
-                          'DATA PERSONEL'}
-                </h2>
-                <p className="text-xs font-mono text-slate-500 dark:text-slate-300 mt-1 uppercase tracking-widest">
-                  {activeMenu === 'INVENTARIS' ? 'STATUS KESIAPAN UNIT DART.' :
-                    activeMenu === 'MUTASI' ? (mutationActiveTab === 'PERSONEL' ? 'Riwayat pengajuan penambahan dan penghapusan data personel.' : 'Riwayat pengajuan penambahan dan penghapusan unit inventaris.') :
-                      activeMenu === 'PERSONEL' ? 'KELOLA DATA PENGGUNA SISTEM.' :
-                        'Sistem Manajemen Pelaporan Kerusakan Dart.'}
-                </p>
-              </div>
 
-              {(activeMenu === 'MASUK' || activeMenu === 'SELESAI') && (
-                <button
-                  onClick={() => setIsRecapModalOpen(true)}
-                  className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white px-5 py-2 font-tactical font-bold text-xs tracking-widest hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 transition-all flex items-center gap-2 shadow-lg"
-                >
-                  <FileArchive className="w-4 h-4" /> CETAK REKAPITULASI
-                </button>
-              )}
-            </div>
-
-            <Suspense fallback={
-              <div className="flex items-center justify-center h-64 w-full">
-                <div className="flex flex-col items-center gap-4 animate-in fade-in duration-300">
-                  <div className="w-10 h-10 border-4 border-cighra-gold border-t-transparent rounded-full animate-spin"></div>
-                  <span className="text-xs font-tactical tracking-[0.2em] uppercase text-cighra-gold animate-pulse">Memuat Komponen...</span>
+          {/* Scrollable Content Container */}
+          <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar z-10">
+            <div className="max-w-[1400px] mx-auto">
+              <div className="mb-2 flex justify-between items-end border-b border-slate-200 dark:border-slate-600 pb-3">
+                <div>
+                  <h2 className="text-2xl font-tactical font-bold text-slate-800 dark:text-white tracking-widest uppercase">
+                    {activeMenu === 'MASUK' ? 'MANAJEMEN LAPORAN MASUK' :
+                      activeMenu === 'SELESAI' ? 'ARSIP DOKUMEN PENYELESAIAN' :
+                        activeMenu === 'INVENTARIS' ? 'DATABASE INVENTARIS' :
+                          activeMenu === 'MUTASI' ? 'RIWAYAT PENGAJUAN' :
+                            'DATA PERSONEL'}
+                  </h2>
+                  <p className="text-xs font-mono text-slate-500 dark:text-slate-300 mt-1 uppercase tracking-widest">
+                    {activeMenu === 'INVENTARIS' ? 'STATUS KESIAPAN UNIT DART.' :
+                      activeMenu === 'MUTASI' ? (mutationActiveTab === 'PERSONEL' ? 'Riwayat pengajuan penambahan dan penghapusan data personel.' : 'Riwayat pengajuan penambahan dan penghapusan unit inventaris.') :
+                        activeMenu === 'PERSONEL' ? 'KELOLA DATA PENGGUNA SISTEM.' :
+                          'Sistem Manajemen Pelaporan Kerusakan Dart.'}
+                  </p>
                 </div>
+
+                {(activeMenu === 'MASUK' || activeMenu === 'SELESAI') && (
+                  <button
+                    onClick={() => setIsRecapModalOpen(true)}
+                    className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white px-5 py-2 font-tactical font-bold text-xs tracking-widest hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 transition-all flex items-center gap-2 shadow-lg"
+                  >
+                    <FileArchive className="w-4 h-4" /> CETAK REKAPITULASI
+                  </button>
+                )}
               </div>
-            }>
-              {activeMenu === 'MASUK' && (
-                <TicketManager
-                  reports={dbCases}
-                  onAssignTechnician={setAssigningReportId}
-                  onViewProof={setViewingProof}
-                  onVerify={handleVerify}
-                  onReject={setRejectingReportId}
-                />
-              )}
 
-              {activeMenu === 'SELESAI' && (
-                <CompletedReportsTable
-                  reports={completedReports}
-                  onSelectReport={setSelectedReportId}
-                  onViewProof={setViewingProof}
-                />
-              )}
+              <Suspense fallback={
+                <div className="flex items-center justify-center h-64 w-full">
+                  <div className="flex flex-col items-center gap-4 animate-in fade-in duration-300">
+                    <div className="w-10 h-10 border-4 border-cighra-gold border-t-transparent rounded-full animate-spin"></div>
+                    <span className="text-xs font-tactical tracking-[0.2em] uppercase text-cighra-gold animate-pulse">Memuat Komponen...</span>
+                  </div>
+                </div>
+              }>
+                {activeMenu === 'MASUK' && (
+                  <TicketManager
+                    reports={dbCases}
+                    onAssignTechnician={setAssigningReportId}
+                    onViewProof={setViewingProof}
+                    onVerify={handleVerify}
+                    onReject={setRejectingReportId}
+                  />
+                )}
 
-              {activeMenu === 'INVENTARIS' && (
-                <InventorySection
-                  dbUnits={dbUnits}
-                  unitSearch={unitSearch}
-                  setUnitSearch={setUnitSearch}
-                  filterJenis={filterJenis}
-                  setFilterJenis={setFilterJenis}
-                  filterSatuan={filterSatuan}
-                  setFilterSatuan={setFilterSatuan}
-                  sortConfig={sortConfig}
-                  setSortConfig={setSortConfig}
-                  onAddUnit={() => setIsAddUnitModalOpen(true)}
-                  onAddBatch={() => setIsAddBatchModalOpen(true)}
-                  onRequestDelete={handleRequestDelete}
-                  onRequestDeleteBatch={handleRequestDeleteBatch}
-                />
-              )}
+                {activeMenu === 'SELESAI' && (
+                  <CompletedReportsTable
+                    reports={completedReports}
+                    onSelectReport={setSelectedReportId}
+                    onViewProof={setViewingProof}
+                  />
+                )}
 
-              {activeMenu === 'MUTASI' && (
-                <StafMutationCenter
-                  dbMutations={dbMutations}
-                  dbUserMutations={dbUserMutations}
-                  activeTab={mutationActiveTab}
-                  setActiveTab={setMutationActiveTab}
-                />
-              )}
+                {activeMenu === 'INVENTARIS' && (
+                  <InventorySection
+                    dbUnits={dbUnits}
+                    unitSearch={unitSearch}
+                    setUnitSearch={setUnitSearch}
+                    filterJenis={filterJenis}
+                    setFilterJenis={setFilterJenis}
+                    filterSatuan={filterSatuan}
+                    setFilterSatuan={setFilterSatuan}
+                    sortConfig={sortConfig}
+                    setSortConfig={setSortConfig}
+                    onAddUnit={() => setIsAddUnitModalOpen(true)}
+                    onAddBatch={() => setIsAddBatchModalOpen(true)}
+                    onRequestDelete={handleRequestDelete}
+                    onRequestDeleteBatch={handleRequestDeleteBatch}
+                  />
+                )}
 
-              {activeMenu === 'PERSONEL' && (
-                <UsersTable
-                  dbUsers={dbAllUsers}
-                  dbRoles={dbRoles}
-                  dbSatuans={dbSatuans}
-                  isPengajuan={true}
-                />
-              )}
+                {activeMenu === 'MUTASI' && (
+                  <StafMutationCenter
+                    dbMutations={dbMutations}
+                    dbUserMutations={dbUserMutations}
+                    activeTab={mutationActiveTab}
+                    setActiveTab={setMutationActiveTab}
+                  />
+                )}
 
-              {activeMenu === 'SATUANS' && (
-                <SatuansTable
-                  dbSatuans={dbSatuans}
-                  dbUnits={dbUnits}
-                  dbCases={dbCases}
-                  dbUsers={dbAllUsers}
-                  isPengajuan={true}
-                />
-              )}
-            </Suspense>
+                {activeMenu === 'PERSONEL' && (
+                  <UsersTable
+                    dbUsers={dbAllUsers}
+                    dbRoles={dbRoles}
+                    dbSatuans={dbSatuans}
+                    isPengajuan={true}
+                  />
+                )}
+
+                {activeMenu === 'SATUANS' && (
+                  <SatuansTable
+                    dbSatuans={dbSatuans}
+                    dbUnits={dbUnits}
+                    dbCases={dbCases}
+                    dbUsers={dbAllUsers}
+                    isPengajuan={true}
+                  />
+                )}
+              </Suspense>
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
       </div>
 
       {/* Modals */}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Camera, FileText, Link as LinkIcon, ImageIcon } from 'lucide-react';
+import { Paperclip, Image as ImageIcon, Link as LinkIcon, FileText, Camera, Video } from 'lucide-react';
 import { BaseModal } from '@/Components/ui/BaseModal';
 import { Button } from '@/Components/ui/Button';
 
@@ -13,82 +13,204 @@ const ProofModal: React.FC<ProofModalProps> = ({ isOpen, onClose, viewingProof }
   if (!isOpen || !viewingProof) return null;
 
   const { report, type } = viewingProof;
+  const { kerusakan, perbaikan } = report;
+
+  // Variables for 'rusak'
+  const fotoCountRusak = (kerusakan?.foto_bukti ? 1 : 0) + (kerusakan?.fileBukti?.length || 0);
+  const dokumenCount = kerusakan?.dokumenAnggaran?.length || 0;
+  const hasLinkRusak = !!kerusakan?.tautan_video;
+
+  // Variables for 'selesai'
+  const fotoCountSelesai = perbaikan?.foto_bukti_selesai ? 1 : 0;
+  const hasVideoSelesai = !!perbaikan?.video_bukti_selesai;
 
   return (
     <BaseModal
       isOpen={isOpen}
       onClose={onClose}
-      title={`LAMPIRAN BUKTI ${type === 'rusak' ? 'KENDALA' : 'HASIL PERBAIKAN'}`}
-      icon={<Camera />}
-      maxWidth="2xl"
+      title={`DETAIL LAMPIRAN ${type === 'rusak' ? 'KENDALA' : 'PERBAIKAN'}`}
+      icon={<Paperclip />}
+      maxWidth="3xl"
       headerColor="primary"
       footer={
         <div className="w-full flex justify-end">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onClose}
-            className="uppercase"
-          >
-            Tutup Lampiran
+          <Button variant="outline" onClick={onClose} size="md">
+            Tutup Panel
           </Button>
         </div>
       }
     >
-      <div className="p-2 text-gunmetal dark:text-slate-300 flex-1 overflow-y-auto min-h-0 custom-scrollbar">
-        <div className="space-y-4">
-          {type === 'rusak' && (
-            <div className="space-y-4">
-              {/* Tautan Video */}
-              {report.kerusakan.tautan_video && (
-                <div className="bg-slate-100 dark:bg-cighra-darkcard/40 p-4 border border-slate-200 dark:border-slate-700/50">
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest font-bold mb-2">Tautan Video G-Drive:</p>
-                  <a href={report.kerusakan.tautan_video} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:text-blue-400 underline break-all font-mono inline-block">
-                    {report.kerusakan.tautan_video}
+      <div className="p-2 overflow-y-auto custom-scrollbar flex-1 min-h-0 space-y-8">
+        {/* Informasi Laporan */}
+        <div className="bg-slate-50 dark:bg-slate-800/30 p-4 border border-slate-200 dark:border-slate-700 rounded-sm">
+          <h4 className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3">Informasi Laporan</h4>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-mono uppercase mb-1">KODE KASUS</p>
+              <p className="text-sm font-bold text-slate-800 dark:text-white font-mono">{report.caseId || '-'}</p>
+            </div>
+            <div className="md:col-span-2">
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-mono uppercase mb-1">BARANG / UNIT</p>
+              <p className="text-sm font-semibold text-slate-800 dark:text-white">{kerusakan?.barangRusak || '-'}</p>
+            </div>
+            <div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-mono uppercase mb-1">KATEGORI</p>
+              <span className="inline-block px-2 py-0.5 text-xs font-mono font-bold border rounded-sm uppercase bg-slate-100 text-slate-600 border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600">
+                {kerusakan?.jenisPerbaikan || 'SWADAYA'}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {type === 'rusak' && (
+          <>
+            {fotoCountRusak === 0 && dokumenCount === 0 && !hasLinkRusak && (
+              <div className="text-center py-10 text-slate-500 font-mono uppercase text-sm border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-sm">
+                Tidak ada lampiran pendukung.
+              </div>
+            )}
+
+            {/* Lampiran Foto Kendala */}
+            {fotoCountRusak > 0 && (
+              <div className="space-y-3">
+                <h4 className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                  <ImageIcon size={14} /> FOTO KENDALA ({fotoCountRusak})
+                </h4>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {kerusakan?.foto_bukti && (
+                    <a href={kerusakan.foto_bukti} target="_blank" rel="noopener noreferrer" className="block border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 rounded-sm overflow-hidden aspect-video relative group">
+                      <img src={kerusakan.foto_bukti} alt="Foto Bukti" className="w-full h-full object-cover group-hover:opacity-75 transition-opacity" />
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30 backdrop-blur-sm">
+                        <span className="text-white text-xs font-mono font-bold uppercase tracking-wider px-3 py-1 border border-white/50 rounded-sm">Perbesar</span>
+                      </div>
+                    </a>
+                  )}
+                  {kerusakan?.fileBukti?.map((foto: string, idx: number) => (
+                    <a key={idx} href={foto} target="_blank" rel="noopener noreferrer" className="block border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 rounded-sm overflow-hidden aspect-video relative group">
+                      <img src={foto} alt={`Foto Bukti ${idx+1}`} className="w-full h-full object-cover group-hover:opacity-75 transition-opacity" />
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30 backdrop-blur-sm">
+                        <span className="text-white text-xs font-mono font-bold uppercase tracking-wider px-3 py-1 border border-white/50 rounded-sm">Perbesar</span>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Lampiran Dokumen */}
+            {dokumenCount > 0 && (
+              <div className="space-y-3">
+                <h4 className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                  <FileText size={14} /> DOKUMEN PENDUKUNG ({dokumenCount})
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {kerusakan?.dokumenAnggaran?.map((doc: string, idx: number) => {
+                    const fileName = doc.split('/').pop() || `Dokumen_${idx+1}.pdf`;
+                    return (
+                      <div key={idx} className="flex items-center justify-between p-3 border border-slate-200 dark:border-slate-700 rounded-sm bg-white dark:bg-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                        <div className="flex items-center gap-3 overflow-hidden">
+                          <div className="p-2 bg-slate-100 dark:bg-slate-700 rounded-sm shrink-0">
+                            <FileText size={16} className="text-slate-600 dark:text-slate-300" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-xs font-semibold text-slate-800 dark:text-white truncate" title={fileName}>{fileName}</p>
+                            <p className="text-xs text-slate-500 font-mono mt-0.5">Berkas Terlampir</p>
+                          </div>
+                        </div>
+                        <a href={doc} target="_blank" rel="noopener noreferrer" title="Unduh Dokumen" className="shrink-0 ml-3 p-2 text-slate-500 dark:text-slate-400 border border-slate-300 dark:border-slate-600 hover:text-cighra-primary dark:hover:text-cighra-gold hover:border-cighra-primary dark:hover:border-cighra-gold hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors rounded-sm">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        </a>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Tautan Video Drive / Eksternal */}
+            {hasLinkRusak && (
+              <div className="space-y-3">
+                <h4 className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                  <LinkIcon size={14} /> TAUTAN MEDIA EKSTERNAL
+                </h4>
+                <div className="flex items-center justify-between p-4 border border-slate-200 dark:border-slate-700 rounded-sm bg-white dark:bg-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                  <div className="flex items-center gap-3 overflow-hidden">
+                    <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-sm shrink-0">
+                      <LinkIcon size={18} className="text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-xs font-semibold text-slate-800 dark:text-white mb-1">Tautan Drive / URL</p>
+                      <p className="text-xs text-blue-600 dark:text-blue-400 font-mono truncate cursor-pointer hover:underline" onClick={() => window.open(kerusakan.tautan_video, '_blank')} title={kerusakan.tautan_video}>{kerusakan.tautan_video}</p>
+                    </div>
+                  </div>
+                  <a href={kerusakan.tautan_video} target="_blank" rel="noopener noreferrer" className="shrink-0 ml-3 px-4 py-2 text-xs font-tactical font-bold tracking-widest uppercase bg-blue-600 text-white hover:bg-blue-700 transition-colors rounded-sm flex items-center gap-2 shadow-sm">
+                    Buka Tautan <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                   </a>
                 </div>
-              )}
-
-              {/* Foto Bukti */}
-              {(report.kerusakan.foto_bukti || (report.kerusakan.fileBukti && report.kerusakan.fileBukti.length > 0)) && (
-                <div className="bg-slate-100 dark:bg-cighra-darkcard/40 p-4 border border-slate-200 dark:border-slate-700/50 space-y-3">
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest font-bold">DOKUMENTASI KENDALA (DARI PELAPOR):</p>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {report.kerusakan.foto_bukti && (
-                      <div className="border border-slate-300 dark:border-slate-700 rounded-sm overflow-hidden bg-black/40 flex items-center justify-center h-48">
-                        <img src={report.kerusakan.foto_bukti} alt="Foto Kendala" className="max-w-full max-h-full object-contain" />
-                      </div>
-                    )}
-                    {report.kerusakan.fileBukti?.map((foto: string, index: number) => (
-                      <div key={index} className="border border-slate-300 dark:border-slate-700 rounded-sm overflow-hidden bg-black/40 flex items-center justify-center h-48">
-                        <img src={foto} alt={`Foto Kendala ${index + 1}`} className="max-w-full max-h-full object-contain" />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {type === 'selesai' && (
-            <div className="bg-slate-100 dark:bg-cighra-darkcard/40 p-4 border border-slate-200 dark:border-slate-700/50 space-y-3">
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest font-bold">DOKUMENTASI HASIL PERBAIKAN:</p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {report.perbaikan.foto_bukti_selesai && (
-                  <div className="border border-slate-300 dark:border-slate-700 rounded-sm overflow-hidden bg-black/40 flex items-center justify-center h-48">
-                    <img src={report.perbaikan.foto_bukti_selesai} alt="Foto Selesai" className="max-w-full max-h-full object-contain" />
-                  </div>
-                )}
-                {report.perbaikan.video_bukti_selesai && (
-                  <div className="border border-slate-300 dark:border-slate-700 rounded-sm overflow-hidden bg-black/40 flex items-center justify-center h-48">
-                    <video src={report.perbaikan.video_bukti_selesai} controls className="max-w-full max-h-full object-contain" />
-                  </div>
-                )}
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </>
+        )}
+
+        {type === 'selesai' && (
+          <>
+            {/* Catatan / Tindakan Teknisi */}
+            {perbaikan?.tindakan && (
+              <div className="bg-slate-50 dark:bg-slate-800/30 p-4 border border-slate-200 dark:border-slate-700 rounded-sm">
+                <h4 className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3">CATATAN & TINDAKAN PENYELESAIAN</h4>
+                <p className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap">{perbaikan.tindakan}</p>
+              </div>
+            )}
+
+            {fotoCountSelesai === 0 && !hasVideoSelesai && !perbaikan?.tindakan && (
+              <div className="text-center py-10 text-slate-500 font-mono uppercase text-sm border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-sm">
+                Tidak ada dokumentasi hasil perbaikan.
+              </div>
+            )}
+
+            {/* Lampiran Foto Selesai */}
+            {fotoCountSelesai > 0 && (
+              <div className="space-y-3">
+                <h4 className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                  <ImageIcon size={14} /> FOTO HASIL PERBAIKAN ({fotoCountSelesai})
+                </h4>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {perbaikan?.foto_bukti_selesai && (
+                    <a href={perbaikan.foto_bukti_selesai} target="_blank" rel="noopener noreferrer" className="block border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 rounded-sm overflow-hidden aspect-video relative group">
+                      <img src={perbaikan.foto_bukti_selesai} alt="Foto Hasil Perbaikan" className="w-full h-full object-cover group-hover:opacity-75 transition-opacity" />
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30 backdrop-blur-sm">
+                        <span className="text-white text-xs font-mono font-bold uppercase tracking-wider px-3 py-1 border border-white/50 rounded-sm">Perbesar</span>
+                      </div>
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Tautan Video Selesai (Drive / Eksternal) */}
+            {hasVideoSelesai && (
+              <div className="space-y-3">
+                <h4 className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                  <LinkIcon size={14} /> TAUTAN VIDEO HASIL PERBAIKAN
+                </h4>
+                <div className="flex items-center justify-between p-4 border border-slate-200 dark:border-slate-700 rounded-sm bg-white dark:bg-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                  <div className="flex items-center gap-3 overflow-hidden">
+                    <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-sm shrink-0">
+                      <LinkIcon size={18} className="text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-xs font-semibold text-slate-800 dark:text-white mb-1">Tautan Drive / URL</p>
+                      <p className="text-xs text-blue-600 dark:text-blue-400 font-mono truncate cursor-pointer hover:underline" onClick={() => window.open(perbaikan.video_bukti_selesai, '_blank')} title={perbaikan.video_bukti_selesai}>{perbaikan.video_bukti_selesai}</p>
+                    </div>
+                  </div>
+                  <a href={perbaikan.video_bukti_selesai} target="_blank" rel="noopener noreferrer" className="shrink-0 ml-3 px-4 py-2 text-xs font-tactical font-bold tracking-widest uppercase bg-blue-600 text-white hover:bg-blue-700 transition-colors rounded-sm flex items-center gap-2 shadow-sm">
+                    Buka Tautan <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                  </a>
+                </div>
+              </div>
+            )}
+          </>
+        )}
       </div>
     </BaseModal>
   );

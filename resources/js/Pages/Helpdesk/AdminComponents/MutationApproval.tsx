@@ -192,9 +192,8 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
           ))}
         </div>
         <div className="relative w-full md:w-64">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-          <input type="text" placeholder="CARI RIWAYAT..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-sm py-2 pl-10 pr-4 text-xs font-tactical tracking-widest focus:ring-1 focus:ring-cighra-gold outline-none uppercase text-slate-800 dark:text-white placeholder-slate-400" />
+          <input type="text" placeholder="CARI NAMA / KODE UNIT..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-slate-100 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-600 px-4 py-2 text-xs font-mono focus:border-cighra-gold outline-none uppercase text-slate-800 dark:text-white rounded-sm" />
         </div>
       </div>
 
@@ -404,7 +403,7 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                       {/* Detail Table */}
                       <div className="overflow-x-auto border border-slate-200 dark:border-slate-700 bg-white dark:bg-cighra-darkcard/50 rounded-sm">
                         <table className="w-full text-left font-sans text-xs">
-                          <thead className="bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-slate-700 text-xs">
+                          <thead className="bg-cighra-primary dark:bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-white/10 text-xs">
                             <tr>
                               <SortableHeader label="NO" />
                               <SortableHeader label="NOMOR SERI" />
@@ -483,7 +482,7 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-slate-700 text-xs">
+                <thead className="bg-cighra-primary dark:bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-white/10 text-xs">
                   <tr>
                     <SortableHeader label="NOMOR SERI" sortKey="nomor_seri" currentSort={archiveSort} onSort={handleArchiveSort} />
                     <SortableHeader label="NAMA DART" sortKey="nama_satuan" currentSort={archiveSort} onSort={handleArchiveSort} />
@@ -566,7 +565,7 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                           {expandedIds.includes(m.id) && (
                             <div className="mt-3 overflow-x-auto border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-cighra-darkcard/50 rounded-sm">
                               <table className="w-full text-left font-sans text-xs">
-                                <thead className="bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-slate-700 text-xs">
+                                <thead className="bg-cighra-primary dark:bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-white/10 text-xs">
                                   <tr>
                                     <SortableHeader label="NO" />
                                     <SortableHeader label="NOMOR SERI" />
