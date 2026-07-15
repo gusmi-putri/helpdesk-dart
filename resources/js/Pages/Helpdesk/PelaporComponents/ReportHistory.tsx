@@ -18,7 +18,6 @@ const ReportHistory: React.FC<ReportHistoryProps> = ({
     total: history.length,
     pending: history.filter((r: any) => r.status === 'PENDING').length,
     proses: history.filter((r: any) => r.status === 'DIVERIFIKASI' || r.status === 'DITERIMA TEKNISI' || r.status === 'DIPROSES').length,
-    selPreses: history.filter((r: any) => r.status === 'SELESAI').length, // wait, let's keep the key selesai
     selesai: history.filter((r: any) => r.status === 'SELESAI').length,
   };
 
@@ -73,7 +72,7 @@ const ReportHistory: React.FC<ReportHistoryProps> = ({
             <div
               key={index}
               onClick={() => onSelectItem(item.db_id)}
-              className="glass-panel p-5 border-l-4 border-white/20 dark:border-l-soft-sand/10 hover:border-l-cighra-gold dark:hover:border-l-cighra-gold transition-all cursor-pointer group hover:!bg-cighra-primary/95 dark:hover:!bg-black/40 !bg-cighra-primary dark:!bg-cighra-darkcard/80 shadow-md border border-white/20 dark:border-slate-600"
+              className="glass-panel p-5 border-l-4 border-white/20 dark:border-l-soft-sand/10 hover:border-l-cighra-gold dark:hover:border-l-cighra-gold transition-all cursor-pointer group hover:!bg-cighra-primary/95 dark:hover:!bg-black/40 !bg-cighra-primary dark:!bg-cighra-darkcard/80 shadow-md border border-white/10 dark:border-slate-600"
             >
               <div className="flex justify-between items-start mb-3">
                 <div className="flex items-center gap-3">
@@ -81,10 +80,10 @@ const ReportHistory: React.FC<ReportHistoryProps> = ({
                   <span className="text-xs font-mono text-slate-400 dark:text-slate-400 tracking-tighter uppercase">{item.kerusakan.tanggal}</span>
                 </div>
                 <div className={`px-3 py-1 text-[11px] font-tactical font-bold tracking-[0.2em] flex items-center gap-2 border uppercase shadow-sm
-                  ${item.status === 'SELESAI' ? 'bg-green-500/20 text-green-400 border-green-500/20' :
-                    item.status === 'DITOLAK' ? 'bg-red-500/20 text-red-400 border-red-500/20' :
-                    item.status === 'PENDING' ? 'bg-cighra-gold/20 text-cighra-gold border-cighra-gold/20' :
-                      'bg-blue-500/20 text-blue-400 border-blue-500/20'}
+                  ${item.status === 'SELESAI' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
+                    item.status === 'DITOLAK' ? 'bg-red-500/20 text-red-400 border-red-500/30' :
+                    item.status === 'PENDING' ? 'bg-cighra-gold/20 text-cighra-gold border-cighra-gold/30' :
+                      'bg-blue-500/20 text-blue-400 border-blue-500/30'}
                 `}>
                   {item.status === 'SELESAI' ? <CheckCircle2 size={10} /> : <Clock size={10} />}
                   {item.status}
@@ -133,9 +132,9 @@ const ReportHistory: React.FC<ReportHistoryProps> = ({
           ))
         )}
       </div>
+
     </div>
   );
 };
 
 export default ReportHistory;
-

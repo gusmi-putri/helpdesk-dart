@@ -241,7 +241,7 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
       </div>
 
       {/* 3. TABLE SECTION */}
-      <div className="bg-white dark:bg-cighra-darkcard/70 border border-slate-200 dark:border-slate-600 rounded-sm overflow-hidden shadow-xl mt-4">
+      <div className="bg-white dark:bg-cighra-darkcard/70 border border-slate-200 dark:border-slate-600 overflow-hidden shadow-xl mt-4">
 
         {/* Card Header (Navy) */}
         <div className="p-4 border-b border-white/10 bg-cighra-primary dark:bg-slate-800 flex items-center justify-between text-white">
@@ -251,7 +251,7 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
         </div>
 
         {/* Table Wrapper */}
-        <div className="overflow-x-auto p-2 custom-scrollbar pb-4">
+        <div className="overflow-x-auto custom-scrollbar pb-2">
           <table className="w-full text-center font-sans">
 
             {/* Table Header */}

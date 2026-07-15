@@ -34,10 +34,9 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
   };
 
   return (
-    <div className="animate-in fade-in relative bg-white dark:bg-cighra-darkcard/50 rounded-md">
-      <div className="overflow-x-auto">
-        <table className="w-full text-left font-sans text-sm">
-          <thead className="bg-cighra-primary dark:bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-white/10 text-xs">
+    <div className="animate-in fade-in overflow-x-auto">
+      <table className="w-full text-left font-sans text-sm">
+        <thead className="bg-cighra-primary dark:bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-white/10 text-xs">
             <tr>
               <SortableHeader label="TIPE PENGAJUAN" sortKey="type" currentSort={sortConfig} onSort={handleSort} />
               <SortableHeader label="USERNAME" sortKey="username" currentSort={sortConfig} onSort={handleSort} />
@@ -130,8 +129,7 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
             );
           })}
         </tbody>
-        </table>
-      </div>
+      </table>
     </div>
   );
 };
