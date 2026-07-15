@@ -29,7 +29,7 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
     <div className="animate-in fade-in relative bg-white dark:bg-cighra-darkcard/50 rounded-md">
       <div className="overflow-x-auto">
         <table className="w-full text-left font-sans text-sm">
-          <thead className="bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-slate-700 text-xs">
+          <thead className="bg-cighra-primary dark:bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-white/10 text-xs">
             <tr>
               <SortableHeader label="TIPE PENGAJUAN" sortKey="type" currentSort={sortConfig} onSort={handleSort} />
               <SortableHeader label="USERNAME" sortKey="username" currentSort={sortConfig} onSort={handleSort} />
@@ -38,7 +38,7 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
               <SortableHeader label="AKSI VERIFIKASI" />
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-300 dark:divide-gray-800 bg-transparent">
+          <tbody className="divide-y divide-slate-200/60 dark:divide-slate-700/50 bg-blue-50/40 dark:bg-transparent">
             {pendingMutations.length === 0 ? (
               <tr>
                 <td colSpan={5} className="p-20 text-center text-slate-500 italic font-mono uppercase tracking-widest">

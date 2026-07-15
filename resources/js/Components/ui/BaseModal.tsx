@@ -47,9 +47,9 @@ export const BaseModal: React.FC<BaseModalProps> = ({
   };
 
   const headerTheme = {
-    default: 'bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700',
-    primary: 'bg-red-500/10 dark:bg-red-900/20 border-b border-cighra-primary dark:border-cighra-gold backdrop-blur-md',
-    danger: 'bg-red-500/10 dark:bg-red-900/20 border-b border-red-500/50 backdrop-blur-md'
+    default: 'bg-red-500/10 dark:bg-red-900/10 border-b border-cighra-primary dark:border-cighra-gold backdrop-blur-md',
+    primary: 'bg-red-500/10 dark:bg-red-900/10 border-b border-cighra-primary dark:border-cighra-gold backdrop-blur-md',
+    danger: 'bg-red-500/10 dark:bg-red-900/10 border-b border-cighra-primary dark:border-cighra-gold backdrop-blur-md'
   };
 
   const titleTheme = {
@@ -59,7 +59,7 @@ export const BaseModal: React.FC<BaseModalProps> = ({
   };
 
   const modalBorderTheme = {
-    default: 'border border-slate-200 dark:border-slate-700',
+    default: 'border-2 border-cighra-primary dark:border-cighra-gold',
     primary: 'border-2 border-cighra-primary dark:border-cighra-gold',
     danger: 'border-2 border-red-500/50'
   };
@@ -75,23 +75,23 @@ export const BaseModal: React.FC<BaseModalProps> = ({
       {isOpen && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 px-6 overflow-y-auto">
           {/* Backdrop (Click to close) */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-black/80 backdrop-blur-md" 
-            onClick={onClose} 
+            className="absolute inset-0 bg-black/80 backdrop-blur-md"
+            onClick={onClose}
           />
 
           {/* Modal Dialog */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
             className={`relative bg-white dark:bg-cighra-darkcard w-full ${modalBorderTheme[headerColor]} ${maxWidthClasses[maxWidth]} shadow-[0_0_100px_rgba(0,0,0,0.6)] rounded-sm overflow-hidden text-left flex flex-col max-h-[90vh] z-10`}
           >
-            
+
             {/* Header */}
             <div className={`p-5 flex items-center justify-between shrink-0 relative ${headerTheme[headerColor]}`}>
               <div className="flex items-center gap-4">
@@ -104,9 +104,9 @@ export const BaseModal: React.FC<BaseModalProps> = ({
                   {title}
                 </h3>
               </div>
-              
-              <button 
-                onClick={onClose} 
+
+              <button
+                onClick={onClose}
                 className={`p-2 transition-colors rounded-sm ${closeBtnTheme[headerColor]}`}
               >
                 <X className="w-5 h-5" />
@@ -114,7 +114,7 @@ export const BaseModal: React.FC<BaseModalProps> = ({
             </div>
 
             {/* Content (Scrollable) */}
-            <div className="overflow-y-auto custom-scrollbar flex-1 min-h-0">
+            <div className="overflow-y-auto custom-scrollbar flex-1 min-h-0 p-6 md:p-8">
               {children}
             </div>
 
