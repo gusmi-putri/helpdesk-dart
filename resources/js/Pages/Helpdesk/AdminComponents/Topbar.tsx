@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu as MenuIcon, CircleUser, LogOut, Settings, KeyRound, AlertTriangle } from 'lucide-react';
+import { Menu as MenuIcon, CircleUser, LogOut, Settings, KeyRound, AlertTriangle, Moon, Sun } from 'lucide-react';
 import { Menu, Transition } from '@headlessui/react';
 import { Link, router } from '@inertiajs/react';
 import ChangePasswordModal from './ChangePasswordModal';
@@ -15,6 +15,26 @@ interface TopbarProps {
 const Topbar: React.FC<TopbarProps> = ({ setIsMobileMenuOpen, currentUser, isMobileMenuOpen = false }) => {
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return document.documentElement.classList.contains('dark') || localStorage.getItem('theme') === 'dark';
+    }
+    return false;
+  });
+
+  const toggleDarkMode = () => {
+    setIsDarkMode(prev => {
+      const next = !prev;
+      if (next) {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      }
+      return next;
+    });
+  };
 
   const handleLogout = () => {
     router.post('/logout');
@@ -72,6 +92,30 @@ const Topbar: React.FC<TopbarProps> = ({ setIsMobileMenuOpen, currentUser, isMob
                     <Settings className="mr-2 h-4 w-4" aria-hidden="true" />
                     Pengaturan Profil
                   </Link>
+                )}
+              </Menu.Item>
+            </div>
+            <div className="px-1 py-1 border-b border-t border-slate-100 dark:border-slate-700">
+              <Menu.Item>
+                {({ active }) => (
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      toggleDarkMode();
+                    }}
+                    className={`${
+                      active ? 'bg-cighra-primary/10 dark:bg-slate-800 text-cighra-primary dark:text-white' : 'text-slate-700 dark:text-slate-300'
+                    } group flex w-full items-center justify-between rounded-sm px-2 py-2 text-sm font-sans uppercase tracking-wider text-left`}
+                  >
+                    <div className="flex items-center">
+                      {isDarkMode ? <Moon className="mr-2 h-4 w-4" aria-hidden="true" /> : <Sun className="mr-2 h-4 w-4" aria-hidden="true" />}
+        
+                    </div>
+                    <div className={`w-8 h-4 rounded-full flex items-center p-0.5 transition-colors duration-300 ease-in-out ${isDarkMode ? 'bg-cighra-gold' : 'bg-slate-300 dark:bg-slate-600'}`}>
+                      <div className={`w-3 h-3 rounded-full bg-white shadow-sm transform transition-transform duration-300 ease-in-out ${isDarkMode ? 'translate-x-4' : 'translate-x-0'}`} />
+                    </div>
+                  </button>
                 )}
               </Menu.Item>
             </div>
