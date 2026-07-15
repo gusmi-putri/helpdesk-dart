@@ -3,6 +3,8 @@ import { Package, Search, Plus, History, Edit, Trash2, Upload, CheckCircle, Aler
 import { EmptyState } from '@/Components/ui/EmptyState';
 import { usePage, router, useForm } from '@inertiajs/react';
 import SortableHeader from '@/Components/Table/SortableHeader';
+import UnitModal from './UnitModal';
+import UnitDeleteModal from './UnitDeleteModal';
 import { BaseModal } from '@/Components/ui/BaseModal';
 import { Button } from '@/Components/ui/Button';
 import UnitHistoryModal from './UnitHistoryModal';
@@ -37,7 +39,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
   const [isUnitDeleteModalOpen, setIsUnitDeleteModalOpen] = useState(false);
   const [isUnitHistoryModalOpen, setIsUnitHistoryModalOpen] = useState(false);
   const [isAdminBatchModalOpen, setIsAdminBatchModalOpen] = useState(false);
-  
+
   // Data states
   const [editingUnit, setEditingUnit] = useState<any>(null);
   const [isUnitAddMode, setIsUnitAddMode] = useState(true);
@@ -279,7 +281,7 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
           </select>
         </div>
         <div className="w-full md:w-auto">
-          <button 
+          <button
             onClick={() => {
               setUnitSearch('');
               setFilterJenis('ALL');
@@ -304,11 +306,10 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
                 setIsDeleteMode(!isDeleteMode);
                 setSelectedUnitIds([]);
               }}
-              className={`px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-all border shadow-lg uppercase cursor-pointer ${
-                isDeleteMode 
-                  ? 'bg-slate-700 hover:bg-slate-600 text-white border-white/20' 
+              className={`px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-all border shadow-lg uppercase cursor-pointer ${isDeleteMode
+                  ? 'bg-slate-700 hover:bg-slate-600 text-white border-white/20'
                   : 'bg-red-600 hover:bg-red-500 text-white border-white/20'
-              }`}
+                }`}
             >
               <Trash2 className="w-4 h-4" /> {isDeleteMode ? 'TUTUP MODE HAPUS' : 'MODE HAPUS MASSAL'}
             </button>
@@ -368,12 +369,12 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
                   { label: 'STATUS', key: 'status_unit' },
                   { label: 'MAINTENANCE', key: 'last_maintenance' },
                 ].map((col) => (
-                  <SortableHeader 
-                    key={col.key} 
-                    label={col.label} 
-                    sortKey={col.key} 
-                    currentSort={unitSortConfig} 
-                    onSort={handleUnitSort} 
+                  <SortableHeader
+                    key={col.key}
+                    label={col.label}
+                    sortKey={col.key}
+                    currentSort={unitSortConfig}
+                    onSort={handleUnitSort}
                   />
                 ))}
                 {!isDeleteMode && <SortableHeader label="OPSI" />}
@@ -388,20 +389,18 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
                 paginatedItems.map((u: any) => {
                   const isSelected = selectedUnitIds.includes(u.db_id);
                   return (
-                    <tr 
+                    <tr
                       key={u.db_id}
                       onClick={isDeleteMode ? () => toggleSelectUnit(u.db_id) : undefined}
-                      className={`transition-colors group bg-white dark:bg-transparent ${
-                        isDeleteMode 
-                          ? 'cursor-pointer select-none' 
+                      className={`transition-colors group bg-white dark:bg-transparent ${isDeleteMode
+                          ? 'cursor-pointer select-none'
                           : ''
-                      } ${
-                        isSelected 
-                          ? 'bg-red-500/5 dark:bg-red-950/20 border-l-4 border-l-red-600' 
-                          : isDeleteMode 
-                            ? 'hover:bg-blue-100/50 dark:hover:bg-slate-800/30 border-l-4 border-l-transparent' 
+                        } ${isSelected
+                          ? 'bg-red-500/5 dark:bg-red-950/20 border-l-4 border-l-red-600'
+                          : isDeleteMode
+                            ? 'hover:bg-blue-100/50 dark:hover:bg-slate-800/30 border-l-4 border-l-transparent'
                             : 'hover:bg-blue-100/50 dark:hover:bg-slate-800/50'
-                      }`}
+                        }`}
                     >
                       {isDeleteMode && (
                         <td className="p-4 text-center">
@@ -503,34 +502,34 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
       >
         <div className="space-y-4">
           <div className="p-4 bg-cighra-primary/5 dark:bg-cighra-darkcard border border-cighra-primary/20 dark:border-slate-800 text-sm font-mono font-bold text-slate-800 dark:text-slate-300 leading-relaxed uppercase tracking-wider">
-              {importResult?.success ? (
-                <div className="space-y-4">
-                  <div className="grid grid-cols-3 gap-3 text-center">
-                    <div className="bg-white dark:bg-cighra-darkcard/80 p-3 border border-slate-200 dark:border-slate-600">
-                      <p className="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-300 uppercase tracking-widest mb-1">TOTAL BARIS</p>
-                      <p className="text-xl font-tactical font-bold text-slate-800 dark:text-white">{importResult.total}</p>
-                    </div>
-                    <div className="bg-white dark:bg-cighra-darkcard/80 p-3 border border-camogreen/30">
-                      <p className="text-[11px] font-mono font-bold text-camogreen uppercase tracking-widest mb-1">BERHASIL</p>
-                      <p className="text-xl font-tactical font-bold text-camogreen">{importResult.imported}</p>
-                    </div>
-                    <div className="bg-white dark:bg-cighra-darkcard/80 p-3 border border-yellow-500/30">
-                      <p className="text-[11px] font-mono font-bold text-yellow-500 uppercase tracking-widest mb-1">DILEWATI</p>
-                      <p className="text-xl font-tactical font-bold text-yellow-500">{importResult.skipped}</p>
-                    </div>
+            {importResult?.success ? (
+              <div className="space-y-4">
+                <div className="grid grid-cols-3 gap-3 text-center">
+                  <div className="bg-white dark:bg-cighra-darkcard/80 p-3 border border-slate-200 dark:border-slate-600">
+                    <p className="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-300 uppercase tracking-widest mb-1">TOTAL BARIS</p>
+                    <p className="text-xl font-tactical font-bold text-slate-800 dark:text-white">{importResult.total}</p>
                   </div>
-                  {importResult.skipped > 0 && (
-                    <p className="text-xs font-mono text-yellow-600 dark:text-yellow-400 bg-yellow-500/10 p-2 border border-yellow-500/20">
-                      ⚠ {importResult.skipped} baris dilewati karena Nomor Seri sudah terdaftar di sistem.
-                    </p>
-                  )}
-                  <p className="text-xs font-mono text-slate-500 dark:text-slate-300 text-center uppercase">
-                    Data inventaris telah diperbarui secara otomatis.
-                  </p>
+                  <div className="bg-white dark:bg-cighra-darkcard/80 p-3 border border-camogreen/30">
+                    <p className="text-[11px] font-mono font-bold text-camogreen uppercase tracking-widest mb-1">BERHASIL</p>
+                    <p className="text-xl font-tactical font-bold text-camogreen">{importResult.imported}</p>
+                  </div>
+                  <div className="bg-white dark:bg-cighra-darkcard/80 p-3 border border-yellow-500/30">
+                    <p className="text-[11px] font-mono font-bold text-yellow-500 uppercase tracking-widest mb-1">DILEWATI</p>
+                    <p className="text-xl font-tactical font-bold text-yellow-500">{importResult.skipped}</p>
+                  </div>
                 </div>
-              ) : (
-                <p className="text-sm text-cighra-primary dark:text-cighra-gold font-mono">{importResult?.message || 'Terjadi kesalahan saat memproses file.'}</p>
-              )}
+                {importResult.skipped > 0 && (
+                  <p className="text-xs font-mono text-yellow-600 dark:text-yellow-400 bg-yellow-500/10 p-2 border border-yellow-500/20">
+                    ⚠ {importResult.skipped} baris dilewati karena Nomor Seri sudah terdaftar di sistem.
+                  </p>
+                )}
+                <p className="text-xs font-mono text-slate-500 dark:text-slate-300 text-center uppercase">
+                  Data inventaris telah diperbarui secara otomatis.
+                </p>
+              </div>
+            ) : (
+              <p className="text-sm text-cighra-primary dark:text-cighra-gold font-mono">{importResult?.message || 'Terjadi kesalahan saat memproses file.'}</p>
+            )}
           </div>
         </div>
       </BaseModal>

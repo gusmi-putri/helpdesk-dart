@@ -32,82 +32,51 @@ const ReportHistory: React.FC<ReportHistoryProps> = ({
           { label: 'DALAM PROSES', value: stats.proses, color: 'border-blue-500', text: 'text-blue-500' },
           { label: 'SELESAI', value: stats.selesai, color: 'border-camogreen', text: 'text-camogreen' },
         ].map((s, i) => (
-          <div key={i} className={`bg-white dark:bg-cighra-darkcard/80 border-l-4 ${s.color} p-3 shadow-md`}>
-            <p className="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-300 tracking-widest uppercase mb-0.5">{s.label}</p>
+          <div key={i} className={`!bg-cighra-primary dark:!bg-cighra-darkcard/80 border-l-4 ${s.color} p-3 shadow-md`}>
+            <p className="text-[11px] font-mono font-bold text-slate-300 tracking-widest uppercase mb-0.5">{s.label}</p>
             <p className={`text-xl font-tactical font-bold ${s.text}`}>{s.value}</p>
           </div>
         ))}
       </div>
 
-      <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-        <div>
-          <h2 className="text-2xl font-tactical font-bold text-slate-800 dark:text-white tracking-widest uppercase">Riwayat Laporan</h2>
-          <p className="text-slate-500 dark:text-slate-300 text-xs font-mono mt-1 tracking-widest uppercase">Log Pelaporan Unit (Terbaru di Atas)</p>
-        </div>
-        
-        <div className="flex items-center gap-3 w-full md:w-auto">
-          <div className="flex bg-white dark:bg-cighra-darkcard/60 border border-slate-200 dark:border-slate-600/50 p-1 rounded-sm shadow-sm">
-            {(['ALL', 'TODAY', 'WEEK'] as const).map((t) => (
-              <button
-                key={t}
-                onClick={() => setFilterTime(t)}
-                className={`px-3 py-1.5 text-[11px] font-tactical font-bold tracking-widest transition-all ${filterTime === t ? 'bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white shadow-md' : 'text-slate-500 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
-              >
-                {t === 'ALL' ? 'SEMUA' : t === 'TODAY' ? 'HARI INI' : 'MINGGU INI'}
-              </button>
-            ))}
-          </div>
-          <div className="bg-cighra-primary/10 dark:bg-cighra-gold/10 border border-cighra-primary dark:border-cighra-gold/30 px-4 py-2 hidden sm:block">
-            <span className="text-xs font-mono text-cighra-primary dark:text-cighra-gold font-bold tracking-widest">TOTAL: {history.length} TIKET</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="space-y-4 max-h-[700px] overflow-y-auto pr-2 custom-scrollbar">
-        {history.length === 0 ? (
-          <div className="p-8 text-center text-slate-500 font-mono bg-white/40 dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600/50">
-            {filterTime === 'ALL' ? 'ANDA BELUM PERNAH MENGAJUKAN LAPORAN APAPUN.' : 'TIDAK ADA LAPORAN PADA PERIODE INI.'}
-          </div>
-        ) : (
-          history.map((item: any, index: number) => (
             <div
               key={index}
               onClick={() => onSelectItem(item.db_id)}
-              className="glass-panel p-5 border-l-4 border-l-slate-200 dark:border-l-soft-sand/10 hover:border-l-cighra-primary dark:hover:border-l-cighra-gold transition-all cursor-pointer group hover:bg-slate-50 dark:hover:bg-black/40 bg-white dark:bg-cighra-darkcard/80 shadow-md border border-slate-200 dark:border-slate-600"
+              className="glass-panel p-5 border-l-4 border-white/20 dark:border-l-soft-sand/10 hover:border-l-cighra-gold dark:hover:border-l-cighra-gold transition-all cursor-pointer group hover:!bg-cighra-primary/90 dark:hover:bg-black/40 !bg-cighra-primary dark:!bg-cighra-darkcard/80 shadow-md border border-white/10 dark:border-slate-600"
             >
               <div className="flex justify-between items-start mb-3">
                 <div className="flex items-center gap-3">
-                  <span className="text-xs font-mono text-slate-500 dark:text-slate-300 bg-slate-100 dark:bg-cighra-darkcard/80 px-2 py-1 tracking-widest">{item.caseId}</span>
-                  <span className="text-xs font-mono text-slate-400 dark:text-slate-400 tracking-tighter uppercase">{item.kerusakan.tanggal}</span>
+                  <span className="text-xs font-mono text-slate-300 bg-white/10 dark:!bg-cighra-darkcard/80 px-2 py-1 tracking-widest">{item.caseId}</span>
+                  <span className="text-xs font-mono text-slate-400 tracking-tighter uppercase">{item.kerusakan.tanggal}</span>
                 </div>
                 <div className={`px-3 py-1 text-[11px] font-tactical font-bold tracking-[0.2em] flex items-center gap-2 border uppercase shadow-sm
-                  ${item.status === 'SELESAI' ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-500 border-green-200 dark:border-green-800' :
-                    item.status === 'DITOLAK' ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-500 border-red-200 dark:border-red-800' :
-                    item.status === 'PENDING' ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-500 border-yellow-200 dark:border-yellow-800' :
-                      'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-500 border-blue-200 dark:border-blue-800'}
+                  ${item.status === 'SELESAI' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
+                    item.status === 'DITOLAK' ? 'bg-red-500/20 text-red-400 border-red-500/30' :
+                    item.status === 'PENDING' ? 'bg-cighra-gold/20 text-cighra-gold border-cighra-gold/30' :
+                      'bg-blue-500/20 text-blue-400 border-blue-500/30'}
                 `}>
                   {item.status === 'SELESAI' ? <CheckCircle2 size={10} /> : <Clock size={10} />}
                   {item.status}
                 </div>
               </div>
-              <h4 className="text-sm font-bold text-slate-800 dark:text-white mb-2 group-hover:text-cighra-primary dark:group-hover:text-cighra-gold transition-colors uppercase tracking-wide">
+              <h4 className="text-sm font-bold text-white mb-2 group-hover:text-cighra-gold transition-colors uppercase tracking-wide">
                 {item.kerusakan.barangRusak}
               </h4>
-              <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 font-mono leading-relaxed italic">
+              <p className="text-xs text-slate-300 line-clamp-2 font-mono leading-relaxed italic">
                 "{item.kerusakan.deskripsi}"
               </p>
               <div className="mt-4 flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="text-xs text-slate-500 dark:text-slate-300 flex items-center gap-1 font-mono uppercase">
-                    <Activity size={12} className="text-cighra-primary dark:text-cighra-gold" /> {item.kerusakan.lokasi}
+                  <div className="text-xs text-slate-300 flex items-center gap-1 font-mono uppercase">
+                    <Activity size={12} className="text-cighra-gold" /> {item.kerusakan.lokasi}
                   </div>
                   {item.status === 'SELESAI' && item.perbaikan.tanggalSelesai && (
-                    <div className="text-xs text-camogreen font-bold font-mono flex items-center gap-1 uppercase">
+                    <div className="text-xs text-green-400 font-bold font-mono flex items-center gap-1 uppercase">
                       <CheckCircle2 size={12} /> SELESAI: {item.perbaikan.tanggalSelesai}
                     </div>
                   )}
                   {item.perbaikan.teknisi && item.status !== 'SELESAI' && (
-                    <div className="text-xs text-cighra-primary dark:text-cighra-gold font-bold font-mono flex items-center gap-1 uppercase">
+                    <div className="text-xs text-cighra-gold font-bold font-mono flex items-center gap-1 uppercase">
                       [TEKNISI: {item.perbaikan.teknisi.toUpperCase()}]
                       {item.perbaikan.teknisi_wa && (
                         <a

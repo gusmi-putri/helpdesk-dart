@@ -116,8 +116,8 @@ const AnalyticsSection: React.FC<AnalyticsSectionProps> = ({ dbCases }) => {
                 <CartesianGrid strokeDasharray="3 3" stroke="#374151" vertical={false} />
                 <XAxis dataKey="name" stroke="#6b7280" style={{ fontSize: '10px', fontFamily: 'monospace' }} />
                 <YAxis stroke="#6b7280" style={{ fontSize: '10px', fontFamily: 'monospace' }} allowDecimals={false} />
-                <RechartsTooltip cursor={{ fill: 'rgba(75,83,32,0.1)' }} contentStyle={{ backgroundColor: '#1a2024', border: '1px solid #4B5320', color: '#fff' }} />
-                <Bar dataKey="value" fill="#4B5320" radius={[4, 4, 0, 0]} />
+                <RechartsTooltip cursor={{ fill: 'rgba(30,49,102,0.1)' }} contentStyle={{ backgroundColor: '#1a2024', border: '1px solid #1E3166', color: '#fff' }} />
+                <Bar dataKey="value" className="fill-[#1E3166] dark:fill-[#E6C21F]" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

@@ -77,15 +77,15 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
             type="submit"
             form="userEditForm"
             disabled={processing || submitDisabled}
-            
-           variant="primary" className="flex-[2] uppercase" size="lg">
+
+            variant="primary" className="flex-[2] uppercase" size="lg">
             {processing ? 'MEMPROSES...' : isPengajuan ? (isAddMode ? 'AJUKAN PENDAFTARAN' : 'AJUKAN PERUBAHAN') : (isAddMode ? 'DAFTARKAN PERSONEL' : 'SIMPAN PERUBAHAN')}
           </Button>
-          <Button 
-            type="button" 
-            onClick={onClose} 
-            
-           variant="secondary" className="flex-1 uppercase" size="lg">
+          <Button
+            type="button"
+            onClick={onClose}
+
+            variant="secondary" className="flex-1 uppercase" size="lg">
             BATAL
           </Button>
         </div>
@@ -228,11 +228,11 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
             <select
               value={data.satuan_id || ''}
               onChange={(e) => {
-                 setData('satuan_id', e.target.value);
-                 const selectedSatuan = dbSatuans?.find((s: any) => s.id == e.target.value);
-                 if (selectedSatuan) {
-                     setData('asal_satuan', selectedSatuan.nama_satuan);
-                 }
+                setData('satuan_id', e.target.value);
+                const selectedSatuan = dbSatuans?.find((s: any) => s.id == e.target.value);
+                if (selectedSatuan) {
+                  setData('asal_satuan', selectedSatuan.nama_satuan);
+                }
               }}
               className={`w-full bg-cighra-primary/5 dark:bg-cighra-darkcard border ${errors.satuan_id ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} p-3 text-sm font-mono focus:ring-1 focus:ring-cighra-gold outline-none transition-all dark:text-white rounded-sm`}
               required
