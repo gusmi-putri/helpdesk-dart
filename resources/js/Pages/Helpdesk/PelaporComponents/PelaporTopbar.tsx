@@ -9,9 +9,10 @@ import { Button } from '@/Components/ui/Button';
 interface PelaporTopbarProps {
   setIsMobileMenuOpen: (open: boolean) => void;
   currentUser: any;
+  isMobileMenuOpen?: boolean;
 }
 
-const PelaporTopbar: React.FC<PelaporTopbarProps> = ({ setIsMobileMenuOpen, currentUser }) => {
+const PelaporTopbar: React.FC<PelaporTopbarProps> = ({ setIsMobileMenuOpen, currentUser, isMobileMenuOpen = false }) => {
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -41,7 +42,7 @@ const PelaporTopbar: React.FC<PelaporTopbarProps> = ({ setIsMobileMenuOpen, curr
 
   return (
     <>
-    <header className="h-16 border-b border-slate-200 dark:border-slate-600 bg-cighra-primary text-white dark:bg-cighra-darkcard/60 backdrop-blur-md flex items-center justify-between px-4 md:px-8 flex-shrink-0 z-50 relative">
+    <header className="h-16 border-b border-slate-200 dark:border-slate-600 bg-cighra-primary dark:bg-cighra-darkcard/60 backdrop-blur-md flex items-center justify-between px-4 md:px-8 flex-shrink-0 z-50 relative">
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-3 mr-4">
           <img src="/logo.png" alt="DART Logo" className="w-8 h-10 object-contain drop-shadow-[0_0_8px_rgba(255,215,0,0.5)]" />
@@ -49,7 +50,9 @@ const PelaporTopbar: React.FC<PelaporTopbarProps> = ({ setIsMobileMenuOpen, curr
         </div>
         <button
           onClick={() => setIsMobileMenuOpen(true)}
-          className="md:hidden p-2 text-slate-200 dark:text-slate-400 dark:text-slate-300 hover:text-gunmetal dark:hover:text-white transition-colors"
+          aria-label="Buka menu navigasi"
+          aria-expanded={isMobileMenuOpen}
+          className="md:hidden p-2 text-slate-200 dark:text-slate-400 hover:text-gunmetal dark:hover:text-white transition-colors focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none rounded"
         >
           <MenuIcon className="w-6 h-6" />
         </button>
@@ -57,11 +60,11 @@ const PelaporTopbar: React.FC<PelaporTopbarProps> = ({ setIsMobileMenuOpen, curr
 
       <Menu as="div" className="relative ml-auto">
         <Menu.Button 
-          className="flex items-center gap-0 border border-slate-200/20 dark:border-slate-600 rounded shadow-sm bg-black/10 dark:bg-cighra-darkcard/80 overflow-hidden hover:bg-black/20 dark:hover:bg-cighra-darkcard transition-all active:scale-95 duration-300 cursor-pointer text-left focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none"
+          className="flex items-center gap-0 border border-slate-200/20 dark:border-slate-600 rounded shadow-sm bg-black/10 dark:bg-cighra-darkcard/80 overflow-hidden focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none hover:bg-black/20 dark:hover:bg-cighra-darkcard transition-all active:scale-95 duration-300 cursor-pointer text-left"
         >
           <div className="bg-cighra-dark/40 dark:bg-cighra-darkcard/80 px-4 py-1.5 text-right flex flex-col justify-center border-r border-slate-200/20 dark:border-slate-600">
-            <span className="block text-xs font-bold text-white dark:text-white uppercase font-sans tracking-wider">{currentUser?.name || 'Pelapor Anonim'}</span>
-            <span className="block text-[11px] font-mono tracking-widest text-cighra-gold dark:text-cighra-gold">{currentUser?.role || 'PELAPOR'}</span>
+            <span className="block text-xs font-bold text-white dark:text-white uppercase font-sans tracking-wider">{currentUser?.name || currentUser?.nama_lengkap || 'Pelapor Anonim'}</span>
+            <span className="block text-[11px] font-mono tracking-widest text-cighra-gold dark:text-cighra-gold uppercase">{currentUser?.role?.nama_role || currentUser?.role || 'PELAPOR'}</span>
           </div>
           <div className="w-10 h-full bg-black/20 dark:bg-cighra-darkcard/70 flex items-center justify-center p-2">
             <CircleUser className="w-6 h-6 text-slate-200 dark:text-slate-400" />
@@ -87,7 +90,7 @@ const PelaporTopbar: React.FC<PelaporTopbarProps> = ({ setIsMobileMenuOpen, curr
                     } group flex w-full items-center rounded-sm px-2 py-2 text-sm font-sans uppercase tracking-wider`}
                   >
                     <Settings className="mr-2 h-4 w-4" aria-hidden="true" />
-                    Pengaturan Profil
+                    Profil
                   </Link>
                 )}
               </Menu.Item>
@@ -107,7 +110,7 @@ const PelaporTopbar: React.FC<PelaporTopbarProps> = ({ setIsMobileMenuOpen, curr
                   >
                     <div className="flex items-center">
                       {isDarkMode ? <Moon className="mr-2 h-4 w-4" aria-hidden="true" /> : <Sun className="mr-2 h-4 w-4" aria-hidden="true" />}
-                      Mode Gelap
+                      {isDarkMode ? 'MODE GELAP' : 'MODE TERANG'}
                     </div>
                     <div className={`w-8 h-4 rounded-full flex items-center p-0.5 transition-colors duration-300 ease-in-out ${isDarkMode ? 'bg-cighra-gold' : 'bg-slate-300 dark:bg-slate-600'}`}>
                       <div className={`w-3 h-3 rounded-full bg-white shadow-sm transform transition-transform duration-300 ease-in-out ${isDarkMode ? 'translate-x-4' : 'translate-x-0'}`} />

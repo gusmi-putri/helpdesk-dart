@@ -63,8 +63,8 @@ const Topbar: React.FC<TopbarProps> = ({ setIsMobileMenuOpen, currentUser, isMob
           className="flex items-center gap-0 border border-slate-200/20 dark:border-slate-600 rounded shadow-sm bg-black/10 dark:bg-cighra-darkcard/80 overflow-hidden focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none hover:bg-black/20 dark:hover:bg-cighra-darkcard transition-all active:scale-95 duration-300 cursor-pointer text-left"
         >
           <div className="bg-cighra-dark/40 dark:bg-cighra-darkcard/80 px-4 py-1.5 text-right flex flex-col justify-center border-r border-slate-200/20 dark:border-slate-600">
-            <span className="block text-xs font-bold text-white dark:text-white uppercase font-sans tracking-wider">{currentUser?.name || 'Administrator'}</span>
-            <span className="block text-[11px] font-mono tracking-widest text-cighra-gold dark:text-cighra-gold uppercase">{currentUser?.role || 'Admin'}</span>
+            <span className="block text-xs font-bold text-white dark:text-white uppercase font-sans tracking-wider">{currentUser?.name || currentUser?.nama_lengkap || 'Administrator'}</span>
+            <span className="block text-[11px] font-mono tracking-widest text-cighra-gold dark:text-cighra-gold uppercase">{currentUser?.role?.nama_role || currentUser?.role || 'ADMIN'}</span>
           </div>
           <div className="w-10 h-full bg-black/20 dark:bg-cighra-darkcard/70 flex items-center justify-center p-2">
             <CircleUser className="w-6 h-6 text-slate-200 dark:text-slate-400" />
@@ -90,7 +90,7 @@ const Topbar: React.FC<TopbarProps> = ({ setIsMobileMenuOpen, currentUser, isMob
                     } group flex w-full items-center rounded-sm px-2 py-2 text-sm font-sans uppercase tracking-wider`}
                   >
                     <Settings className="mr-2 h-4 w-4" aria-hidden="true" />
-                    Pengaturan Profil
+                    Profil
                   </Link>
                 )}
               </Menu.Item>
@@ -110,7 +110,7 @@ const Topbar: React.FC<TopbarProps> = ({ setIsMobileMenuOpen, currentUser, isMob
                   >
                     <div className="flex items-center">
                       {isDarkMode ? <Moon className="mr-2 h-4 w-4" aria-hidden="true" /> : <Sun className="mr-2 h-4 w-4" aria-hidden="true" />}
-        
+                      {isDarkMode ? 'MODE GELAP' : 'MODE TERANG'}
                     </div>
                     <div className={`w-8 h-4 rounded-full flex items-center p-0.5 transition-colors duration-300 ease-in-out ${isDarkMode ? 'bg-cighra-gold' : 'bg-slate-300 dark:bg-slate-600'}`}>
                       <div className={`w-3 h-3 rounded-full bg-white shadow-sm transform transition-transform duration-300 ease-in-out ${isDarkMode ? 'translate-x-4' : 'translate-x-0'}`} />
