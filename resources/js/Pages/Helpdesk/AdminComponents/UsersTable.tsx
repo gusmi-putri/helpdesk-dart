@@ -210,12 +210,14 @@ const UsersTable: React.FC<UsersTableProps> = ({
           <Users className="text-cighra-gold w-6 h-6" /> MANAJEMEN PERSONEL
         </h3>
         <div className="flex items-center gap-4">
-          <button
-            onClick={handleAddUser}
-            className="bg-white dark:bg-cighra-gold hover:bg-slate-100 dark:hover:bg-cighra-gold/90 text-cighra-primary dark:text-slate-900 px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-white dark:border-cighra-gold shadow-lg uppercase cursor-pointer"
-          >
-            <Plus className="w-4 h-4" /> TAMBAH USER
-          </button>
+          {!isPengajuan && (
+            <button
+              onClick={handleAddUser}
+              className="bg-white dark:bg-cighra-gold hover:bg-slate-100 dark:hover:bg-cighra-gold/90 text-cighra-primary dark:text-slate-900 px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-white dark:border-cighra-gold shadow-lg uppercase cursor-pointer"
+            >
+              <Plus className="w-4 h-4" /> TAMBAH USER
+            </button>
+          )}
         </div>
       </div>
 
@@ -261,30 +263,35 @@ const UsersTable: React.FC<UsersTableProps> = ({
                     <button onClick={() => handleShowDetail(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Detail">
                       <Eye className="w-4 h-4" />
                     </button>
-                    <button onClick={() => handleEditUser(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Edit">
-                      <Edit className="w-4 h-4" />
-                    </button>
-                    {u.db_id === currentUser?.id || u.username === currentUser?.username ? (
-                      <button 
-                        disabled
-                        className="p-2 bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700 cursor-not-allowed opacity-50 rounded-sm" 
-                        title="Anda tidak dapat menghapus akun Anda sendiri"
-                      >
-                        <Trash2 className="w-4 h-4" />
+                    {/* Staf hanya bisa melihat akun Admin, tidak bisa edit/hapus */}
+                    {!(isPengajuan && u.role === 'Admin') && (
+                      <button onClick={() => handleEditUser(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Edit">
+                        <Edit className="w-4 h-4" />
                       </button>
-                    ) : (
-                      <button 
-                        onClick={() => {
-                          if (u.has_ongoing_reports) {
-                            setWarningUser(u);
-                          } else {
-                            handleDeleteUser(u);
-                          }
-                        }} 
-                        className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-600 dark:text-white hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Hapus"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                    )}
+                    {!(isPengajuan && u.role === 'Admin') && (
+                      u.db_id === currentUser?.id || u.username === currentUser?.username ? (
+                        <button 
+                          disabled
+                          className="p-2 bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700 cursor-not-allowed opacity-50 rounded-sm" 
+                          title="Anda tidak dapat menghapus akun Anda sendiri"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      ) : (
+                        <button 
+                          onClick={() => {
+                            if (u.has_ongoing_reports) {
+                              setWarningUser(u);
+                            } else {
+                              handleDeleteUser(u);
+                            }
+                          }} 
+                          className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-600 dark:text-white hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Hapus"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      )
                     )}
                     {!isPengajuan && (
                       <button 
