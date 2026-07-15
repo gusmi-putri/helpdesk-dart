@@ -184,9 +184,10 @@ const UsersTable: React.FC<UsersTableProps> = ({
 
   return (
     <>
+    {/* Filter / Search Row (Moved outside and above card container) */}
     <div className="flex flex-col md:flex-row flex-wrap gap-4 items-end mb-4 animate-in fade-in">
-      <div className="w-full md:w-96">
-        <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">CARI PERSONEL</label>
+      <div className="w-full md:flex-1">
+        <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Cari Personel</label>
         <div className="relative">
           <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400 dark:text-slate-500" />
           <input
@@ -201,7 +202,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
     </div>
 
     <div className="bg-white dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600 shadow-xl overflow-hidden animate-in fade-in relative">
-      <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-olive via-camogreen to-transparent"></div>
+      <div className="absolute top-0 left-0 w-full h-[2px] bg-cighra-primary dark:bg-cighra-gold"></div>
       <div className="p-5 border-b border-white/10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-cighra-primary dark:bg-slate-800">
         <h3 className="text-white font-tactical font-bold text-lg tracking-widest flex items-center gap-3 uppercase">
           <Users className="text-cighra-gold w-6 h-6" /> MANAJEMEN PERSONEL
@@ -209,7 +210,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
         <div className="flex items-center gap-4">
           <button
             onClick={handleAddUser}
-            className="bg-white dark:bg-cighra-gold text-cighra-primary dark:text-slate-900 hover:bg-slate-100 dark:hover:bg-cighra-gold/90 px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border-2 border-white dark:border-cighra-gold shadow-lg uppercase"
+            className="bg-white dark:bg-cighra-gold hover:bg-slate-100 dark:hover:bg-cighra-gold/90 text-cighra-primary dark:text-slate-900 px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-white dark:border-cighra-gold shadow-lg uppercase cursor-pointer"
           >
             <Plus className="w-4 h-4" /> TAMBAH USER
           </button>

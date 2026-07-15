@@ -150,7 +150,7 @@ const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
           <div className="animate-in fade-in relative bg-white dark:bg-cighra-darkcard/50 rounded-md">
             <div className="overflow-x-auto">
               <table className="w-full text-left font-sans text-sm">
-                <thead className="bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-slate-700 text-xs">
+                <thead className="bg-cighra-primary dark:bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-white/10 text-xs">
                   <tr>
                     <SortableHeader label="SATUAN" sortKey="nama_satuan" currentSort={satuanSortConfig} onSort={handleSatuanSort} />
                     <SortableHeader label="JENIS PENGAJUAN" sortKey="pending_action" currentSort={satuanSortConfig} onSort={handleSatuanSort} />

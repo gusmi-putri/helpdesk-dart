@@ -127,44 +127,42 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
 
   return (
     <>
+    {/* Filter / Search Row (Moved outside and above card container) */}
     <div className="flex flex-col md:flex-row justify-between items-end mt-4 mb-5 animate-in fade-in duration-500 gap-4">
-      <div className="w-full md:w-[40%]">
-        <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">CARI SATUAN</label>
+      <div className="w-full md:flex-1">
+        <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Cari Satuan</label>
         <div className="relative">
-          <Search className="w-4 h-4 absolute left-3.5 top-2.5 text-slate-400" />
+          <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
           <input
             type="text"
             placeholder="NAMA SATUAN..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 pl-10 pr-4 py-2 text-xs font-mono font-medium text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold focus:ring-1 focus:ring-cighra-primary/30 transition-all uppercase rounded-none shadow-sm"
+            className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 pl-10 pr-4 py-2.5 text-xs font-mono font-medium text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold focus:ring-1 focus:ring-cighra-primary/30 transition-all uppercase rounded-none shadow-sm"
           />
         </div>
       </div>
-      
-      <div className="w-full md:w-auto">
-        <button
-          onClick={handleAddSatuan}
-          className="w-full md:w-auto bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-5 py-2.5 text-[11px] font-tactical font-bold tracking-widest flex items-center justify-center gap-2 transition-colors border border-cighra-primary dark:border-cighra-gold shadow-sm uppercase rounded-none"
-        >
-          <Plus className="w-4 h-4" /> TAMBAH SATUAN
-        </button>
-      </div>
     </div>
 
-    <div className="bg-white dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600 shadow-xl overflow-hidden relative animate-in fade-in duration-500">
+    <div className="bg-white dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600 shadow-xl overflow-hidden relative animate-in fade-in duration-500 mt-4">
       <div className="absolute top-0 left-0 w-full h-[2px] bg-cighra-primary dark:bg-cighra-gold"></div>
       
       {/* Header */}
-      <div className="px-5 py-3.5 border-b border-white/10 bg-cighra-primary dark:bg-slate-800 flex items-center justify-between text-white">
-        <h3 className="text-white font-tactical font-bold text-base tracking-widest flex items-center gap-3 uppercase m-0 leading-none">
-          <MapPin className="text-cighra-gold w-5 h-5" /> DATA SATUAN
+      <div className="p-5 border-b border-white/10 bg-cighra-primary dark:bg-slate-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-white">
+        <h3 className="text-white font-tactical font-bold text-lg tracking-widest flex items-center gap-3 uppercase">
+          <MapPin className="text-cighra-gold w-6 h-6" /> DATA SATUAN
         </h3>
 
-        <div className="flex items-center">
-          <span className="bg-slate-700 text-slate-300 text-[10px] font-mono px-2.5 py-1 rounded-sm uppercase font-bold tracking-widest shadow-inner">
+        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+          <span className="bg-slate-700 text-slate-300 text-[10px] font-mono px-2.5 py-1.5 rounded-sm uppercase font-bold tracking-widest shadow-inner">
             {filteredSatuans.length} DATA
           </span>
+          <button
+            onClick={handleAddSatuan}
+            className="bg-white dark:bg-cighra-gold hover:bg-slate-100 dark:hover:bg-cighra-gold/90 text-cighra-primary dark:text-slate-900 px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-white dark:border-cighra-gold shadow-lg uppercase cursor-pointer"
+          >
+            <Plus className="w-4 h-4" /> TAMBAH SATUAN
+          </button>
         </div>
       </div>
 

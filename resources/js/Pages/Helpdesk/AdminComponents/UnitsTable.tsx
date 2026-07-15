@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Package, Search, Plus, History, Edit, Trash2, Upload, CheckCircle, AlertTriangle, X } from 'lucide-react';
+import { Package, Search, Plus, History, Edit, Trash2, Upload, CheckCircle, AlertTriangle, X, RotateCcw } from 'lucide-react';
 import { EmptyState } from '@/Components/ui/EmptyState';
 import { usePage, router, useForm } from '@inertiajs/react';
 import SortableHeader from '@/Components/Table/SortableHeader';
@@ -238,23 +238,23 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
           </div>
         ))}
       </div>
-
+      {/* Filter Toolbar (Moved outside and above card container) */}
       <div className="flex flex-col md:flex-row flex-wrap gap-4 items-end mb-4 mt-2">
-        <div className="w-full md:w-72">
-          <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">CARI PERANGKAT</label>
+        <div className="w-full md:flex-1">
+          <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Cari Perangkat</label>
           <div className="relative">
             <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
             <input
               type="text"
-              placeholder="SN / KETERANGAN..."
+              placeholder="NOMOR SERI / LOKASI..."
               value={unitSearch}
               onChange={(e) => setUnitSearch(e.target.value)}
               className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 pl-10 pr-4 py-2.5 text-xs font-mono font-medium text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold focus:ring-1 focus:ring-cighra-primary/30 transition-all uppercase rounded-none"
             />
           </div>
         </div>
-        <div className="w-full md:w-56">
-          <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">JENIS UNIT</label>
+        <div className="w-full md:w-44">
+          <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Jenis</label>
           <select
             value={filterJenis}
             onChange={(e) => setFilterJenis(e.target.value)}
@@ -265,8 +265,8 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
             ))}
           </select>
         </div>
-        <div className="w-full md:w-56">
-          <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">SATUAN</label>
+        <div className="w-full md:w-44">
+          <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Satuan</label>
           <select
             value={filterSatuan}
             onChange={(e) => setFilterSatuan(e.target.value)}
@@ -276,6 +276,18 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
               <option key={o} value={o}>{o === 'ALL' ? 'SEMUA SATUAN' : o}</option>
             ))}
           </select>
+        </div>
+        <div className="w-full md:w-auto">
+          <button 
+            onClick={() => {
+              setUnitSearch('');
+              setFilterJenis('ALL');
+              setFilterSatuan('ALL');
+            }}
+            className="w-full md:w-auto px-5 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 text-[11px] font-bold font-mono uppercase tracking-wider rounded-none transition-colors flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-700"
+          >
+            <RotateCcw className="w-4 h-4" /> Reset
+          </button>
         </div>
       </div>
 
@@ -293,21 +305,21 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
               }}
               className={`px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-all border shadow-lg uppercase cursor-pointer ${
                 isDeleteMode 
-                  ? 'bg-slate-700 hover:bg-slate-600 text-white border-slate-700' 
-                  : 'bg-red-600 hover:bg-red-500 text-white border-red-600'
+                  ? 'bg-slate-700 hover:bg-slate-600 text-white border-white/20' 
+                  : 'bg-red-600 hover:bg-red-500 text-white border-white/20'
               }`}
             >
               <Trash2 className="w-4 h-4" /> {isDeleteMode ? 'TUTUP MODE HAPUS' : 'MODE HAPUS MASSAL'}
             </button>
             <button
               onClick={() => setIsAdminBatchModalOpen(true)}
-              className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-blue-600 shadow-lg uppercase cursor-pointer"
+              className="bg-white dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-cighra-primary dark:text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-white dark:border-slate-600 shadow-lg uppercase cursor-pointer"
             >
               <Upload className="w-4 h-4" /> IMPORT CSV
             </button>
             <button
               onClick={handleAddUnit}
-              className="bg-white dark:bg-cighra-gold text-cighra-primary dark:text-slate-900 hover:bg-slate-100 dark:hover:bg-cighra-gold/90 px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border-2 border-white dark:border-cighra-gold shadow-lg uppercase cursor-pointer"
+              className="bg-white dark:bg-cighra-gold hover:bg-slate-100 dark:hover:bg-cighra-gold/90 text-cighra-primary dark:text-slate-900 px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-white dark:border-cighra-gold shadow-lg uppercase cursor-pointer"
             >
               <Plus className="w-4 h-4" /> TAMBAH UNIT
             </button>

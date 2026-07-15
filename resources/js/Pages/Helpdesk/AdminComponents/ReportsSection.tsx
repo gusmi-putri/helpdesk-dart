@@ -51,7 +51,7 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       
-      {/* 1. Summary Cards — sama persis dengan gaya Inventaris */}
+      {/* 1. Summary Cards*/}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <button
           onClick={() => setReportStatusFilter('PENDING')}
@@ -86,6 +86,52 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
         </button>
       </div>
 
+      {/* Filter Row: Tabs & Status (Moved outside and above card container) */}
+      <div className="flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between mb-4 mt-2">
+        <div className="flex flex-col gap-2 w-full lg:w-auto">
+          <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">JENIS LAPORAN</label>
+          <div className="flex bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 p-1 shadow-sm">
+            <button
+              onClick={() => setActiveSubReport('KERUSAKAN')}
+              className={`py-1.5 px-4 text-xs font-tactical tracking-widest uppercase transition-colors ${
+                activeSubReport === 'KERUSAKAN' 
+                  ? 'bg-cighra-primary dark:bg-cighra-gold text-white dark:text-slate-900' 
+                  : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+              }`}
+            >
+              LAPORAN KERUSAKAN
+            </button>
+            <button
+              onClick={() => setActiveSubReport('PERBAIKAN')}
+              className={`py-1.5 px-4 text-xs font-tactical tracking-widest uppercase transition-colors ${
+                activeSubReport === 'PERBAIKAN' 
+                  ? 'bg-cighra-primary dark:bg-cighra-gold text-white dark:text-slate-900' 
+                  : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+              }`}
+            >
+              RIWAYAT PERBAIKAN
+            </button>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-2 w-full lg:w-auto">
+          <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">STATUS LAPORAN</label>
+          <select
+            value={reportStatusFilter}
+            onChange={(e) => setReportStatusFilter(e.target.value as any)}
+            className="bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-white px-3 py-1.5 text-xs font-tactical tracking-widest uppercase focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold transition-colors shadow-sm cursor-pointer"
+          >
+            <option value="ALL">SEMUA STATUS</option>
+            <option value="PENDING">PENDING</option>
+            <option value="DIVERIFIKASI">DIVERIFIKASI</option>
+            <option value="DITERIMA TEKNISI">DITERIMA TEKNISI</option>
+            <option value="DIPROSES">DIPROSES</option>
+            <option value="SELESAI">SELESAI</option>
+            <option value="DITOLAK">DITOLAK</option>
+          </select>
+        </div>
+      </div>
+
       {/* Main Container */}
       <div className="bg-white dark:bg-cighra-darkcard/80 border border-slate-200 dark:border-slate-600 shadow-2xl overflow-hidden relative">
         <div className="absolute top-0 left-0 w-full h-[2px] bg-cighra-primary dark:bg-cighra-gold"></div>
@@ -98,65 +144,17 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
           <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
             <button
               onClick={() => setIsRecapModalOpen(true)}
-              className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-cighra-primary dark:border-cighra-gold shadow-lg uppercase cursor-pointer"
+              className="bg-white dark:bg-cighra-gold text-cighra-primary dark:text-slate-900 hover:bg-slate-100 dark:hover:bg-cighra-gold/90 px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-white dark:border-cighra-gold shadow-lg uppercase cursor-pointer"
             >
               <FileArchive className="w-4 h-4" /> EKSPOR DATA
             </button>
           </div>
         </div>
 
-        {/* Filter Row: Tabs & Status */}
-        <div className="p-4 bg-slate-50 dark:bg-cighra-dark/30 border-b border-slate-200 dark:border-slate-600 flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between">
-          
-          <div className="flex flex-col gap-2 w-full lg:w-auto">
-            <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">JENIS LAPORAN</label>
-            <div className="flex bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 p-1 shadow-sm">
-              <button
-                onClick={() => setActiveSubReport('KERUSAKAN')}
-                className={`py-1.5 px-4 text-xs font-tactical tracking-widest uppercase transition-colors ${
-                  activeSubReport === 'KERUSAKAN' 
-                    ? 'bg-cighra-primary dark:bg-cighra-gold text-white dark:text-slate-900' 
-                    : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
-                }`}
-              >
-                LAPORAN KERUSAKAN
-              </button>
-              <button
-                onClick={() => setActiveSubReport('PERBAIKAN')}
-                className={`py-1.5 px-4 text-xs font-tactical tracking-widest uppercase transition-colors ${
-                  activeSubReport === 'PERBAIKAN' 
-                    ? 'bg-cighra-primary dark:bg-cighra-gold text-white dark:text-slate-900' 
-                    : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
-                }`}
-              >
-                RIWAYAT PERBAIKAN
-              </button>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-2 w-full lg:w-auto">
-            <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">STATUS LAPORAN</label>
-            <select
-              value={reportStatusFilter}
-              onChange={(e) => setReportStatusFilter(e.target.value as any)}
-              className="bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-white px-3 py-1.5 text-xs font-tactical tracking-widest uppercase focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold transition-colors shadow-sm cursor-pointer"
-            >
-              <option value="ALL">SEMUA STATUS</option>
-              <option value="PENDING">PENDING</option>
-              <option value="DIVERIFIKASI">DIVERIFIKASI</option>
-              <option value="DITERIMA TEKNISI">DITERIMA TEKNISI</option>
-              <option value="DIPROSES">DIPROSES</option>
-              <option value="SELESAI">SELESAI</option>
-              <option value="DITOLAK">DITOLAK</option>
-            </select>
-          </div>
-
-        </div>
-
         {/* 5. Main Table (Row 4) */}
         <div className="overflow-x-auto">
           <table className="w-full text-left font-sans text-sm break-words">
-            <thead className="bg-slate-800 border-b border-slate-700">
+            <thead className="bg-cighra-primary dark:bg-slate-800 border-b border-white/10 text-white">
               <tr>
                 <SortableHeader label="KODE KASUS" sortKey="caseId" currentSort={sortConfig} onSort={handleSort} className="w-40" />
                 {activeSubReport === 'KERUSAKAN' ? (
