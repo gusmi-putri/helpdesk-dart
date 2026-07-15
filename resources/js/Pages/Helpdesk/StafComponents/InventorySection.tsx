@@ -411,10 +411,10 @@ const InventorySection: React.FC<InventorySectionProps> = ({
                             <button
                               type="button"
                               onClick={() => onRequestDelete(u)}
-                              className="inline-flex items-center justify-center w-8 h-8 bg-white dark:bg-transparent text-slate-400 border border-slate-200 dark:border-slate-700 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 hover:border-red-200 dark:hover:border-red-800 transition-colors rounded-sm"
+                              className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-600 dark:text-white hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm"
                               title="Hapus Unit"
                             >
-                              <Trash className="w-4 h-4" />
+                              <Trash2 className="w-4 h-4" />
                             </button>
                           </div>
                         )}
