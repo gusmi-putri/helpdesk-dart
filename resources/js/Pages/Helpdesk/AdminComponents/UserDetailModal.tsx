@@ -43,29 +43,29 @@ const UserDetailModal: React.FC<UserDetailModalProps> = ({ isOpen, onClose, user
             </div>
           </div>
 
-          <div className="p-4 bg-slate-50 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 space-y-1">
+          <div className="p-4 bg-cighra-primary/5 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 space-y-1">
             <label className="block text-xs font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest">Security ID / Username</label>
             <p className="text-sm font-mono font-bold text-slate-800 dark:text-slate-200">{user.username}</p>
           </div>
-          <div className="p-4 bg-slate-50 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 space-y-1">
+          <div className="p-4 bg-cighra-primary/5 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 space-y-1">
             <label className="block text-xs font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest">NRP / NIP Identification</label>
             <p className="text-sm font-mono font-bold text-slate-800 dark:text-slate-200">{user.nrp_nip || '-'}</p>
           </div>
-          <div className="p-4 bg-slate-50 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 space-y-1">
+          <div className="p-4 bg-cighra-primary/5 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 space-y-1">
             <label className="block text-xs font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest">WhatsApp Communication</label>
             <p className="text-sm font-mono font-bold text-slate-800 dark:text-slate-200">+{user.no_wa || '-'}</p>
           </div>
-          <div className="p-4 bg-slate-50 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 space-y-1">
+          <div className="p-4 bg-cighra-primary/5 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 space-y-1">
             <label className="block text-xs font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest">Email Contact</label>
             <p className="text-sm font-mono font-bold text-slate-800 dark:text-slate-200 lowercase">{user.email || '-'}</p>
           </div>
-          <div className="col-span-1 md:col-span-2 p-4 bg-slate-50 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 space-y-1">
+          <div className="col-span-1 md:col-span-2 p-4 bg-cighra-primary/5 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 space-y-1">
             <label className="block text-xs font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest">Military Unit / Assignment</label>
             <p className="text-sm font-mono font-bold text-slate-800 dark:text-slate-200 uppercase">{user.asal_satuan || '-'}</p>
           </div>
           <div className="col-span-2 space-y-3 pt-4">
             <label className="block text-xs font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest">Technical Specialization</label>
-            <div className={`p-4 bg-slate-50 dark:bg-cighra-darkcard border ${user.role !== 'Teknisi' ? 'border-slate-200 dark:border-slate-800 italic text-slate-400' : 'border-cighra-gold/20 text-slate-800 dark:text-blue-400'}`}>
+            <div className={`p-4 bg-cighra-primary/5 dark:bg-cighra-darkcard border ${user.role !== 'Teknisi' ? 'border-slate-200 dark:border-slate-800 italic text-slate-400' : 'border-cighra-gold/20 text-slate-800 dark:text-blue-400'}`}>
               <p className="font-mono font-bold text-sm">
                 {user.role === 'Teknisi' ? (user.spesialisasi || 'PENDING SPECIFICATION...') : 'FIELD ACCESS: NON-TECHNICAL PERSONNEL'}
               </p>

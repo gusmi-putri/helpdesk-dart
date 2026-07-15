@@ -47,27 +47,27 @@ export const BaseModal: React.FC<BaseModalProps> = ({
   };
 
   const headerTheme = {
-    default: 'bg-red-500/10 dark:bg-red-900/10 border-b border-cighra-primary dark:border-cighra-gold backdrop-blur-md',
-    primary: 'bg-red-500/10 dark:bg-red-900/10 border-b border-cighra-primary dark:border-cighra-gold backdrop-blur-md',
-    danger: 'bg-red-500/10 dark:bg-red-900/10 border-b border-cighra-primary dark:border-cighra-gold backdrop-blur-md'
+    default: 'bg-cighra-primary dark:bg-cighra-darkcard border-b border-cighra-primary dark:border-cighra-gold backdrop-blur-md',
+    primary: 'bg-cighra-primary dark:bg-cighra-darkcard border-b border-cighra-primary dark:border-cighra-gold backdrop-blur-md',
+    danger: 'bg-cighra-primary dark:bg-cighra-darkcard border-b border-cighra-primary dark:border-cighra-gold backdrop-blur-md'
   };
 
   const titleTheme = {
-    default: 'text-slate-800 dark:text-white',
-    primary: 'text-slate-800 dark:text-white',
-    danger: 'text-red-600 dark:text-red-500'
+    default: 'text-white dark:text-white',
+    primary: 'text-white dark:text-white',
+    danger: 'text-white dark:text-white'
   };
 
   const modalBorderTheme = {
     default: 'border-2 border-cighra-primary dark:border-cighra-gold',
     primary: 'border-2 border-cighra-primary dark:border-cighra-gold',
-    danger: 'border-2 border-red-500/50'
+    danger: 'border-2 border-cighra-primary dark:border-cighra-gold'
   };
 
   const closeBtnTheme = {
-    default: 'text-slate-500 hover:text-red-500 dark:text-slate-400 dark:hover:text-red-500',
-    primary: 'text-slate-500 hover:text-white hover:bg-red-600 dark:text-slate-400 dark:hover:text-white dark:hover:bg-red-600',
-    danger: 'text-slate-500 hover:text-white hover:bg-red-600 dark:text-slate-400 dark:hover:text-white dark:hover:bg-red-600'
+    default: 'text-slate-300 hover:text-white hover:bg-white/20 dark:text-slate-400 dark:hover:text-red-500 transition-colors',
+    primary: 'text-slate-300 hover:text-white hover:bg-white/20 dark:text-slate-400 dark:hover:text-white dark:hover:bg-red-600 transition-colors',
+    danger: 'text-slate-300 hover:text-white hover:bg-white/20 dark:text-slate-400 dark:hover:text-white dark:hover:bg-red-600 transition-colors'
   };
 
   const modalContent = (
@@ -96,7 +96,7 @@ export const BaseModal: React.FC<BaseModalProps> = ({
             <div className={`p-5 flex items-center justify-between shrink-0 relative ${headerTheme[headerColor]}`}>
               <div className="flex items-center gap-4">
                 {icon && (
-                  <div className="w-8 h-8 text-red-500 animate-pulse flex items-center justify-center">
+                  <div className={`w-8 h-8 text-white dark:text-red-500 animate-pulse flex items-center justify-center`}>
                     {icon}
                   </div>
                 )}
@@ -120,7 +120,7 @@ export const BaseModal: React.FC<BaseModalProps> = ({
 
             {/* Footer */}
             {footer && (
-              <div className="p-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 flex gap-3 shrink-0 relative z-20">
+              <div className="p-4 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 flex gap-3 shrink-0 relative z-20">
                 {footer}
               </div>
             )}

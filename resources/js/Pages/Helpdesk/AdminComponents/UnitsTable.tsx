@@ -3,8 +3,8 @@ import { Package, Search, Plus, History, Edit, Trash2, Upload, CheckCircle, Aler
 import { EmptyState } from '@/Components/ui/EmptyState';
 import { usePage, router, useForm } from '@inertiajs/react';
 import SortableHeader from '@/Components/Table/SortableHeader';
-import UnitModal from './UnitModal';
-import UnitDeleteModal from './UnitDeleteModal';
+import { BaseModal } from '@/Components/ui/BaseModal';
+import { Button } from '@/Components/ui/Button';
 import UnitHistoryModal from './UnitHistoryModal';
 import AdminUnitBatchModal from './AdminUnitBatchModal';
 import { usePagination } from '@/hooks/usePagination';
@@ -480,20 +480,29 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
         />
       </div>
       {/* Import Result Modal */}
-      {importResult && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[9999]" onClick={() => setImportResult(null)}>
-          <div className="bg-white dark:bg-cighra-dark border border-slate-300 dark:border-slate-600 shadow-2xl max-w-md w-full mx-4 rounded-sm overflow-hidden" onClick={(e) => e.stopPropagation()}>
-            <div className={`p-4 flex items-center justify-between ${importResult.success ? 'bg-camogreen/10 border-b border-camogreen/20' : 'bg-cighra-primary/10 dark:bg-cighra-gold/10 border-b border-cighra-primary dark:border-cighra-gold/20'}`}>
-              <h3 className="font-tactical font-bold tracking-widest text-sm flex items-center gap-2 text-slate-800 dark:text-white uppercase">
-                {importResult.success ? <CheckCircle className="w-5 h-5 text-camogreen" /> : <AlertTriangle className="w-5 h-5 text-cighra-primary dark:text-cighra-gold" />}
-                HASIL IMPORT DATA
-              </h3>
-              <button onClick={() => setImportResult(null)} className="text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:text-cighra-gold transition-colors">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="p-6">
-              {importResult.success ? (
+      <BaseModal
+        isOpen={!!importResult}
+        onClose={() => setImportResult(null)}
+        title="HASIL IMPORT DATA"
+        icon={importResult?.success ? <CheckCircle /> : <AlertTriangle />}
+        maxWidth="md"
+        headerColor="primary"
+        footer={
+          <div className="w-full">
+            <Button
+              variant="primary"
+              onClick={() => setImportResult(null)}
+              className="w-full uppercase"
+              size="lg"
+            >
+              TUTUP
+            </Button>
+          </div>
+        }
+      >
+        <div className="space-y-4">
+          <div className="p-4 bg-cighra-primary/5 dark:bg-cighra-darkcard border border-cighra-primary/20 dark:border-slate-800 text-sm font-mono font-bold text-slate-800 dark:text-slate-300 leading-relaxed uppercase tracking-wider">
+              {importResult?.success ? (
                 <div className="space-y-4">
                   <div className="grid grid-cols-3 gap-3 text-center">
                     <div className="bg-white dark:bg-cighra-darkcard/80 p-3 border border-slate-200 dark:border-slate-600">
@@ -519,20 +528,11 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
                   </p>
                 </div>
               ) : (
-                <p className="text-sm text-cighra-primary dark:text-cighra-gold font-mono">{importResult.message || 'Terjadi kesalahan saat memproses file.'}</p>
+                <p className="text-sm text-cighra-primary dark:text-cighra-gold font-mono">{importResult?.message || 'Terjadi kesalahan saat memproses file.'}</p>
               )}
-            </div>
-            <div className="p-4 border-t border-slate-200 dark:border-slate-600 flex justify-end">
-              <button
-                onClick={() => setImportResult(null)}
-                className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-6 py-2 text-xs font-tactical font-bold tracking-widest transition-colors"
-              >
-                TUTUP
-              </button>
-            </div>
           </div>
         </div>
-      )}
+      </BaseModal>
 
       {/* Embedded Modals */}
       <UnitModal

@@ -3,6 +3,8 @@ import { Phone, MapPin, AlertCircle, CircleUser, Upload, Camera, Trash2, Send, S
 import SearchableSelect from '@/Components/SearchableSelect';
 import { useForm } from '@inertiajs/react';
 import { useStore } from '@/store/useStore';
+import { BaseModal } from '@/Components/ui/BaseModal';
+import { Button } from '@/Components/ui/Button';
 
 interface ReportFormProps {
   dbUnits: any[];
@@ -420,48 +422,53 @@ const ReportForm: React.FC<ReportFormProps> = ({
       </form>
 
       {/* Confirmation Modal */}
-      {isConfirmOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[9999]" onClick={() => setIsConfirmOpen(false)}>
-          <div className="bg-white dark:bg-cighra-dark border border-cighra-primary dark:border-cighra-gold/30 shadow-2xl max-w-lg w-full mx-4 rounded-sm overflow-hidden" onClick={(e) => e.stopPropagation()}>
-            <div className="p-4 bg-cighra-primary/10 dark:bg-cighra-gold/10 border-b border-cighra-primary dark:border-cighra-gold/20 flex items-center justify-between">
-              <h3 className="font-tactical font-bold tracking-widest text-sm flex items-center gap-2 text-slate-800 dark:text-white uppercase">
-                <ShieldCheck className="w-5 h-5 text-cighra-primary dark:text-cighra-gold" /> KONFIRMASI PENGIRIMAN
-              </h3>
-              <button onClick={() => setIsConfirmOpen(false)} className="text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:text-cighra-gold transition-colors">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="p-6 space-y-4">
-              <p className="text-sm text-gunmetal dark:text-slate-300">
+      <BaseModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        title="KONFIRMASI PENGIRIMAN"
+        icon={<ShieldCheck />}
+        maxWidth="lg"
+        headerColor="primary"
+        footer={
+          <div className="flex gap-4 w-full">
+            <Button
+              variant="primary"
+              onClick={confirmSubmit}
+              disabled={processing}
+              className="flex-[2] uppercase"
+              size="lg"
+            >
+              <Send className="w-5 h-5" />
+              YA, KIRIM LAPORAN
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => setIsConfirmOpen(false)}
+              disabled={processing}
+              className="flex-1 uppercase"
+              size="lg"
+            >
+              PERIKSA ULANG
+            </Button>
+          </div>
+        }
+      >
+        <div className="space-y-4">
+          <div className="p-4 bg-cighra-primary/5 dark:bg-cighra-darkcard border border-cighra-primary/20 dark:border-slate-800 text-sm font-mono font-bold text-slate-800 dark:text-slate-300 leading-relaxed uppercase tracking-wider">
+              <p className="mb-4">
                 Apakah Anda yakin semua data laporan sudah benar dan lengkap? Laporan yang telah dikirim tidak dapat diubah kembali.
               </p>
               <div className="bg-white dark:bg-cighra-darkcard/80 p-3 border border-cighra-primary dark:border-cighra-gold/20 text-xs font-mono space-y-1">
-                <p className="text-slate-500 dark:text-slate-300">UNIT: <span className="text-slate-800 dark:text-white font-bold">{selectedUnit?.nomor_seri || '-'}</span></p>
-                <p className="text-slate-500 dark:text-slate-300">JENIS: <span className="text-slate-800 dark:text-white font-bold uppercase">{data.jenis_perbaikan || '-'}</span></p>
-                <p className="text-slate-500 dark:text-slate-300">TINGKAT: <span className="text-slate-800 dark:text-white font-bold uppercase">{data.tingkat_kerusakan || '-'}</span></p>
-                <p className="text-slate-500 dark:text-slate-300">URGENSI: <span className="text-slate-800 dark:text-white font-bold uppercase">{data.urgensi || '-'}</span></p>
-                {isNonSwadaya && <p className="text-slate-500 dark:text-slate-300">DOKUMEN ANGGARAN: <span className="text-slate-800 dark:text-white font-bold">{data.dokumen_anggaran?.length || 0} dokumen</span></p>}
-                <p className="text-slate-500 dark:text-slate-300">BUKTI: <span className="text-slate-800 dark:text-white font-bold">{data.file_bukti?.length || 0} file</span></p>
+                <p className="text-slate-500 dark:text-slate-300">UNIT: <span className="text-cighra-primary dark:text-cighra-gold font-bold">{selectedUnit?.nomor_seri || '-'}</span></p>
+                <p className="text-slate-500 dark:text-slate-300">JENIS: <span className="text-cighra-primary dark:text-cighra-gold font-bold uppercase">{data.jenis_perbaikan || '-'}</span></p>
+                <p className="text-slate-500 dark:text-slate-300">TINGKAT: <span className="text-cighra-primary dark:text-cighra-gold font-bold uppercase">{data.tingkat_kerusakan || '-'}</span></p>
+                <p className="text-slate-500 dark:text-slate-300">URGENSI: <span className="text-cighra-primary dark:text-cighra-gold font-bold uppercase">{data.urgensi || '-'}</span></p>
+                {isNonSwadaya && <p className="text-slate-500 dark:text-slate-300">DOKUMEN ANGGARAN: <span className="text-cighra-primary dark:text-cighra-gold font-bold">{data.dokumen_anggaran?.length || 0} dokumen</span></p>}
+                <p className="text-slate-500 dark:text-slate-300">BUKTI: <span className="text-cighra-primary dark:text-cighra-gold font-bold">{data.file_bukti?.length || 0} file</span></p>
               </div>
-            </div>
-            <div className="p-4 border-t border-slate-200 dark:border-slate-600 flex justify-end gap-3">
-              <button
-                onClick={() => setIsConfirmOpen(false)}
-                className="px-5 py-2 text-xs font-tactical font-bold tracking-widest border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-black/40 transition-colors uppercase"
-              >
-                PERIKSA ULANG
-              </button>
-              <button
-                onClick={confirmSubmit}
-                disabled={processing}
-                className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-6 py-2 text-xs font-tactical font-bold tracking-widest transition-colors flex items-center gap-2 uppercase"
-              >
-                <Send className="w-4 h-4" /> YA, KIRIM LAPORAN
-              </button>
-            </div>
           </div>
         </div>
-      )}
+      </BaseModal>
     </div>
   );
 };
