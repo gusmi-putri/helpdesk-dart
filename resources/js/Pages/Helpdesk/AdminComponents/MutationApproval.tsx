@@ -408,7 +408,6 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                             <tr>
                               <SortableHeader label="NO" />
                               <SortableHeader label="NOMOR SERI" />
-                              <SortableHeader label="KETERANGAN DART" />
                               <SortableHeader label="JENIS" />
                               <SortableHeader label="ASAL SATUAN" />
                               <SortableHeader label="STATUS" />
@@ -422,7 +421,6 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                                 <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-800/30">
                                   <td className="p-3 font-mono text-center">{idx + 1}</td>
                                   <td className="p-3 font-mono font-bold text-slate-800 dark:text-white text-center">{u.nomor_seri}</td>
-
                                   <td className="p-3 uppercase font-mono text-xs text-center text-slate-800 dark:text-white">{u.jenis}</td>
                                   <td className="p-3 uppercase text-center text-slate-800 dark:text-white">{u.asal_satuan}</td>
                                   <td className="p-3 text-center">
@@ -569,7 +567,6 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
                                   <tr>
                                     <SortableHeader label="NO" />
                                     <SortableHeader label="NOMOR SERI" />
-                                    <SortableHeader label="KETERANGAN" />
                                     <SortableHeader label="JENIS" />
                                     <SortableHeader label="SATUAN" />
                                     <SortableHeader label="STATUS" />

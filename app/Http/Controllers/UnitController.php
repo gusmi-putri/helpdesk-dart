@@ -713,18 +713,18 @@ class UnitController extends Controller
                 $header = false;
                 continue;
             }
-            if (count($row) < 4) {
+            if (count($row) < 2) {
                 continue;
             }
 
-            $nomor_seri = trim($row[0]);
+            $nomor_seri = trim($row[0] ?? '');
             if (empty($nomor_seri) || str_starts_with($nomor_seri, '#')) {
                 continue;
             }
 
-            $jenis_raw = trim($row[1]);
-            $asal_satuan = trim($row[2]);
-            $status_unit_raw = isset($row[3]) ? trim($row[3]) : 'Beroperasi';
+            $jenis_raw = trim($row[1] ?? '');
+            $asal_satuan = isset($row[2]) ? trim($row[2]) : '';
+            $status_unit_raw = isset($row[3]) && !empty(trim($row[3])) ? trim($row[3]) : 'Beroperasi';
 
             // Check if unit number already exists in DB
             if (Unit::where('nomor_seri', $nomor_seri)->exists()) {
@@ -756,18 +756,21 @@ class UnitController extends Controller
             $status_unit_lower = strtolower($status_unit_raw);
             $status_unit = $statusMap[$status_unit_lower] ?? 'Beroperasi';
 
-            // Find Satuan (MUST already exist in DB)
-            $satuan = Satuan::where('nama_satuan', strtoupper($asal_satuan))->first();
-            if (!$satuan) {
-                $skipped++;
-                continue;
+            // Find Satuan (if provided, it MUST already exist in DB)
+            $satuan = null;
+            if (!empty($asal_satuan)) {
+                $satuan = Satuan::where('nama_satuan', strtoupper($asal_satuan))->first();
+                if (!$satuan) {
+                    $skipped++;
+                    continue;
+                }
             }
 
             $units[] = [
                 'nomor_seri' => $nomor_seri,
                 'jenis' => $jenis,
-                'asal_satuan' => $satuan->nama_satuan,
-                'satuan_id' => $satuan->id,
+                'asal_satuan' => $satuan ? $satuan->nama_satuan : null,
+                'satuan_id' => $satuan ? $satuan->id : null,
                 'status_unit' => $status_unit,
             ];
         }

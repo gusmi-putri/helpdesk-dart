@@ -24,7 +24,7 @@ class StoreUnitRequest extends FormRequest
         return [
             'nomor_seri' => 'required|string|max:50|unique:units',
             'jenis' => 'required|in:DART STD,DART STK,DART Portabel - Swing,DART Portabel - Pop,DART Portabel - Flip,DART Marathon Target,Moving Target',
-            'asal_satuan' => 'required|string|max:100',
+            'asal_satuan' => 'nullable|string|max:100',
             'satuan_id' => 'nullable|exists:satuans,id',
             'status_unit' => 'required|in:Beroperasi,Rusak,Perbaikan,Nonaktif',
             'document' => 'required|file|mimes:pdf,png,jpg,jpeg|mimetypes:application/pdf,image/png,image/jpeg|max:10240',

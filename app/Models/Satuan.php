@@ -17,6 +17,12 @@ class Satuan extends Model
         'is_active',
         'latitude',
         'longitude',
+        'pending_action',
+        'pending_changes',
+    ];
+
+    protected $casts = [
+        'pending_changes' => 'array',
     ];
 
     public function users()

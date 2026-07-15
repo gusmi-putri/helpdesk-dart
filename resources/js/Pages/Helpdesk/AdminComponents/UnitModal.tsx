@@ -105,18 +105,18 @@ const UnitModal: React.FC<UnitModalProps> = ({
             </select>
           </div>
           <div className="col-span-2">
-            <label className="block text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Asal Satuan / Lokasi Penempatan</label>
+            <label className="block text-xs font-mono text-slate-500 dark:text-slate-400 mb-1 tracking-widest uppercase">Asal Satuan / Lokasi Penempatan <span className="text-slate-400 normal-case">(opsional, dapat diisi belakangan)</span></label>
             <select
               value={data.satuan_id || ''}
               onChange={(e) => {
                  setData('satuan_id', e.target.value);
                  const selectedSatuan = dbSatuans?.find((s: any) => s.id == e.target.value);
                  if (selectedSatuan) setData('asal_satuan', selectedSatuan.nama_satuan);
+                 else setData('asal_satuan', '');
               }}
               className={`w-full bg-slate-50 dark:bg-cighra-darkcard border ${errors.satuan_id ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} p-3 text-sm font-mono focus:ring-1 focus:ring-cighra-gold outline-none transition-all dark:text-white uppercase rounded-sm`}
-              required
             >
-              <option value="">PILIH SATUAN</option>
+              <option value="">— BELUM DITENTUKAN —</option>
               {dbSatuans?.map((satuan: any) => (
                 <option key={satuan.id} value={satuan.id}>{satuan.nama_satuan.toUpperCase()}</option>
               ))}

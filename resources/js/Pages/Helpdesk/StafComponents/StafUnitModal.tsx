@@ -28,11 +28,11 @@ const StafUnitModal: React.FC<StafUnitModalProps> = ({ isOpen, onClose, onSubmit
     formData.append('nomor_seri', nomorSeri);
 
     formData.append('jenis', jenisDart);
-    formData.append('satuan_id', satuanId);
-    
-    // Also pass asal_satuan for backend fallback
+
+    // Pass satuan_id and asal_satuan only if selected
     const selectedSatuan = dbSatuans.find(s => s.id == satuanId);
-    if (selectedSatuan) {
+    if (satuanId && selectedSatuan) {
+      formData.append('satuan_id', satuanId);
       formData.append('asal_satuan', selectedSatuan.nama_satuan);
     }
     formData.append('status_unit', statusUnit);
@@ -115,14 +115,13 @@ const StafUnitModal: React.FC<StafUnitModalProps> = ({ isOpen, onClose, onSubmit
           </div>
 
           <div>
-            <label className="block text-xs font-mono font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Asal Satuan *</label>
+            <label className="block text-xs font-mono font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Asal Satuan <span className="text-slate-400 font-normal normal-case">(opsional, dapat diisi belakangan)</span></label>
             <select
                 value={satuanId}
                 onChange={(e) => setSatuanId(e.target.value)}
                 className={`w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm font-mono focus:border-cighra-primary dark:border-cighra-gold outline-none uppercase`}
-                required
               >
-                <option value="">PILIH SATUAN</option>
+                <option value="">— BELUM DITENTUKAN —</option>
                 {dbSatuans?.map((satuan: any) => (
                   <option key={satuan.id} value={satuan.id}>{satuan.nama_satuan.toUpperCase()}</option>
                 ))}

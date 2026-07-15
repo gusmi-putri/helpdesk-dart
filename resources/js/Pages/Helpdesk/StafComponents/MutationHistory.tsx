@@ -202,7 +202,6 @@ const MutationHistory: React.FC<MutationHistoryProps> = ({ dbMutations }) => {
                                   <tr>
                                     <th className="p-2 text-center">NO</th>
                                     <th className="p-2 text-center">NOMOR SERI</th>
-                                    <th className="p-2 text-center">NAMA DART</th>
                                     <th className="p-2 text-center">JENIS</th>
                                     <th className="p-2 text-center">SATUAN</th>
                                     <th className="p-2 text-center">STATUS</th>
@@ -213,7 +212,6 @@ const MutationHistory: React.FC<MutationHistoryProps> = ({ dbMutations }) => {
                                     <tr key={uIdx} className="hover:bg-blue-100/50 dark:hover:bg-slate-700/30">
                                       <td className="p-2 font-mono text-center">{uIdx + 1}</td>
                                       <td className="p-2 font-mono font-bold text-slate-800 dark:text-white text-center">{u.nomor_seri}</td>
-                                      <td className="p-2 uppercase text-slate-800 dark:text-white text-center text-xs">{u.nama_satuan || '-'}</td>
                                       <td className="p-2 uppercase text-xs text-center text-slate-800 dark:text-white">{u.jenis}</td>
                                       <td className="p-2 uppercase text-xs text-center text-slate-800 dark:text-white">{u.asal_satuan}</td>
                                       <td className="p-2 text-center">
