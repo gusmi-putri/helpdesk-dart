@@ -82,16 +82,7 @@ const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
   };
 
   return (
-    <div className="animate-in fade-in relative mt-6 space-y-4">
-      
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div>
-          <h3 className="text-slate-800 dark:text-white font-tactical font-bold text-xl tracking-widest uppercase">
-            PUSAT PERSETUJUAN
-          </h3>
-          <p className="text-slate-500 dark:text-slate-400 text-xs font-mono mt-1 uppercase">Beranda / Pusat Persetujuan / <span className="text-cighra-primary dark:text-cighra-gold">{activeTab}</span></p>
-        </div>
-      </div>
+    <div className="animate-in fade-in space-y-4">
 
       {/* Tabs */}
       <div className="flex border-b border-slate-200 dark:border-slate-700">
@@ -148,58 +139,56 @@ const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
           <MutationApproval dbMutations={dbMutations} dbArchivedUnits={dbArchivedUnits} />
         )}
         {activeTab === 'SATUAN' && (
-          <div className="animate-in fade-in relative bg-white dark:bg-cighra-darkcard/50 rounded-md">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left font-sans text-sm">
-                <thead className="bg-cighra-primary dark:bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-white/10 text-xs">
-                  <tr>
-                    <SortableHeader label="SATUAN" sortKey="nama_satuan" currentSort={satuanSortConfig} onSort={handleSatuanSort} />
-                    <SortableHeader label="JENIS PENGAJUAN" sortKey="pending_action" currentSort={satuanSortConfig} onSort={handleSatuanSort} />
-                    <SortableHeader label="DETAIL PERUBAHAN" />
-                    <SortableHeader label="AKSI VERIFIKASI" />
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-300 dark:divide-gray-800 bg-transparent">
-                {pendingSatuansCount === 0 ? (
-                  <tr>
-                    <td colSpan={4} className="p-20 text-center text-slate-500 italic font-mono uppercase tracking-widest">
-                      Tidak ada pengajuan persetujuan SATUAN.
-                    </td>
-                  </tr>
-                ) : sortedPendingSatuans.map((satuan: any) => (
-                  <tr key={satuan.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/60 transition-colors group text-slate-800 dark:text-slate-200">
-                    <td className="p-4 text-center font-mono font-bold">{satuan.nama_satuan}</td>
-                    <td className="p-4 text-center">
-                      <Badge variant={
-                        satuan.pending_action === 'create' ? 'success' :
-                        satuan.pending_action === 'edit' ? 'info' :
-                        'danger'
-                      }>
-                        {satuan.pending_action === 'create' ? 'Tambah' : satuan.pending_action === 'edit' ? 'Edit' : 'Hapus'}
-                      </Badge>
-                    </td>
-                    <td className="p-4">
-                      <div className="text-xs font-mono text-slate-800 dark:text-white">
-                        {satuan.pending_action === 'edit' && satuan.pending_changes ? (
-                          <div className="whitespace-pre-wrap">{JSON.stringify(JSON.parse(satuan.pending_changes), null, 2)}</div>
-                        ) : (
-                          <span className="text-slate-500">-</span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="p-4 flex gap-3 justify-center items-center h-full mt-2">
-                      <button onClick={() => handleApproveSatuan(satuan)} className="flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest transition-all shadow-lg">
-                        <CheckSquare className="w-4 h-4" /> SETUJUI
-                      </button>
-                      <button onClick={() => handleRejectSatuan(satuan)} className="flex items-center gap-2 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest transition-all shadow-lg">
-                        <CheckSquare className="w-4 h-4" /> TOLAK
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-              </table>
-            </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left font-sans text-sm">
+              <thead className="bg-cighra-primary dark:bg-slate-800 text-slate-100 font-tactical tracking-widest border-b border-white/10 text-xs">
+                <tr>
+                  <SortableHeader label="SATUAN" sortKey="nama_satuan" currentSort={satuanSortConfig} onSort={handleSatuanSort} />
+                  <SortableHeader label="JENIS PENGAJUAN" sortKey="pending_action" currentSort={satuanSortConfig} onSort={handleSatuanSort} />
+                  <SortableHeader label="DETAIL PERUBAHAN" />
+                  <SortableHeader label="AKSI VERIFIKASI" />
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-300 dark:divide-gray-800 bg-transparent">
+              {pendingSatuansCount === 0 ? (
+                <tr>
+                  <td colSpan={4} className="p-20 text-center text-slate-500 italic font-mono uppercase tracking-widest">
+                    Tidak ada pengajuan persetujuan SATUAN.
+                  </td>
+                </tr>
+              ) : sortedPendingSatuans.map((satuan: any) => (
+                <tr key={satuan.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/60 transition-colors group text-slate-800 dark:text-slate-200">
+                  <td className="p-4 text-center font-mono font-bold">{satuan.nama_satuan}</td>
+                  <td className="p-4 text-center">
+                    <Badge variant={
+                      satuan.pending_action === 'create' ? 'success' :
+                      satuan.pending_action === 'edit' ? 'info' :
+                      'danger'
+                    }>
+                      {satuan.pending_action === 'create' ? 'Tambah' : satuan.pending_action === 'edit' ? 'Edit' : 'Hapus'}
+                    </Badge>
+                  </td>
+                  <td className="p-4">
+                    <div className="text-xs font-mono text-slate-800 dark:text-white">
+                      {satuan.pending_action === 'edit' && satuan.pending_changes ? (
+                        <div className="whitespace-pre-wrap">{JSON.stringify(JSON.parse(satuan.pending_changes), null, 2)}</div>
+                      ) : (
+                        <span className="text-slate-500">-</span>
+                      )}
+                    </div>
+                  </td>
+                  <td className="p-4 flex gap-3 justify-center items-center h-full mt-2">
+                    <button onClick={() => handleApproveSatuan(satuan)} className="flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest transition-all shadow-lg">
+                      <CheckSquare className="w-4 h-4" /> SETUJUI
+                    </button>
+                    <button onClick={() => handleRejectSatuan(satuan)} className="flex items-center gap-2 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-4 py-2 text-xs font-tactical font-bold tracking-widest transition-all shadow-lg">
+                      <CheckSquare className="w-4 h-4" /> TOLAK
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+            </table>
           </div>
         )}
       </div>

@@ -39,11 +39,9 @@ const ReportHistory: React.FC<ReportHistoryProps> = ({
         ))}
       </div>
 
-            <div
-              key={index}
-              onClick={() => onSelectItem(item.db_id)}
-              className="glass-panel p-5 border-l-4 border-white/20 dark:border-l-soft-sand/10 hover:border-l-cighra-gold dark:hover:border-l-cighra-gold transition-all cursor-pointer group hover:!bg-cighra-primary/90 dark:hover:bg-black/40 !bg-cighra-primary dark:!bg-cighra-darkcard/80 shadow-md border border-white/10 dark:border-slate-600"
-            >
+{history.map((item, index) => (
+
+  <div key={index} onClick={() => onSelectItem(item.db_id)} className="glass-panel p-5 border-l-4 border-white/20 dark:border-l-soft-sand/10 hover:border-l-cighra-gold dark:hover:border-l-cighra-gold transition-all cursor-pointer group hover:!bg-cighra-primary/90 dark:hover:bg-black/40 !bg-cighra-primary dark:!bg-cighra-darkcard/80 shadow-md border border-white/10 dark:border-slate-600">
               <div className="flex justify-between items-start mb-3">
                 <div className="flex items-center gap-3">
                   <span className="text-xs font-mono text-slate-300 bg-white/10 dark:!bg-cighra-darkcard/80 px-2 py-1 tracking-widest">{item.caseId}</span>
@@ -99,10 +97,10 @@ const ReportHistory: React.FC<ReportHistoryProps> = ({
                 <ChevronRight size={16} className="text-slate-600/30 dark:text-slate-400 group-hover:translate-x-1 transition-transform" />
               </div>
             </div>
-          ))
-        )}
+          ))}
+
       </div>
-    </div>
+
   );
 };
 

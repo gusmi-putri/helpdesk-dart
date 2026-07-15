@@ -106,40 +106,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
   return (
     <div className="space-y-6 animate-in fade-in duration-500 pb-12">
       
-      {/* 1. TOP ACTIONS INJECTION */}
-      <div className="flex flex-col md:flex-row justify-end items-center gap-3">
-        {onRequestDeleteBatch && (
-          <button
-            onClick={() => {
-              setIsDeleteMode(!isDeleteMode);
-              setSelectedUnitIds([]);
-            }}
-            className={`px-5 py-2.5 rounded-none text-[11px] font-tactical font-bold tracking-widest flex items-center justify-center gap-2 transition-all border shadow-sm uppercase cursor-pointer ${
-              isDeleteMode 
-                ? 'bg-slate-700 hover:bg-slate-600 text-white border-slate-700' 
-                : 'bg-transparent text-red-600 border-red-600 hover:bg-red-50'
-            }`}
-          >
-            <Trash2 className="w-4 h-4" /> {isDeleteMode ? 'TUTUP MODE HAPUS' : 'MODE HAPUS MASSAL'}
-          </button>
-        )}
-        {onAddBatch && (
-          <button
-            onClick={onAddBatch}
-            className="px-5 py-2.5 rounded-none bg-white dark:bg-transparent border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-[11px] font-tactical font-bold tracking-widest flex items-center justify-center gap-2 transition-colors shadow-sm uppercase cursor-pointer"
-          >
-            <Upload className="w-4 h-4" /> AJUKAN MASSAL (CSV)
-          </button>
-        )}
-        {onAddUnit && (
-          <button
-            onClick={onAddUnit}
-            className="px-5 py-2.5 rounded-none bg-cighra-primary hover:bg-cighra-primary/90 text-white text-[11px] font-tactical font-bold tracking-widest flex items-center justify-center gap-2 transition-colors border border-cighra-primary shadow-sm uppercase cursor-pointer"
-          >
-            <Plus className="w-4 h-4 text-cighra-gold" /> TAMBAH UNIT
-          </button>
-        )}
-      </div>
+
 
       {/* 2. KPI SUMMARY CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -283,10 +250,43 @@ const InventorySection: React.FC<InventorySectionProps> = ({
           <h3 className="font-tactical tracking-widest text-sm flex items-center gap-2">
             <Package className="w-4 h-4 text-cighra-gold" />
             <span className="font-bold">DATABASE INVENTARIS UNIT</span>
+            <span className="bg-slate-700 text-slate-300 text-[10px] font-mono px-2.5 py-1 rounded-sm uppercase font-bold tracking-widest">
+              {filteredUnits.length} Unit
+            </span>
           </h3>
-          <span className="bg-slate-700 text-slate-300 text-[10px] font-mono px-2.5 py-1 rounded-sm uppercase font-bold tracking-widest">
-            {filteredUnits.length} Unit
-          </span>
+          <div className="flex items-center gap-2 ml-auto">
+            {onRequestDeleteBatch && (
+              <button
+                onClick={() => {
+                  setIsDeleteMode(!isDeleteMode);
+                  setSelectedUnitIds([]);
+                }}
+                className={`px-3 py-1.5 text-[10px] font-tactical font-bold tracking-widest flex items-center gap-1.5 transition-all border uppercase cursor-pointer ${
+                  isDeleteMode
+                    ? 'bg-slate-600 hover:bg-slate-500 text-white border-slate-500'
+                    : 'bg-red-600/80 hover:bg-red-600 text-white border-red-500/50'
+                }`}
+              >
+                <Trash2 className="w-3.5 h-3.5" /> {isDeleteMode ? 'TUTUP MODE HAPUS' : 'MODE HAPUS MASSAL'}
+              </button>
+            )}
+            {onAddBatch && (
+              <button
+                onClick={onAddBatch}
+                className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white border border-white/20 text-[10px] font-tactical font-bold tracking-widest flex items-center gap-1.5 transition-colors uppercase cursor-pointer"
+              >
+                <Upload className="w-3.5 h-3.5" /> AJUKAN MASSAL (CSV)
+              </button>
+            )}
+            {onAddUnit && (
+              <button
+                onClick={onAddUnit}
+                className="px-3 py-1.5 bg-cighra-gold hover:bg-cighra-gold/90 text-slate-900 text-[10px] font-tactical font-bold tracking-widest flex items-center gap-1.5 transition-colors border border-cighra-gold uppercase cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" /> TAMBAH UNIT
+              </button>
+            )}
+          </div>
         </div>
 
         {isDeleteMode && (
