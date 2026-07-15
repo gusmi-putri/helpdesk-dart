@@ -95,40 +95,33 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
   };
 
   return (
-    <div className="h-screen bg-slate-50 dark:bg-cighra-dark flex flex-col font-sans selection:bg-cighra-primary dark:selection:bg-cighra-gold dark:selection:text-slate-900 selection:text-white relative text-gunmetal dark:text-slate-300">
+    <div className="h-screen bg-slate-50 dark:bg-cighra-dark flex flex-col font-sans selection:bg-cighra-primary dark:selection:bg-cighra-gold dark:selection:text-slate-900 selection:text-white relative text-gunmetal dark:text-slate-300 overflow-hidden">
 
       <TeknisiTopbar
-          setIsMobileMenuOpen={setIsMobileMenuOpen}
-          currentUser={currentUser}
-        />
-      <div className="flex-1 flex overflow-hidden">
-
-      <TeknisiSidebar
-        isMobileMenuOpen={isMobileMenuOpen}
         setIsMobileMenuOpen={setIsMobileMenuOpen}
-        activeMenu="TUGAS"
-        activeTasksCount={activeTasks.length}
+        currentUser={currentUser}
       />
 
       {/* MAIN CONTENT AREA */}
-      <main className="flex-1 flex flex-col relative overflow-hidden h-full">
+      <div className="flex-1 overflow-hidden bg-slate-50 dark:bg-cighra-dark flex flex-col relative">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-paper.png')] opacity-[0.05] pointer-events-none"></div>
 
-        
+        <div className="flex-1 flex flex-col max-w-[1600px] w-full mx-auto p-4 md:p-6 lg:p-8 gap-6 overflow-hidden h-full z-10">
+          
+          {/* Header Title */}
+          <div className="border-b border-slate-200 dark:border-slate-600 pb-3 shrink-0">
+            <h2 className="text-xl font-tactical font-bold text-slate-800 dark:text-white tracking-widest uppercase">
+              PORTAL PERBAIKAN DART
+            </h2>
+            <p className="text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-0.5 uppercase tracking-widest">
+              Pusat Instruksi & Penyerahan Laporan Perbaikan Unit DART
+            </p>
+          </div>
 
-        {/* Scrollable Content Container */}
-        <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar z-10">
-          <div className="max-w-[1400px] mx-auto">
-            <div className="mb-4 border-b border-slate-200 dark:border-slate-600 pb-4">
-              <h2 className="text-2xl font-tactical font-bold text-slate-800 dark:text-white tracking-widest uppercase">
-                PORTAL PERBAIKAN DART
-              </h2>
-              <p className="text-xs font-mono text-slate-500 dark:text-slate-300 mt-1 uppercase tracking-widest">
-                Pusat Instruksi & Penyerahan Laporan Perbaikan Unit DART
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 animate-in fade-in mt-6">
+          {/* Content Grid */}
+          <div className="flex-1 flex flex-col md:flex-row gap-6 md:gap-8 overflow-y-auto md:overflow-hidden h-auto md:h-full items-stretch">
+            {/* LEFT PANEL */}
+            <div className="w-full md:w-[40%] lg:w-[35%] shrink-0 h-[450px] md:h-full overflow-hidden">
               <TaskList
                 tasks={filteredTasks}
                 activeTab={activeTab}
@@ -138,7 +131,10 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
               />
+            </div>
 
+            {/* RIGHT PANEL */}
+            <div className="flex-1 h-auto md:h-full overflow-hidden">
               <TaskDetailPanel selectedTask={selectedTask} activeTab={activeTab}>
                 {activeTab === 'HISTORY' && selectedTask ? (
                   <CompletionSummary
@@ -154,7 +150,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
                       </p>
                       <button
                         onClick={() => handleAcceptTask(selectedTask.db_id)}
-                        className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white font-tactical font-bold px-8 py-3.5 tracking-widest uppercase transition-all shadow-md"
+                        className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white font-tactical font-bold px-8 py-3.5 tracking-widest uppercase transition-all shadow-md cursor-pointer"
                       >
                         Terima Tugas
                       </button>
@@ -167,7 +163,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
                       </p>
                       <button
                         onClick={() => handleStartProgress(selectedTask.db_id)}
-                        className="bg-blue-600 hover:bg-blue-500 text-white font-tactical font-bold px-8 py-3.5 tracking-widest uppercase transition-all shadow-md"
+                        className="bg-blue-600 hover:bg-blue-500 text-white font-tactical font-bold px-8 py-3.5 tracking-widest uppercase transition-all shadow-md cursor-pointer"
                       >
                         Mulai Perbaikan
                       </button>
@@ -187,8 +183,8 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
               </TaskDetailPanel>
             </div>
           </div>
+
         </div>
-      </main>
       </div>
     </div>
   );
