@@ -139,7 +139,12 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
                       )}
                     </td>
                     <td className="p-4 text-center">
-                      <div className="font-bold mb-1 text-slate-800 dark:text-white">{report.unit?.nomor_seri || report.kerusakan.barangRusak || 'UNIT TIDAK DIKENAL'}</div>
+                      <div className="font-bold mb-1 text-slate-800 dark:text-white flex items-center justify-center gap-2">
+                        {report.unit?.nomor_seri || report.kerusakan.barangRusak || 'UNIT TIDAK DIKENAL'}
+                        {report.kerusakan.pelapor_satuan_id && report.kerusakan.unit_satuan_id && report.kerusakan.pelapor_satuan_id !== report.kerusakan.unit_satuan_id && (
+                          <span className="bg-orange-500/10 text-orange-500 border border-orange-500/30 text-[9px] font-bold px-1.5 py-0.5 rounded-sm whitespace-nowrap">LINTAS SATUAN</span>
+                        )}
+                      </div>
                       <div className="text-slate-500 dark:text-slate-400 text-xs font-mono uppercase">LOK: {report.kerusakan.lokasi}</div>
                     </td>
                     <td className="p-4 text-center">

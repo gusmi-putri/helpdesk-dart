@@ -58,6 +58,8 @@ class ReportResource extends JsonResource
                 'fileBukti' => $this->file_bukti ? collect(json_decode($this->file_bukti, true) ?? [])->map(fn($path) => asset('storage/' . $path))->toArray() : [],
                 'tautan_video' => $this->tautan_video,
                 'pelapor_wa' => $this->pelapor ? $this->pelapor->no_wa : null,
+                'pelapor_satuan_id' => $this->pelapor ? $this->pelapor->satuan_id : null,
+                'unit_satuan_id' => $this->unit ? $this->unit->satuan_id : null,
             ],
             'perbaikan' => [
                 'teknisi_id' => $this->teknisi_id,

@@ -46,6 +46,11 @@ class ReportController extends Controller
 
             $unit = Unit::find($request->unit_id);
             if ($unit) {
+                if ($request->boolean('auto_assign') && is_null($unit->satuan_id)) {
+                    $unit->satuan_id = $request->user()->satuan_id;
+                    $unit->save();
+                    SystemLog::log('INFO', $request->user()->id, "Menugaskan perangkat DART {$unit->nomor_seri} secara otomatis ke satuan {$request->user()->asal_satuan} saat pelaporan.");
+                }
                 $unit->syncStatus();
             }
 

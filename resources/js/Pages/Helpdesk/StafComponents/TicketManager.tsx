@@ -270,7 +270,12 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                       </span>
                     </div>
                     <div className="flex flex-col gap-1">
-                      <p className="font-bold text-sm text-slate-700 dark:text-slate-200 truncate">{report.kerusakan.barangRusak}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="font-bold text-sm text-slate-700 dark:text-slate-200 truncate">{report.kerusakan.barangRusak}</p>
+                        {report.kerusakan.pelapor_satuan_id && report.kerusakan.unit_satuan_id && report.kerusakan.pelapor_satuan_id !== report.kerusakan.unit_satuan_id && (
+                          <span className="bg-orange-500/10 text-orange-500 border border-orange-500/30 text-[9px] font-bold px-1.5 py-0.5 rounded-sm whitespace-nowrap">LINTAS SATUAN</span>
+                        )}
+                      </div>
                       <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium truncate uppercase tracking-wider">Unit DART</p>
                     </div>
                   </div>

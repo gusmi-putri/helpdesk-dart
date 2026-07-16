@@ -51,26 +51,26 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
   return (
     <div className="relative" ref={containerRef} style={{ zIndex: isOpen ? 100 : 1 }}>
       {label && <label className="block text-xs font-bold text-slate-500 dark:text-slate-300 mb-2 uppercase tracking-wider">{label} <span className="text-cighra-primary dark:text-cighra-gold">*</span></label>}
-      
+
       {/* Trigger Area */}
-      <div 
+      <div
         onClick={() => setIsOpen(!isOpen)}
         className={`w-full bg-cighra-light/50 dark:bg-cighra-darkcard/60 border ${error ? 'border-cighra-primary dark:border-cighra-gold' : isOpen ? 'border-cighra-primary dark:border-cighra-gold ring-1 ring-olive' : 'border-slate-300 dark:border-slate-600'} px-4 py-3 text-sm flex items-center justify-between cursor-pointer transition-all rounded-sm hover:border-cighra-primary dark:border-cighra-gold group relative z-10`}
       >
         <span className={`truncate ${selectedOption ? 'text-slate-800 dark:text-white font-medium' : 'text-slate-500 dark:text-slate-400'}`}>
-          {selectedOption ? `${selectedOption.label} — ${selectedOption.sublabel} (${selectedOption.tag})` : placeholder}
+          {selectedOption ? `${selectedOption.label}${selectedOption.sublabel ? ` — ${selectedOption.sublabel}` : ''} (${selectedOption.tag})` : placeholder}
         </span>
         <ChevronDown size={18} className={`text-slate-500 dark:text-slate-400 transition-transform flex-shrink-0 ${isOpen ? 'rotate-180 text-cighra-primary dark:text-cighra-gold' : ''}`} />
       </div>
 
-      {/* Dropdown Area - Kembali ke Absolute agar sinkron dengan container */}
+      {/* Dropdown Area*/}
       {isOpen && (
         <div className="absolute left-0 right-0 top-full mt-1 bg-cighra-light dark:bg-cighra-dark border border-slate-200 dark:border-slate-600 shadow-2xl rounded-sm overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-[9999]">
           <div className="p-2 border-b border-slate-200 dark:border-slate-600 bg-white dark:bg-cighra-darkcard/80 flex items-center gap-2">
             <Search size={14} className="text-slate-500 dark:text-slate-400" />
-            <input 
+            <input
               autoFocus
-              type="text" 
+              type="text"
               placeholder="Cari seri atau keterangan..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -82,11 +82,11 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
               </button>
             )}
           </div>
-          
+
           <div className="max-h-60 overflow-y-auto custom-scrollbar">
             {filteredOptions.length > 0 ? (
               filteredOptions.map((opt) => (
-                  <div 
+                <div
                   key={opt.id}
                   onClick={() => {
                     if (opt.disabled) return;
@@ -94,11 +94,10 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
                     setIsOpen(false);
                     setSearchQuery('');
                   }}
-                  className={`px-4 py-3 border-b border-slate-200 dark:border-slate-600 last:border-none flex flex-col ${
-                    opt.disabled 
-                      ? 'bg-slate-50 dark:bg-slate-800/50 cursor-not-allowed opacity-60' 
+                  className={`px-4 py-3 border-b border-slate-200 dark:border-slate-600 last:border-none flex flex-col ${opt.disabled
+                      ? 'bg-slate-50 dark:bg-slate-800/50 cursor-not-allowed opacity-60'
                       : 'hover:bg-cighra-primary/10 dark:hover:bg-cighra-gold/10 cursor-pointer transition-colors'
-                  } ${value.toString() === opt.id.toString() && !opt.disabled ? 'bg-cighra-primary/10 dark:bg-cighra-gold/10 border-l-4 border-l-olive' : ''}`}
+                    } ${value.toString() === opt.id.toString() && !opt.disabled ? 'bg-cighra-primary/10 dark:bg-cighra-gold/10 border-l-4 border-l-olive' : ''}`}
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-bold font-mono text-xs tracking-wider uppercase text-slate-800 dark:text-slate-200">
@@ -106,7 +105,7 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
                     </span>
                     {value.toString() === opt.id.toString() && !opt.disabled && <Check size={14} className="text-cighra-primary dark:text-cighra-gold" />}
                   </div>
-                  <span className="text-[10px] text-slate-600 dark:text-slate-400 uppercase tracking-tighter mt-0.5 font-mono">{opt.sublabel} | {opt.tag}</span>
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 uppercase tracking-tighter mt-0.5 font-mono">{opt.sublabel ? `${opt.sublabel} | ` : ''}{opt.tag}</span>
                 </div>
               ))
             ) : (

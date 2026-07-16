@@ -31,16 +31,8 @@ class StoreReportRequest extends FormRequest
             'unit_id' => [
                 'required',
                 'exists:units,id,deleted_at,NULL',
-                function ($attribute, $value, $fail) {
-                    $user = auth()->user();
-                    if ($user && $user->role && $user->role->nama_role === 'Pelapor') {
-                        $unit = Unit::find($value);
-                        if ($unit && $unit->satuan_id !== $user->satuan_id) {
-                            $fail('Unit yang dilaporkan tidak terdaftar di Satuan Kerja Anda.');
-                        }
-                    }
-                }
             ],
+            'auto_assign' => 'nullable|boolean',
             'deskripsi' => 'required|string',
             'tingkat_kerusakan' => 'required|in:Ringan,Sedang,Parah',
             'urgensi' => 'required|in:Sangat Mendesak,Bisa Menunggu,Pemeliharaan Rutin',

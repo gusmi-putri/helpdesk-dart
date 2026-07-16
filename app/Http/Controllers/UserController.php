@@ -41,7 +41,7 @@ class UserController extends Controller
                 'satuan_id' => $request->satuan_id,
                 'no_wa' => $request->no_wa,
                 'spesialisasi' => $request->spesialisasi,
-                'is_approved' => $isAdmin, // Always true if Admin, but Staf doesn't create user directly anymore
+                'is_approved' => $isAdmin,
             ];
 
             if ($isAdmin) {
@@ -58,7 +58,6 @@ class UserController extends Controller
 
                 SystemLog::log('SUCCESS', $currentUser->id, "Menambahkan personel baru secara langsung: {$request->nama_lengkap} ({$request->username})");
             } else {
-                // Staf just requests addition, doesn't create user in DB
                 UserMutation::create([
                     'target_user_id' => null,
                     'type' => 'request_add',
@@ -88,7 +87,6 @@ class UserController extends Controller
         $updateData = $request->only('email', 'nama_lengkap', 'nrp_nip', 'asal_satuan', 'satuan_id', 'no_wa', 'spesialisasi');
         
         if ($isSelfEdit) {
-            // User can't change their own role or satuan via profile edit
             unset($updateData['asal_satuan'], $updateData['satuan_id'], $updateData['role_id']);
         } elseif ($user->role_id !== $adminRoleId) {
             $updateData['role_id'] = $request->role_id;
@@ -96,7 +94,6 @@ class UserController extends Controller
 
         $changedData = [];
         foreach ($updateData as $key => $value) {
-            // Loose comparison to account for type juggling, e.g., string "2" vs integer 2
             if ($user->{$key} != $value) {
                 $changedData[$key] = $value;
             }
@@ -295,7 +292,7 @@ class UserController extends Controller
         $admin = auth()->user();
         SystemLog::log('WARN', $admin->id, "Menolak pendaftaran personel baru: {$userName}");
 
-        $user->delete();
+        $user->forceDelete();
 
         return redirect()->back()->with('message', 'Pendaftaran personel telah ditolak dan data dihapus.');
     }

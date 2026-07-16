@@ -305,7 +305,12 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                     {/* DETAIL KERUSAKAN */}
                     <td className="p-4 text-center">
                       <div className="font-bold text-sm text-slate-800 dark:text-white mb-1 uppercase tracking-wider">
-                        {report.kerusakan.barangRusak}
+                        <div className="flex items-center gap-2">
+                          <span>{report.kerusakan.barangRusak}</span>
+                          {report.kerusakan.pelapor_satuan_id && report.kerusakan.unit_satuan_id && report.kerusakan.pelapor_satuan_id !== report.kerusakan.unit_satuan_id && (
+                            <span className="bg-orange-500/10 text-orange-500 border border-orange-500/30 text-[9px] font-bold px-1.5 py-0.5 rounded-sm whitespace-nowrap">LINTAS SATUAN</span>
+                          )}
+                        </div>
                       </div>
                       <div className="text-slate-500 dark:text-slate-300 text-[11px] font-mono flex flex-col gap-0.5">
                         <span>MSK: {report.kerusakan.tanggal}</span>

@@ -173,11 +173,7 @@ class DashboardController extends Controller
             })->orderBy('created_at', 'desc')->take(2000)->get());
             
         $units = UnitResource::collection(Unit::with('satuan')
-            ->where(function($q) use ($auth) {
-                if ($auth->satuan_id) {
-                    $q->where('satuan_id', $auth->satuan_id);
-                }
-            })->orderBy('created_at', 'desc')->take(2000)->get());
+            ->orderBy('created_at', 'desc')->take(2000)->get());
             
         $users = UserResource::collection(User::with('satuan')
             ->where(function($q) use ($auth) {
