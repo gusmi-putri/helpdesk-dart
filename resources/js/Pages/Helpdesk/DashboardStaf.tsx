@@ -335,13 +335,15 @@ const DashboardStaf = (props: any) => {
                       activeMenu === 'SELESAI' ? 'ARSIP DOKUMEN PENYELESAIAN' :
                         activeMenu === 'INVENTARIS' ? 'DATABASE INVENTARIS' :
                           activeMenu === 'MUTASI' ? 'RIWAYAT PENGAJUAN' :
-                            'DATA PERSONEL'}
+                            activeMenu === 'SATUANS' ? 'DATA SATUAN' :
+                              'DATA PERSONEL'}
                   </h2>
                   <p className="text-xs font-mono text-slate-500 dark:text-slate-300 mt-1 uppercase tracking-widest">
                     {activeMenu === 'INVENTARIS' ? 'STATUS KESIAPAN UNIT DART.' :
                       activeMenu === 'MUTASI' ? (mutationActiveTab === 'PERSONEL' ? 'Riwayat pengajuan penambahan dan penghapusan data personel.' : mutationActiveTab === 'SATUAN' ? 'Riwayat pengajuan penambahan dan penghapusan data satuan.' : 'Riwayat pengajuan penambahan dan penghapusan unit inventaris.') :
                         activeMenu === 'PERSONEL' ? 'KELOLA DATA PENGGUNA SISTEM.' :
-                          'Sistem Manajemen Pelaporan Kerusakan Dart.'}
+                          activeMenu === 'SATUANS' ? 'KELOLA DATA SATUAN KERJA.' :
+                            'Sistem Manajemen Pelaporan Kerusakan Dart.'}
                   </p>
                 </div>
 

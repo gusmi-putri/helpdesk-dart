@@ -182,7 +182,7 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
                               onClick={() => onAssignTechnician(report.db_id)}
                               className="w-full bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-3 py-2 text-xs font-tactical font-bold tracking-[0.15em] transition-all flex items-center justify-center gap-2 border border-cighra-primary dark:border-cighra-gold shadow-lg"
                             >
-                              <ShieldAlert className="w-3.5 h-3.5" /> TUGASKAN TEKNISI
+                              <ShieldAlert className="w-3.5 h-3.5" /> {report.perbaikan?.teknisi ? 'GANTI TEKNISI' : 'TUGASKAN TEKNISI'}
                             </button>
                             <button
                               onClick={() => onReject(report.db_id)}
