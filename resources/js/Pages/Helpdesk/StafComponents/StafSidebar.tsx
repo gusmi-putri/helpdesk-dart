@@ -46,6 +46,7 @@ const StafSidebar: React.FC<StafSidebarProps> = ({
 
         <nav className="flex-1 py-6 space-y-1 overflow-y-auto custom-scrollbar">
           <button
+            id="tour-laporan-masuk"
             onClick={() => { setActiveMenu('MASUK'); setIsMobileMenuOpen(false); }}
             aria-current={activeMenu === 'MASUK' ? 'page' : undefined}
             className={menuClass('MASUK')}
@@ -64,6 +65,7 @@ const StafSidebar: React.FC<StafSidebarProps> = ({
           </button>
 
           <button
+            id="tour-arsip-perbaikan"
             onClick={() => { setActiveMenu('SELESAI'); setIsMobileMenuOpen(false); }}
             aria-current={activeMenu === 'SELESAI' ? 'page' : undefined}
             className={menuClass('SELESAI')}
@@ -76,6 +78,7 @@ const StafSidebar: React.FC<StafSidebarProps> = ({
           {/* DATA MASTER (Collapsible) */}
           <div>
             <button
+              id="tour-data-master"
               onClick={() => setIsDataMasterExpanded(!isDataMasterExpanded)}
               aria-expanded={isDataMasterExpanded}
               aria-controls="staf-data-master-submenu"

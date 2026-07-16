@@ -58,6 +58,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         <nav className="flex-1 overflow-y-auto custom-scrollbar py-6 space-y-1">
           {/* 1. PETA MONITORING */}
           <button
+            id="tour-peta"
             onClick={() => handleMenuClick('MAP')}
             aria-current={activeMenu === 'MAP' ? 'page' : undefined}
             className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all duration-300 border-l-4 group focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none
@@ -69,6 +70,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
           {/* 2. ANALISIS DATA */}
           <button
+            id="tour-analisis"
             onClick={() => handleMenuClick('ANALYTICS')}
             aria-current={activeMenu === 'ANALYTICS' ? 'page' : undefined}
             className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all duration-300 border-l-4 group focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none
@@ -81,6 +83,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           {/* 3. DATA MASTER (Collapsible) */}
           <div>
             <button
+              id="tour-data-master-admin"
               onClick={() => setIsDataMasterExpanded(!isDataMasterExpanded)}
               aria-expanded={isDataMasterExpanded}
               aria-controls="data-master-submenu"
@@ -130,6 +133,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
           {/* 4. PUSAT PERSETUJUAN */}
           <button
+            id="tour-persetujuan"
             onClick={() => handleMenuClick('APPROVAL_CENTER')}
             aria-current={activeMenu === 'APPROVAL_CENTER' ? 'page' : undefined}
             className={`w-full flex items-center justify-between px-6 py-4 font-tactical text-sm tracking-wider transition-all duration-300 border-l-4 group focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none
@@ -151,6 +155,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
           {/* 5. DATA LAPORAN */}
           <button
+            id="tour-laporan"
             onClick={() => handleMenuClick('REPORTS')}
             aria-current={activeMenu === 'REPORTS' ? 'page' : undefined}
             className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all duration-300 border-l-4 group focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none

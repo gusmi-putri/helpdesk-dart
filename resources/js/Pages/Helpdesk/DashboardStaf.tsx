@@ -97,6 +97,65 @@ const DashboardStaf = (props: any) => {
     };
   }, []);
 
+  // Guided Tour Staf
+  useEffect(() => {
+    import('driver.js').then(({ driver }) => {
+      import('driver.js/dist/driver.css').then(() => {
+        if (localStorage.getItem('tour_staf_done') !== 'true') {
+          const driverObj = driver({
+            showProgress: true,
+            animate: true,
+            nextBtnText: 'Selanjutnya ➔',
+            prevBtnText: '← Sebelumnya',
+            doneBtnText: 'Selesai',
+            steps: [
+              {
+                popover: {
+                  title: 'Selamat Datang Staf',
+                  description: 'Ini adalah Dashboard Manajemen Bantuan DART. Mari pelajari fitur utamanya.',
+                }
+              },
+              {
+                element: '#tour-laporan-masuk',
+                popover: {
+                  title: 'Laporan Masuk',
+                  description: 'Tempat Anda memverifikasi, meneruskan, atau menolak laporan yang dikirimkan.',
+                  side: 'right',
+                  align: 'start'
+                }
+              },
+              {
+                element: '#tour-arsip-perbaikan',
+                popover: {
+                  title: 'Arsip Perbaikan',
+                  description: 'Melihat semua riwayat laporan yang sudah selesai ditangani oleh Teknisi.',
+                  side: 'right',
+                  align: 'start'
+                }
+              },
+              {
+                element: '#tour-data-master',
+                popover: {
+                  title: 'Data Master',
+                  description: 'Pengajuan mutasi untuk Personel, Inventaris, dan Satuan dilakukan di menu ini.',
+                  side: 'right',
+                  align: 'start'
+                }
+              }
+            ],
+            onDestroyed: () => {
+              localStorage.setItem('tour_staf_done', 'true');
+            }
+          });
+          
+          setTimeout(() => {
+            driverObj.drive();
+          }, 500);
+        }
+      });
+    });
+  }, []);
+
   const handleAssignTechnician = (reportId: number, idTeknisi: number) => {
     router.post(`/reports/${reportId}/handle`, { teknisi_id: idTeknisi }, {
       onSuccess: () => {

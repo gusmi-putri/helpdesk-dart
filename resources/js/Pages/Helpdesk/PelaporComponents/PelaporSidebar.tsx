@@ -20,6 +20,7 @@ const PelaporSidebar: React.FC<PelaporSidebarProps> = ({
 
       <nav className="flex-1 overflow-y-auto custom-scrollbar py-6">
         <button
+          id="tour-buat-laporan"
           onClick={() => { setActiveMenu('FORM'); setIsMobileMenuOpen(false); }}
           className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider uppercase transition-all duration-300 border-l-4
             ${activeMenu === 'FORM' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold'}
@@ -29,6 +30,7 @@ const PelaporSidebar: React.FC<PelaporSidebarProps> = ({
         </button>
 
         <button
+          id="tour-riwayat"
           onClick={() => { setActiveMenu('HISTORY'); setIsMobileMenuOpen(false); }}
           className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider uppercase transition-all duration-300 border-l-4
             ${activeMenu === 'HISTORY' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold'}
@@ -38,6 +40,7 @@ const PelaporSidebar: React.FC<PelaporSidebarProps> = ({
         </button>
         
         <button
+          id="tour-video"
           onClick={() => { setActiveMenu('VIDEO'); setIsMobileMenuOpen(false); }}
           className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider uppercase transition-all duration-300 border-l-4
             ${activeMenu === 'VIDEO' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold'}
