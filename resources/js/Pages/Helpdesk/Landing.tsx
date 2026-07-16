@@ -2,7 +2,6 @@ import React from 'react';
 import Navbar from '@/Components/Navbar';
 import Hero from '@/Components/Hero';
 import About from '@/Components/About';
-import Contact from '@/Components/Contact';
 import AboutUs from '@/Components/AboutUs';
 
 export default function Landing() {
@@ -12,7 +11,6 @@ export default function Landing() {
         <Navbar />
         <Hero />
         <About />
-        <Contact />
         <AboutUs />
         <footer className="bg-white dark:bg-cighra-darkcard/70 py-8 border-t border-slate-200 dark:border-slate-600 text-center">
           <div className="max-w-7xl mx-auto px-4">

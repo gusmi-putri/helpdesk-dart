@@ -16,15 +16,14 @@ const UnitsTable = lazy(() => import('./AdminComponents/UnitsTable'));
 const LogsTable = lazy(() => import('./AdminComponents/LogsTable'));
 const ReportsSection = lazy(() => import('./AdminComponents/ReportsSection'));
 const ApprovalCenter = lazy(() => import('./AdminComponents/ApprovalCenter'));
-const FeedbackTable = lazy(() => import('./AdminComponents/FeedbackTable'));
 const MonitoringMap = lazy(() => import('./AdminComponents/MonitoringMap'));
 const SatuansTable = lazy(() => import('./AdminComponents/SatuansTable'));
 
 type SubMenuReport = 'KERUSAKAN' | 'PERBAIKAN';
-type MenuTab = 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER' | 'FEEDBACK';
+type MenuTab = 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER';
 
 const DashboardAdmin = (props: any) => {
-  const { dbCases = [], dbUsers = [], dbLogs = [], dbRoles = [], dbUnits = [], dbSatuans = [], dbFeedbacks = [], dbFeedbackUnreadCount = 0, dbMutations = [], dbUserMutations = [], dbArchivedUnits = [] } = props;
+  const { dbCases = [], dbUsers = [], dbLogs = [], dbRoles = [], dbUnits = [], dbSatuans = [], dbMutations = [], dbUserMutations = [], dbArchivedUnits = [] } = props;
   const [activeMenu, setActiveMenu] = useState<MenuTab>('ANALYTICS');
   const [activeSubReport, setActiveSubReport] = useState<SubMenuReport>('KERUSAKAN');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
@@ -37,7 +36,7 @@ const DashboardAdmin = (props: any) => {
 
     const startPolling = () => {
       intervalId = setInterval(() => {
-        router.reload({ only: ['dbCases', 'dbUsers', 'dbLogs', 'dbUnits', 'dbFeedbacks', 'dbFeedbackUnreadCount'] });
+        router.reload({ only: ['dbCases', 'dbUsers', 'dbLogs', 'dbUnits'] });
       }, 15000);
     };
 
@@ -121,15 +120,7 @@ const DashboardAdmin = (props: any) => {
                   align: 'start'
                 }
               },
-              {
-                element: '#tour-feedback',
-                popover: {
-                  title: 'Umpan Balik Pengguna',
-                  description: 'Baca penilaian (rating) dan komplain secara langsung dari Pelapor setelah laporan mereka ditangani, untuk menjaga standar kualitas teknisi.',
-                  side: 'right',
-                  align: 'start'
-                }
-              },
+
               {
                 element: '#tour-log',
                 popover: {
@@ -254,7 +245,7 @@ const DashboardAdmin = (props: any) => {
         handleMenuClick={setActiveMenu}
         dbUsers={dbUsers}
         dbMutations={dbMutations}
-        dbSatuans={dbSatuans}        dbFeedbackUnreadCount={dbFeedbackUnreadCount}
+        dbSatuans={dbSatuans}
       />
 
       {/* MAIN CONTENT AREA */}
@@ -279,7 +270,6 @@ const DashboardAdmin = (props: any) => {
                     activeMenu === 'UNITS' ? 'DATABASE INVENTARIS' :
                     activeMenu === 'SATUANS' ? 'DATA SATUAN' :
                     activeMenu === 'APPROVAL_CENTER' ? 'PUSAT PERSETUJUAN' :
-                    activeMenu === 'FEEDBACK' ? 'UMPAN BALIK PENGGUNA' :
                     'DASHBOARD ADMIN'}
                 </h2>
                 <p className="text-xs font-mono text-slate-500 dark:text-slate-300 mt-1 uppercase tracking-widest">
@@ -291,7 +281,6 @@ const DashboardAdmin = (props: any) => {
                     activeMenu === 'UNITS' ? 'Status kesiapan unit DART.' :
                     activeMenu === 'SATUANS' ? 'Kelola data satuan dan unit yang terdaftar.' :
                     activeMenu === 'APPROVAL_CENTER' ? 'Tinjau dan setujui pengajuan mutasi serta registrasi.' :
-                    activeMenu === 'FEEDBACK' ? 'Umpan balik dan penilaian dari pengguna sistem.' :
                     'Sistem Manajemen Pelaporan Kerusakan Dart.'}
                 </p>
               </div>
@@ -379,7 +368,6 @@ const DashboardAdmin = (props: any) => {
                   handleRejectUser={handleRejectUser}
                 />
               )}
-              {activeMenu === 'FEEDBACK' && <FeedbackTable dbFeedbacks={dbFeedbacks} />}
             </Suspense>
           </div>
         </div>
