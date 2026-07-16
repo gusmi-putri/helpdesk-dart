@@ -3,47 +3,52 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Services\GeminiService;
+use App\Services\LocalDiagnosticService;
 use App\Models\Unit;
 
 class AiDiagnosticController extends Controller
 {
-    protected GeminiService $geminiService;
+    protected LocalDiagnosticService $diagnosticService;
 
-    public function __construct(GeminiService $geminiService)
+    public function __construct(LocalDiagnosticService $diagnosticService)
     {
-        $this->geminiService = $geminiService;
+        $this->diagnosticService = $diagnosticService;
     }
 
     /**
-     * Handle the incoming request from the frontend to analyze a report.
+     * Handle the incoming request to analyze a report locally.
+     * Menggunakan analisis lokal berbasis aturan — tidak memerlukan API eksternal.
      */
     public function diagnose(Request $request)
     {
         // Validate incoming data
         $validated = $request->validate([
-            'deskripsi' => 'required|string',
-            'tingkat_kerusakan' => 'required|string',
-            'unit_id' => 'required'
+            'deskripsi'         => 'required|string|max:1000',
+            'tingkat_kerusakan' => 'required|in:Ringan,Sedang,Parah',
+            'unit_id'           => 'required|exists:units,id',
         ]);
 
-        // Find the unit name (optional, for better prompt context)
+        // Sanitasi input untuk mencegah injeksi
+        $deskripsi = strip_tags($validated['deskripsi']);
+
+        // Find the unit name
         $unitName = "Unit DART ID: " . $validated['unit_id'];
         $unit = Unit::find($validated['unit_id']);
         if ($unit) {
             $unitName = $unit->nomor_seri;
         }
 
-        // Call the Gemini Service
-        $diagnosis = $this->geminiService->getDiagnosticAdvice(
-            $validated['deskripsi'],
+        // Jalankan analisis lokal
+        $diagnosis = $this->diagnosticService->getDiagnosticAdvice(
+            $deskripsi,
             $validated['tingkat_kerusakan'],
             $unitName
         );
 
         return response()->json([
-            'success' => true,
+            'success'   => true,
             'diagnosis' => $diagnosis
         ]);
     }
 }
+

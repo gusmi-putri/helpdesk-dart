@@ -8,6 +8,7 @@ use App\Models\Role;
 use App\Models\Report;
 use App\Models\SystemLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
@@ -32,7 +33,7 @@ class UserController extends Controller
             
             $userData = [
                 'username' => $request->username,
-                'password' => bcrypt($request->password),
+                'password' => Hash::make($request->password),
                 'email' => $request->email,
                 'nama_lengkap' => $request->nama_lengkap,
                 'nrp_nip' => $request->nrp_nip,
@@ -151,6 +152,11 @@ class UserController extends Controller
         $adminRoleId = Role::where('nama_role', 'Admin')->first()?->id;
         $currentUser = auth()->user();
 
+        // Guard: Jangan izinkan Admin menghapus akun dirinya sendiri
+        if ($user->id === auth()->id()) {
+            return redirect()->back()->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
+        }
+
         if ($user->role_id === $adminRoleId && $currentUser->role_id !== $adminRoleId) {
             return redirect()->back()->with('error', 'Akses ditolak: Staf tidak diizinkan menghapus akun Admin.');
         }
@@ -207,6 +213,11 @@ class UserController extends Controller
     public function toggleStatus(string $id)
     {
         $user = User::findOrFail($id);
+        // Guard: Admin tidak bisa menonaktifkan dirinya sendiri
+        if ($user->id === auth()->id()) {
+            return redirect()->back()->with('error', 'Anda tidak dapat mengubah status akun Anda sendiri.');
+        }
+
         $user->is_active = !$user->is_active;
         $user->save();
 
@@ -309,7 +320,7 @@ class UserController extends Controller
         }
 
         $admin = auth()->user();
-        $adminNotes = $request->input('admin_notes', 'Ditolak oleh Admin.');
+        $adminNotes = substr(strip_tags($request->input('admin_notes', 'Ditolak oleh Admin.')), 0, 500);
 
         DB::transaction(function () use ($mutation, $admin, $adminNotes, &$msg) {
             $typeMapping = [
