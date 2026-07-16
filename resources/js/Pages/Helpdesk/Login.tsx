@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useForm, Link } from '@inertiajs/react';
 import { useStore } from '@/store/useStore';
 import { Eye, EyeOff } from 'lucide-react';
+import Navbar from '@/Components/Navbar';
 
 interface LoginData {
   username: string;
@@ -36,14 +37,17 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-cighra-light dark:bg-cighra-dark relative overflow-hidden font-sans w-full">
+    <div className="min-h-screen flex flex-col bg-cighra-light dark:bg-cighra-dark relative overflow-hidden font-sans w-full">
+      <Navbar />
+      
+      <div className="flex-grow flex items-center justify-center pt-16 relative">
 
       {/* Background Ornaments (Radar/Grid illusion) */}
-      <div className="absolute inset-0 pointer-events-none opacity-20">
+      <div className="absolute inset-0 pointer-events-none opacity-20 mt-16">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-cighra-primary dark:border-cighra-gold rounded-full" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-cighra-primary dark:border-cighra-gold rounded-full" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] border border-cighra-primary dark:border-cighra-gold rounded-full" />
-        <div className="absolute top-0 bottom-0 left-1/2 w-px bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900" />
+        <div className="absolute top-1/2 bottom-0 left-1/2 w-px bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 -translate-y-1/2 h-full" />
         <div className="absolute left-0 right-0 top-1/2 h-px bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900" />
       </div>
 
@@ -154,6 +158,7 @@ const Login: React.FC = () => {
             SISFO DART Operational Security System
           </p>
         </div>
+      </div>
       </div>
     </div>
   );

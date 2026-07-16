@@ -45,7 +45,7 @@ const AboutUs = () => {
           </motion.div>
 
           <div className="bg-white dark:bg-cighra-darkcard/80 p-8 border-2 border-cighra-gold relative group shadow-xl">
-            <div className="absolute -top-4 -right-4 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white p-3 font-stencil text-xl shadow-lg">BENGPUS</div>
+            <div className="absolute -top-4 -right-4 bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white p-3 font-stencil text-xl shadow-lg">BENGPUSPUSKOMLEKAD</div>
             <h3 className="text-2xl font-tactical font-bold text-slate-800 dark:text-white mb-6 tracking-wider uppercase">PUSAT KOMANDO</h3>
             <div className="space-y-6">
               <div className="flex gap-4">
