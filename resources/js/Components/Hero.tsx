@@ -82,7 +82,7 @@ const Hero = () => {
           transition={{ duration: 1, delay: 0.8 }}
           className="text-sm sm:text-base md:text-lg text-slate-800 font-bold dark:font-normal dark:text-slate-200 font-tactical max-w-2xl mx-auto border-l-4 border-cighra-gold pl-4 py-3 pr-4 bg-white/40 dark:bg-black/30 backdrop-blur-md rounded-r-sm text-left drop-shadow-md mb-8 leading-relaxed"
         >
-          <span className="typewriter-text text-cighra-gold font-black drop-shadow-md">BENGPUSKOMLEKAD</span>
+          <span className="typewriter-text text-cighra-gold font-black drop-shadow-md">BENGPUSPUSKOMLEKAD</span>
           <br />
           Pusat Layanan Perbaikan DART (Dynamic Autonomous Retaliatory Target): Penanganan Cepat untuk Jamin Kesiapan, Keamanan, dan Kelancaran Latihan Menembak.
         </motion.p>
