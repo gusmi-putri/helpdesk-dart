@@ -1,19 +1,18 @@
 import React, { useState } from 'react';
 import {
   Radar, Users, Package, MapPin, CheckSquare,
-  ChevronDown, ChevronRight, Database, MessageSquare,
-  Activity, LogOut, Map as MapIcon, Layers
+  ChevronDown, ChevronRight, Database,
+  Activity, Map as MapIcon, Layers
 } from 'lucide-react';
 
 interface SidebarProps {
   isMobileMenuOpen: boolean;
   setIsMobileMenuOpen: (open: boolean) => void;
-  activeMenu: 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER' | 'FEEDBACK';
-  handleMenuClick: (menu: 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER' | 'FEEDBACK') => void;
+  activeMenu: 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER';
+  handleMenuClick: (menu: 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER') => void;
   dbUsers: any[];
   dbMutations?: any[];
   dbSatuans?: any[];
-  dbFeedbackUnreadCount?: number;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -24,7 +23,6 @@ const Sidebar: React.FC<SidebarProps> = ({
   dbUsers,
   dbMutations = [],
   dbSatuans = [],
-  dbFeedbackUnreadCount = 0,
 }) => {
   // Collapsible menu states
   const [isDataMasterExpanded, setIsDataMasterExpanded] = useState<boolean>(true);
@@ -165,25 +163,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             <Radar size={18} /> DATA LAPORAN
           </button>
 
-          {/* 6. UMPAN BALIK */}
-          <button
-            onClick={() => handleMenuClick('FEEDBACK')}
-            aria-current={activeMenu === 'FEEDBACK' ? 'page' : undefined}
-            className={`w-full flex items-center justify-between gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all duration-300 border-l-4 group focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none
-              ${activeMenu === 'FEEDBACK' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}
-            `}
-          >
-            <div className="flex items-center gap-3">
-              <MessageSquare size={18} className="transition-transform duration-300 group-hover:scale-110 group-active:scale-95" /> UMPAN BALIK
-            </div>
-            {dbFeedbackUnreadCount > 0 && (
-              <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full uppercase">
-                {dbFeedbackUnreadCount}
-              </span>
-            )}
-          </button>
-
-          {/* 7. LOG AKTIVITAS */}
+          {/* 6. LOG AKTIVITAS */}
           <button
             onClick={() => handleMenuClick('LOGS')}
             aria-current={activeMenu === 'LOGS' ? 'page' : undefined}

@@ -6,7 +6,6 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\SatuanController;
 use App\Http\Controllers\UserController;
@@ -22,7 +21,6 @@ Route::get('/', function () {
     return Inertia::render('Helpdesk/Landing');
 });
 
-Route::post('/feedback', [FeedbackController::class, 'store'])->middleware('throttle:3,1')->name('feedback.store');
 
 Route::get('/login', function () {
     return Inertia::render('Helpdesk/Login');
@@ -35,7 +33,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Forgot Password Routes
 Route::get('/forgot-password', [ForgotPasswordController::class, 'index'])->name('password.request');
-Route::post('/forgot-password/send-code', [ForgotPasswordController::class, 'sendCode'])->name('password.email');
+Route::post('/forgot-password/send-code', [ForgotPasswordController::class, 'sendCode'])->middleware('throttle:3,1')->name('password.email');
 Route::post('/forgot-password/verify-reset', [ForgotPasswordController::class, 'verifyAndReset'])->middleware('throttle:5,1')->name('password.update');
 
 // Satuan API (Guest can access for registration) - Added Throttling for security
@@ -106,8 +104,10 @@ Route::middleware(['auth'])->group(function () {
     // Cetak PDF (Semua role yang login boleh mencetak/melihat dokumen PDF)
     Route::get('/reports/{id}/pdf', [DashboardController::class, 'exportPdf'])->middleware('role:Admin,Staf,Teknisi,Pelapor')->name('reports.pdf');
 
-    // --- AI Diagnostic Route (SEKARANG AMAN) ---
-    Route::post('/api/diagnose', [AiDiagnosticController::class, 'diagnose'])->name('api.diagnose');
+    // --- AI Diagnostic Route ---
+    Route::post('/api/diagnose', [AiDiagnosticController::class, 'diagnose'])
+        ->middleware('throttle:10,1')
+        ->name('api.diagnose');
 });
 
 // ==========================================

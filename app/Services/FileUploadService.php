@@ -16,10 +16,13 @@ class FileUploadService
             return null;
         }
 
-        $filename = $prefix . time() . '_' . $file->getClientOriginalName();
+        // Gunakan nama yang digenerate server, bukan nama dari client
+        // Ini mencegah path traversal dan nama file berbahaya
+        $extension = $file->getClientOriginalExtension();
+        $filename = $prefix . uniqid() . '_' . time() . '.' . $extension;
         $file->storeAs($directory, $filename, 'public');
         
-        return $filename; // Returns only filename if stored with storeAs and specific name
+        return $filename;
     }
 
     /**
