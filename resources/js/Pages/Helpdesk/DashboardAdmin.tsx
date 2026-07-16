@@ -58,6 +58,101 @@ const DashboardAdmin = (props: any) => {
     };
   }, []);
 
+  // Guided Tour Admin
+  useEffect(() => {
+    import('driver.js').then(({ driver }) => {
+      import('driver.js/dist/driver.css').then(() => {
+        if (localStorage.getItem('tour_admin_done') !== 'true') {
+          const driverObj = driver({
+            showProgress: true,
+            animate: true,
+            nextBtnText: 'Selanjutnya ➔',
+            prevBtnText: '← Sebelumnya',
+            doneBtnText: 'Selesai',
+            steps: [
+              {
+                popover: {
+                  title: 'Pusat Komando (Admin)',
+                  description: 'Selamat datang di Pusat Kontrol Utama SISFO DART. Sebagai Admin, Anda memiliki kendali penuh terhadap seluruh sistem. Mari kita lihat menu apa saja yang tersedia.',
+                }
+              },
+              {
+                element: '#tour-peta',
+                popover: {
+                  title: 'Peta Monitoring',
+                  description: 'Menampilkan visualisasi geografis dari seluruh unit inventaris dan persebarannya per satuan.',
+                  side: 'right',
+                  align: 'start'
+                }
+              },
+              {
+                element: '#tour-analisis',
+                popover: {
+                  title: 'Analisis Data',
+                  description: 'Dashboard khusus untuk memantau grafik tren kerusakan, durasi rata-rata perbaikan, dan ringkasan performa teknisi secara keseluruhan.',
+                  side: 'right',
+                  align: 'start'
+                }
+              },
+              {
+                element: '#tour-data-master-admin',
+                popover: {
+                  title: 'Data Master',
+                  description: 'Direktori utama sistem. Di sini Anda bebas menambah, mengedit, atau menghapus data pangkalan/satuan, mengontrol akses personel, dan mengelola inventaris master.',
+                  side: 'right',
+                  align: 'start'
+                }
+              },
+              {
+                element: '#tour-persetujuan',
+                popover: {
+                  title: 'Pusat Persetujuan',
+                  description: 'Semua registrasi akun baru (Pelapor/Staf) dan pengajuan mutasi barang wajib masuk dan disetujui melalui menu sentral ini.',
+                  side: 'right',
+                  align: 'start'
+                }
+              },
+              {
+                element: '#tour-laporan',
+                popover: {
+                  title: 'Data Laporan',
+                  description: 'Manajemen tingkat tinggi untuk seluruh laporan kerusakan maupun arsip perbaikan. Anda juga bisa mengunduh rekapitulasinya di sini.',
+                  side: 'right',
+                  align: 'start'
+                }
+              },
+              {
+                element: '#tour-feedback',
+                popover: {
+                  title: 'Umpan Balik Pengguna',
+                  description: 'Baca penilaian (rating) dan komplain secara langsung dari Pelapor setelah laporan mereka ditangani, untuk menjaga standar kualitas teknisi.',
+                  side: 'right',
+                  align: 'start'
+                }
+              },
+              {
+                element: '#tour-log',
+                popover: {
+                  title: 'Log Aktivitas Sistem',
+                  description: 'Jejak rekam/audit operasional sistem. Setiap aksi krusial (seperti login, tambah data, perubahan status) oleh semua user akan tersimpan di sini demi transparansi.',
+                  side: 'right',
+                  align: 'start'
+                }
+              }
+            ],
+            onDestroyed: () => {
+              localStorage.setItem('tour_admin_done', 'true');
+            }
+          });
+          
+          setTimeout(() => {
+            driverObj.drive();
+          }, 500);
+        }
+      });
+    });
+  }, []);
+
   const currentUser = useStore(state => state.currentUser);
   const addNotification = useStore(state => state.addNotification);
 

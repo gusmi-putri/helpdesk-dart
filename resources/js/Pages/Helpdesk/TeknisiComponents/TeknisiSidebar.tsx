@@ -20,6 +20,7 @@ const TeknisiSidebar: React.FC<TeknisiSidebarProps> = ({
 
       <nav className="flex-1 py-6 space-y-1">
         <button
+          id="tour-tugas-perbaikan"
           className={`w-full flex items-center justify-between px-6 py-3.5 font-tactical text-sm tracking-wider transition-all duration-300 border-l-4 group
             ${activeMenu === 'TUGAS' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-500 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}
           `}

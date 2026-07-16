@@ -61,6 +61,68 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
     return () => clearInterval(interval);
   }, []);
 
+  // Guided Tour
+  useEffect(() => {
+    // Dynamic import to prevent SSR issues if any, but since this is Inertia/React client side, normal import is fine.
+    // However, let's keep it safe.
+    import('driver.js').then(({ driver }) => {
+      import('driver.js/dist/driver.css').then(() => {
+        if (localStorage.getItem('tour_pelapor_done') !== 'true') {
+          const driverObj = driver({
+            showProgress: true,
+            animate: true,
+            nextBtnText: 'Selanjutnya ➔',
+            prevBtnText: '← Sebelumnya',
+            doneBtnText: 'Selesai',
+            steps: [
+              {
+                popover: {
+                  title: 'Selamat Datang di SISFO DART',
+                  description: 'Ini adalah Dashboard Pelapor. Mari ikuti tur singkat untuk mengenal fitur-fitur yang tersedia.',
+                }
+              },
+              {
+                element: '#tour-buat-laporan',
+                popover: {
+                  title: 'Buat Laporan Baru',
+                  description: 'Gunakan form ini untuk membuat laporan masalah atau permintaan layanan.',
+                  side: 'right',
+                  align: 'start'
+                }
+              },
+              {
+                element: '#tour-riwayat',
+                popover: {
+                  title: 'Riwayat Laporan',
+                  description: 'Pantau status tiket yang telah Anda buat dan berikan feedback jika sudah selesai.',
+                  side: 'right',
+                  align: 'start'
+                }
+              },
+              {
+                element: '#tour-video',
+                popover: {
+                  title: 'Bank Video',
+                  description: 'Daftar video panduan yang mungkin dapat membantu menyelesaikan masalah Anda secara mandiri.',
+                  side: 'right',
+                  align: 'start'
+                }
+              }
+            ],
+            onDestroyed: () => {
+              localStorage.setItem('tour_pelapor_done', 'true');
+            }
+          });
+          
+          // Delay sedikit agar DOM sidebar termuat sepenuhnya
+          setTimeout(() => {
+            driverObj.drive();
+          }, 500);
+        }
+      });
+    });
+  }, []);
+
 
   return (
     <div className="h-screen bg-slate-50 dark:bg-cighra-dark flex flex-col font-sans selection:bg-cighra-primary dark:selection:bg-cighra-gold dark:selection:text-slate-900 selection:text-gunmetal relative text-slate-800 dark:text-slate-200">

@@ -54,6 +54,65 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
     return () => clearInterval(interval);
   }, []);
 
+  // Guided Tour Teknisi
+  useEffect(() => {
+    import('driver.js').then(({ driver }) => {
+      import('driver.js/dist/driver.css').then(() => {
+        if (localStorage.getItem('tour_teknisi_done') !== 'true') {
+          const driverObj = driver({
+            showProgress: true,
+            animate: true,
+            nextBtnText: 'Selanjutnya ➔',
+            prevBtnText: '← Sebelumnya',
+            doneBtnText: 'Selesai',
+            steps: [
+              {
+                popover: {
+                  title: 'Selamat Datang Teknisi',
+                  description: 'Ini adalah Portal Perbaikan DART. Mari pelajari letak elemen utama yang akan Anda gunakan sehari-hari.',
+                }
+              },
+              {
+                element: '#tour-tugas-perbaikan',
+                popover: {
+                  title: 'Akses Menu Utama',
+                  description: 'Di menu ini, Anda akan menerima mandat untuk memproses perbaikan. Angka merah menandakan ada tugas masuk.',
+                  side: 'right',
+                  align: 'start'
+                }
+              },
+              {
+                element: '#tour-teknisi-left',
+                popover: {
+                  title: 'Daftar Tugas (Task List)',
+                  description: 'Semua tiket perbaikan yang harus Anda tangani berjejer di panel kiri ini. Anda bisa mencari atau mem-filter berdasarkan status aktif atau riwayat.',
+                  side: 'right',
+                  align: 'start'
+                }
+              },
+              {
+                element: '#tour-teknisi-right',
+                popover: {
+                  title: 'Area Pengerjaan (Workspace)',
+                  description: 'Setelah memilih tugas di kiri, detailnya muncul di sini. Anda bisa menekan "Terima Tugas", "Mulai", hingga melampirkan foto bukti selesai dari panel ini.',
+                  side: 'left',
+                  align: 'start'
+                }
+              }
+            ],
+            onDestroyed: () => {
+              localStorage.setItem('tour_teknisi_done', 'true');
+            }
+          });
+          
+          setTimeout(() => {
+            driverObj.drive();
+          }, 500);
+        }
+      });
+    });
+  }, []);
+
   const handleAcceptTask = (taskId: number) => {
     router.post(`/reports/${taskId}/accept-task`, {}, {
       onSuccess: () => {
@@ -124,7 +183,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
           {/* Content Grid */}
           <div className="flex-1 flex flex-col md:flex-row gap-6 md:gap-8 overflow-y-auto md:overflow-hidden h-auto md:h-full items-stretch">
             {/* LEFT PANEL */}
-            <div className={`w-full md:w-[40%] lg:w-[35%] shrink-0 ${isMobileListOpen ? 'h-[450px]' : 'h-auto'} md:h-full overflow-hidden transition-all duration-300`}>
+            <div id="tour-teknisi-left" className={`w-full md:w-[40%] lg:w-[35%] shrink-0 ${isMobileListOpen ? 'h-[450px]' : 'h-auto'} md:h-full overflow-hidden transition-all duration-300`}>
               <TaskList
                 tasks={filteredTasks}
                 activeTab={activeTab}
@@ -139,7 +198,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
             </div>
 
             {/* RIGHT PANEL */}
-            <div className="flex-1 h-auto md:h-full overflow-hidden">
+            <div id="tour-teknisi-right" className="flex-1 h-auto md:h-full overflow-hidden">
               <TaskDetailPanel selectedTask={selectedTask} activeTab={activeTab}>
                 {activeTab === 'HISTORY' && selectedTask ? (
                   <CompletionSummary
