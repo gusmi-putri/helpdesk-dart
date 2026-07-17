@@ -219,7 +219,7 @@ class UnitController extends Controller
             return redirect()->back()->with('message', 'Pengajuan ini sudah diproses sebelumnya.');
         }
 
-        $adminNotes = $request->input('admin_notes', '');
+        $adminNotes = substr(strip_tags($request->input('admin_notes', '')), 0, 500);
         $unitIndex = $request->input('unit_index'); // Individual unit index (0-based)
         $unitIndices = $request->input('unit_indices'); // Array of indices (0-based)
 
@@ -379,7 +379,7 @@ class UnitController extends Controller
         }
 
         $unitIndex = $request->input('unit_index');
-        $adminNotes = $request->input('admin_notes', 'Ditolak.');
+        $adminNotes = substr(strip_tags($request->input('admin_notes', 'Ditolak.')), 0, 500);
 
         if ($mutation->type === 'request_add') {
             $unitData = $mutation->unit_data;
@@ -697,8 +697,10 @@ class UnitController extends Controller
             }
         }
 
-        $header = true;
-        $units = [];
+        $header  = true;
+        $units   = [];
+        $maxRows = 500; // Batas keamanan: mencegah overload memori
+        $rowCount = 0;
         $validJenis = ['DART STD', 'DART STK', 'DART Portabel - Swing', 'DART Portabel - Pop', 'DART Portabel - Flip', 'DART Marathon Target', 'Moving Target'];
         $statusMap = [
             'siap ops' => 'Beroperasi',
@@ -712,6 +714,10 @@ class UnitController extends Controller
             if ($header) {
                 $header = false;
                 continue;
+            }
+            // Hentikan parsing jika melebihi batas baris aman
+            if (++$rowCount > $maxRows) {
+                break;
             }
             if (count($row) < 2) {
                 continue;

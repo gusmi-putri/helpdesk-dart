@@ -113,7 +113,7 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
               localStorage.setItem('tour_pelapor_done', 'true');
             }
           });
-          
+
           // Delay sedikit agar DOM sidebar termuat sepenuhnya
           setTimeout(() => {
             driverObj.drive();
@@ -128,58 +128,58 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
     <div className="h-screen bg-slate-50 dark:bg-cighra-dark flex flex-col font-sans selection:bg-cighra-primary dark:selection:bg-cighra-gold dark:selection:text-slate-900 selection:text-gunmetal relative text-slate-800 dark:text-slate-200">
 
       <PelaporTopbar
-          setIsMobileMenuOpen={setIsMobileMenuOpen}
-          currentUser={currentUser}
-        />
+        setIsMobileMenuOpen={setIsMobileMenuOpen}
+        currentUser={currentUser}
+      />
       <div className="flex-1 flex overflow-hidden">
 
-      <PelaporSidebar
-        isMobileMenuOpen={isMobileMenuOpen}
-        setIsMobileMenuOpen={setIsMobileMenuOpen}
-        activeMenu={activeMenu}
-        setActiveMenu={setActiveMenu}
-      />
+        <PelaporSidebar
+          isMobileMenuOpen={isMobileMenuOpen}
+          setIsMobileMenuOpen={setIsMobileMenuOpen}
+          activeMenu={activeMenu}
+          setActiveMenu={setActiveMenu}
+        />
 
-      {/* MAIN CONTENT AREA */}
-      <main className="flex-1 relative overflow-y-auto custom-scrollbar bg-slate-50 dark:bg-cighra-dark">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-paper.png')] opacity-[0.05] pointer-events-none"></div>
+        {/* MAIN CONTENT AREA */}
+        <main className="flex-1 relative overflow-y-auto custom-scrollbar bg-slate-50 dark:bg-cighra-dark">
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-paper.png')] opacity-[0.05] pointer-events-none"></div>
 
-        
 
-        <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
-          {activeMenu === 'WIZARD' && lastReportedData && (
-            <PostReportWizard
-              reportData={lastReportedData}
-              onClose={() => setActiveMenu('HISTORY')}
-            />
-          )}
 
-          {activeMenu === 'FORM' && (
-            <ReportForm
-              dbUnits={dbUnits}
-              authUser={authUser}
-              currentUser={currentUser}
-              onSuccess={(reportedData) => {
-                setLastReportedData(reportedData);
-                setActiveMenu('WIZARD');
-              }}
-            />
-          )}
+          <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
+            {activeMenu === 'WIZARD' && lastReportedData && (
+              <PostReportWizard
+                reportData={lastReportedData}
+                onClose={() => setActiveMenu('HISTORY')}
+              />
+            )}
 
-          {activeMenu === 'HISTORY' && (
-            <ReportHistory
-              history={filteredHistory}
-              filterTime={filterTime}
-              setFilterTime={setFilterTime}
-              onSelectItem={setSelectedItemId}
-            />
-          )}
+            {activeMenu === 'FORM' && (
+              <ReportForm
+                dbUnits={dbUnits}
+                authUser={authUser}
+                currentUser={currentUser}
+                onSuccess={(reportedData) => {
+                  setLastReportedData(reportedData);
+                  setActiveMenu('WIZARD');
+                }}
+              />
+            )}
 
-          {activeMenu === 'VIDEO' && (
-            <VideoBank />
-          )}
-        </div>
-      </main>
+            {activeMenu === 'HISTORY' && (
+              <ReportHistory
+                history={filteredHistory}
+                filterTime={filterTime}
+                setFilterTime={setFilterTime}
+                onSelectItem={setSelectedItemId}
+              />
+            )}
+
+            {activeMenu === 'VIDEO' && (
+              <VideoBank />
+            )}
+          </div>
+        </main>
       </div>
 
       <PelaporReportDetailModal
