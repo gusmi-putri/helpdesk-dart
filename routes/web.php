@@ -13,6 +13,7 @@ use App\Http\Controllers\UnitController;
 use App\Http\Controllers\AiDiagnosticController;
 use App\Http\Controllers\RecapController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\FileController;
 
 // ==========================================
 // PUBLIC ROUTES (GUEST)
@@ -23,10 +24,14 @@ Route::get('/', function () {
 
 
 Route::get('/login', function () {
-    return Inertia::render('Helpdesk/Login');
+    $lockoutUntil = session('lockout_until');
+    $sisaDetik = $lockoutUntil ? max(0, $lockoutUntil - now()->timestamp) : 0;
+    return Inertia::render('Helpdesk/Login', [
+        'initialSisaDetik' => $sisaDetik
+    ]);
 })->name('login');
 
-Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:5,1');
+Route::post('/login', [LoginController::class, 'login']);
 Route::get('/register', [RegisterController::class, 'index'])->name('register');
 Route::post('/register', [RegisterController::class, 'register'])->middleware('throttle:3,1');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
@@ -108,6 +113,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/api/diagnose', [AiDiagnosticController::class, 'diagnose'])
         ->middleware('throttle:10,1')
         ->name('api.diagnose');
+    // --- Secure File Download ---
+    // Hanya Admin, Staf, dan Pelapor (pemilik laporan) yang bisa download
+    Route::get('/files/{path}', [FileController::class, 'download'])
+        ->where('path', '.*')
+        ->name('files.download');
 });
 
 // ==========================================

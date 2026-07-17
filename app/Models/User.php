@@ -32,6 +32,7 @@ class User extends Authenticatable
              'is_active' => 'boolean',
              'is_approved' => 'boolean',
              'pending_changes' => 'array',
+             'locked_until' => 'datetime',
          ];
      }
 

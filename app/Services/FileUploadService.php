@@ -19,7 +19,9 @@ class FileUploadService
         $extension = strtolower($file->getClientOriginalExtension() ?: $file->guessExtension() ?: 'bin');
         $extension = preg_replace('/[^a-z0-9]+/i', '', $extension) ?: 'bin';
         $filename = $prefix . uniqid('', true) . '_' . time() . '.' . $extension;
-        $file->storeAs($directory, $filename, 'public');
+        // Use the "local" disk (private) instead of "public"
+        Storage::disk('local')->putFileAs($directory, $file, $filename);
+
 
         return trim($directory . '/' . $filename, '/');
     }
