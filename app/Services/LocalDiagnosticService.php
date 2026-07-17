@@ -10,7 +10,7 @@ class LocalDiagnosticService
      */
     protected array $rules = [
         [
-            'keywords' => ['layar', 'display', 'monitor', 'gambar', 'tampilan', 'blank', 'gelap', 'hitam', 'tidak muncul'],
+            'keywords' => ['layar', 'display', 'screen', 'monitor', 'gambar', 'tampilan', 'blank', 'gelap', 'hitam', 'tidak muncul', 'putih', 'bergaris', 'baret', 'berbayang', 'buram', 'flicker', 'kedap-kedip', 'mati sebagian', 'lcd'],
             'topic'    => 'Masalah Layar / Display',
             'causes'   => [
                 'Kabel data penghubung modul display longgar atau putus.',
@@ -26,7 +26,7 @@ class LocalDiagnosticService
             ],
         ],
         [
-            'keywords' => ['sensor', 'deteksi', 'tidak terdeteksi', 'laser', 'hit', 'tembakan', 'tidak merespons', 'tidak bereaksi'],
+            'keywords' => ['sensor', 'deteksi', 'tidak terdeteksi', 'laser', 'hit', 'tembakan', 'tidak merespons', 'tidak bereaksi', 'meleset', 'akurasi', 'ngaco', 'tidak kena', 'tidak peka', 'kalibrasi', 'macet', 'bidikan', 'delay', 'telat'],
             'topic'    => 'Masalah Sensor / Deteksi',
             'causes'   => [
                 'Lensa sensor kotor terhalang debu, kotoran, atau kondensasi.',
@@ -42,7 +42,7 @@ class LocalDiagnosticService
             ],
         ],
         [
-            'keywords' => ['daya', 'power', 'mati', 'tidak nyala', 'baterai', 'charger', 'adaptor', 'listrik', 'tegangan'],
+            'keywords' => ['daya', 'power', 'mati', 'tidak nyala', 'mati total', 'baterai', 'batre', 'charger', 'casan', 'adaptor', 'listrik', 'tegangan', 'drop', 'bocor', 'kembung', 'panas', 'overheat', 'konslet', 'kabel putus', 'restart terus', 'mati sendiri'],
             'topic'    => 'Masalah Catu Daya / Power',
             'causes'   => [
                 'Baterai habis atau mengalami kerusakan sel (kembung/bocor).',
@@ -58,7 +58,7 @@ class LocalDiagnosticService
             ],
         ],
         [
-            'keywords' => ['koneksi', 'jaringan', 'wifi', 'bluetooth', 'komunikasi', 'sinkronisasi', 'sync', 'link', 'putus'],
+            'keywords' => ['koneksi', 'jaringan', 'wifi', 'bluetooth', 'komunikasi', 'sinkronisasi', 'sync', 'link', 'putus', 'disconnect', 'sinyal', 'lemah', 'lemot', 'pairing', 'tidak konek', 'hilang sinyal', 'offline', 'delay ping', 'lag'],
             'topic'    => 'Masalah Koneksi / Komunikasi',
             'causes'   => [
                 'Modul WiFi/Bluetooth mengalami gangguan firmware.',
@@ -74,7 +74,7 @@ class LocalDiagnosticService
             ],
         ],
         [
-            'keywords' => ['fisik', 'rusak', 'retak', 'pecah', 'patah', 'bengkok', 'penyok', 'jatuh', 'tertimpa', 'bentur'],
+            'keywords' => ['fisik', 'rusak', 'retak', 'pecah', 'patah', 'bengkok', 'penyok', 'jatuh', 'tertimpa', 'bentur', 'hancur', 'lepas', 'kendur', 'koclak', 'casing', 'bodi', 'body', 'bolong', 'sobek', 'terbakar', 'kabel luar', 'tergores'],
             'topic'    => 'Kerusakan Fisik / Mekanikal',
             'causes'   => [
                 'Benturan keras saat transportasi atau saat penggunaan di lapangan.',
@@ -89,7 +89,7 @@ class LocalDiagnosticService
             ],
         ],
         [
-            'keywords' => ['software', 'error', 'sistem', 'aplikasi', 'program', 'update', 'hang', 'freeze', 'macet', 'crash'],
+            'keywords' => ['software', 'error', 'sistem', 'aplikasi', 'program', 'update', 'hang', 'freeze', 'macet', 'crash', 'bug', 'glitch', 'force close', 'keluar sendiri', 'stuck', 'loading', 'booting', 'bootloop', 'firmware', 'os', 'reset'],
             'topic'    => 'Masalah Perangkat Lunak / Firmware',
             'causes'   => [
                 'Firmware unit mengalami korupsi atau gagal update.',
@@ -104,7 +104,7 @@ class LocalDiagnosticService
             ],
         ],
         [
-            'keywords' => ['suara', 'bunyi', 'speaker', 'alarm', 'audio', 'beep', 'bising', 'nyaring'],
+            'keywords' => ['suara', 'bunyi', 'speaker', 'alarm', 'audio', 'beep', 'bising', 'nyaring', 'pelan', 'pecah', 'kresek', 'kemeresek', 'bisu', 'mute', 'sirine', 'mendengung'],
             'topic'    => 'Masalah Audio / Indikator Suara',
             'causes'   => [
                 'Speaker internal mengalami kerusakan akibat kelembaban atau benturan.',

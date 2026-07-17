@@ -19,7 +19,7 @@ const PostReportWizard: React.FC<PostReportWizardProps> = ({ reportData, onClose
   const [errorAi, setErrorAi] = useState<string | null>(null);
 
   useEffect(() => {
-    // Panggil API Gemini secara asinkronus
+    // Panggil API Diagnosis Lokal secara asinkronus
     const fetchDiagnosis = async () => {
       try {
         const res = await axios.post('/api/diagnose', {
@@ -105,7 +105,7 @@ const PostReportWizard: React.FC<PostReportWizardProps> = ({ reportData, onClose
                     <Bot size={24} />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-tactical font-bold text-slate-800 dark:text-white uppercase tracking-widest">Diagnosis Awal AI</h3>
+                    <h3 className="text-2xl font-tactical font-bold text-slate-800 dark:text-white uppercase tracking-widest">Diagnosis Awal</h3>
                     <p className="text-xs text-slate-500 dark:text-slate-400 font-mono tracking-widest uppercase">DART Intelligence System</p>
                   </div>
                 </div>
@@ -114,7 +114,7 @@ const PostReportWizard: React.FC<PostReportWizardProps> = ({ reportData, onClose
                   {isLoadingAi ? (
                     <div className="flex flex-col items-center justify-center h-full space-y-4 py-8">
                       <div className="w-12 h-12 border-4 border-cighra-primary/20 dark:border-cighra-gold/20 border-t-cighra-primary dark:border-t-cighra-gold rounded-full animate-spin"></div>
-                      <p className="text-sm font-mono text-slate-500 dark:text-slate-400 animate-pulse uppercase tracking-widest">Gemini AI sedang menganalisis kendala...</p>
+                      <p className="text-sm font-mono text-slate-500 dark:text-slate-400 animate-pulse uppercase tracking-widest">Sistem sedang menganalisis kendala...</p>
                     </div>
                   ) : errorAi ? (
                     <div className="flex flex-col items-center justify-center h-full space-y-2 py-8 text-targetred">
@@ -130,7 +130,7 @@ const PostReportWizard: React.FC<PostReportWizardProps> = ({ reportData, onClose
                 </div>
 
                 <div className="flex items-center justify-between pt-4 mt-6 border-t border-slate-200 dark:border-slate-600">
-                  <p className="text-xs text-slate-500 dark:text-slate-400 italic">Saran ini dihasilkan oleh AI dan bersifat panduan awal.</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 italic">Saran ini dihasilkan oleh sistem dan bersifat panduan awal.</p>
                   <button
                     onClick={onClose}
                     className="flex items-center gap-2 bg-slate-800 dark:bg-white text-white dark:text-slate-900 px-6 py-3 font-tactical font-bold tracking-widest uppercase rounded-sm hover:bg-slate-700 dark:hover:bg-slate-200 transition-colors"
