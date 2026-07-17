@@ -55,7 +55,7 @@ const StafUnitBatchModal: React.FC<StafUnitBatchModalProps> = ({ isOpen, onClose
       "#    - DART Portabel - Flip",
       "#    - DART Marathon Target",
       "#    - Moving Target",
-      "# 3. Kolom 'asal_satuan': Harus sesuai nama Satuan yang SUDAH TERDAFTAR di database (Contoh: MAKOSTRAD, AKMIL).",
+      "# 3. Kolom 'asal_satuan': Kosongkan jika belum ditentukan. Jika diisi, harus sesuai nama Satuan yang SUDAH TERDAFTAR (Contoh: MAKOSTRAD).",
       "# 4. Kolom 'status_unit': Harus bernilai salah satu dari pilihan berikut:",
       "#    - Beroperasi",
       "#    - Rusak",

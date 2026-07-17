@@ -23,7 +23,7 @@ class ReportController extends Controller
     public function store(StoreReportRequest $request)
     {
         $fotoPath = $this->fileService->uploadSingleFile($request->file('foto'), 'reports');
-        $filePaths = $this->fileService->uploadMultipleFiles($request->file('file_bukti'), 'bukti', 5);
+        $filePaths = $this->fileService->uploadMultipleFiles($request->file('file_bukti'), 'reports', 5);
         $dokumenAnggaranPaths = $this->fileService->uploadMultipleFiles($request->file('dokumen_anggaran'), 'dokumen-anggaran', 10);
 
         DB::transaction(function () use ($request, $fotoPath, $filePaths, $dokumenAnggaranPaths) {
@@ -46,6 +46,11 @@ class ReportController extends Controller
 
             $unit = Unit::find($request->unit_id);
             if ($unit) {
+                if ($request->boolean('auto_assign') && is_null($unit->satuan_id)) {
+                    $unit->satuan_id = $request->user()->satuan_id;
+                    $unit->save();
+                    SystemLog::log('INFO', $request->user()->id, "Menugaskan perangkat DART {$unit->nomor_seri} secara otomatis ke satuan {$request->user()->asal_satuan} saat pelaporan.");
+                }
                 $unit->syncStatus();
             }
 

@@ -16,7 +16,7 @@ class ReportResource extends JsonResource
     {
         $dokumenAnggaran = $this->dokumen_anggaran
             ? collect(json_decode($this->dokumen_anggaran, true) ?? [$this->dokumen_anggaran])
-                ->map(fn($path) => asset('storage/' . $path))
+                ->map(fn($path) => asset('storage/' . ltrim($path, '/')))
                 ->toArray()
             : [];
 
@@ -24,14 +24,9 @@ class ReportResource extends JsonResource
         if ($this->file_bukti_selesai) {
             $decoded = json_decode($this->file_bukti_selesai, true);
             if (is_array($decoded)) {
-                $fotoBuktiSelesai = array_map(fn($path) => asset('storage/' . $path), $decoded);
+                $fotoBuktiSelesai = array_map(fn($path) => asset('storage/' . ltrim($path, '/')), $decoded);
             } else {
-                $path = $this->file_bukti_selesai;
-                if (str_starts_with($path, 'reports/')) {
-                    $fotoBuktiSelesai[] = asset('storage/' . $path);
-                } else {
-                    $fotoBuktiSelesai[] = asset('storage/reports/' . $path);
-                }
+                $fotoBuktiSelesai[] = asset('storage/' . ltrim($this->file_bukti_selesai, '/'));
             }
         }
 
@@ -54,10 +49,12 @@ class ReportResource extends JsonResource
                 'jenisPerbaikan' => $this->jenis_perbaikan ?? 'Swadaya',
                 'dokumenAnggaran' => $dokumenAnggaran,
                 'keteranganAnggaran' => $this->keterangan_anggaran,
-                'foto_bukti' => $this->file_bukti && !json_decode($this->file_bukti) ? asset('storage/reports/' . $this->file_bukti) : null,
-                'fileBukti' => $this->file_bukti ? collect(json_decode($this->file_bukti, true) ?? [])->map(fn($path) => asset('storage/' . $path))->toArray() : [],
+                'foto_bukti' => $this->file_bukti && !json_decode($this->file_bukti) ? asset('storage/' . ltrim($this->file_bukti, '/')) : null,
+                'fileBukti' => $this->file_bukti ? collect(json_decode($this->file_bukti, true) ?? [])->map(fn($path) => asset('storage/' . ltrim($path, '/')))->toArray() : [],
                 'tautan_video' => $this->tautan_video,
                 'pelapor_wa' => $this->pelapor ? $this->pelapor->no_wa : null,
+                'pelapor_satuan_id' => $this->pelapor ? $this->pelapor->satuan_id : null,
+                'unit_satuan_id' => $this->unit ? $this->unit->satuan_id : null,
             ],
             'perbaikan' => [
                 'teknisi_id' => $this->teknisi_id,

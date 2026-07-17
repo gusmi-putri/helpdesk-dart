@@ -51,7 +51,7 @@ const DashboardStaf = (props: any) => {
   const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
 
   // Mutation States
-  const [mutationActiveTab, setMutationActiveTab] = useState<'PERSONEL' | 'INVENTARIS'>('PERSONEL');
+  const [mutationActiveTab, setMutationActiveTab] = useState<'PERSONEL' | 'INVENTARIS' | 'SATUAN'>('PERSONEL');
 
   // Unit Mutation States
   const [isAddUnitModalOpen, setIsAddUnitModalOpen] = useState(false);
@@ -335,13 +335,15 @@ const DashboardStaf = (props: any) => {
                       activeMenu === 'SELESAI' ? 'ARSIP DOKUMEN PENYELESAIAN' :
                         activeMenu === 'INVENTARIS' ? 'DATABASE INVENTARIS' :
                           activeMenu === 'MUTASI' ? 'RIWAYAT PENGAJUAN' :
-                            'DATA PERSONEL'}
+                            activeMenu === 'SATUANS' ? 'DATA SATUAN' :
+                              'DATA PERSONEL'}
                   </h2>
                   <p className="text-xs font-mono text-slate-500 dark:text-slate-300 mt-1 uppercase tracking-widest">
                     {activeMenu === 'INVENTARIS' ? 'STATUS KESIAPAN UNIT DART.' :
-                      activeMenu === 'MUTASI' ? (mutationActiveTab === 'PERSONEL' ? 'Riwayat pengajuan penambahan dan penghapusan data personel.' : 'Riwayat pengajuan penambahan dan penghapusan unit inventaris.') :
+                      activeMenu === 'MUTASI' ? (mutationActiveTab === 'PERSONEL' ? 'Riwayat pengajuan penambahan dan penghapusan data personel.' : mutationActiveTab === 'SATUAN' ? 'Riwayat pengajuan penambahan dan penghapusan data satuan.' : 'Riwayat pengajuan penambahan dan penghapusan unit inventaris.') :
                         activeMenu === 'PERSONEL' ? 'KELOLA DATA PENGGUNA SISTEM.' :
-                          'Sistem Manajemen Pelaporan Kerusakan Dart.'}
+                          activeMenu === 'SATUANS' ? 'KELOLA DATA SATUAN KERJA.' :
+                            'Sistem Manajemen Pelaporan Kerusakan Dart.'}
                   </p>
                 </div>
 
@@ -403,6 +405,7 @@ const DashboardStaf = (props: any) => {
                   <StafMutationCenter
                     dbMutations={dbMutations}
                     dbUserMutations={dbUserMutations}
+                    dbSatuans={dbSatuans}
                     activeTab={mutationActiveTab}
                     setActiveTab={setMutationActiveTab}
                   />

@@ -50,11 +50,12 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
     longitude: ''
   });
 
-  const filtered = dbSatuans.filter((s: any) =>
-    (s.nama_satuan || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+  const filtered = dbSatuans.filter((s: any) => {
+    if (s.is_verified == 0 || s.is_verified === false) return false;
+    return (s.nama_satuan || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
     (s.kode_satuan || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (s.alamat || '').toLowerCase().includes(searchTerm.toLowerCase())
-  );
+    (s.alamat || '').toLowerCase().includes(searchTerm.toLowerCase());
+  });
 
   const { sortedItems: filteredSatuans, sortConfig, handleSort } = useTableSort(filtered, { key: 'nama_satuan', direction: 'asc' });
 

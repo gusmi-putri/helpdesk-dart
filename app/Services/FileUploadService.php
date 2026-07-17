@@ -16,13 +16,12 @@ class FileUploadService
             return null;
         }
 
-        // Gunakan nama yang digenerate server, bukan nama dari client
-        // Ini mencegah path traversal dan nama file berbahaya
-        $extension = $file->getClientOriginalExtension();
-        $filename = $prefix . uniqid() . '_' . time() . '.' . $extension;
+        $extension = strtolower($file->getClientOriginalExtension() ?: $file->guessExtension() ?: 'bin');
+        $extension = preg_replace('/[^a-z0-9]+/i', '', $extension) ?: 'bin';
+        $filename = $prefix . uniqid('', true) . '_' . time() . '.' . $extension;
         $file->storeAs($directory, $filename, 'public');
-        
-        return $filename;
+
+        return trim($directory . '/' . $filename, '/');
     }
 
     /**
@@ -39,8 +38,7 @@ class FileUploadService
         
         foreach ($filesToProcess as $file) {
             if ($file instanceof UploadedFile) {
-                $path = $file->store($directory, 'public');
-                $filePaths[] = $path;
+                $filePaths[] = $this->uploadSingleFile($file, $directory);
             }
         }
 

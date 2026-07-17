@@ -61,6 +61,8 @@ class SatuanController extends Controller
                 'kode_satuan' => $request->kode_satuan,
                 'nama_satuan' => strtoupper($request->nama_satuan),
                 'alamat' => $request->alamat,
+                'latitude' => $request->latitude,
+                'longitude' => $request->longitude,
                 'is_verified' => false,
                 'pending_action' => 'create',
                 'pending_changes' => [

@@ -13,11 +13,13 @@ use App\Http\Controllers\ForgotPasswordController; // Pastikan path-nya benar
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendCode']);
 Route::post('/register', [RegisterController::class, 'register']);
 Route::get('/satuan', [SatuanController::class, 'index']);
-Route::post('/satuan', [SatuanController::class, 'store']);
-Route::put('/satuan/{id}', [SatuanController::class, 'update']);
-Route::delete('/satuan/{id}', [SatuanController::class, 'destroy']);
-Route::post('/ai/diagnose', [AiDiagnosticController::class, 'diagnose']);
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('/satuan', [SatuanController::class, 'store']);
+    Route::put('/satuan/{id}', [SatuanController::class, 'update']);
+    Route::delete('/satuan/{id}', [SatuanController::class, 'destroy']);
+    Route::post('/ai/diagnose', [AiDiagnosticController::class, 'diagnose']);
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+});

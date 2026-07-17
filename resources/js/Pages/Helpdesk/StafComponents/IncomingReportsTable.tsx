@@ -139,7 +139,12 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
                       )}
                     </td>
                     <td className="p-4 text-center">
-                      <div className="font-bold mb-1 text-slate-800 dark:text-white">{report.unit?.nomor_seri || report.kerusakan.barangRusak || 'UNIT TIDAK DIKENAL'}</div>
+                      <div className="font-bold mb-1 text-slate-800 dark:text-white flex items-center justify-center gap-2">
+                        {report.unit?.nomor_seri || report.kerusakan.barangRusak || 'UNIT TIDAK DIKENAL'}
+                        {report.kerusakan.pelapor_satuan_id && report.kerusakan.unit_satuan_id && report.kerusakan.pelapor_satuan_id !== report.kerusakan.unit_satuan_id && (
+                          <span className="bg-orange-500/10 text-orange-500 border border-orange-500/30 text-[9px] font-bold px-1.5 py-0.5 rounded-sm whitespace-nowrap">LINTAS SATUAN</span>
+                        )}
+                      </div>
                       <div className="text-slate-500 dark:text-slate-400 text-xs font-mono uppercase">LOK: {report.kerusakan.lokasi}</div>
                     </td>
                     <td className="p-4 text-center">
@@ -177,7 +182,7 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
                               onClick={() => onAssignTechnician(report.db_id)}
                               className="w-full bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 text-white px-3 py-2 text-xs font-tactical font-bold tracking-[0.15em] transition-all flex items-center justify-center gap-2 border border-cighra-primary dark:border-cighra-gold shadow-lg"
                             >
-                              <ShieldAlert className="w-3.5 h-3.5" /> TUGASKAN TEKNISI
+                              <ShieldAlert className="w-3.5 h-3.5" /> {report.perbaikan?.teknisi ? 'GANTI TEKNISI' : 'TUGASKAN TEKNISI'}
                             </button>
                             <button
                               onClick={() => onReject(report.db_id)}
