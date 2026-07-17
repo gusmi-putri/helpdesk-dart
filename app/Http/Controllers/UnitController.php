@@ -181,7 +181,7 @@ class UnitController extends Controller
 
         $documentPath = null;
         if ($request->hasFile('document')) {
-            $documentPath = $request->file('document')->store('mutations/documents', 'public');
+            $documentPath = $this->fileService->uploadSingleFile($request->file('document'), 'mutations/documents');
         }
 
         // Check if there's already a pending delete request for this unit
@@ -485,7 +485,7 @@ class UnitController extends Controller
         ]);
 
         $file = $request->file('file');
-        $documentPath = $request->file('document')->store('mutations/documents', 'public');
+        $documentPath = $this->fileService->uploadSingleFile($request->file('document'), 'mutations/documents');
 
         $skipped = 0;
         $parsedUnits = $this->parseUnitCsv($file->getPathname(), $skipped);
@@ -577,7 +577,7 @@ class UnitController extends Controller
             'document.required' => 'Surat pendukung wajib dilampirkan untuk pengajuan massal.',
         ]);
 
-        $documentPath = $request->file('document')->store('mutations/documents', 'public');
+        $documentPath = $this->fileService->uploadSingleFile($request->file('document'), 'mutations/documents');
         $reason = $request->input('reason', 'Pengajuan penambahan massal DART.');
         $file = $request->file('file');
         
@@ -628,7 +628,7 @@ class UnitController extends Controller
             'document.required' => 'Surat pendukung wajib dilampirkan.',
         ]);
 
-        $documentPath = $request->file('document')->store('mutations/documents', 'public');
+        $documentPath = $this->fileService->uploadSingleFile($request->file('document'), 'mutations/documents');
         $reason = $request->input('reason');
         $unitIds = $request->input('unit_ids');
         

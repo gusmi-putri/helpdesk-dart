@@ -23,7 +23,7 @@ class ReportController extends Controller
     public function store(StoreReportRequest $request)
     {
         $fotoPath = $this->fileService->uploadSingleFile($request->file('foto'), 'reports');
-        $filePaths = $this->fileService->uploadMultipleFiles($request->file('file_bukti'), 'bukti', 5);
+        $filePaths = $this->fileService->uploadMultipleFiles($request->file('file_bukti'), 'reports', 5);
         $dokumenAnggaranPaths = $this->fileService->uploadMultipleFiles($request->file('dokumen_anggaran'), 'dokumen-anggaran', 10);
 
         DB::transaction(function () use ($request, $fotoPath, $filePaths, $dokumenAnggaranPaths) {

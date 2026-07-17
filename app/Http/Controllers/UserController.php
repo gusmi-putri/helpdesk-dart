@@ -47,23 +47,29 @@ class UserController extends Controller
             if ($isAdmin) {
                 $user = User::create($userData);
 
+                // Simpan ke mutation log TANPA password (hash tidak perlu disimpan di audit trail)
+                $userDataForLog = array_diff_key($userData, ['password' => '']);
+
                 UserMutation::create([
                     'target_user_id' => $user->id,
                     'type' => 'approved_add',
                     'requested_by' => $currentUser->id,
                     'approved_by' => $currentUser->id,
                     'status' => 'approved',
-                    'user_data' => $userData,
+                    'user_data' => $userDataForLog,
                 ]);
 
                 SystemLog::log('SUCCESS', $currentUser->id, "Menambahkan personel baru secara langsung: {$request->nama_lengkap} ({$request->username})");
             } else {
+                // Simpan mutation request TANPA password (akan di-set ulang saat disetujui)
+                $userDataForMutation = array_diff_key($userData, ['password' => '']);
+
                 UserMutation::create([
                     'target_user_id' => null,
                     'type' => 'request_add',
                     'requested_by' => $currentUser->id,
                     'status' => 'pending',
-                    'user_data' => $userData,
+                    'user_data' => $userDataForMutation,
                 ]);
 
                 SystemLog::log('INFO', $currentUser->id, "Mendaftarkan personel baru: {$request->nama_lengkap} ({$request->username}) (Menunggu Persetujuan)");
@@ -254,7 +260,13 @@ class UserController extends Controller
             } elseif ($mutation->type === 'request_add') {
                 $userData = $mutation->user_data ?? [];
                 $userData['is_approved'] = true;
-                
+
+                // Pastikan tidak ada field password dari mutation lama (keamanan)
+                // Generate password sementara; user harus reset via forgot-password
+                if (!isset($userData['password'])) {
+                    $userData['password'] = bcrypt(\Illuminate\Support\Str::random(16));
+                }
+
                 $user = User::create($userData);
 
                 $mutation->update([
