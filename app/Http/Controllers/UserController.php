@@ -77,9 +77,8 @@ class UserController extends Controller
         return redirect()->back()->with('message', 'Pengajuan penambahan personel telah dikirim dan sedang menunggu persetujuan Admin.');
     }
 
-    public function update(UpdateUserRequest $request, string $id)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        $user = User::findOrFail($id);
         $adminRoleId = Role::where('nama_role', 'Admin')->first()?->id;
         $currentUser = auth()->user();
         $isSelfEdit = $user->id === $currentUser->id;
@@ -142,9 +141,8 @@ class UserController extends Controller
         return redirect()->back()->with('message', 'Pengajuan edit data personel telah dikirim ke Admin untuk disetujui.');
     }
 
-    public function destroy(string $id)
+    public function destroy(User $user)
     {
-        $user = User::findOrFail($id);
         $adminRoleId = Role::where('nama_role', 'Admin')->first()?->id;
         $currentUser = auth()->user();
 

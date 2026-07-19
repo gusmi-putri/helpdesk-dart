@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
-import { FileArchive } from 'lucide-react';
+import { FileArchive, Activity } from 'lucide-react';
 
 import Sidebar from './AdminComponents/Sidebar';
 import Topbar from './AdminComponents/Topbar';
@@ -30,6 +30,7 @@ const DashboardAdmin = (props: any) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [reportStatusFilter, setReportStatusFilter] = useState<'ALL' | 'PENDING' | 'DIVERIFIKASI' | 'DITERIMA TEKNISI' | 'DIPROSES' | 'SELESAI' | 'DITOLAK'>('ALL');
   const [mapFocusSatuan, setMapFocusSatuan] = useState<string | null>(null);
+  const [isPolling, setIsPolling] = useState(false);
 
   // Auto-polling dengan deteksi keaktifan halaman (visibility)
   useEffect(() => {
@@ -37,7 +38,11 @@ const DashboardAdmin = (props: any) => {
 
     const startPolling = () => {
       intervalId = setInterval(() => {
-        router.reload({ only: ['dbCases', 'dbUsers', 'dbLogs', 'dbUnits', 'dbFeedbacks', 'dbFeedbackUnreadCount'] });
+        router.reload({ 
+          only: ['dbCases', 'dbUsers', 'dbLogs', 'dbUnits', 'dbFeedbacks', 'dbFeedbackUnreadCount'],
+          onStart: () => setIsPolling(true),
+          onFinish: () => setIsPolling(false)
+        });
       }, 15000);
     };
 
@@ -269,19 +274,24 @@ const DashboardAdmin = (props: any) => {
 
             {/* Page Title Header */}
             <div className="mb-6 flex justify-between items-end border-b border-slate-200 dark:border-slate-600 pb-3">
-              <div>
-                <h2 className="text-2xl font-tactical font-bold text-slate-800 dark:text-white tracking-widest uppercase">
-                  {activeMenu === 'ANALYTICS' ? 'ANALISIS DATA' :
-                    activeMenu === 'MAP' ? 'PETA MONITORING' :
-                    activeMenu === 'REPORTS' ? 'DATA LAPORAN' :
-                    activeMenu === 'USERS' ? 'DATABASE PERSONEL' :
-                    activeMenu === 'LOGS' ? 'LOG AKTIVITAS SISTEM' :
-                    activeMenu === 'UNITS' ? 'DATABASE INVENTARIS' :
-                    activeMenu === 'SATUANS' ? 'DATA SATUAN' :
-                    activeMenu === 'APPROVAL_CENTER' ? 'PUSAT PERSETUJUAN' :
-                    activeMenu === 'FEEDBACK' ? 'UMPAN BALIK PENGGUNA' :
-                    'DASHBOARD ADMIN'}
-                </h2>
+                <div className="flex items-center gap-3">
+                  <h2 className="text-2xl font-tactical font-bold text-slate-800 dark:text-white tracking-widest uppercase flex items-center gap-3">
+                    {activeMenu === 'ANALYTICS' ? 'ANALISIS DATA' :
+                      activeMenu === 'MAP' ? 'PETA MONITORING' :
+                      activeMenu === 'REPORTS' ? 'DATA LAPORAN' :
+                      activeMenu === 'USERS' ? 'DATABASE PERSONEL' :
+                      activeMenu === 'LOGS' ? 'LOG AKTIVITAS SISTEM' :
+                      activeMenu === 'UNITS' ? 'DATABASE INVENTARIS' :
+                      activeMenu === 'SATUANS' ? 'DATA SATUAN' :
+                      activeMenu === 'APPROVAL_CENTER' ? 'PUSAT PERSETUJUAN' :
+                      activeMenu === 'FEEDBACK' ? 'UMPAN BALIK PENGGUNA' :
+                      'DASHBOARD ADMIN'}
+                    {isPolling && (
+                      <span className="flex items-center gap-1.5 text-[10px] font-mono text-cighra-primary dark:text-cighra-gold tracking-widest animate-pulse border border-cighra-primary/30 dark:border-cighra-gold/30 px-2 py-0.5 bg-cighra-primary/5 dark:bg-cighra-gold/10 rounded-sm">
+                        <Activity className="w-3 h-3 animate-spin" /> SYNCING...
+                      </span>
+                    )}
+                  </h2>
                 <p className="text-xs font-mono text-slate-500 dark:text-slate-300 mt-1 uppercase tracking-widest">
                   {activeMenu === 'ANALYTICS' ? 'Ringkasan statistik dan grafik data laporan sistem.' :
                     activeMenu === 'MAP' ? 'Visualisasi sebaran dan status unit DART secara geografis.' :

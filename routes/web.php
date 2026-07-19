@@ -35,10 +35,10 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Forgot Password Routes
 Route::get('/forgot-password', [ForgotPasswordController::class, 'index'])->name('password.request');
-Route::post('/forgot-password/send-code', [ForgotPasswordController::class, 'sendCode'])->name('password.email');
+Route::post('/forgot-password/send-code', [ForgotPasswordController::class, 'sendCode'])->middleware('throttle:3,1')->name('password.email');
 Route::post('/forgot-password/verify-reset', [ForgotPasswordController::class, 'verifyAndReset'])->middleware('throttle:5,1')->name('password.update');
 
-// Satuan API (Guest can access for registration) - Added Throttling for security
+// Satuan API (Guest can access for registration)
 Route::get('/api/satuans', [SatuanController::class, 'index'])->middleware('throttle:30,1');
 Route::post('/api/satuans', [SatuanController::class, 'store'])->middleware('throttle:5,1');
 
@@ -87,7 +87,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/mutations/{mutation}/reject', [UnitController::class, 'rejectMutation'])->middleware('role:Admin')->name('mutations.reject');
     Route::post('/units/{unit}/restore', [UnitController::class, 'restoreUnit'])->middleware('role:Admin')->name('units.restore');
 
-    // --- Reports Actions (SEKARANG AMAN) ---
+    // --- Reports Actions ---
     // Pelapor membuat laporan
     Route::post('/reports', [ReportController::class, 'store'])->middleware('role:Pelapor,Admin,Staf')->name('reports.store');
     
@@ -106,13 +106,12 @@ Route::middleware(['auth'])->group(function () {
     // Cetak PDF (Semua role yang login boleh mencetak/melihat dokumen PDF)
     Route::get('/reports/{id}/pdf', [DashboardController::class, 'exportPdf'])->middleware('role:Admin,Staf,Teknisi,Pelapor')->name('reports.pdf');
 
-    // --- AI Diagnostic Route (SEKARANG AMAN) ---
-    Route::post('/api/diagnose', [AiDiagnosticController::class, 'diagnose'])->name('api.diagnose');
+    // --- AI Diagnostic Route ---
+    Route::post('/api/diagnose', [AiDiagnosticController::class, 'diagnose'])->middleware('throttle:5,1')->name('api.diagnose');
 });
 
 // ==========================================
 // EXPORT ROUTES
-// (Sudah aman karena menggunakan array middleware eksplisit)
 // ==========================================
 Route::get('/admin/recap/export', [RecapController::class, 'export'])->middleware(['auth', 'role:Admin'])->name('admin.recap.export');
 Route::get('/staf/recap/export', [RecapController::class, 'export'])->middleware(['auth', 'role:Staf'])->name('staf.recap.export');

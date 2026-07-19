@@ -46,7 +46,7 @@ class GeminiService
         $userMessage = "Target/Unit DART: {$unitName}\nTingkat Kerusakan: {$level}\nDeskripsi Kendala yang dilaporkan: {$description}\n\nTolong berikan analisis singkat dan saran langkah awal.";
 
         try {
-            $response = Http::withoutVerifying()->withHeaders([
+            $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
                 'x-goog-api-key' => $this->apiKey,
             ])->post($this->apiUrl, [

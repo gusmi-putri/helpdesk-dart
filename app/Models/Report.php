@@ -25,7 +25,7 @@ class Report extends Model
         ];
     }
 
-    public function unit() { return $this->belongsTo(Unit::class); }
+    public function unit() { return $this->belongsTo(Unit::class)->withTrashed(); }
     public function pelapor() { return $this->belongsTo(User::class, 'user_id'); }
     public function staf() { return $this->belongsTo(User::class, 'staff_id'); }
     public function teknisi() { return $this->belongsTo(User::class, 'teknisi_id'); }
