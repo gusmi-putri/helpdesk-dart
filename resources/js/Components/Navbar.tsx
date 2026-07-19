@@ -52,7 +52,7 @@ const Navbar = () => {
           </div>
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-8">
-              {['BERANDA', 'PANDUAN', 'FEEDBACK', 'TENTANG KAMI', 'MASUK'].map((item) => (
+              {['BERANDA', 'PANDUAN', 'TENTANG KAMI', 'MASUK'].map((item) => (
                 <button
                   key={item}
                   onClick={() => handleNavClick(item === 'MASUK' ? 'DASHBOARD' : item)}
@@ -95,7 +95,7 @@ const Navbar = () => {
           className="md:hidden bg-cighra-light dark:bg-cighra-dark border-b border-cighra-primary dark:border-cighra-gold"
         >
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {['BERANDA', 'PANDUAN', 'FEEDBACK', 'TENTANG KAMI', 'MASUK'].map((item) => (
+            {['BERANDA', 'PANDUAN', 'TENTANG KAMI', 'MASUK'].map((item) => (
               <button
                 key={item}
                 onClick={() => handleNavClick(item === 'MASUK' ? 'DASHBOARD' : item)}

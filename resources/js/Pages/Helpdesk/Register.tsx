@@ -430,12 +430,11 @@ const Register: React.FC = () => {
         </div>
       </div>
 
-      <style dangerouslySetInnerHTML={{
-        __html: `
+      <style>{`
         @keyframes shimmer {
           100% { transform: translateX(100%); }
         }
-      `}} />
+      `}</style>
     </div>
   );
 };

@@ -19,7 +19,7 @@ const PostReportWizard: React.FC<PostReportWizardProps> = ({ reportData, onClose
   const [errorAi, setErrorAi] = useState<string | null>(null);
 
   useEffect(() => {
-    // Panggil API Gemini secara asinkronus
+    // Panggil API Diagnosis Lokal secara asinkronus
     const fetchDiagnosis = async () => {
       try {
         const res = await axios.post('/api/diagnose', {
@@ -44,38 +44,134 @@ const PostReportWizard: React.FC<PostReportWizardProps> = ({ reportData, onClose
     fetchDiagnosis();
   }, [reportData]);
 
-  // Fungsi untuk membersihkan teks markdown sederhana dari Gemini menjadi HTML
-  const renderMarkdown = (text: string) => {
-    // 1. Ganti Header ### menjadi tag <h3>
-    let html = text.replace(/### (.*)/g, '<h3 class="font-tactical font-bold text-lg text-cighra-primary dark:text-cighra-gold mt-6 mb-2 uppercase tracking-wider">$1</h3>');
+  const escapeHtml = (input: string) => {
+    return input
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  };
 
-    // 2. Ganti Bold **teks** menjadi <strong>teks</strong>
-    html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="text-slate-900 dark:text-white">$1</strong>');
-
-    // 3. Ganti Italic *teks* (yang bukan bullet) menjadi <em>teks</em>
-    // Kita lewati dulu italic agar tidak bentrok dengan bullet list.
-
-    // 4. Ganti pemisah ---
-    html = html.replace(/---/g, '<hr class="my-5 border-slate-200 dark:border-slate-700" />');
-
-    // 5. Ganti Bullet points * item
-    html = html.replace(/^\* (.*)/gm, '<li class="ml-5 list-disc marker:text-cighra-primary dark:marker:text-cighra-gold mb-1">$1</li>');
-
-    // 6. Ganti Numbered points 1. item
-    html = html.replace(/^(\d+)\. (.*)/gm, '<li class="ml-5 list-decimal marker:font-bold marker:text-slate-500 mb-1">$2</li>');
-
-    // 7. Ganti enter (newline) menjadi <br/> tapi jangan <br> di dalam list
-    html = html.replace(/\n/g, '<br />');
-    html = html.replace(/(<\/li>)<br \/>/g, '$1'); // Hapus br setelah li
-    html = html.replace(/(<\/h3>)<br \/>/g, '$1'); // Hapus br setelah h3
-    html = html.replace(/(<hr.*?>)<br \/>/g, '$1'); // Hapus br setelah hr
+  const formatInlineText = (text: string, key: number) => {
+    const parts = text.split(/(\*\*.*?\*\*|\*.*?\*)/g).filter(Boolean);
 
     return (
-      <div
-        className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-sans"
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
+      <span key={key}>
+        {parts.map((part, index) => {
+          if (part.startsWith('**') && part.endsWith('**')) {
+            return (
+              <strong key={index} className="text-slate-900 dark:text-white">
+                {part.slice(2, -2)}
+              </strong>
+            );
+          }
+
+          if (part.startsWith('*') && part.endsWith('*')) {
+            return (
+              <em key={index} className="not-italic text-slate-900 dark:text-white">
+                {part.slice(1, -1)}
+              </em>
+            );
+          }
+
+          return <span key={index}>{part}</span>;
+        })}
+      </span>
     );
+  };
+
+  const renderMarkdown = (text: string) => {
+    const sanitizedText = escapeHtml(text).replace(/\r\n/g, '\n');
+    const lines = sanitizedText.split('\n');
+    const elements: React.ReactNode[] = [];
+    let listType: 'ul' | 'ol' | null = null;
+    let listItems: React.ReactNode[] = [];
+
+    const flushList = (index: number) => {
+      if (!listType) return;
+      if (listType === 'ul') {
+        elements.push(
+          <ul key={`list-${index}`} className="mt-4 ml-5 list-disc marker:text-cighra-primary dark:marker:text-cighra-gold space-y-1">
+            {listItems}
+          </ul>
+        );
+      } else {
+        elements.push(
+          <ol key={`list-${index}`} className="mt-4 ml-5 list-decimal marker:font-bold marker:text-slate-500 space-y-1">
+            {listItems}
+          </ol>
+        );
+      }
+      listType = null;
+      listItems = [];
+    };
+
+    lines.forEach((line, lineIndex) => {
+      if (line.startsWith('### ')) {
+        flushList(lineIndex);
+        elements.push(
+          <h3
+            key={`h3-${lineIndex}`}
+            className="font-tactical font-bold text-lg text-cighra-primary dark:text-cighra-gold mt-6 mb-2 uppercase tracking-wider"
+          >
+            {formatInlineText(line.slice(4), lineIndex)}
+          </h3>
+        );
+        return;
+      }
+
+      if (line === '---') {
+        flushList(lineIndex);
+        elements.push(<hr key={`hr-${lineIndex}`} className="my-5 border-slate-200 dark:border-slate-700" />);
+        return;
+      }
+
+      const bulletMatch = line.match(/^\* (.*)$/);
+      const numberedMatch = line.match(/^\d+\. (.*)$/);
+
+      if (bulletMatch) {
+        if (listType !== 'ul') {
+          flushList(lineIndex);
+          listType = 'ul';
+        }
+        listItems.push(
+          <li key={`li-${lineIndex}`} className="ml-5 list-disc marker:text-cighra-primary dark:marker:text-cighra-gold mb-1">
+            {formatInlineText(bulletMatch[1], lineIndex)}
+          </li>
+        );
+        return;
+      }
+
+      if (numberedMatch) {
+        if (listType !== 'ol') {
+          flushList(lineIndex);
+          listType = 'ol';
+        }
+        listItems.push(
+          <li key={`li-${lineIndex}`} className="ml-5 list-decimal marker:font-bold marker:text-slate-500 mb-1">
+            {formatInlineText(numberedMatch[1], lineIndex)}
+          </li>
+        );
+        return;
+      }
+
+      flushList(lineIndex);
+
+      if (line.trim().length === 0) {
+        return;
+      }
+
+      elements.push(
+        <p key={`p-${lineIndex}`} className="mb-3 leading-relaxed">
+          {formatInlineText(line, lineIndex)}
+        </p>
+      );
+    });
+
+    flushList(lines.length);
+
+    return <div className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-sans">{elements}</div>;
   };
 
   return (
@@ -105,7 +201,7 @@ const PostReportWizard: React.FC<PostReportWizardProps> = ({ reportData, onClose
                     <Bot size={24} />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-tactical font-bold text-slate-800 dark:text-white uppercase tracking-widest">Diagnosis Awal AI</h3>
+                    <h3 className="text-2xl font-tactical font-bold text-slate-800 dark:text-white uppercase tracking-widest">Diagnosis Awal</h3>
                     <p className="text-xs text-slate-500 dark:text-slate-400 font-mono tracking-widest uppercase">DART Intelligence System</p>
                   </div>
                 </div>
@@ -114,7 +210,7 @@ const PostReportWizard: React.FC<PostReportWizardProps> = ({ reportData, onClose
                   {isLoadingAi ? (
                     <div className="flex flex-col items-center justify-center h-full space-y-4 py-8">
                       <div className="w-12 h-12 border-4 border-cighra-primary/20 dark:border-cighra-gold/20 border-t-cighra-primary dark:border-t-cighra-gold rounded-full animate-spin"></div>
-                      <p className="text-sm font-mono text-slate-500 dark:text-slate-400 animate-pulse uppercase tracking-widest">Gemini AI sedang menganalisis kendala...</p>
+                      <p className="text-sm font-mono text-slate-500 dark:text-slate-400 animate-pulse uppercase tracking-widest">Sistem sedang menganalisis kendala...</p>
                     </div>
                   ) : errorAi ? (
                     <div className="flex flex-col items-center justify-center h-full space-y-2 py-8 text-targetred">
@@ -130,7 +226,7 @@ const PostReportWizard: React.FC<PostReportWizardProps> = ({ reportData, onClose
                 </div>
 
                 <div className="flex items-center justify-between pt-4 mt-6 border-t border-slate-200 dark:border-slate-600">
-                  <p className="text-xs text-slate-500 dark:text-slate-400 italic">Saran ini dihasilkan oleh AI dan bersifat panduan awal.</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 italic">Saran ini dihasilkan oleh sistem dan bersifat panduan awal.</p>
                   <button
                     onClick={onClose}
                     className="flex items-center gap-2 bg-slate-800 dark:bg-white text-white dark:text-slate-900 px-6 py-3 font-tactical font-bold tracking-widest uppercase rounded-sm hover:bg-slate-700 dark:hover:bg-slate-200 transition-colors"

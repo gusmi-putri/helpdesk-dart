@@ -9,7 +9,6 @@ use App\Models\User;
 use App\Models\Unit;
 use App\Models\SystemLog;
 use App\Models\Role;
-use App\Models\Feedback;
 use App\Models\UnitMutation;
 use App\Models\Satuan;
 use App\Models\UserMutation;
@@ -116,19 +115,6 @@ class DashboardController extends Controller
         });
 
         $units = UnitResource::collection(Unit::with('satuan')->orderBy('created_at', 'desc')->take(3000)->get());
-        $unreadFeedbackCount = Feedback::where('status_baca', false)->count();
-        Feedback::where('status_baca', false)->update(['status_baca' => true]);
-        $feedbacks = Feedback::orderBy('created_at', 'desc')->take(500)->get()->map(function($f) {
-            return [
-                'id' => $f->id,
-                'nama_pengirim' => $f->nama_pengirim,
-                'rating' => $f->rating,
-                'kategori' => $f->kategori,
-                'pesan' => $f->pesan,
-                'status_baca' => $f->status_baca,
-                'tanggal' => $f->created_at->format('d M Y, H:i')
-            ];
-        });
 
         $mutations = UnitMutationResource::collection(
             UnitMutation::with(['unit', 'requester', 'approver'])
@@ -155,8 +141,6 @@ class DashboardController extends Controller
             'dbRoles' => $roles,
             'dbUnits' => $units,
             'dbSatuans' => $satuans,
-            'dbFeedbacks' => $feedbacks,
-            'dbFeedbackUnreadCount' => $unreadFeedbackCount,
             'dbMutations' => $mutations,
             'dbUserMutations' => $userMutations,
             'dbArchivedUnits' => $archivedUnits,

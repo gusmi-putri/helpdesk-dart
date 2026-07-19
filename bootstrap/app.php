@@ -15,12 +15,16 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: '*');
 
         $middleware->web(append: [
+            \App\Http\Middleware\ForceHttps::class,
+            \App\Http\Middleware\SecurityHeaders::class,
             \App\Http\Middleware\HandleInertiaRequests::class,
+            \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
         ]);
 
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,
+            'force_https' => \App\Http\Middleware\ForceHttps::class,
         ]);
         
     })

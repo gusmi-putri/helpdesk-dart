@@ -34,12 +34,13 @@ class ForgotPasswordController extends Controller
                     ->orWhere('username', $request->identifier)
                     ->first();
 
-        if (!$user) {
-            return back()->withErrors(['identifier' => 'Pengguna dengan email atau username tersebut tidak ditemukan.']);
-        }
+        // Pesan selalu sama terlepas dari apakah user ditemukan atau tidak
+        // (mencegah user enumeration / account harvesting)
+        $genericMessage = 'Jika akun dengan identitas tersebut terdaftar dan memiliki email valid, kode reset akan segera dikirimkan.';
 
-        if (!$user->email) {
-            return back()->withErrors(['identifier' => 'Akun ini tidak memiliki alamat email yang valid untuk pengiriman kode.']);
+        if (!$user || !$user->email) {
+            // Kembalikan pesan generik tanpa mengungkapkan keberadaan akun
+            return back()->with(['success' => $genericMessage, 'maskedEmail' => null]);
         }
 
         // Hasilkan kode 6-digit acak
@@ -63,7 +64,7 @@ class ForgotPasswordController extends Controller
         $maskedEmail = substr($emailParts[0], 0, 1) . str_repeat('*', max(1, strlen($emailParts[0]) - 1)) . '@' . $emailParts[1];
 
         return back()->with([
-            'success' => 'Kode reset telah dikirim ke email Anda. Cek juga folder Spam.',
+            'success' => $genericMessage,
             'maskedEmail' => $maskedEmail
         ]);
     }
@@ -110,7 +111,13 @@ class ForgotPasswordController extends Controller
 
         // Cek kecocokan token
         if (!Hash::check((string) $request->code, $tokenRecord->token)) {
-            return back()->withErrors(['code' => 'Kode yang dimasukkan salah.']);
+            $attempts = ($tokenRecord->attempts ?? 0) + 1;
+            if ($attempts >= 3) {
+                DB::table('password_reset_tokens')->where('email', $user->email)->delete();
+                return back()->withErrors(['code' => 'Terlalu banyak percobaan gagal. Kode telah dihapus demi keamanan, silakan minta kode baru.']);
+            }
+            DB::table('password_reset_tokens')->where('email', $user->email)->update(['attempts' => $attempts]);
+            return back()->withErrors(['code' => 'Kode yang dimasukkan salah. Sisa percobaan: ' . (3 - $attempts)]);
         }
 
         // Update password

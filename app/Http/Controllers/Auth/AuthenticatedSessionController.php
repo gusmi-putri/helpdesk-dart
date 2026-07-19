@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -29,7 +31,21 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        // Check if account is locked
+        $user = User::where('email', $request->input('email'))->first();
+        if ($user && $user->locked_until && $user->locked_until->isFuture()) {
+            throw ValidationException::withMessages([
+                'email' => 'Akun Anda terkunci sampai '.$user->locked_until->toDateTimeString(),
+            ]);
+        }
+
         $request->authenticate();
+
+        // After successful login, clear lock
+        if ($user) {
+            $user->locked_until = null;
+            $user->save();
+        }
 
         $request->session()->regenerate();
 

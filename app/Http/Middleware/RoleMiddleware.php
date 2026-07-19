@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Models\SystemLog;
 
 class RoleMiddleware
 {
@@ -28,6 +29,13 @@ class RoleMiddleware
         if ($userRole === 'admin' || in_array($userRole, $allowedRoles)) {
             return $next($request);
         }
+
+        // Catat percobaan akses yang tidak sah ke SystemLog
+        SystemLog::log(
+            'WARN',
+            $user->id,
+            "[403] Akses ditolak ke route: [{$request->method()}] /{$request->path()} (role user: {$user->role->nama_role})"
+        );
 
         abort(403, 'Akses Ditolak: Anda tidak memiliki otoritas untuk area ini.');
     }

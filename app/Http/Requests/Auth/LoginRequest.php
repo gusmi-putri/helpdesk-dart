@@ -5,10 +5,12 @@ namespace App\Http\Requests\Auth;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use App\Models\User;
 
 class LoginRequest extends FormRequest
 {
@@ -66,13 +68,17 @@ class LoginRequest extends FormRequest
 
         event(new Lockout($this));
 
+        // Kunci akun selama 5 menit di database
+        $user = User::where('email', $this->input('email'))->first();
+        if ($user) {
+            $user->locked_until = Carbon::now()->addMinutes(5);
+            $user->save();
+        }
+
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
-                'seconds' => $seconds,
-                'minutes' => ceil($seconds / 60),
-            ]),
+            'email' => 'Akun Anda terkunci selama ' . ceil($seconds / 60) . ' menit karena terlalu banyak percobaan login yang gagal.',
         ]);
     }
 

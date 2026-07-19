@@ -17,10 +17,13 @@ class SystemLog extends Model
 
     public static function log($level, $userId, $activity)
     {
+        // Sanitasi activity_payload untuk mencegah log injection dan stored XSS
+        $sanitized = strip_tags((string) $activity);
+
         return self::create([
             'level' => $level,
             'user_id' => $userId,
-            'activity_payload' => $activity
+            'activity_payload' => $sanitized
         ]);
     }
 }

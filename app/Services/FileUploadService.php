@@ -16,10 +16,14 @@ class FileUploadService
             return null;
         }
 
-        $filename = $prefix . time() . '_' . $file->getClientOriginalName();
-        $file->storeAs($directory, $filename, 'public');
-        
-        return $filename; // Returns only filename if stored with storeAs and specific name
+        $extension = strtolower($file->getClientOriginalExtension() ?: $file->guessExtension() ?: 'bin');
+        $extension = preg_replace('/[^a-z0-9]+/i', '', $extension) ?: 'bin';
+        $filename = $prefix . uniqid('', true) . '_' . time() . '.' . $extension;
+        // Use the "local" disk (private) instead of "public"
+        Storage::disk('local')->putFileAs($directory, $file, $filename);
+
+
+        return trim($directory . '/' . $filename, '/');
     }
 
     /**
@@ -36,8 +40,7 @@ class FileUploadService
         
         foreach ($filesToProcess as $file) {
             if ($file instanceof UploadedFile) {
-                $path = $file->store($directory, 'public');
-                $filePaths[] = $path;
+                $filePaths[] = $this->uploadSingleFile($file, $directory);
             }
         }
 
