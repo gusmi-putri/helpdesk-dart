@@ -140,7 +140,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
     <div className="max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6">
       <div className="glass-panel border-t-4 border-t-cighra-gold overflow-hidden !bg-cighra-primary dark:!bg-cighra-darkcard/80 shadow-xl">
         <div className="p-6 md:p-8">
-          <h2 className="text-2xl md:text-3xl font-tactical font-bold text-white tracking-wider uppercase mb-3">
+          <h2 className="text-2xl md:text-3xl font-tactical font-bold text-cighra-gold tracking-wider uppercase mb-3">
             BUAT LAPORAN KERUSAKAN
           </h2>
           <p className="text-sm text-slate-200 leading-relaxed mb-4">
@@ -163,7 +163,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
       <form onSubmit={handleFormSubmit} className="space-y-6">
         <div className="glass-panel p-6 border-l-4 border-l-cighra-gold !bg-cighra-primary dark:!bg-cighra-darkcard/80 shadow-xl">
           <h3 className="text-xs font-tactical font-bold text-cighra-gold tracking-[0.2em] uppercase flex items-center gap-2 mb-4">
-            <Wallet size={16} /> JENIS PERBAIKAN
+            JENIS PERBAIKAN
           </h3>
           <p className="text-xs text-slate-300 mb-4">
             Pilih sumber dukungan perbaikan sebelum mengisi rincian kendala.
@@ -210,7 +210,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
         {data.jenis_perbaikan && (
           <>
             <div className="glass-panel p-6 border-l-4 border-l-cighra-gold space-y-5 !bg-cighra-primary dark:!bg-cighra-darkcard/80 shadow-xl">
-              <h3 className="text-xs font-tactical font-bold text-cighra-gold tracking-[0.2em] uppercase flex items-center gap-2"><CircleUser size={16} /> DATA PELAPOR</h3>
+              <h3 className="text-xs font-tactical font-bold text-cighra-gold tracking-[0.2em] uppercase flex items-center gap-2">DATA PELAPOR</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                   <label className="block text-xs font-bold text-slate-300 mb-2 uppercase tracking-wider">Nama Lengkap</label>
@@ -276,14 +276,14 @@ const ReportForm: React.FC<ReportFormProps> = ({
             {isNonSwadaya && (
               <div className="glass-panel p-6 border-l-4 border-l-cighra-gold !bg-cighra-primary dark:!bg-cighra-darkcard/80 shadow-xl">
                 <h3 className="text-xs font-tactical font-bold text-cighra-gold tracking-[0.2em] uppercase flex items-center gap-2 mb-4">
-                  <FileText size={16} /> DOKUMEN DUKUNGAN NON-SWADAYA
+                  DOKUMEN DUKUNGAN NON-SWADAYA
                 </h3>
                 <p className="text-xs text-slate-300 mb-4">
                   Lampirkan dokumen perintah dan keterangan bahwa tersedia dana anggaran perbaikan untuk Satkai terkait.
                 </p>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-300 mb-2 uppercase tracking-wider">Dokumen Pendukung Perintah & Anggaran <span className="text-cighra-gold">*</span></label>
+                    <label className="block text-xs font-bold text-cighra-gold mb-2 uppercase tracking-wider">Dokumen Pendukung Perintah & Anggaran <span className="text-cighra-gold">*</span></label>
                     <input type="file" ref={budgetDocInputRef} onChange={handleBudgetDocSelect} accept=".pdf,.doc,.docx,image/*" multiple className="hidden" />
                     <button
                       type="button"
@@ -318,7 +318,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-300 mb-2 uppercase tracking-wider">Keterangan Dana Anggaran Perbaikan <span className="text-cighra-gold">*</span></label>
+                    <label className="block text-xs font-bold text-cighra-gold mb-2 uppercase tracking-wider">Keterangan Dana Anggaran Perbaikan <span className="text-cighra-gold">*</span></label>
                     <textarea
                       value={data.keterangan_anggaran}
                       onChange={(e) => {
@@ -336,7 +336,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
             )}
 
             <div className="glass-panel p-6 border-l-4 border-l-cighra-gold !bg-cighra-primary dark:!bg-cighra-darkcard/80 shadow-xl">
-              <label className="block text-xs font-bold text-slate-300 mb-2 uppercase tracking-wider">Tingkat Kerusakan <span className="text-cighra-gold">*</span></label>
+              <label className="block text-xs font-bold text-cighra-gold mb-2 uppercase tracking-wider">Tingkat Kerusakan <span className="text-cighra-gold">*</span></label>
               <div className="space-y-3">
                 {['Ringan', 'Sedang', 'Parah'].map(level => (
                   <label key={level} className={`flex items-center gap-3 p-3 rounded-sm border cursor-pointer transition-all ${data.tingkat_kerusakan === level ? 'border-cighra-gold bg-cighra-gold/10' : 'border-white/20 hover:border-cighra-gold/50 hover:bg-black/20'}`}>
@@ -351,7 +351,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
             </div>
 
             <div className="glass-panel p-6 border-l-4 border-l-cighra-gold !bg-cighra-primary dark:!bg-cighra-darkcard/80 shadow-xl">
-              <label className="block text-xs font-bold text-slate-300 mb-2 uppercase tracking-wider">Upload Foto Kendala <span className="text-cighra-gold">*</span></label>
+              <label className="block text-xs font-bold text-cighra-gold mb-2 uppercase tracking-wider">Upload Foto Kendala <span className="text-cighra-gold">*</span></label>
               <p className="text-xs text-slate-400 mb-4">Maksimum 5 file (Hanya Gambar). Ukuran maks 20 MB per file.</p>
               <input type="file" ref={fileInputRef} onChange={handleFileSelect} accept="image/*" multiple className="hidden" />
               <button type="button" onClick={() => fileInputRef.current?.click()} disabled={data.file_bukti.length >= 5}
@@ -377,7 +377,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
             </div>
 
             <div className="glass-panel p-6 border-l-4 border-l-cighra-gold !bg-cighra-primary dark:!bg-cighra-darkcard/80 shadow-xl">
-              <label className="block text-xs font-bold text-slate-300 mb-2 uppercase tracking-wider">Tautan Video G-Drive <span className="text-cighra-gold">*</span></label>
+              <label className="block text-xs font-bold text-cighra-gold mb-2 uppercase tracking-wider">Tautan Video G-Drive <span className="text-cighra-gold">*</span></label>
               <p className="text-xs text-slate-400 mb-4">Unggah video dokumentasi kerusakan ke Google Drive dan tempel/link tautannya di bawah ini. Pastikan akses tautan bersifat publik (Anyone with the link).</p>
               <input type="url" value={data.tautan_video || ''} onChange={(e) => { setData('tautan_video', e.target.value); setLocalErrors((prev: any) => ({ ...prev, tautan_video: null })); }} required
                 className={`w-full bg-white/5 border ${errors.tautan_video || localErrors.tautan_video ? 'border-red-500 shadow-[0_0_10px_rgba(239,68,68,0.3)]' : 'border-white/20'} px-4 py-3 text-sm text-white focus:outline-none focus:border-cighra-gold transition-all rounded-sm`}
@@ -386,7 +386,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
             </div>
 
             <div className="glass-panel p-6 border-l-4 border-l-cighra-gold !bg-cighra-primary dark:!bg-cighra-darkcard/80 shadow-xl">
-              <label className="block text-xs font-bold text-slate-300 mb-2 uppercase tracking-wider">Prioritas Penanganan <span className="text-cighra-gold">*</span></label>
+              <label className="block text-xs font-bold text-cighra-gold mb-2 uppercase tracking-wider">Prioritas Penanganan <span className="text-cighra-gold">*</span></label>
               <p className="text-xs text-slate-400 italic mb-3">Pilihlah tingkat urgensi sesuai kondisi lapangan agar tim dapat memprioritaskan penanganan.</p>
               <div className="space-y-3">
                 {[
@@ -408,7 +408,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
             </div>
 
             <div className="glass-panel p-6 border-l-4 border-l-cighra-gold !bg-cighra-primary dark:!bg-cighra-darkcard/80 shadow-xl">
-              <label className="block text-xs font-bold text-slate-300 mb-2 uppercase tracking-wider">Deskripsi Kerusakan <span className="text-cighra-gold">*</span></label>
+              <label className="block text-xs font-bold text-cighra-gold mb-2 uppercase tracking-wider">Deskripsi Kerusakan <span className="text-cighra-gold">*</span></label>
               <textarea value={data.deskripsi} onChange={(e) => setData('deskripsi', e.target.value)} required rows={5}
                 className="w-full bg-white/5 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:border-cighra-gold focus:ring-2 focus:ring-cighra-gold/20 hover:border-cighra-gold/50 transition-all duration-300 resize-none rounded-sm"
                 placeholder="Jelaskan secara detail kondisi kerusakan, kronologi kejadian, dan gejala yang dialami..." />

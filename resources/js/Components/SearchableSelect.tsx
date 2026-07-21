@@ -50,17 +50,17 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
 
   return (
     <div className="relative" ref={containerRef} style={{ zIndex: isOpen ? 100 : 1 }}>
-      {label && <label className="block text-xs font-bold text-slate-500 dark:text-slate-300 mb-2 uppercase tracking-wider">{label} <span className="text-cighra-primary dark:text-cighra-gold">*</span></label>}
+      {label && <label className="block text-xs font-bold text-cighra-gold mb-2 uppercase tracking-wider">{label} <span className="text-cighra-primary dark:text-cighra-gold">*</span></label>}
 
       {/* Trigger Area */}
       <div
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full bg-cighra-light/50 dark:bg-cighra-darkcard/60 border ${error ? 'border-cighra-primary dark:border-cighra-gold' : isOpen ? 'border-cighra-primary dark:border-cighra-gold ring-1 ring-olive' : 'border-slate-300 dark:border-slate-600'} px-4 py-3 text-sm flex items-center justify-between cursor-pointer transition-all rounded-sm hover:border-cighra-primary dark:border-cighra-gold group relative z-10`}
+        className={`w-full bg-white/5 border ${error ? 'border-red-500 shadow-[0_0_10px_rgba(239,68,68,0.3)]' : isOpen ? 'border-cighra-gold ring-1 ring-cighra-gold' : 'border-white/20'} px-4 py-3 text-sm flex items-center justify-between cursor-pointer transition-all rounded-sm hover:border-cighra-gold group relative z-10`}
       >
-        <span className={`truncate ${selectedOption ? 'text-slate-800 dark:text-white font-medium' : 'text-slate-500 dark:text-slate-400'}`}>
+        <span className={`truncate ${selectedOption ? 'text-white font-medium' : 'text-slate-400'}`}>
           {selectedOption ? `${selectedOption.label}${selectedOption.sublabel ? ` — ${selectedOption.sublabel}` : ''} (${selectedOption.tag})` : placeholder}
         </span>
-        <ChevronDown size={18} className={`text-slate-500 dark:text-slate-400 transition-transform flex-shrink-0 ${isOpen ? 'rotate-180 text-cighra-primary dark:text-cighra-gold' : ''}`} />
+        <ChevronDown size={18} className={`text-slate-400 transition-transform flex-shrink-0 ${isOpen ? 'rotate-180 text-cighra-gold' : ''}`} />
       </div>
 
       {/* Dropdown Area*/}
