@@ -347,14 +347,7 @@ const DashboardStaf = (props: any) => {
                   </p>
                 </div>
 
-                {(activeMenu === 'MASUK' || activeMenu === 'SELESAI') && (
-                  <button
-                    onClick={() => setIsRecapModalOpen(true)}
-                    className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white px-5 py-2 font-tactical font-bold text-xs tracking-widest hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 transition-all flex items-center gap-2 shadow-lg"
-                  >
-                    <FileArchive className="w-4 h-4" /> CETAK REKAPITULASI
-                  </button>
-                )}
+
               </div>
 
               <Suspense fallback={
