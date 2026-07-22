@@ -32,8 +32,6 @@ Route::get('/login', function () {
 })->name('login');
 
 Route::post('/login', [LoginController::class, 'login']);
-Route::get('/register', [RegisterController::class, 'index'])->name('register');
-Route::post('/register', [RegisterController::class, 'register'])->middleware('throttle:3,1');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Forgot Password Routes
@@ -74,8 +72,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/users/{id}/toggle-status', [UserController::class, 'toggleStatus'])->middleware('role:Admin')->name('users.toggle-status');
     Route::post('/users/{id}/approve', [UserController::class, 'approve'])->middleware('role:Admin')->name('users.approve');
     Route::post('/users/{id}/reject', [UserController::class, 'reject'])->middleware('role:Admin')->name('users.reject');
-    Route::post('/users/{id}/approve-registration', [UserController::class, 'approveRegistration'])->middleware('role:Admin')->name('users.approve-registration');
-    Route::post('/users/{id}/reject-registration', [UserController::class, 'rejectRegistration'])->middleware('role:Admin')->name('users.reject-registration');
 
     // --- Units ---
     Route::post('units/import', [UnitController::class, 'import'])->middleware('role:Admin,Staf')->name('units.import');

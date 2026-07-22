@@ -21,8 +21,9 @@ interface InventorySectionProps {
   setSortConfig: (config: { key: string, direction: 'asc' | 'desc' } | null) => void;
   onAddUnit?: () => void;
   onAddBatch?: () => void;
-  onRequestDelete?: (unit: any) => void;
   onRequestDeleteBatch?: (units: any[]) => void;
+  onRequestDelete?: (unit: any) => void;
+  onEditUnit?: (unit: any) => void;
 }
 
 const InventorySection: React.FC<InventorySectionProps> = ({
@@ -39,6 +40,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
   onAddBatch,
   onRequestDelete,
   onRequestDeleteBatch,
+  onEditUnit,
 }) => {
   const [selectedUnitIds, setSelectedUnitIds] = useState<number[]>([]);
   const [isDeleteMode, setIsDeleteMode] = useState<boolean>(false);
@@ -406,8 +408,18 @@ const InventorySection: React.FC<InventorySectionProps> = ({
                     {/* OPSI */}
                     {!isDeleteMode && (
                       <td className="p-4 text-center align-middle" onClick={(e) => e.stopPropagation()}>
-                        {onRequestDelete && (
-                          <div className="flex justify-center">
+                        <div className="flex justify-center gap-2">
+                          {onEditUnit && (
+                            <button
+                              type="button"
+                              onClick={() => onEditUnit(u)}
+                              className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-slate-600 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm"
+                              title="Edit Unit"
+                            >
+                              <Wrench className="w-4 h-4" />
+                            </button>
+                          )}
+                          {onRequestDelete && (
                             <button
                               type="button"
                               onClick={() => onRequestDelete(u)}
@@ -416,8 +428,8 @@ const InventorySection: React.FC<InventorySectionProps> = ({
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
-                          </div>
-                        )}
+                          )}
+                        </div>
                       </td>
                     )}
                   </tr>

@@ -162,10 +162,13 @@ const MutationApproval: React.FC<MutationApprovalProps> = ({ dbMutations, dbArch
     const badges: Record<string, { bg: string; icon: any; label: string }> = {
       'request_add': { bg: 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800/40', icon: Plus, label: isBatch ? 'TAMBAH MASSAL' : 'TAMBAH' },
       'request_delete': { bg: 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/40', icon: Trash2, label: 'HAPUS' },
+      'request_edit': { bg: 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800/40', icon: FileText, label: 'PEMBARUAN' },
       'approved_add': { bg: 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40', icon: CheckCircle, label: isBatch ? 'TAMBAH MASSAL ✓' : 'TAMBAH ✓' },
       'approved_delete': { bg: 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40', icon: CheckCircle, label: 'HAPUS ✓' },
+      'approved_edit': { bg: 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40', icon: CheckCircle, label: 'PEMBARUAN ✓' },
       'rejected_add': { bg: 'bg-orange-100 dark:bg-orange-900/20 text-orange-700 dark:text-orange-400 border-orange-200 dark:border-orange-800/40', icon: XCircle, label: isBatch ? 'TAMBAH MASSAL ✗' : 'TAMBAH ✗' },
       'rejected_delete': { bg: 'bg-orange-100 dark:bg-orange-900/20 text-orange-700 dark:text-orange-400 border-orange-200 dark:border-orange-800/40', icon: XCircle, label: 'HAPUS ✗' },
+      'rejected_edit': { bg: 'bg-orange-100 dark:bg-orange-900/20 text-orange-700 dark:text-orange-400 border-orange-200 dark:border-orange-800/40', icon: XCircle, label: 'PEMBARUAN ✗' },
       'restore': { bg: 'bg-purple-100 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 border-purple-200 dark:border-purple-800/40', icon: RotateCcw, label: 'RESTORE' },
     };
     const b = badges[type] || { bg: 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200', icon: Clock, label: type };

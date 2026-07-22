@@ -171,11 +171,7 @@ const DashboardAdmin = (props: any) => {
   };
 
   const handleApproveUser = (mutation: any) => {
-    const endpoint = mutation.type === 'request_register' 
-      ? `/users/${mutation.id}/approve-registration` 
-      : `/users/${mutation.id}/approve`;
-      
-    router.post(endpoint, {}, {
+    router.post(`/users/${mutation.id}/approve`, {}, {
       onSuccess: () => {
         // Notification logic if any
       }
@@ -189,11 +185,7 @@ const DashboardAdmin = (props: any) => {
 
   const confirmRejectUser = (reason: string = 'Ditolak oleh Admin') => {
     if (userToReject) {
-      const endpoint = userToReject.type === 'request_register'
-        ? `/users/${userToReject.id}/reject-registration`
-        : `/users/${userToReject.id}/reject`;
-        
-      router.post(endpoint, { admin_notes: reason }, {
+      router.post(`/users/${userToReject.id}/reject`, { admin_notes: reason }, {
         onSuccess: () => {
           setIsRejectModalOpen(false);
           setUserToReject(null);
@@ -294,15 +286,6 @@ const DashboardAdmin = (props: any) => {
                     'Sistem Manajemen Pelaporan Kerusakan Dart.'}
                 </p>
               </div>
-
-              {activeMenu === 'REPORTS' && (
-                <button
-                  onClick={() => setIsRecapModalOpen(true)}
-                  className="bg-cighra-primary dark:bg-cighra-gold dark:text-slate-900 text-white px-5 py-2 font-tactical font-bold text-xs tracking-widest hover:bg-cighra-primary/90 dark:hover:bg-cighra-gold/90 transition-all flex items-center gap-2 shadow-lg"
-                >
-                  <FileArchive className="w-4 h-4" /> CETAK REKAPITULASI
-                </button>
-              )}
             </div>
 
             <Suspense fallback={
@@ -404,7 +387,7 @@ const DashboardAdmin = (props: any) => {
         onClose={() => { setIsRejectModalOpen(false); setUserToReject(null); }}
         onConfirm={confirmRejectUser}
         userName={userToReject?.user_data?.nama_lengkap || userToReject?.target_user?.name || ''}
-        actionType={userToReject?.type?.replace('request_', '') || 'register'}
+        actionType={userToReject?.type?.replace('request_', '') || 'add'}
       />
 
     </div>

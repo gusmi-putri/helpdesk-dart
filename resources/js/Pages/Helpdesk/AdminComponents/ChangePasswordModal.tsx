@@ -29,7 +29,6 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ isOpen, onClo
     passwordForm.put(route('profile.password.update'), {
       preserveScroll: true,
       onSuccess: () => {
-        addNotification('Kata sandi berhasil diubah!');
         passwordForm.reset();
         onClose();
       },

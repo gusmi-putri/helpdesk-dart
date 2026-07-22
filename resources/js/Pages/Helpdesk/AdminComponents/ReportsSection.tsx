@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Radar, FileArchive, AlertTriangle, Wrench, Download, Paperclip } from 'lucide-react';
+import { Radar, FileArchive, AlertTriangle, Wrench, Download, Paperclip, Clock, User, Activity, CheckCircle } from 'lucide-react';
 import { EmptyState } from '@/Components/ui/EmptyState';
 import { useTableSort } from '@/hooks/useTableSort';
 import SortableHeader from '@/Components/Table/SortableHeader';
@@ -35,14 +35,15 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
     setIsAttachmentModalOpen(true);
   };
   const counts = {
-    PENDING: dbCases.filter((c: any) => c.status === 'PENDING').length,
-    AKTIF: dbCases.filter((c: any) => ['DIVERIFIKASI', 'DITERIMA TEKNISI', 'DIPROSES'].includes(c.status)).length,
+    MENUNGGU: dbCases.filter((c: any) => c.status === 'PENDING').length,
+    DITUGASKAN: dbCases.filter((c: any) => c.status === 'DIVERIFIKASI').length,
+    DIPROSES: dbCases.filter((c: any) => ['DITERIMA TEKNISI', 'DIPROSES'].includes(c.status)).length,
     SELESAI: dbCases.filter((c: any) => c.status === 'SELESAI').length,
-    DITOLAK: dbCases.filter((c: any) => c.status === 'DITOLAK').length,
   };
 
   const filtered = dbCases.filter((c: any) => {
     if (reportStatusFilter === 'ALL') return true;
+    if (reportStatusFilter === 'DIPROSES') return ['DITERIMA TEKNISI', 'DIPROSES'].includes(c.status);
     return c.status === reportStatusFilter;
   });
 
@@ -53,37 +54,69 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
     <div className="space-y-6 animate-in fade-in duration-500">
       
       {/* 1. Summary Cards*/}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <button
-          onClick={() => setReportStatusFilter('PENDING')}
-          className={`text-left bg-white dark:bg-cighra-darkcard/80 border-l-4 border-amber-400 p-4 shadow-md hover:bg-amber-50 dark:hover:bg-amber-900/10 transition-colors ${reportStatusFilter === 'PENDING' ? 'ring-2 ring-amber-400 ring-inset' : ''}`}
+          onClick={() => setReportStatusFilter(reportStatusFilter === 'PENDING' ? 'ALL' : 'PENDING')}
+          className={`text-left bg-white dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-700/50 p-3 rounded-none flex items-center gap-4 shadow-sm relative overflow-hidden transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50 ${reportStatusFilter === 'PENDING' ? 'ring-1 ring-yellow-500 ring-inset' : ''}`}
         >
-          <p className="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-300 tracking-widest uppercase mb-1">Laporan Baru</p>
-          <p className={`text-2xl font-tactical font-bold ${reportStatusFilter === 'PENDING' ? 'text-amber-500' : 'text-amber-400'}`}>{counts.PENDING}</p>
+          <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-yellow-500"></div>
+          <div className="p-2.5 rounded-none bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-500 ml-1">
+            <Clock className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-[10px] font-tactical tracking-widest text-slate-500 dark:text-slate-400 uppercase">Menunggu</p>
+            <div className="flex items-baseline gap-2">
+              <h4 className="text-xl font-bold font-mono text-slate-800 dark:text-white">{counts.MENUNGGU}</h4>
+            </div>
+          </div>
         </button>
 
         <button
-          onClick={() => setReportStatusFilter('DIPROSES')}
-          className={`text-left bg-white dark:bg-cighra-darkcard/80 border-l-4 border-blue-500 p-4 shadow-md hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-colors ${['DIVERIFIKASI', 'DITERIMA TEKNISI', 'DIPROSES'].includes(reportStatusFilter) ? 'ring-2 ring-blue-400 ring-inset' : ''}`}
+          onClick={() => setReportStatusFilter(reportStatusFilter === 'DIVERIFIKASI' ? 'ALL' : 'DIVERIFIKASI')}
+          className={`text-left bg-white dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-700/50 p-3 rounded-none flex items-center gap-4 shadow-sm relative overflow-hidden transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50 ${reportStatusFilter === 'DIVERIFIKASI' ? 'ring-1 ring-blue-500 ring-inset' : ''}`}
         >
-          <p className="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-300 tracking-widest uppercase mb-1">Aktif / Penanganan</p>
-          <p className={`text-2xl font-tactical font-bold ${['DIVERIFIKASI', 'DITERIMA TEKNISI', 'DIPROSES'].includes(reportStatusFilter) ? 'text-blue-600' : 'text-blue-500'}`}>{counts.AKTIF}</p>
+          <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-500"></div>
+          <div className="p-2.5 rounded-none bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-500 ml-1">
+            <User className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-[10px] font-tactical tracking-widest text-slate-500 dark:text-slate-400 uppercase">Ditugaskan</p>
+            <div className="flex items-baseline gap-2">
+              <h4 className="text-xl font-bold font-mono text-slate-800 dark:text-white">{counts.DITUGASKAN}</h4>
+            </div>
+          </div>
         </button>
 
         <button
-          onClick={() => setReportStatusFilter('SELESAI')}
-          className={`text-left bg-white dark:bg-cighra-darkcard/80 border-l-4 border-green-500 p-4 shadow-md hover:bg-green-50 dark:hover:bg-green-900/10 transition-colors ${reportStatusFilter === 'SELESAI' ? 'ring-2 ring-green-400 ring-inset' : ''}`}
+          onClick={() => setReportStatusFilter(reportStatusFilter === 'DIPROSES' ? 'ALL' : 'DIPROSES')}
+          className={`text-left bg-white dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-700/50 p-3 rounded-none flex items-center gap-4 shadow-sm relative overflow-hidden transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50 ${reportStatusFilter === 'DIPROSES' ? 'ring-1 ring-purple-500 ring-inset' : ''}`}
         >
-          <p className="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-300 tracking-widest uppercase mb-1">Telah Selesai</p>
-          <p className={`text-2xl font-tactical font-bold ${reportStatusFilter === 'SELESAI' ? 'text-green-600' : 'text-green-500'}`}>{counts.SELESAI}</p>
+          <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-purple-500"></div>
+          <div className="p-2.5 rounded-none bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-500 ml-1">
+            <Activity className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-[10px] font-tactical tracking-widest text-slate-500 dark:text-slate-400 uppercase">Diproses</p>
+            <div className="flex items-baseline gap-2">
+              <h4 className="text-xl font-bold font-mono text-slate-800 dark:text-white">{counts.DIPROSES}</h4>
+            </div>
+          </div>
         </button>
 
         <button
-          onClick={() => setReportStatusFilter('DITOLAK')}
-          className={`text-left bg-white dark:bg-cighra-darkcard/80 border-l-4 border-red-500 p-4 shadow-md hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors ${reportStatusFilter === 'DITOLAK' ? 'ring-2 ring-red-400 ring-inset' : ''}`}
+          onClick={() => setReportStatusFilter(reportStatusFilter === 'SELESAI' ? 'ALL' : 'SELESAI')}
+          className={`text-left bg-white dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-700/50 p-3 rounded-none flex items-center gap-4 shadow-sm relative overflow-hidden transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50 ${reportStatusFilter === 'SELESAI' ? 'ring-1 ring-green-500 ring-inset' : ''}`}
         >
-          <p className="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-300 tracking-widest uppercase mb-1">Ditolak</p>
-          <p className={`text-2xl font-tactical font-bold ${reportStatusFilter === 'DITOLAK' ? 'text-red-600' : 'text-red-500'}`}>{counts.DITOLAK}</p>
+          <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-green-500"></div>
+          <div className="p-2.5 rounded-none bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-500 ml-1">
+            <CheckCircle className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-[10px] font-tactical tracking-widest text-slate-500 dark:text-slate-400 uppercase">Selesai</p>
+            <div className="flex items-baseline gap-2">
+              <h4 className="text-xl font-bold font-mono text-slate-800 dark:text-white">{counts.SELESAI}</h4>
+            </div>
+          </div>
         </button>
       </div>
 

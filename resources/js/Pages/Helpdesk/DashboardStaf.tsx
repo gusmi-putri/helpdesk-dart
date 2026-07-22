@@ -64,8 +64,10 @@ const DashboardStaf = (props: DashboardStafProps) => {
 
   // Unit Mutation States
   const [isAddUnitModalOpen, setIsAddUnitModalOpen] = useState(false);
+  const [isEditUnitModalOpen, setIsEditUnitModalOpen] = useState(false);
   const [isDeleteRequestModalOpen, setIsDeleteRequestModalOpen] = useState(false);
   const [unitToDelete, setUnitToDelete] = useState<Unit | null>(null);
+  const [unitToEdit, setUnitToEdit] = useState<Unit | null>(null);
   const [mutationProcessing, setMutationProcessing] = useState(false);
   const [isPolling, setIsPolling] = useState(false);
   // Batch Mutation States
@@ -229,7 +231,23 @@ const DashboardStaf = (props: DashboardStafProps) => {
       onSuccess: () => {
         setIsAddUnitModalOpen(false);
         setMutationProcessing(false);
-        addNotification('Pengajuan penambahan unit telah dikirim. Menunggu persetujuan Admin.');
+      },
+      onError: () => {
+        setMutationProcessing(false);
+        addNotification('Gagal mengirim pengajuan. Periksa data yang diisi.', 'error');
+      }
+    });
+  };
+
+  const handleEditUnitSubmit = (formData: FormData) => {
+    if (!unitToEdit) return;
+    setMutationProcessing(true);
+    router.post(`/units/${unitToEdit.id}`, formData, {
+      forceFormData: true,
+      onSuccess: () => {
+        setIsEditUnitModalOpen(false);
+        setUnitToEdit(null);
+        setMutationProcessing(false);
       },
       onError: () => {
         setMutationProcessing(false);
@@ -256,7 +274,6 @@ const DashboardStaf = (props: DashboardStafProps) => {
         setIsDeleteRequestModalOpen(false);
         setUnitToDelete(null);
         setMutationProcessing(false);
-        addNotification('Pengajuan penghapusan telah dikirim. Menunggu persetujuan Admin.');
       },
       onError: () => {
         setMutationProcessing(false);
@@ -412,6 +429,10 @@ const DashboardStaf = (props: DashboardStafProps) => {
                     setSortConfig={setSortConfig}
                     onAddUnit={() => setIsAddUnitModalOpen(true)}
                     onAddBatch={() => setIsAddBatchModalOpen(true)}
+                    onEditUnit={(unit) => {
+                      setUnitToEdit(unit);
+                      setIsEditUnitModalOpen(true);
+                    }}
                     onRequestDelete={handleRequestDelete}
                     onRequestDeleteBatch={handleRequestDeleteBatch}
                   />
@@ -499,6 +520,18 @@ const DashboardStaf = (props: DashboardStafProps) => {
         onSubmit={handleAddUnitSubmit}
         processing={mutationProcessing}
         dbSatuans={dbSatuans}
+      />
+
+      <StafUnitModal
+        isOpen={isEditUnitModalOpen}
+        onClose={() => {
+          setIsEditUnitModalOpen(false);
+          setUnitToEdit(null);
+        }}
+        onSubmit={handleEditUnitSubmit}
+        processing={mutationProcessing}
+        dbSatuans={dbSatuans}
+        unit={unitToEdit}
       />
 
       <RequestDeleteModal

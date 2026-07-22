@@ -126,7 +126,6 @@ const UsersTable: React.FC<UsersTableProps> = ({
         onSuccess: () => {
           setIsEditModalOpen(false);
           reset();
-          if (isPengajuan) addNotification('Pengajuan personel berhasil ditambahkan.');
         },
       });
     } else {
@@ -151,7 +150,6 @@ const UsersTable: React.FC<UsersTableProps> = ({
       put(`/users/${editingUser.db_id}`, {
         onSuccess: () => {
           setIsEditModalOpen(false);
-          if (isPengajuan) addNotification('Pengajuan perubahan data personel berhasil dikirim.');
         },
       });
     }
@@ -174,7 +172,6 @@ const UsersTable: React.FC<UsersTableProps> = ({
         onSuccess: () => {
           setIsDeleteModalOpen(false);
           setUserToDelete(null);
-          if (isPengajuan) addNotification('Pengajuan hapus personel berhasil dikirim.');
         }
       });
     }
