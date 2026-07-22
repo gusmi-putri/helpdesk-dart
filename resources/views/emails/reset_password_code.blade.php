@@ -91,12 +91,12 @@
 <body>
     <div class="wrapper">
         <div class="header">
-            <h1>SISTEM DART</h1>
+            <h1>SISFO DART</h1>
         </div>
         
         <div class="content">
             <p>Halo,</p>
-            <p>Anda menerima email ini karena kami menerima permintaan untuk mereset kata sandi akun Anda pada <strong>Sistem Informasi DART</strong>.</p>
+            <p>Anda menerima email ini karena kami menerima permintaan untuk mereset kata sandi akun Anda pada <strong>SISFO DART BENGPUSKOMLEK</strong>.</p>
             
             <p>Silakan gunakan kode rahasia 6-digit di bawah ini untuk melanjutkan proses reset kata sandi Anda:</p>
             
@@ -112,8 +112,8 @@
         </div>
         
         <div class="footer">
-            <p>Email ini dikirim secara otomatis oleh Sistem Informasi DART BENGPUS PUSKOMLEKAD.</p>
-            <p>&copy; {{ date('Y') }} DART System. Hak cipta dilindungi undang-undang.</p>
+            <p>Email ini dikirim secara otomatis oleh SISFO DART BENGPUS PUSKOMLEKAD.</p>
+            <p>&copy; {{ date('Y') }} SISFO DART System. Hak cipta dilindungi undang-undang.</p>
         </div>
     </div>
 </body>
