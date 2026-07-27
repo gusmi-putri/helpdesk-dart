@@ -171,7 +171,7 @@ class LocalDiagnosticService
         $levelInfo = $this->levelAdvice[$level] ?? $this->levelAdvice['Sedang'];
 
         // Header
-        $output = "## {$levelInfo['label']}\n\n";
+        $output = "{$levelInfo['label']}\n\n";
         $output .= "**Unit:** `{$unitName}` | **Tingkat Diagnosis:** {$level}\n";
         $output .= "**Eselon Pemeliharaan:** `{$levelInfo['maintenance_level']}`\n\n";
         $output .= "{$levelInfo['summary']}\n\n";
@@ -205,8 +205,7 @@ class LocalDiagnosticService
             $output .= "4. **Jangan mencoba memperbaiki sendiri di luar kewenangan** — serahkan kepada unit perbaikan terkait.\n";
         }
 
-        $output .= "\n---\n";
-        $output .= "_Analisis ini dihasilkan secara **lokal** berdasarkan modul diagnostik terintegrasi dengan Doktrin Logistik TNI AD 2021._";
+    ;
 
         return $output;
     }
