@@ -30,7 +30,7 @@ class DashboardController extends Controller
         $roleName = $user->role->nama_role ?? '';
 
         if ($roleName === 'Pelapor') {
-            if ($report->unit && $report->unit->satuan_id !== $user->satuan_id) {
+            if ($report->pelapor && $report->pelapor->satuan_id !== $user->satuan_id) {
                 abort(403, 'Akses Ditolak: Laporan ini bukan milik Satuan Kerja Anda.');
             }
         } elseif ($roleName === 'Teknisi') {
@@ -76,9 +76,11 @@ class DashboardController extends Controller
             foreach ($paths as $path) {
                 $fullPath = storage_path('app/public/' . $path);
                 if (file_exists($fullPath)) {
-                    $type = pathinfo($fullPath, PATHINFO_EXTENSION);
-                    $data = file_get_contents($fullPath);
-                    $images[] = 'data:image/' . $type . ';base64,' . base64_encode($data);
+                    $type = strtolower(pathinfo($fullPath, PATHINFO_EXTENSION));
+                    if (in_array($type, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
+                        $data = file_get_contents($fullPath);
+                        $images[] = 'data:image/' . $type . ';base64,' . base64_encode($data);
+                    }
                 }
             }
         }

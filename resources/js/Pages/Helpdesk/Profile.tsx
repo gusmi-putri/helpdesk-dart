@@ -52,7 +52,6 @@ const Profile = ({ currentUser }: any) => {
     profileForm.put(route('profile.update'), {
       preserveScroll: true,
       onSuccess: () => {
-        addNotification('Profil berhasil diperbarui!');
       },
       onError: (err) => {
         if(err.error) {

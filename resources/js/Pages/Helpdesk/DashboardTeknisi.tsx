@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useStore } from '@/store/useStore';
+import { Activity } from 'lucide-react';
 import { router, useForm, Head } from '@inertiajs/react';
 
 
@@ -23,6 +24,7 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [isMobileListOpen, setIsMobileListOpen] = useState<boolean>(false);
+  const [isPolling, setIsPolling] = useState(false);
 
 
   // Filter tasks
@@ -49,7 +51,11 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
   // Auto-polling
   useEffect(() => {
     const interval = setInterval(() => {
-      router.reload({ only: ['dbCases'] });
+      router.reload({ 
+        only: ['dbCases'],
+        onStart: () => setIsPolling(true),
+        onFinish: () => setIsPolling(false)
+      });
     }, 15000);
     return () => clearInterval(interval);
   }, []);
@@ -172,9 +178,16 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
           
           {/* Header Title */}
           <div className="border-b border-slate-200 dark:border-slate-600 pb-3 shrink-0">
-            <h2 className="text-xl font-tactical font-bold text-slate-800 dark:text-white tracking-widest uppercase">
-              PORTAL PERBAIKAN DART
-            </h2>
+            <div className="flex items-center gap-3">
+              <h2 className="text-xl font-tactical font-bold text-slate-800 dark:text-white tracking-widest uppercase flex items-center gap-3">
+                PORTAL PERBAIKAN DART
+                {isPolling && (
+                  <span className="flex items-center gap-1.5 text-[10px] font-mono text-cighra-primary dark:text-cighra-gold tracking-widest animate-pulse border border-cighra-primary/30 dark:border-cighra-gold/30 px-2 py-0.5 bg-cighra-primary/5 dark:bg-cighra-gold/10 rounded-sm">
+                    <Activity className="w-3 h-3 animate-spin" /> SYNCING...
+                  </span>
+                )}
+              </h2>
+            </div>
             <p className="text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-0.5 uppercase tracking-widest">
               Pusat Instruksi & Penyerahan Laporan Perbaikan Unit DART
             </p>

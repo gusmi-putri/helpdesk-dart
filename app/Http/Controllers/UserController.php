@@ -84,9 +84,8 @@ class UserController extends Controller
         return redirect()->back()->with('message', 'Pengajuan penambahan personel telah dikirim dan sedang menunggu persetujuan Admin.');
     }
 
-    public function update(UpdateUserRequest $request, string $id)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        $user = User::findOrFail($id);
         $adminRoleId = Role::where('nama_role', 'Admin')->first()?->id;
         $currentUser = auth()->user();
         $isSelfEdit = $user->id === $currentUser->id;
@@ -149,9 +148,8 @@ class UserController extends Controller
         return redirect()->back()->with('message', 'Pengajuan edit data personel telah dikirim ke Admin untuk disetujui.');
     }
 
-    public function destroy(string $id)
+    public function destroy(User $user)
     {
-        $user = User::findOrFail($id);
         $adminRoleId = Role::where('nama_role', 'Admin')->first()?->id;
         $currentUser = auth()->user();
 
@@ -295,30 +293,7 @@ class UserController extends Controller
         return redirect()->back()->with('message', $msg);
     }
 
-    public function approveRegistration(string $id)
-    {
-        $user = User::findOrFail($id);
-        $user->is_approved = true;
-        $user->save();
 
-        $admin = auth()->user();
-        SystemLog::log('SUCCESS', $admin->id, "Menyetujui pendaftaran personel baru: {$user->nama_lengkap}");
-
-        return redirect()->back()->with('message', 'Pendaftaran personel telah disetujui.');
-    }
-
-    public function rejectRegistration(Request $request, string $id)
-    {
-        $user = User::findOrFail($id);
-        $userName = $user->nama_lengkap;
-        
-        $admin = auth()->user();
-        SystemLog::log('WARN', $admin->id, "Menolak pendaftaran personel baru: {$userName}");
-
-        $user->forceDelete();
-
-        return redirect()->back()->with('message', 'Pendaftaran personel telah ditolak dan data dihapus.');
-    }
 
     public function reject(Request $request, string $id)
     {
