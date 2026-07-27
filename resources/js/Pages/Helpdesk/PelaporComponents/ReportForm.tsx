@@ -192,8 +192,8 @@ const ReportForm: React.FC<ReportFormProps> = ({
                   type="button"
                   onClick={() => handleRepairTypeChange(option.value as 'Swadaya' | 'Non-Swadaya')}
                   className={`text-left p-4 border rounded-sm transition-all min-h-[132px] ${selected
-                      ? 'border-cighra-gold bg-cighra-gold/10 shadow-md'
-                      : 'border-white/20 hover:border-cighra-gold/70 hover:bg-black/20'
+                    ? 'border-cighra-gold bg-cighra-gold/10 shadow-md'
+                    : 'border-white/20 hover:border-cighra-gold/70 hover:bg-black/20'
                     }`}
                 >
                   <span className="flex items-center gap-2 text-sm font-tactical font-bold uppercase tracking-widest text-white mb-2">
@@ -244,9 +244,9 @@ const ReportForm: React.FC<ReportFormProps> = ({
                     disabled: unit.is_verified === 0 || unit.is_verified === false
                   }))}
                 value={data.unit_id}
-                onChange={(val) => { 
-                  setData(prev => ({ ...prev, unit_id: val.toString(), auto_assign: false })); 
-                  setLocalErrors((prev: any) => ({ ...prev, unit_id: null })); 
+                onChange={(val) => {
+                  setData(prev => ({ ...prev, unit_id: val.toString(), auto_assign: false }));
+                  setLocalErrors((prev: any) => ({ ...prev, unit_id: null }));
                 }}
                 error={errors.unit_id || localErrors.unit_id}
               />
@@ -254,9 +254,9 @@ const ReportForm: React.FC<ReportFormProps> = ({
                 <div className="mt-4 p-4 bg-cighra-gold/10 border border-cighra-gold/30 rounded-sm">
                   <label className="flex items-start gap-3 cursor-pointer group">
                     <div className="relative flex items-center justify-center mt-0.5">
-                      <input 
-                        type="checkbox" 
-                        checked={data.auto_assign} 
+                      <input
+                        type="checkbox"
+                        checked={data.auto_assign}
                         onChange={(e) => setData('auto_assign', e.target.checked)}
                         className="w-5 h-5 appearance-none border-2 border-white/30 rounded-sm checked:bg-cighra-gold checked:border-cighra-gold transition-all"
                       />
@@ -392,7 +392,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
                 {[
                   { val: 'Sangat Mendesak', desc: 'Butuh penanganan segera, operasi terhenti' },
                   { val: 'Bisa Menunggu', desc: 'Perlu diperbaiki tapi tidak mendesak' },
-                  { val: 'Pemeliharaan Rutin', desc: 'Perawatan berkala / preventif' },
+                  { val: 'Perbaikan Rutin', desc: 'Perbaikan berkala' },
                 ].map(opt => (
                   <label key={opt.val} className={`flex items-center gap-3 p-3 rounded-sm border cursor-pointer transition-all ${data.urgensi === opt.val ? 'border-cighra-gold bg-cighra-gold/10' : 'border-white/20 hover:border-cighra-gold/50 hover:bg-black/20'}`}>
                     <input type="radio" name="urgensi" value={opt.val} checked={data.urgensi === opt.val} onChange={(e) => setData('urgensi', e.target.value)} required

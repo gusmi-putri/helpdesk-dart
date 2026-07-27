@@ -120,23 +120,26 @@ class LocalDiagnosticService
     ];
 
     /**
-     * Saran berdasarkan tingkat kerusakan.
+     * Saran berdasarkan tingkat kerusakan dan Doktrin Logistik TNI AD 2021.
      */
     protected array $levelAdvice = [
         'Ringan' => [
             'label' => '🟡 KENDALA RINGAN',
-            'summary' => 'Berdasarkan klasifikasi **Ringan**, unit kemungkinan masih dapat digunakan secara terbatas. Periksa langkah awal di bawah sebelum menghentikan operasi penuh.',
+            'maintenance_level' => 'PEMELIHARAAN TINGKAT SATUAN',
+            'summary' => 'Berdasarkan klasifikasi **Ringan**, unit memerlukan pemeliharaan yang bersifat sederhana. Perbaikan pada tingkat ini tidak memerlukan suku cadang, peralatan khusus, ataupun personel dengan keahlian tertentu sehingga menjadi kewenangan Satuan pemakai/organik.',
             'alert' => '',
         ],
         'Sedang' => [
             'label' => '🟠 KENDALA SEDANG',
-            'summary' => 'Berdasarkan klasifikasi **Sedang**, unit memerlukan pemeriksaan teknis segera. **Hentikan penggunaan operasional** unit ini hingga teknisi melakukan evaluasi.',
+            'maintenance_level' => 'PEMELIHARAAN TINGKAT DAERAH',
+            'summary' => 'Berdasarkan klasifikasi **Sedang**, unit memerlukan pemeriksaan teknis dan kemungkinan penggantian/perbaikan suku cadang dengan menggunakan peralatan tertentu. Kewenangan perbaikan berada di instalasi pemeliharaan daerah oleh personel ahli.',
             'alert' => '> ⚠️ Disarankan untuk **tidak memaksakan penggunaan** unit DART hingga perbaikan dilakukan, guna mencegah kerusakan yang lebih luas.',
         ],
         'Parah' => [
             'label' => '🔴 KENDALA PARAH / KRITIS',
-            'summary' => 'Berdasarkan klasifikasi **Parah**, unit berada dalam kondisi kritis. **Hentikan operasi segera** dan amankan unit.',
-            'alert' => '> 🚨 **PERINGATAN:** Jangan mencoba memperbaiki sendiri. Jangan menyalakan ulang unit jika ada indikasi asap, bau terbakar, atau kerusakan parah. Hubungi Teknisi dan laporkan kepada atasan.',
+            'maintenance_level' => 'PEMELIHARAAN TINGKAT PUSAT',
+            'summary' => 'Berdasarkan klasifikasi **Parah**, unit berada dalam kondisi rusak berat. Unit membutuhkan pemeliharaan tingkat lanjutan yang mungkin melibatkan tahapan produksi, modifikasi, atau rehabilitasi di instalasi pemeliharaan pusat (Bengkel Pusat).',
+            'alert' => '> 🚨 **PERINGATAN:** Jangan mencoba memperbaiki sendiri. Jangan menyalakan ulang unit jika ada indikasi asap, bau terbakar, atau kerusakan parah. Amankan unit dan laporkan segera untuk evakuasi ke tingkat pusat.',
         ],
     ];
 
@@ -168,8 +171,9 @@ class LocalDiagnosticService
         $levelInfo = $this->levelAdvice[$level] ?? $this->levelAdvice['Sedang'];
 
         // Header
-        $output = "## {$levelInfo['label']}\n\n";
-        $output .= "**Unit:** `{$unitName}` | **Tingkat:** {$level}\n\n";
+        $output = "{$levelInfo['label']}\n\n";
+        $output .= "**Unit:** `{$unitName}` | **Tingkat Diagnosis:** {$level}\n";
+        $output .= "**Eselon Pemeliharaan:** `{$levelInfo['maintenance_level']}`\n\n";
         $output .= "{$levelInfo['summary']}\n\n";
 
         if (!empty($levelInfo['alert'])) {
@@ -185,7 +189,7 @@ class LocalDiagnosticService
             foreach ($matchedRule['causes'] as $cause) {
                 $output .= "- {$cause}\n";
             }
-            $output .= "\n**Langkah Pemeriksaan Awal (oleh Pelapor):**\n";
+            $output .= "\n**Langkah Pemeriksaan Awal (oleh Pelapor tingkat Satuan):**\n";
             foreach ($matchedRule['steps'] as $i => $step) {
                 $output .= ($i + 1) . ". {$step}\n";
             }
@@ -196,13 +200,12 @@ class LocalDiagnosticService
             $output .= "Teknisi akan melakukan pemeriksaan manual secara langsung.\n\n";
             $output .= "**Langkah Umum yang Dapat Dilakukan:**\n";
             $output .= "1. **Dokumentasikan kondisi unit** dengan foto/video sebelum dipindahkan.\n";
-            $output .= "2. **Hentikan penggunaan** unit yang bermasalah sampai Teknisi tiba.\n";
+            $output .= "2. **Hentikan penggunaan** unit yang bermasalah sampai Teknisi dari eselon terkait tiba.\n";
             $output .= "3. **Catat waktu dan kondisi** saat masalah pertama kali muncul.\n";
-            $output .= "4. **Jangan mencoba memperbaiki sendiri** — serahkan kepada Teknisi bersertifikat.\n";
+            $output .= "4. **Jangan mencoba memperbaiki sendiri di luar kewenangan** — serahkan kepada unit perbaikan terkait.\n";
         }
 
-        $output .= "\n---\n";
-        $output .= "_Analisis ini dihasilkan secara **lokal** oleh sistem SISFO DART berdasarkan basis pengetahuan teknis unit DART. Teknisi terlatih akan melakukan verifikasi langsung._";
+    ;
 
         return $output;
     }

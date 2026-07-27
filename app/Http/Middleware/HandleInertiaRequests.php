@@ -38,6 +38,7 @@ class HandleInertiaRequests extends Middleware
                     'username' => $request->user()->username,
                     'name' => $request->user()->nama_lengkap,
                     'role' => $request->user()->role?->nama_role ?? 'No Role',
+                    'satuan' => $request->user()->satuan?->nama_satuan ?? $request->user()->asal_satuan ?? 'SATUAN TIDAK DIKETAHUI',
                 ] : null,
             ],
             'flash' => [
