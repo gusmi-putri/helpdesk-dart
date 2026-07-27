@@ -1,9 +1,8 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
-import { FileArchive } from 'lucide-react';
+import { FileArchive, Activity } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { router, usePage } from '@inertiajs/react';
-
-
+import { Report, User, Unit, Mutation, Role, Satuan } from '@/types';
 // Sub-components
 import StafSidebar from './StafComponents/StafSidebar';
 import StafTopbar from './StafComponents/StafTopbar';
@@ -27,16 +26,26 @@ const SatuansTable = lazy(() => import('./AdminComponents/SatuansTable'));
 
 type MenuTab = 'MASUK' | 'SELESAI' | 'INVENTARIS' | 'MUTASI' | 'PERSONEL' | 'SATUANS';
 
-const DashboardStaf = (props: any) => {
+interface DashboardStafProps {
+  dbCases?: Report[];
+  dbUsers?: User[];
+  dbUnits?: Unit[];
+  dbMutations?: Mutation[];
+  dbUserMutations?: Mutation[];
+  dbAllUsers?: User[];
+  dbRoles?: Role[];
+  dbSatuans?: Satuan[];
+}
+
+const DashboardStaf = (props: DashboardStafProps) => {
   const { dbCases = [], dbUsers = [], dbUnits = [], dbMutations = [], dbUserMutations = [], dbAllUsers = [], dbRoles = [], dbSatuans = [] } = props;
   const [activeMenu, setActiveMenu] = useState<MenuTab>('MASUK');
   const [assigningReportId, setAssigningReportId] = useState<number | null>(null);
   const [rejectingReportId, setRejectingReportId] = useState<number | null>(null);
-  const [viewingProof, setViewingProof] = useState<{ report: any; type: 'rusak' | 'selesai' } | null>(null);
+  const [viewingProof, setViewingProof] = useState<{ report: Report; type: 'rusak' | 'selesai' } | null>(null);
   const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [isRecapModalOpen, setIsRecapModalOpen] = useState(false);
-
 
   // Recap States
   const [recapPeriod, setRecapPeriod] = useState<'weekly' | 'monthly' | 'yearly' | 'custom' | 'year_specific'>('monthly');
@@ -55,20 +64,22 @@ const DashboardStaf = (props: any) => {
 
   // Unit Mutation States
   const [isAddUnitModalOpen, setIsAddUnitModalOpen] = useState(false);
+  const [isEditUnitModalOpen, setIsEditUnitModalOpen] = useState(false);
   const [isDeleteRequestModalOpen, setIsDeleteRequestModalOpen] = useState(false);
-  const [unitToDelete, setUnitToDelete] = useState<any>(null);
+  const [unitToDelete, setUnitToDelete] = useState<Unit | null>(null);
+  const [unitToEdit, setUnitToEdit] = useState<Unit | null>(null);
   const [mutationProcessing, setMutationProcessing] = useState(false);
+  const [isPolling, setIsPolling] = useState(false);
   // Batch Mutation States
   const [isAddBatchModalOpen, setIsAddBatchModalOpen] = useState(false);
   const [isDeleteBatchModalOpen, setIsDeleteBatchModalOpen] = useState(false);
-  const [selectedUnitsForDelete, setSelectedUnitsForDelete] = useState<any[]>([]);
+  const [selectedUnitsForDelete, setSelectedUnitsForDelete] = useState<Unit[]>([]);
 
   const { auth } = usePage().props as any;
   const currentUser = auth.user;
-  const logoutAction = useStore(state => state.logout);
   const addNotification = useStore(state => state.addNotification);
 
-  const selectedReport = dbCases.find((c: any) => c.db_id === selectedReportId);
+  const selectedReport = dbCases.find((c: Report) => c.db_id === selectedReportId);
 
   // Auto-polling with visibility detection
   useEffect(() => {
@@ -76,7 +87,11 @@ const DashboardStaf = (props: any) => {
 
     const startPolling = () => {
       intervalId = setInterval(() => {
-        router.reload({ only: ['dbCases', 'dbUsers', 'dbUnits', 'dbMutations', 'dbAllUsers'] });
+        router.reload({ 
+          only: ['dbCases', 'dbUsers', 'dbUnits', 'dbMutations', 'dbAllUsers'],
+          onStart: () => setIsPolling(true),
+          onFinish: () => setIsPolling(false)
+        });
       }, 15000);
     };
 
@@ -216,7 +231,6 @@ const DashboardStaf = (props: any) => {
       onSuccess: () => {
         setIsAddUnitModalOpen(false);
         setMutationProcessing(false);
-        addNotification('Pengajuan penambahan unit telah dikirim. Menunggu persetujuan Admin.');
       },
       onError: () => {
         setMutationProcessing(false);
@@ -225,7 +239,24 @@ const DashboardStaf = (props: any) => {
     });
   };
 
-  const handleRequestDelete = (unit: any) => {
+  const handleEditUnitSubmit = (formData: FormData) => {
+    if (!unitToEdit) return;
+    setMutationProcessing(true);
+    router.post(`/units/${unitToEdit.id}`, formData, {
+      forceFormData: true,
+      onSuccess: () => {
+        setIsEditUnitModalOpen(false);
+        setUnitToEdit(null);
+        setMutationProcessing(false);
+      },
+      onError: () => {
+        setMutationProcessing(false);
+        addNotification('Gagal mengirim pengajuan. Periksa data yang diisi.', 'error');
+      }
+    });
+  };
+
+  const handleRequestDelete = (unit: Unit) => {
     setUnitToDelete(unit);
     setIsDeleteRequestModalOpen(true);
   };
@@ -237,13 +268,12 @@ const DashboardStaf = (props: any) => {
     formData.append('reason', reason);
     if (document) formData.append('document', document);
 
-    router.post(`/units/${unitToDelete.db_id}/request-delete`, formData, {
+    router.post(`/units/${unitToDelete.id}/request-delete`, formData, {
       forceFormData: true,
       onSuccess: () => {
         setIsDeleteRequestModalOpen(false);
         setUnitToDelete(null);
         setMutationProcessing(false);
-        addNotification('Pengajuan penghapusan telah dikirim. Menunggu persetujuan Admin.');
       },
       onError: () => {
         setMutationProcessing(false);
@@ -267,7 +297,7 @@ const DashboardStaf = (props: any) => {
     });
   };
 
-  const handleRequestDeleteBatch = (selectedUnits: any[]) => {
+  const handleRequestDeleteBatch = (selectedUnits: Unit[]) => {
     setSelectedUnitsForDelete(selectedUnits);
     setIsDeleteBatchModalOpen(true);
   };
@@ -278,7 +308,7 @@ const DashboardStaf = (props: any) => {
     formData.append('reason', reason);
     formData.append('document', document);
     selectedUnitsForDelete.forEach(unit => {
-      formData.append('unit_ids[]', unit.db_id);
+      formData.append('unit_ids[]', String(unit.id));
     });
 
     router.post('/units/request-delete-batch', formData, {
@@ -295,11 +325,11 @@ const DashboardStaf = (props: any) => {
     });
   };
 
-  const rejectingReport = dbCases.find((c: any) => c.db_id === rejectingReportId);
+  const rejectingReport = dbCases.find((c: Report) => c.db_id === rejectingReportId);
 
-  const incomingReports = dbCases.filter((r: any) => r.status !== 'SELESAI' && r.status !== 'DITOLAK');
-  const completedReports = dbCases.filter((r: any) => r.status === 'SELESAI' || r.status === 'DITOLAK');
-  const pendingMutations = dbMutations.filter((m: any) => m.status === 'pending');
+  const incomingReports = dbCases.filter((r: Report) => r.status !== 'SELESAI' && r.status !== 'DITOLAK');
+  const completedReports = dbCases.filter((r: Report) => r.status === 'SELESAI' || r.status === 'DITOLAK');
+  const pendingMutations = dbMutations.filter((m: Mutation) => m.status === 'pending');
 
   return (
     <div className="h-screen bg-slate-50 dark:bg-cighra-dark flex flex-col font-sans selection:bg-cighra-primary dark:selection:bg-cighra-gold dark:selection:text-slate-900 selection:text-white relative text-gunmetal dark:text-slate-300">
@@ -315,7 +345,7 @@ const DashboardStaf = (props: any) => {
           setIsMobileMenuOpen={setIsMobileMenuOpen}
           activeMenu={activeMenu}
           setActiveMenu={setActiveMenu}
-          pendingCount={incomingReports.filter((r: any) => r.status === 'PENDING').length}
+          pendingCount={incomingReports.filter((r: Report) => r.status === 'PENDING').length}
           mutationPendingCount={pendingMutations.length}
         />
 
@@ -323,20 +353,23 @@ const DashboardStaf = (props: any) => {
         <main className="flex-1 flex flex-col relative overflow-hidden h-full">
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-paper.png')] opacity-[0.05] pointer-events-none"></div>
 
-
-
           {/* Scrollable Content Container */}
           <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar z-10">
             <div className="max-w-[1400px] mx-auto">
               <div className="mb-2 flex justify-between items-end border-b border-slate-200 dark:border-slate-600 pb-3">
-                <div>
-                  <h2 className="text-2xl font-tactical font-bold text-slate-800 dark:text-white tracking-widest uppercase">
+                <div className="flex items-center gap-3">
+                  <h2 className="text-2xl font-tactical font-bold text-slate-800 dark:text-white tracking-widest uppercase flex items-center gap-3">
                     {activeMenu === 'MASUK' ? 'MANAJEMEN LAPORAN MASUK' :
                       activeMenu === 'SELESAI' ? 'ARSIP DOKUMEN PENYELESAIAN' :
                         activeMenu === 'INVENTARIS' ? 'DATABASE INVENTARIS' :
                           activeMenu === 'MUTASI' ? 'RIWAYAT PENGAJUAN' :
                             activeMenu === 'SATUANS' ? 'DATA SATUAN' :
                               'DATA PERSONEL'}
+                    {isPolling && (
+                      <span className="flex items-center gap-1.5 text-[10px] font-mono text-cighra-primary dark:text-cighra-gold tracking-widest animate-pulse border border-cighra-primary/30 dark:border-cighra-gold/30 px-2 py-0.5 bg-cighra-primary/5 dark:bg-cighra-gold/10 rounded-sm">
+                        <Activity className="w-3 h-3 animate-spin" /> SYNCING...
+                      </span>
+                    )}
                   </h2>
                   <p className="text-xs font-mono text-slate-500 dark:text-slate-300 mt-1 uppercase tracking-widest">
                     {activeMenu === 'INVENTARIS' ? 'STATUS KESIAPAN UNIT DART.' :
@@ -389,6 +422,10 @@ const DashboardStaf = (props: any) => {
                     setSortConfig={setSortConfig}
                     onAddUnit={() => setIsAddUnitModalOpen(true)}
                     onAddBatch={() => setIsAddBatchModalOpen(true)}
+                    onEditUnit={(unit) => {
+                      setUnitToEdit(unit);
+                      setIsEditUnitModalOpen(true);
+                    }}
                     onRequestDelete={handleRequestDelete}
                     onRequestDeleteBatch={handleRequestDeleteBatch}
                   />
@@ -476,6 +513,18 @@ const DashboardStaf = (props: any) => {
         onSubmit={handleAddUnitSubmit}
         processing={mutationProcessing}
         dbSatuans={dbSatuans}
+      />
+
+      <StafUnitModal
+        isOpen={isEditUnitModalOpen}
+        onClose={() => {
+          setIsEditUnitModalOpen(false);
+          setUnitToEdit(null);
+        }}
+        onSubmit={handleEditUnitSubmit}
+        processing={mutationProcessing}
+        dbSatuans={dbSatuans}
+        unit={unitToEdit}
       />
 
       <RequestDeleteModal

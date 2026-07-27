@@ -44,6 +44,7 @@ const MutationHistory: React.FC<MutationHistoryProps> = ({ dbMutations }) => {
   const getBadgeInfo = (type: string, isBatch: boolean = false) => {
     if (type.includes('add')) return { label: isBatch ? 'TAMBAH MASSAL' : 'TAMBAH INVENTARIS', color: 'bg-green-100 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800', icon: <Plus size={10} /> };
     if (type.includes('delete')) return { label: 'HAPUS INVENTARIS', color: 'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800', icon: <Trash2 size={10} /> };
+    if (type.includes('edit')) return { label: 'EDIT INVENTARIS', color: 'bg-yellow-100 text-yellow-700 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-400 dark:border-yellow-800', icon: <FileText size={10} /> };
     if (type === 'restore') return { label: 'DIKEMBALIKAN', color: 'bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-900/20 dark:text-purple-400 dark:border-purple-800', icon: <FileText size={10} /> };
     return { label: 'UNKNOWN', color: 'bg-gray-100 text-gray-700', icon: null };
   };

@@ -78,6 +78,7 @@ class UnitController extends Controller
             'asal_satuan' => 'nullable|string|max:100',
             'satuan_id' => 'required|exists:satuans,id',
             'status_unit' => 'required|in:Beroperasi,Rusak,Perbaikan,Nonaktif',
+            'document' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:10240',
         ]);
 
         $user = auth()->user();
@@ -98,10 +99,16 @@ class UnitController extends Controller
                 return redirect()->back()->with('error', 'Sudah ada pengajuan pembaruan yang menunggu persetujuan untuk unit ini.');
             }
 
+            $documentPath = null;
+            if ($request->hasFile('document')) {
+                $documentPath = $this->fileService->uploadSingleFile($request->file('document'), 'mutations/documents');
+            }
+
             UnitMutation::create([
                 'unit_id' => $unit->id,
                 'type' => 'request_edit',
                 'reason' => $request->input('reason', 'Pengajuan pembaruan data unit.'),
+                'document_path' => $documentPath,
                 'requested_by' => $user->id,
                 'status' => 'pending',
                 'unit_data' => $request->only(['nomor_seri', 'jenis', 'asal_satuan', 'satuan_id', 'status_unit']),
@@ -113,7 +120,7 @@ class UnitController extends Controller
     }
 
     /**
-     * Destroy: Admin langsung soft-delete. Staf harus melalui requestDelete.
+     * Destroy: Admin langsung soft-delete. Staf melalui requestDelete.
      */
     public function destroy(Unit $unit)
     {

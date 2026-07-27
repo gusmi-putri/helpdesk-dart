@@ -30,19 +30,7 @@ const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
   const [activeTab, setActiveTab] = useState<'PERSONEL' | 'INVENTARIS' | 'SATUAN'>('PERSONEL');
   const addNotification = useStore(state => state.addNotification);
 
-  const unapprovedUsers = (dbUsers || []).filter((u: any) => !u.is_approved).map((u: any) => ({
-    id: u.db_id, // MUST use db_id for routing
-    target_user_id: u.db_id,
-    type: 'request_register',
-    status: 'pending',
-    requested_by: null,
-    user_data: u,
-    created_at: u.created_at,
-  }));
-
-  const allUserMutations = [...dbUserMutations, ...unapprovedUsers];
-
-  const pendingPersonelCount = allUserMutations.filter((m: any) => m.status === 'pending').length;
+  const pendingPersonelCount = dbUserMutations.filter((m: any) => m.status === 'pending').length;
   const pendingMutationsCount = dbMutations.filter((m: any) => m.status === 'pending').length;
   const pendingSatuans = dbSatuans.filter((s: any) => s.pending_action !== null);
   const pendingSatuansCount = pendingSatuans.length;
@@ -50,35 +38,19 @@ const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
   const { sortedItems: sortedPendingSatuans, sortConfig: satuanSortConfig, handleSort: handleSatuanSort } = useTableSort(pendingSatuans, { key: 'nama_satuan', direction: 'asc' });
 
   const handleApproveUser = (mutation: any) => {
-    if (mutation.type === 'request_register') {
-      router.post(`/users/${mutation.id}/approve-registration`, {}, {
-        onSuccess: () => addNotification('Pendaftaran personel disetujui.')
-      });
-    } else {
-      originalHandleApproveUser(mutation);
-    }
+    originalHandleApproveUser(mutation);
   };
 
   const handleRejectUser = (mutation: any) => {
-    if (mutation.type === 'request_register') {
-      router.post(`/users/${mutation.id}/reject-registration`, {}, {
-        onSuccess: () => addNotification('Pendaftaran personel ditolak.')
-      });
-    } else {
-      originalHandleRejectUser(mutation);
-    }
+    originalHandleRejectUser(mutation);
   };
 
   const handleApproveSatuan = (satuan: any) => {
-    router.post(`/satuans/${satuan.id}/approve`, {}, {
-      onSuccess: () => addNotification('Satuan berhasil disetujui.')
-    });
+    router.post(`/satuans/${satuan.id}/approve`, {});
   };
 
   const handleRejectSatuan = (satuan: any) => {
-    router.post(`/satuans/${satuan.id}/reject`, {}, {
-      onSuccess: () => addNotification('Satuan ditolak.')
-    });
+    router.post(`/satuans/${satuan.id}/reject`, {});
   };
 
   return (
@@ -130,7 +102,7 @@ const ApprovalCenter: React.FC<ApprovalCenterProps> = ({
       <div className="pt-2">
         {activeTab === 'PERSONEL' && (
           <ApprovalTable
-            dbUserMutations={allUserMutations}
+            dbUserMutations={dbUserMutations}
             handleApproveUser={handleApproveUser}
             handleRejectUser={handleRejectUser}
           />

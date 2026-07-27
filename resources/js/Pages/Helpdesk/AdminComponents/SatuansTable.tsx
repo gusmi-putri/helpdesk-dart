@@ -99,7 +99,6 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
         onSuccess: () => {
           setIsSatuanModalOpen(false);
           reset();
-          if (isPengajuan) addNotification('Pengajuan penambahan SATUAN dikirim.');
         }
       });
     } else {
@@ -120,7 +119,6 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
       put(`/satuans/${editingSatuan.id}`, {
         onSuccess: () => {
           setIsSatuanModalOpen(false);
-          if (isPengajuan) addNotification('Pengajuan perubahan SATUAN dikirim.');
         }
       });
     }

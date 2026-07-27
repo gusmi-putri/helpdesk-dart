@@ -10,36 +10,41 @@ Admin memiliki hak akses tertinggi (`role:Admin`) dan berfungsi sebagai pengontr
 ### Kapabilitas Berdasarkan Sistem (Routes & Middleware):
 *   **Akses Dashboard Utama (`/admin`):** Memiliki antarmuka analitik terlengkap, Peta Monitoring Operasional, dan log aktivitas sistem.
 *   **Manajemen Akun Personel (`UserController`):**
-    *   Melihat daftar seluruh pengguna.
-    *   **Persetujuan Registrasi:** Mengakses *endpoint* `/users/{id}/approve` secara eksklusif untuk menyetujui akun baru yang mendaftar.
-    *   Mengaktifkan/menonaktifkan status akun pengguna.
+    *   Melihat dan memodifikasi daftar seluruh pengguna.
+    *   **Persetujuan Registrasi:** Mengakses *endpoint* `/users/{id}/approve-registration` dan `reject-registration` secara eksklusif.
+    *   **Manajemen Status:** Mengakses *endpoint* `/users/{id}/toggle-status` untuk mengaktifkan/menonaktifkan akun.
 *   **Manajemen Inventaris & Mutasi (`UnitController`):**
-    *   **Impor Data:** Hanya Admin yang memiliki akses *endpoint* `/units/import` (mengunggah CSV/Excel data unit masal).
-    *   **Persetujuan Mutasi:** Secara eksklusif dapat menyetujui (`/mutations/{mutation}/approve`) atau menolak (`/mutations/{mutation}/reject`) pengajuan mutasi/penghapusan unit dari Staf.
-    *   **Pemulihan Unit:** Mengakses *endpoint* `/units/{unit}/restore` untuk memulihkan aset yang telah dihapus secara sistem.
-*   **Manajemen Kasus/Laporan:**
-    *   Memverifikasi laporan baru dari pelapor (`reports.verify`).
+    *   **Impor & Ekspor Data:** Memiliki akses ke *endpoint* `/units/import` (bersama Staf).
+    *   **Aksi Langsung:** Secara eksklusif dapat melakukan penghapusan data massal tanpa melalui persetujuan (`units.destroy-batch`).
+    *   **Persetujuan Mutasi:** Secara eksklusif dapat menyetujui (`approve`) atau menolak (`reject`) pengajuan mutasi/penghapusan unit dari Staf.
+    *   **Pemulihan Unit:** Mengakses *endpoint* `/units/{unit}/restore` untuk memulihkan aset yang telah dihapus secara sistem (Soft Delete).
+*   **Manajemen Kasus/Laporan (`ReportController`):**
+    *   Bisa membuat laporan baru (bersama Pelapor dan Staf).
+    *   Memverifikasi atau menolak laporan yang telah dikerjakan oleh Teknisi (`reports.verify` dan `reports.reject`).
     *   Mengekspor data operasional dan rekapitulasi ke dalam PDF/Excel (`admin.recap.export`).
 *   **Manajemen Satuan Kerja (Lokasi):**
-    *   Melihat, menambah, dan memperbarui data Satuan (termasuk koordinat Peta Monitoring) secara instan.
-    *   **Persetujuan Satuan:** Memvalidasi dan menyetujui (`approve`) pengajuan penambahan atau perubahan data Satuan dari form registrasi atau pengajuan Staf.
+    *   Melihat, menambah, dan memperbarui data Satuan (termasuk koordinat Peta Monitoring).
+    *   **Persetujuan Satuan:** Memvalidasi dan menyetujui (`approve` / `reject`) pengajuan perubahan atau penambahan data Satuan.
 
 ---
 
 ## 2. Staf (Pengelola Data Inventaris)
-Staf (`role:Staf`) berfokus pada manajemen data aset harian, namun tindakan yang bersifat destruktif atau mutasi masal membutuhkan persetujuan Admin.
+Staf (`role:Staf`) berfokus pada manajemen data aset harian, namun tindakan yang bersifat destruktif (penghapusan) atau validasi akun membutuhkan persetujuan Admin.
 
 ### Kapabilitas Berdasarkan Sistem (Routes & Middleware):
 *   **Akses Dashboard Staf (`/staf`):** Mengakses dashboard manajemen inventaris dan pelacakan riwayat perangkat.
 *   **Manajemen Inventaris Terbatas:**
-    *   Bisa mengakses *resource routes* untuk menambah dan memperbarui data unit.
-    *   **Sistem Pengajuan Mutasi:** Berbeda dengan Admin, staf **tidak dapat langsung menghapus unit**. Staf harus mengakses *endpoint* pengajuan seperti `/units/{unit}/request-delete`, `/units/request-delete-batch`, dan `/units/request-add-batch`. Pengajuan ini masuk ke sistem *Approval* Admin.
-*   **Distribusi Laporan (Helpdesk):**
-    *   Staf bertugas mendistribusikan laporan yang masuk kepada Teknisi yang tersedia melalui *endpoint* `/reports/{id}/handle`.
-*   **Manajemen Akun Terbatas:**
-    *   Bisa melihat daftar pengguna dan melakukan *toggle status* (`users.toggle-status`), namun **tidak memiliki akses** untuk menyetujui pengguna baru (`users.approve` dibatasi hanya untuk Admin).
+    *   Bisa mengakses *resource routes* untuk menambah dan memperbarui data unit secara satuan maupun melakukan Impor massal (`units/import`).
+    *   **Sistem Pengajuan Mutasi:** Staf **tidak dapat langsung menghapus unit** secara permanen. Staf menggunakan *endpoint* pengajuan seperti `/units/{unit}/request-delete`, `/units/request-delete-batch`, dan `/units/request-add-batch`. Pengajuan ini diteruskan ke *Approval Center* Admin.
+*   **Distribusi & Verifikasi Laporan (Helpdesk):**
+    *   Membuat laporan baru (`reports.store`).
+    *   Staf bertugas mendistribusikan laporan yang masuk kepada Teknisi melalui *endpoint* `/reports/{id}/handle`.
+    *   Berhak memverifikasi laporan masuk (`Pending` ➔ `Diverifikasi` via `reports.verify`) atau menolak laporan yang masuk/aktif (`Ditolak` via `reports.reject`). *Catatan: Verifikasi bukan untuk hasil kerja Teknisi karena setelah Teknisi menyelesaikan laporan, status langsung otomatis menjadi Selesai.*
+    *   Dapat mengunduh berkas BAP laporan (`reports.pdf`) langsung melalui tombol **CETAK PDF** di antarmuka detail laporan.
+*   **Manajemen Akun Sangat Terbatas:**
+    *   Bisa mengakses daftar pengguna (`users` resource view), namun **tidak memiliki akses** untuk menyetujui pengguna baru atau mengubah status aktif/nonaktif.
 *   **Manajemen Satuan Terbatas:**
-    *   Dapat mengedit data Satuan Kerja, namun modifikasi ini berstatus **Pengajuan** (`pending_action: edit`) dan tidak langsung terubah di sistem. Perubahan ini membutuhkan persetujuan Admin melalui *Approval Center*.
+    *   Dapat mengedit data Satuan Kerja, namun modifikasi ini harus disetujui Admin.
 *   **Ekspor Data:** Dapat mengekspor rekapitulasi data inventaris (`staf.recap.export`).
 
 ---
@@ -52,7 +57,8 @@ Teknisi (`role:Teknisi`) memiliki hak akses yang sangat spesifik dan difokuskan 
 *   **Siklus Penanganan Kasus (`ReportController`):**
     1.  **Penerimaan Tugas:** Menerima kasus yang ditugaskan oleh Staf/Admin (`reports.accept-task`).
     2.  **Proses Perbaikan:** Memperbarui status bahwa perbaikan sedang dikerjakan (`reports.start-progress`).
-    3.  **Penyelesaian:** Menandai laporan telah ditangani dan memberikan rincian tindakan perbaikan melalui *endpoint* penyelesaian akhir (`reports.complete`).
+    3.  **Penyelesaian:** Menandai laporan telah ditangani dan memberikan rincian tindakan perbaikan (`reports.complete`).
+*   **Akses Laporan:** Secara API/rute backend diizinkan mengunduh PDF BAP (`reports.pdf`) **khusus untuk laporan yang ditugaskan kepadanya**, namun saat ini **tidak disediakan tombol cetak di antarmuka (UI) dashboard Teknisi**.
 
 ---
 
@@ -62,6 +68,7 @@ Pelapor (`role:Pelapor`) adalah representasi satuan operasional di lapangan yang
 ### Kapabilitas Berdasarkan Sistem (Routes & Middleware):
 *   **Akses Dashboard Pelapor (`/pelapor`):** Menampilkan daftar unit yang dimiliki oleh satuan tersebut, serta riwayat laporan yang mereka ajukan.
 *   **Pengajuan Kasus (`ReportController`):**
-    *   Mengakses *endpoint* `/reports` untuk melakukan `store` (pembuatan tiket baru).
-    *   Berhak menggunakan integrasi fitur *AI Diagnostic* (`/api/diagnose`) untuk mendeteksi kendala secara sistem cerdas sebelum laporan final diajukan.
-*   **Isolasi Data:** Pelapor tidak dapat memodifikasi unit, tidak dapat melihat unit milik satuan lain, dan tidak dapat mengubah status dari tiket yang telah mereka ajukan (status dikontrol oleh Staf dan Teknisi).
+    *   Mengajukan pembuatan tiket/laporan kendala baru (`reports.store`).
+    *   Berhak menggunakan integrasi fitur *AI Diagnostic* (`/api/diagnose`) untuk mendeteksi kendala secara sistem cerdas.
+*   **Akses Laporan:** Secara API/rute backend diizinkan mengunduh PDF BAP (`reports.pdf`) **khusus untuk laporan miliknya sendiri**, namun saat ini **tidak disediakan tombol cetak di antarmuka (UI) dashboard Pelapor**.
+*   **Isolasi Data:** Pelapor tidak dapat memodifikasi data unit secara langsung, tidak dapat melihat unit/laporan milik satuan lain, dan tidak dapat mengubah status dari tiket yang telah mereka ajukan (hanya Staf dan Teknisi).

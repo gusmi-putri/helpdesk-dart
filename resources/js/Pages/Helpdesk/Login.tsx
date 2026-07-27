@@ -255,14 +255,7 @@ const Login: React.FC<LoginProps> = ({ initialSisaDetik = 0 }) => {
             </p>
           </div>
 
-          <div className="mt-6 text-center">
-            <p className="text-slate-500 dark:text-slate-400 text-xs font-mono uppercase tracking-widest">
-              Belum punya akun?{' '}
-              <Link href="/register" className="text-cighra-primary dark:text-cighra-gold hover:text-cighra-primary/80 dark:hover:text-cighra-gold/80 font-bold transition-colors">
-                Daftar di sini
-              </Link>
-            </p>
-          </div>
+
         </form>
 
         <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-600 text-center">

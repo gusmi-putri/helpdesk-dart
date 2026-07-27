@@ -16,8 +16,9 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         $adminRoleId = Role::where('nama_role', 'Admin')->first()?->id;
-        $userId = $this->route('user'); // Get ID from route params if bound
-        $user = User::find($userId);
+        $routeUser = $this->route('user');
+        $userId = $routeUser instanceof User ? $routeUser->id : $routeUser;
+        $user = $routeUser instanceof User ? $routeUser : User::find($userId);
 
         $rules = [
             'email' => 'required|email|unique:users,email,' . $userId,

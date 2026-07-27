@@ -30,7 +30,6 @@ const SatuanDeleteModal: React.FC<SatuanDeleteModalProps> = ({
     router.delete(`/satuans/${satuan.id}`, {
       onSuccess: () => {
         setProcessing(false);
-        addNotification('SATUAN berhasil dihapus/diajukan hapus.');
         if (onSuccess) onSuccess();
         onClose();
       },

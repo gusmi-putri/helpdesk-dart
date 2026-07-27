@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Package, Search, Plus, History, Edit, Trash2, Upload, CheckCircle, AlertTriangle, X, RotateCcw } from 'lucide-react';
+import { Package, Search, Plus, History, Edit, Trash2, Upload, CheckCircle, AlertTriangle, X, RotateCcw, Wrench } from 'lucide-react';
 import { EmptyState } from '@/Components/ui/EmptyState';
 import { usePage, router, useForm } from '@inertiajs/react';
 import SortableHeader from '@/Components/Table/SortableHeader';
@@ -230,14 +230,22 @@ const UnitsTable: React.FC<UnitsTableProps> = ({
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: 'TOTAL UNIT', value: unitStats.TOTAL, color: 'border-cighra-primary dark:border-cighra-gold', text: 'text-cighra-primary dark:text-cighra-gold' },
-          { label: 'BEROPERASI', value: unitStats.SIAP, color: 'border-green-500', text: 'text-green-500' },
-          { label: 'RUSAK / KENDALA', value: unitStats.RUSAK, color: 'border-cighra-primary dark:border-cighra-gold', text: 'text-cighra-primary dark:text-cighra-gold' },
-          { label: 'DALAM PERBAIKAN', value: unitStats.PERBAIKAN, color: 'border-blue-500', text: 'text-blue-500' },
-        ].map((s, i) => (
-          <div key={i} className={`bg-white dark:bg-cighra-darkcard/80 border-l-4 ${s.color} p-4 shadow-md`}>
-            <p className="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-300 tracking-widest uppercase mb-1">{s.label}</p>
-            <p className={`text-2xl font-tactical font-bold ${s.text}`}>{s.value}</p>
+          { label: 'TOTAL UNIT', value: unitStats.TOTAL, colorCls: 'bg-indigo-500', bgCls: 'bg-indigo-50 dark:bg-indigo-900/20', textCls: 'text-indigo-600 dark:text-indigo-500', icon: Package },
+          { label: 'BEROPERASI', value: unitStats.SIAP, colorCls: 'bg-green-500', bgCls: 'bg-green-50 dark:bg-green-900/20', textCls: 'text-green-600 dark:text-green-500', icon: CheckCircle },
+          { label: 'RUSAK / KENDALA', value: unitStats.RUSAK, colorCls: 'bg-red-500', bgCls: 'bg-red-50 dark:bg-red-900/20', textCls: 'text-red-600 dark:text-red-500', icon: AlertTriangle },
+          { label: 'DALAM PERBAIKAN', value: unitStats.PERBAIKAN, colorCls: 'bg-blue-500', bgCls: 'bg-blue-50 dark:bg-blue-900/20', textCls: 'text-blue-600 dark:text-blue-500', icon: Wrench },
+        ].map((stat, idx) => (
+          <div key={idx} className="bg-white dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-700/50 p-3 rounded-none flex items-center gap-4 shadow-sm relative overflow-hidden transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50">
+            <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${stat.colorCls}`}></div>
+            <div className={`p-2.5 rounded-none ml-1 ${stat.bgCls} ${stat.textCls}`}>
+              <stat.icon className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-[10px] font-tactical tracking-widest text-slate-500 dark:text-slate-400 uppercase">{stat.label}</p>
+              <div className="flex items-baseline gap-2">
+                <h4 className="text-xl font-bold font-mono text-slate-800 dark:text-white">{stat.value}</h4>
+              </div>
+            </div>
           </div>
         ))}
       </div>

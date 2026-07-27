@@ -4,7 +4,7 @@ import {
   Clock, Activity, ShieldAlert, Eye, XCircle, CheckCircle, Wallet, 
   Search, SlidersHorizontal, User, MapPin, 
   Calendar, Image as ImageIcon, X, FileText,
-  AlertTriangle, Link as LinkIcon, RotateCcw
+  AlertTriangle, Link as LinkIcon, RotateCcw, Printer
 } from 'lucide-react';
 import { BaseModal } from '@/Components/ui/BaseModal';
 import { Button } from '@/Components/ui/Button';
@@ -283,8 +283,8 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                   {/* Divider mobile */}
                   <div className="hidden lg:block w-px bg-slate-100 dark:bg-slate-700/50 my-2"></div>
 
-                  {/* Details Grid (Mobile: 2 cols, Desktop: flex) */}
-                  <div className="w-full lg:w-2/4 grid grid-cols-2 lg:flex lg:gap-0 gap-5">
+                  {/* Details Grid (Mobile: 1-2 cols, Desktop: flex) */}
+                  <div className="w-full lg:w-2/4 grid grid-cols-1 sm:grid-cols-2 lg:flex lg:gap-0 gap-5">
                     {/* Reporter & Location */}
                     <div className="w-full lg:w-1/2 space-y-4 py-1 lg:px-4">
                       <div>
@@ -369,7 +369,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                           className="w-full"
                           icon={<User className="w-4 h-4" />}
                         >
-                          TUGASKAN TEKNISI
+                          {report.perbaikan?.teknisi ? 'GANTI TEKNISI' : 'TUGASKAN TEKNISI'}
                         </Button>
                       )}
                     </div>
@@ -408,6 +408,13 @@ const TicketManager: React.FC<TicketManagerProps> = ({
           }
           footer={
             <div className="flex justify-end gap-3 w-full">
+              <button 
+                onClick={() => window.open(`/reports/${selectedTicket.db_id}/pdf`, '_blank')} 
+                className="px-6 py-2.5 bg-slate-600 hover:bg-slate-700 text-white text-xs font-tactical font-bold tracking-widest transition-colors shadow-md rounded-none uppercase flex items-center gap-2"
+              >
+                <Printer className="w-4 h-4" /> CETAK PDF
+              </button>
+              
               <button onClick={() => setSelectedTicketId(null)} className="px-6 py-2.5 bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-tactical font-bold tracking-widest transition-colors border border-slate-300 dark:border-slate-600 rounded-none uppercase">
                 TUTUP
               </button>

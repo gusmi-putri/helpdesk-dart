@@ -75,7 +75,6 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     // @ts-ignore
     put(route('users.update', currentUser.id), {
       onSuccess: () => {
-        addNotification('Profil berhasil diperbarui!');
         onClose();
       },
       onError: (err) => {

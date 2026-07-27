@@ -246,7 +246,7 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
         {/* Card Header (Navy) */}
         <div className="p-4 border-b border-white/10 bg-cighra-primary dark:bg-slate-800 flex items-center justify-between text-white">
           <h3 className="font-tactical tracking-widest text-sm flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 text-cighra-gold" /> DAFTAR ARSIP
+            <CheckCircle className="w-4 h-4 text-cighra-gold" /> Daftar Arsip
           </h3>
         </div>
 
@@ -272,7 +272,7 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                   <td colSpan={5} className="p-8">
                     <EmptyState
                       icon={<FileArchive className="w-16 h-16 opacity-50" />}
-                      title="TIDAK ADA DATA"
+                      title="Tidak Ada Data"
                       description="Tidak ditemukan arsip perbaikan yang cocok dengan filter."
                     />
                   </td>
