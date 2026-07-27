@@ -288,11 +288,11 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                     {/* Reporter & Location */}
                     <div className="w-full lg:w-1/2 space-y-4 py-1 lg:px-4">
                       <div>
-                        <p className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold uppercase tracking-wider mb-1.5">Pelapor & Tanggal</p>
+                        <p className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold uppercase tracking-wider mb-1.5">Unit / Lokasi & Tanggal</p>
                         <div className="flex flex-col gap-1.5">
                           <div className="flex items-center gap-2 text-sm font-semibold text-slate-800 dark:text-slate-200">
-                            <User className="w-4 h-4 text-slate-400" />
-                            <span className="truncate">{report.kerusakan.pelapor}</span>
+                            <MapPin className="w-4 h-4 text-slate-400" />
+                            <span className="truncate">{report.kerusakan.lokasi}</span>
                           </div>
                           <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                             <Calendar className="w-3.5 h-3.5 text-slate-400" />
@@ -301,10 +301,10 @@ const TicketManager: React.FC<TicketManagerProps> = ({
                         </div>
                       </div>
                       <div>
-                        <p className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold uppercase tracking-wider mb-1.5">Lokasi</p>
+                        <p className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold uppercase tracking-wider mb-1.5">Pelapor</p>
                         <div className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300">
-                          <MapPin className="w-4 h-4 text-slate-400" />
-                          <span className="truncate">{report.kerusakan.lokasi}</span>
+                          <User className="w-4 h-4 text-slate-400" />
+                          <span className="truncate">{report.kerusakan.pelapor}</span>
                         </div>
                       </div>
                     </div>

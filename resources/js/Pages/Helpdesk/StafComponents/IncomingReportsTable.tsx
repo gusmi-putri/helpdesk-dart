@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertTriangle, Clock, Activity, ShieldAlert, Eye, XCircle, CheckCircle, Wallet, Inbox } from 'lucide-react';
+import { AlertTriangle, Clock, Activity, ShieldAlert, Eye, XCircle, CheckCircle, Wallet, Inbox, User } from 'lucide-react';
 import { EmptyState } from '@/Components/ui/EmptyState';
 import { useTableSort } from '@/hooks/useTableSort';
 import SortableHeader from '@/Components/Table/SortableHeader';
@@ -48,10 +48,10 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
             <thead className="bg-cighra-primary dark:bg-slate-800 border-b border-white/10 text-white">
               <tr>
                 <SortableHeader label="ID TIKET" sortKey="caseId" currentSort={sortConfig} onSort={handleSort} />
-                <SortableHeader label="PELAPOR & WAKTU" />
+                <SortableHeader label="LOKASI & WAKTU" />
                 <SortableHeader label="PRIORITAS & JENIS" />
                 <SortableHeader label="STATUS" sortKey="status" currentSort={sortConfig} onSort={handleSort} />
-                <SortableHeader label="KETERANGAN & LOKASI" />
+                <SortableHeader label="KETERANGAN & PELAPOR" />
                 <SortableHeader label="TINDAKAN" />
               </tr>
             </thead>
@@ -79,7 +79,7 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
                       </button>
                     </td>
                     <td className="p-4 text-center">
-                      <div className="font-bold text-sm text-slate-800 dark:text-white">{report.kerusakan.pelapor}</div>
+                      <div className="font-bold text-sm text-slate-800 dark:text-white">{report.kerusakan.lokasi}</div>
                       <div className="text-slate-500 dark:text-slate-300 text-xs font-mono mt-1 flex items-center justify-center gap-1">
                         <Clock className="w-3 h-3" /> {report.kerusakan.tanggal}
                       </div>
@@ -145,7 +145,7 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
                           <span className="bg-orange-500/10 text-orange-500 border border-orange-500/30 text-[9px] font-bold px-1.5 py-0.5 rounded-sm whitespace-nowrap">LINTAS SATUAN</span>
                         )}
                       </div>
-                      <div className="text-slate-500 dark:text-slate-400 text-xs font-mono uppercase">LOK: {report.kerusakan.lokasi}</div>
+                      <div className="text-slate-500 dark:text-slate-400 text-xs font-mono uppercase flex items-center justify-center gap-1"><User className="w-3.5 h-3.5 opacity-50" /> {report.kerusakan.pelapor}</div>
                     </td>
                     <td className="p-4 text-center">
                       <div className="flex flex-col gap-2 max-w-[200px] mx-auto">

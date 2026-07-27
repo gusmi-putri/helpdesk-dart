@@ -190,10 +190,10 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
                     {activeSubReport === 'KERUSAKAN' ? (
                       <>
                         <td className="p-5 align-top">
-                          <div className="font-bold text-slate-800 dark:text-white">{c.kerusakan.pelapor}</div>
+                          <div className="font-bold text-slate-800 dark:text-white">{c.kerusakan.lokasi}</div>
                           <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-1">{c.kerusakan.tanggal}</div>
                           <div className="text-[11px] text-yellow-600 dark:text-yellow-500 mt-2 flex items-center gap-1 font-bold">
-                            <AlertTriangle className="w-3 h-3" /> {c.kerusakan.lokasi}
+                            <AlertTriangle className="w-3 h-3" /> {c.kerusakan.pelapor}
                           </div>
                         </td>
                         <td className="p-5 align-top">
