@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useStore } from '@/store/useStore';
 import { router } from '@inertiajs/react';
 
-
 // Sub-components
 import PelaporSidebar from './PelaporComponents/PelaporSidebar';
 import PelaporTopbar from './PelaporComponents/PelaporTopbar';
@@ -123,7 +122,6 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
     });
   }, []);
 
-
   return (
     <div className="h-screen bg-slate-50 dark:bg-cighra-dark flex flex-col font-sans selection:bg-cighra-primary dark:selection:bg-cighra-gold dark:selection:text-slate-900 selection:text-gunmetal relative text-slate-800 dark:text-slate-200">
 
@@ -143,8 +141,6 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
         {/* MAIN CONTENT AREA */}
         <main className="flex-1 relative overflow-y-auto custom-scrollbar bg-slate-50 dark:bg-cighra-dark">
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-paper.png')] opacity-[0.05] pointer-events-none"></div>
-
-
 
           <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
             {activeMenu === 'WIZARD' && lastReportedData && (
@@ -193,5 +189,4 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
 };
 
 export default DashboardPelapor;
-
 

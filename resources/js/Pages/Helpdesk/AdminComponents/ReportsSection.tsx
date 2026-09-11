@@ -7,6 +7,7 @@ import ReportAttachmentModal from './ReportAttachmentModal';
 import { ReportStatusBadge } from '@/Components/ui/ReportStatusBadge';
 import { usePagination } from '@/hooks/usePagination';
 import Pagination from '@/Components/Table/Pagination';
+import { useStore } from '@/store/useStore';
 
 interface ReportsSectionProps {
   dbCases: any[];
@@ -41,7 +42,20 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
     SELESAI: dbCases.filter((c: any) => c.status === 'SELESAI').length,
   };
 
+  const globalSearch = useStore((state) => state.globalSearch);
+
   const filtered = dbCases.filter((c: any) => {
+    if (globalSearch) {
+      const q = globalSearch.toLowerCase();
+      const caseIdStr = `lpr-${String(c.id).padStart(5, '0')}`;
+      const searchMatch = caseIdStr.includes(q) ||
+        (c.unit?.nomor_seri || '').toLowerCase().includes(q) ||
+        (c.pelapor?.nama_lengkap || '').toLowerCase().includes(q) ||
+        (c.deskripsi_kerusakan || '').toLowerCase().includes(q);
+      
+      if (!searchMatch) return false;
+    }
+
     if (reportStatusFilter === 'ALL') return true;
     if (reportStatusFilter === 'DIPROSES') return ['DITERIMA TEKNISI', 'DIPROSES'].includes(c.status);
     return c.status === reportStatusFilter;
@@ -226,7 +240,7 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
                           <div className="font-bold text-slate-800 dark:text-white">{c.kerusakan.lokasi}</div>
                           <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-1">{c.kerusakan.tanggal}</div>
                           <div className="text-[11px] text-yellow-600 dark:text-yellow-500 mt-2 flex items-center gap-1 font-bold">
-                            <AlertTriangle className="w-3 h-3" /> {c.kerusakan.pelapor}
+                            <User className="w-3 h-3" /> {c.kerusakan.pelapor}
                           </div>
                         </td>
                         <td className="p-5 align-top">

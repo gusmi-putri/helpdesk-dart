@@ -9,6 +9,7 @@ import { useTableSort } from '@/hooks/useTableSort';
 import SortableHeader from '@/Components/Table/SortableHeader';
 import { EmptyState } from '@/Components/ui/EmptyState';
 import { Button } from '@/Components/ui/Button';
+import { ReportStatusBadge } from '@/Components/ui/ReportStatusBadge';
 
 interface CompletedReportsTableProps {
   reports: any[];
@@ -291,15 +292,9 @@ const CompletedReportsTable: React.FC<CompletedReportsTableProps> = ({
                       >
                         {report.caseId}
                       </button>
-                      {report.status === 'SELESAI' ? (
-                        <div className="mt-2 text-[11px] font-mono font-bold text-green-600 dark:text-green-500 flex justify-center items-center gap-1 uppercase tracking-widest border border-green-200 dark:border-green-800/30 bg-green-50 dark:bg-green-900/10 px-2 py-1 w-fit mx-auto shadow-sm rounded-none">
-                          <CheckCircle className="w-3 h-3" /> TUNTAS
-                        </div>
-                      ) : (
-                        <div className="mt-2 text-[11px] font-mono font-bold text-red-600 dark:text-red-500 flex justify-center items-center gap-1 uppercase tracking-widest border border-red-200 dark:border-red-800/30 bg-red-50 dark:bg-red-900/10 px-2 py-1 w-fit mx-auto shadow-sm rounded-none">
-                          <XCircle className="w-3 h-3" /> DITOLAK
-                        </div>
-                      )}
+                      <div className="mt-2 flex justify-center">
+                        <ReportStatusBadge status={report.status} />
+                      </div>
                     </td>
 
                     {/* DETAIL KERUSAKAN */}

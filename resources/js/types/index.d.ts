@@ -13,7 +13,8 @@ export interface User {
   is_approved: boolean;
   created_at: string;
   updated_at: string;
-  role?: Role;
+  roles?: string[];
+  permissions?: string[];
   satuan?: Satuan;
 }
 

@@ -8,7 +8,8 @@ use App\Models\Report;
 use App\Models\User;
 use App\Models\Unit;
 use App\Models\SystemLog;
-use App\Models\Role;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use App\Models\UnitMutation;
 use App\Models\Satuan;
 use App\Models\UserMutation;
@@ -27,7 +28,7 @@ class DashboardController extends Controller
         $report = Report::with(['unit', 'pelapor', 'teknisi'])->findOrFail($id);
 
         $user = auth()->user();
-        $roleName = $user->role->nama_role ?? '';
+        $roleName = $user->roles->first() ? $user->roles->first()->name : '';
 
         if ($roleName === 'Pelapor') {
             if ($report->pelapor && $report->pelapor->satuan_id !== $user->satuan_id) {
@@ -92,58 +93,49 @@ class DashboardController extends Controller
         return $pdf->download('BAP_' . $report->case_id . '.pdf');
     }
 
-
     public function admin()
     {
-        $cases = ReportResource::collection(Report::with(['unit.satuan', 'pelapor.satuan', 'teknisi'])->orderBy('created_at', 'desc')->take(2000)->get());
-        $users = UserResource::collection(User::with(['role', 'satuan'])->take(2000)->get());
-        $logs = SystemLog::with('user')->orderBy('created_at', 'desc')->take(1000)->get()->map(function($l) {
-            return [
-                'id' => $l->id,
-                'time' => $l->created_at->format('Y-m-d H:i:s'),
-                'level' => $l->level,
-                'user' => $l->user ? $l->user->nama_lengkap : 'SYSTEM',
-                'activity' => $l->activity_payload
-            ];
-        });
-
-        $roles = Role::where('nama_role', '!=', 'Admin')->get()->map(function($r) {
-            return [
-                'id' => $r->id,
-                'name' => $r->nama_role
-            ];
-        });
-
-        $units = UnitResource::collection(Unit::with('satuan')->orderBy('created_at', 'desc')->take(3000)->get());
-
-        $mutations = UnitMutationResource::collection(
-            UnitMutation::with(['unit', 'requester', 'approver'])
-                ->orderBy('created_at', 'desc')
-                ->take(500)
-                ->get()
-        );
-
-        $archivedUnits = UnitResource::collection(Unit::with('satuan')->onlyTrashed()->orderBy('deleted_at', 'desc')->take(1000)->get());
-
-        $satuans = Satuan::all();
-
-        $userMutations = UserMutationResource::collection(
-            UserMutation::with(['targetUser', 'requester', 'approver'])
-                ->orderBy('created_at', 'desc')
-                ->take(500)
-                ->get()
-        );
-
         return Inertia::render('Helpdesk/DashboardAdmin', [
-            'dbCases' => $cases,
-            'dbUsers' => $users,
-            'dbLogs' => $logs,
-            'dbRoles' => $roles,
-            'dbUnits' => $units,
-            'dbSatuans' => $satuans,
-            'dbMutations' => $mutations,
-            'dbUserMutations' => $userMutations,
-            'dbArchivedUnits' => $archivedUnits,
+            'dbCases' => Inertia::defer(fn () => ReportResource::collection(Report::with(['unit.satuan', 'pelapor.satuan', 'teknisi'])->orderBy('created_at', 'desc')->take(2000)->get())),
+            'dbUsers' => Inertia::defer(fn () => UserResource::collection(User::with(['roles', 'permissions', 'satuan'])->take(2000)->get())),
+            'dbLogs' => Inertia::defer(fn () => SystemLog::with('user')->orderBy('created_at', 'desc')->take(1000)->get()->map(function($l) {
+                return [
+                    'id' => $l->id,
+                    'time' => $l->created_at->format('Y-m-d H:i:s'),
+                    'level' => $l->level,
+                    'user' => $l->user ? $l->user->nama_lengkap : 'SYSTEM',
+                    'activity' => $l->activity_payload
+                ];
+            })),
+            'dbRoles' => Inertia::defer(fn () => Role::with('permissions')->withCount('users')->get()->map(function($r) {
+                return [
+                    'id' => $r->id,
+                    'name' => $r->name,
+                    'permissions' => $r->permissions->pluck('name'),
+                    'users_count' => $r->users_count
+                ];
+            })),
+            'dbPermissions' => Inertia::defer(fn () => Permission::all()->map(function($p) {
+                return [
+                    'id' => $p->id,
+                    'name' => $p->name
+                ];
+            })),
+            'dbUnits' => Inertia::defer(fn () => UnitResource::collection(Unit::with('satuan')->orderBy('created_at', 'desc')->take(3000)->get())),
+            'dbSatuans' => Inertia::defer(fn () => Satuan::all()),
+            'dbMutations' => Inertia::defer(fn () => UnitMutationResource::collection(
+                UnitMutation::with(['unit', 'requester', 'approver'])
+                    ->orderBy('created_at', 'desc')
+                    ->take(500)
+                    ->get()
+            )),
+            'dbUserMutations' => Inertia::defer(fn () => UserMutationResource::collection(
+                UserMutation::with(['targetUser', 'requester', 'approver'])
+                    ->orderBy('created_at', 'desc')
+                    ->take(500)
+                    ->get()
+            )),
+            'dbArchivedUnits' => Inertia::defer(fn () => UnitResource::collection(Unit::with('satuan')->onlyTrashed()->orderBy('deleted_at', 'desc')->take(1000)->get())),
         ]);
     }
 
@@ -151,24 +143,7 @@ class DashboardController extends Controller
     {
         $auth = auth()->user();
 
-        $cases = ReportResource::collection(Report::with(['unit.satuan', 'pelapor', 'teknisi'])
-            ->whereHas('unit', function($q) use ($auth) {
-                if ($auth->satuan_id) {
-                    $q->where('satuan_id', $auth->satuan_id);
-                }
-            })->orderBy('created_at', 'desc')->take(2000)->get());
-            
-        $units = UnitResource::collection(Unit::with('satuan')
-            ->orderBy('created_at', 'desc')->take(2000)->get());
-            
-        $users = UserResource::collection(User::with('satuan')
-            ->where(function($q) use ($auth) {
-                if ($auth->satuan_id) {
-                    $q->where('satuan_id', $auth->satuan_id);
-                }
-            })->take(1000)->get());
-
-        // Kirim data profil user yang sedang login untuk auto-fill form
+        // Kirim data profil user yang sedang login untuk auto-fill form (Tidak perlu di-defer karena sangat ringan)
         $authUser = $auth ? [
             'id' => $auth->id,
             'username' => $auth->username,
@@ -181,9 +156,20 @@ class DashboardController extends Controller
         ] : null;
         
         return Inertia::render('Helpdesk/DashboardPelapor', [
-            'dbCases' => $cases,
-            'dbUnits' => $units,
-            'dbUsers' => $users,
+            'dbCases' => Inertia::defer(fn () => ReportResource::collection(Report::with(['unit.satuan', 'pelapor', 'teknisi'])
+                ->whereHas('unit', function($q) use ($auth) {
+                    if ($auth->satuan_id) {
+                        $q->where('satuan_id', $auth->satuan_id);
+                    }
+                })->orderBy('created_at', 'desc')->take(2000)->get())),
+            'dbUnits' => Inertia::defer(fn () => UnitResource::collection(Unit::with('satuan')
+                ->orderBy('created_at', 'desc')->take(2000)->get())),
+            'dbUsers' => Inertia::defer(fn () => UserResource::collection(User::with('satuan')
+                ->where(function($q) use ($auth) {
+                    if ($auth->satuan_id) {
+                        $q->where('satuan_id', $auth->satuan_id);
+                    }
+                })->take(1000)->get())),
             'authUser' => $authUser,
         ]);
     }
@@ -191,58 +177,44 @@ class DashboardController extends Controller
     public function teknisi()
     {
         // Teknisi hanya melihat tugas yang diberikan kepadanya
-        $cases = ReportResource::collection(Report::with(['unit.satuan', 'pelapor', 'teknisi'])->where('teknisi_id', auth()->id())->orderBy('created_at', 'desc')->take(2000)->get());
-        
         return Inertia::render('Helpdesk/DashboardTeknisi', [
-            'dbCases' => $cases
+            'dbCases' => Inertia::defer(fn () => ReportResource::collection(Report::with(['unit.satuan', 'pelapor', 'teknisi'])->where('teknisi_id', auth()->id())->orderBy('created_at', 'desc')->take(2000)->get()))
         ]);
     }
 
     public function staf()
     {
-        $cases = ReportResource::collection(Report::with(['unit.satuan', 'pelapor', 'teknisi'])->orderBy('created_at', 'desc')->take(2000)->get());
-        
-        // Ambil semua teknisi untuk ditugaskan (tetap diperlukan untuk AssignTechnicianModal)
-        $technicians = UserResource::collection(User::whereHas('role', function($q) {
-            $q->where('nama_role', 'Teknisi');
-        })->with('reportsDitangani')->take(500)->get());
-
-        $allUsers = UserResource::collection(User::with(['role', 'satuan'])->take(2000)->get());
-
-        $units = UnitResource::collection(Unit::with('satuan')->orderBy('created_at', 'desc')->take(3000)->get());
-
-        $mutations = UnitMutationResource::collection(
-            UnitMutation::with(['unit', 'requester', 'approver'])
-                ->orderBy('created_at', 'desc')
-                ->take(500)
-                ->get()
-        );
-
-        $roles = Role::where('nama_role', '!=', 'Admin')->get()->map(function($r) {
-            return [
-                'id' => $r->id,
-                'name' => $r->nama_role
-            ];
-        });
-
-        $satuans = Satuan::all();
-
-        $userMutations = UserMutationResource::collection(
-            UserMutation::with(['targetUser', 'requester', 'approver'])
-                ->orderBy('created_at', 'desc')
-                ->take(500)
-                ->get()
-        );
-
         return Inertia::render('Helpdesk/DashboardStaf', [
-            'dbCases' => $cases,
-            'dbUsers' => $technicians,
-            'dbAllUsers' => $allUsers,
-            'dbUnits' => $units,
-            'dbSatuans' => $satuans,
-            'dbMutations' => $mutations,
-            'dbUserMutations' => $userMutations,
-            'dbRoles' => $roles,
+            'dbCases' => Inertia::defer(fn () => ReportResource::collection(Report::with(['unit.satuan', 'pelapor', 'teknisi'])->orderBy('created_at', 'desc')->take(2000)->get())),
+            'technicians' => Inertia::defer(fn () => UserResource::collection(User::role('Teknisi')->with('reportsDitangani')->take(500)->get())),
+            'dbUsers' => Inertia::defer(fn () => UserResource::collection(User::with(['roles', 'permissions', 'satuan'])->take(2000)->get())),
+            'dbUnits' => Inertia::defer(fn () => UnitResource::collection(Unit::with('satuan')->orderBy('created_at', 'desc')->take(3000)->get())),
+            'dbMutations' => Inertia::defer(fn () => UnitMutationResource::collection(
+                UnitMutation::with(['unit', 'requester', 'approver'])
+                    ->orderBy('created_at', 'desc')
+                    ->take(500)
+                    ->get()
+            )),
+            'dbRoles' => Inertia::defer(fn () => Role::withCount('users')->get()->map(function($r) {
+                return [
+                    'id' => $r->id,
+                    'name' => $r->name,
+                    'users_count' => $r->users_count
+                ];
+            })),
+            'dbPermissions' => Inertia::defer(fn () => Permission::all()->map(function($p) {
+                return [
+                    'id' => $p->id,
+                    'name' => $p->name
+                ];
+            })),
+            'dbSatuans' => Inertia::defer(fn () => Satuan::all()),
+            'dbUserMutations' => Inertia::defer(fn () => UserMutationResource::collection(
+                UserMutation::with(['targetUser', 'requester', 'approver'])
+                    ->orderBy('created_at', 'desc')
+                    ->take(500)
+                    ->get()
+            )),
         ]);
     }
 }

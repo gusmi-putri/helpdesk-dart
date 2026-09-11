@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Trash2, FileText } from 'lucide-react';
 import { useTableSort } from '@/hooks/useTableSort';
+import { Badge } from '@/Components/ui/Badge';
 import SortableHeader from '@/Components/Table/SortableHeader';
 
 interface MutationHistoryProps {
@@ -52,11 +53,11 @@ const MutationHistory: React.FC<MutationHistoryProps> = ({ dbMutations }) => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'pending':
-        return <span className="bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800/40 px-2 py-0.5 text-[11px] font-mono font-bold animate-pulse">MENUNGGU VERIFIKASI</span>;
+        return <Badge variant="warning">MENUNGGU VERIFIKASI</Badge>;
       case 'approved':
-        return <span className="bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800/40 px-2 py-0.5 text-[11px] font-mono font-bold">DISETUJUI</span>;
+        return <Badge variant="success">DISETUJUI</Badge>;
       case 'rejected':
-        return <span className="bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800/40 px-2 py-0.5 text-[11px] font-mono font-bold">DITOLAK</span>;
+        return <Badge variant="danger">DITOLAK</Badge>;
       default:
         return null;
     }

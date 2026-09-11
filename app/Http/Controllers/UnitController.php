@@ -11,7 +11,10 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreUnitRequest;
 use App\Services\FileUploadService;
 
-class UnitController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class UnitController extends Controller implements HasMiddleware
 {
     protected FileUploadService $fileService;
 
@@ -19,13 +22,21 @@ class UnitController extends Controller
     {
         $this->fileService = $fileService;
     }
-    /**
-     * Store: If Admin → create directly. If Staf → create mutation request (pending).
-     */
+    
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:read-units', only: ['index', 'show']),
+            new Middleware('permission:create-units', only: ['create', 'store', 'import']),
+            new Middleware('permission:update-units', only: ['edit', 'update', 'restoreUnit']),
+            new Middleware('permission:delete-units', only: ['destroy', 'destroyBatch']),
+        ];
+    }
+    // Tambah unit (Admin) atau ajukan mutasi (Staf)
     public function store(StoreUnitRequest $request)
     {
         $user = auth()->user();
-        $isAdmin = $user->role && $user->role->nama_role === 'Admin';
+        $isAdmin = $user->hasRole('Admin');
 
         $documentName = $this->fileService->uploadSingleFile($request->file('document'), 'mutations/documents');
         $documentPath = $documentName ? 'mutations/documents/' . $documentName : null;
@@ -82,14 +93,14 @@ class UnitController extends Controller
         ]);
 
         $user = auth()->user();
-        $isAdmin = $user->role && $user->role->nama_role === 'Admin';
+        $isAdmin = $user->hasRole('Admin');
 
         if ($isAdmin) {
             $unit->update($request->validated());
             SystemLog::log('INFO', $user->id, "Memperbarui data unit DART secara langsung: {$unit->nomor_seri}");
             return redirect()->back()->with('message', 'Data unit DART telah diperbarui.');
         } else {
-            // Staf: Check if there's already a pending edit request for this unit
+            // Cek pengajuan edit aktif
             $existingPending = UnitMutation::where('unit_id', $unit->id)
                 ->where('type', 'request_edit')
                 ->where('status', 'pending')
@@ -119,9 +130,7 @@ class UnitController extends Controller
         }
     }
 
-    /**
-     * Destroy: Admin langsung soft-delete. Staf melalui requestDelete.
-     */
+    // Hapus unit langsung (Admin)
     public function destroy(Unit $unit)
     {
         $info = "{$unit->nomor_seri}";
@@ -176,9 +185,7 @@ class UnitController extends Controller
         return redirect()->back()->with('message', 'Unit DART terpilih telah dihapus secara massal.');
     }
 
-    /**
-     * Staff mengajukan penghapusan unit (pending approval).
-     */
+    // Ajukan hapus unit (Staf)
     public function requestDelete(Request $request, Unit $unit)
     {
         $request->validate([
@@ -191,7 +198,7 @@ class UnitController extends Controller
             $documentPath = $this->fileService->uploadSingleFile($request->file('document'), 'mutations/documents');
         }
 
-        // Check if there's already a pending delete request for this unit
+        // Cek pengajuan hapus aktif
         $existingPending = UnitMutation::where('unit_id', $unit->id)
             ->where('type', 'request_delete')
             ->where('status', 'pending')
@@ -217,9 +224,7 @@ class UnitController extends Controller
         return redirect()->back()->with('message', 'Pengajuan penghapusan telah dikirim. Menunggu persetujuan Admin.');
     }
 
-    /**
-     * Admin menyetujui pengajuan mutasi (tambah atau hapus).
-     */
+    // Setujui mutasi (Admin)
     public function approveMutation(Request $request, UnitMutation $mutation)
     {
         if ($mutation->status !== 'pending') {
@@ -272,7 +277,7 @@ class UnitController extends Controller
                             $unitData[$idx]['unit_id'] = $unit->id;
                         }
                     }
-                    // If nothing is provided, approve all remaining pending units
+                    // Setujui sisa pending
                     else {
                         foreach ($unitData as $idx => $u) {
                             if ($u['status'] === 'pending') {
@@ -290,7 +295,7 @@ class UnitController extends Controller
                         }
                     }
 
-                    // Check if all items in batch are resolved (no longer pending)
+                    // Cek jika seluruh batch selesai
                     $anyPending = false;
                     foreach ($unitData as $u) {
                         if ($u['status'] === 'pending') {
@@ -376,9 +381,7 @@ class UnitController extends Controller
         return redirect()->back()->with('message', 'Pengajuan telah diproses.');
     }
 
-    /**
-     * Admin menolak pengajuan mutasi.
-     */
+    // Tolak mutasi (Admin)
     public function rejectMutation(Request $request, UnitMutation $mutation)
     {
         if ($mutation->status !== 'pending') {
@@ -455,9 +458,7 @@ class UnitController extends Controller
         return redirect()->back()->with('message', 'Pengajuan telah ditolak.');
     }
 
-    /**
-     * Admin mengembalikan unit dari arsip (restore soft-deleted unit).
-     */
+    // Restore unit dari arsip (Admin)
     public function restoreUnit(Request $request, $unitId)
     {
         $unit = Unit::onlyTrashed()->findOrFail($unitId);
@@ -507,7 +508,7 @@ class UnitController extends Controller
         $imported = 0;
         $importedUnitsData = [];
         $user = auth()->user();
-        $isAdmin = $user->role && $user->role->nama_role === 'Admin';
+        $isAdmin = $user->hasRole('Admin');
 
         DB::transaction(function () use ($parsedUnits, &$imported, &$importedUnitsData, $documentPath, $isAdmin, $user) {
             foreach ($parsedUnits as $u) {
@@ -570,9 +571,7 @@ class UnitController extends Controller
         ]));
     }
 
-    /**
-     * Staf mengajukan penambahan massal via CSV
-     */
+    // Ajukan penambahan massal (Staf)
     public function requestAddBatch(Request $request)
     {
         $request->validate([
@@ -620,9 +619,7 @@ class UnitController extends Controller
         return redirect()->back()->with('message', "Pengajuan penambahan massal unit ({$requested} unit) berhasil dikirim. Menunggu persetujuan Admin.");
     }
 
-    /**
-     * Staf mengajukan penghapusan massal
-     */
+    // Ajukan penghapusan massal (Staf)
     public function requestDeleteBatch(Request $request)
     {
         $request->validate([
@@ -680,9 +677,7 @@ class UnitController extends Controller
         return redirect()->back()->with('message', "{$requested} pengajuan penghapusan berhasil dikirim. Menunggu persetujuan Admin.");
     }
 
-    /**
-     * Parse and validate CSV file for bulk unit import/mutation.
-     */
+    // Parse dan validasi CSV
     private function parseUnitCsv(string $path, int &$skipped): array
     {
         $handle = fopen($path, "r");

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\UserMutation;
-use App\Models\Role;
+
 use App\Models\Report;
 use App\Models\SystemLog;
 use Illuminate\Http\Request;
@@ -13,22 +13,25 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 
-class UserController extends Controller
-{
-    public function index()
-    {
-        //
-    }
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-    public function create()
+class UserController extends Controller implements HasMiddleware
+{
+    public static function middleware(): array
     {
-        //
+        return [
+            new Middleware('permission:read-users', only: ['index', 'show']),
+            new Middleware('permission:create-users', only: ['create', 'store']),
+            new Middleware('permission:update-users', only: ['edit', 'update']),
+            new Middleware('permission:delete-users', only: ['destroy']),
+        ];
     }
 
     public function store(StoreUserRequest $request)
     {
         DB::transaction(function () use ($request) {
-            $isAdmin = auth()->user()->role->nama_role === 'Admin';
+            $isAdmin = auth()->user()->hasRole('Admin');
             $currentUser = auth()->user();
             
             $userData = [
@@ -37,7 +40,6 @@ class UserController extends Controller
                 'email' => $request->email,
                 'nama_lengkap' => $request->nama_lengkap,
                 'nrp_nip' => $request->nrp_nip,
-                'role_id' => $request->role_id,
                 'asal_satuan' => $request->asal_satuan,
                 'satuan_id' => $request->satuan_id,
                 'no_wa' => $request->no_wa,
@@ -48,7 +50,14 @@ class UserController extends Controller
             if ($isAdmin) {
                 $user = User::create($userData);
 
-                // Simpan ke mutation log TANPA password (hash tidak perlu disimpan di audit trail)
+                if ($request->has('roles')) {
+                    $user->syncRoles($request->roles);
+                }
+                if ($request->has('permissions')) {
+                    $user->syncPermissions($request->permissions);
+                }
+
+                // Log mutasi tanpa password
                 $userDataForLog = array_diff_key($userData, ['password' => '']);
 
                 UserMutation::create([
@@ -62,7 +71,7 @@ class UserController extends Controller
 
                 SystemLog::log('SUCCESS', $currentUser->id, "Menambahkan personel baru secara langsung: {$request->nama_lengkap} ({$request->username})");
             } else {
-                // Simpan mutation request TANPA password (akan di-set ulang saat disetujui)
+                // Request mutasi tanpa password
                 $userDataForMutation = array_diff_key($userData, ['password' => '']);
 
                 UserMutation::create([
@@ -71,13 +80,15 @@ class UserController extends Controller
                     'requested_by' => $currentUser->id,
                     'status' => 'pending',
                     'user_data' => $userDataForMutation,
+                    'roles' => $request->roles ?? [],
+                    'permissions' => $request->permissions ?? [],
                 ]);
 
                 SystemLog::log('INFO', $currentUser->id, "Mendaftarkan personel baru: {$request->nama_lengkap} ({$request->username}) (Menunggu Persetujuan)");
             }
         });
 
-        if (auth()->user()->role->nama_role === 'Admin') {
+        if (auth()->user()->hasRole('Admin')) {
             return redirect()->back()->with('message', 'Personel baru berhasil ditambahkan.');
         }
 
@@ -86,16 +97,18 @@ class UserController extends Controller
 
     public function update(UpdateUserRequest $request, User $user)
     {
-        $adminRoleId = Role::where('nama_role', 'Admin')->first()?->id;
+
         $currentUser = auth()->user();
         $isSelfEdit = $user->id === $currentUser->id;
 
         $updateData = $request->only('email', 'nama_lengkap', 'nrp_nip', 'asal_satuan', 'satuan_id', 'no_wa', 'spesialisasi');
         
+        if ($request->filled('password')) {
+            $updateData['password'] = Hash::make($request->password);
+        }
+        
         if ($isSelfEdit) {
-            unset($updateData['asal_satuan'], $updateData['satuan_id'], $updateData['role_id']);
-        } elseif ($user->role_id !== $adminRoleId) {
-            $updateData['role_id'] = $request->role_id;
+            unset($updateData['asal_satuan'], $updateData['satuan_id']);
         }
 
         $changedData = [];
@@ -105,15 +118,57 @@ class UserController extends Controller
             }
         }
 
-        if (empty($changedData)) {
+        $rolesChanged = false;
+        $permissionsChanged = false;
+        
+        if (!$isSelfEdit && !$user->hasRole('Admin')) {
+            if ($request->has('roles')) {
+                $currentRoles = $user->roles->pluck('name')->toArray();
+                $newRoles = $request->roles;
+                sort($currentRoles);
+                sort($newRoles);
+                if ($currentRoles != $newRoles) {
+                    $rolesChanged = true;
+                }
+            }
+            if ($request->has('permissions')) {
+                $currentPermissions = $user->getAllPermissions()->pluck('name')->toArray();
+                $newPermissions = $request->permissions;
+                sort($currentPermissions);
+                sort($newPermissions);
+                if ($currentPermissions != $newPermissions) {
+                    $permissionsChanged = true;
+                }
+            }
+        }
+
+        if (empty($changedData) && !$rolesChanged && !$permissionsChanged) {
             return redirect()->back()->with('error', 'Tidak ada perubahan data yang diajukan.');
         }
 
-        $isAdmin = $currentUser->role->nama_role === 'Admin';
+        $isAdmin = $currentUser->hasRole('Admin');
 
-        DB::transaction(function () use ($user, $changedData, $isAdmin, $isSelfEdit, $currentUser) {
+        DB::transaction(function () use ($user, $changedData, $isAdmin, $isSelfEdit, $currentUser, $request, $rolesChanged, $permissionsChanged) {
             if ($isAdmin || $isSelfEdit) {
-                $user->update($changedData);
+                if (!empty($changedData)) {
+                    $user->update($changedData);
+                }
+
+                if (!$isSelfEdit && !$user->hasRole('Admin')) {
+                    if ($rolesChanged) {
+                        $user->syncRoles($request->roles);
+                    }
+                    if ($permissionsChanged) {
+                        $user->syncPermissions($request->permissions);
+                    }
+                }
+
+                $logData = $changedData;
+                if (isset($logData['password'])) {
+                    unset($logData['password']);
+                }
+                if ($rolesChanged) $logData['roles'] = $request->roles;
+                if ($permissionsChanged) $logData['permissions'] = $request->permissions;
 
                 UserMutation::create([
                     'target_user_id' => $user->id,
@@ -121,13 +176,16 @@ class UserController extends Controller
                     'requested_by' => $currentUser->id,
                     'approved_by' => $currentUser->id,
                     'status' => 'approved',
-                    'user_data' => $changedData,
+                    'user_data' => $logData,
                 ]);
 
                 if ($isSelfEdit && !$isAdmin) {
                     SystemLog::log('SUCCESS', $currentUser->id, "Mengubah data profil secara mandiri");
                 } else {
                     SystemLog::log('SUCCESS', $currentUser->id, "Mengubah data personel secara langsung: {$user->nama_lengkap}");
+                    if ($request->filled('password')) {
+                        SystemLog::log('WARN', $currentUser->id, "Mereset password personel secara manual: {$user->nama_lengkap}");
+                    }
                 }
             } else {
                 UserMutation::create([
@@ -136,6 +194,8 @@ class UserController extends Controller
                     'requested_by' => $currentUser->id,
                     'status' => 'pending',
                     'user_data' => $changedData,
+                    'roles' => $request->roles ?? [],
+                    'permissions' => $request->permissions ?? [],
                 ]);
 
                 SystemLog::log('INFO', $currentUser->id, "Mengajukan edit data personel: {$user->nama_lengkap}");
@@ -150,15 +210,15 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        $adminRoleId = Role::where('nama_role', 'Admin')->first()?->id;
+
         $currentUser = auth()->user();
 
-        // Guard: Jangan izinkan Admin menghapus akun dirinya sendiri
+        // Cegah admin hapus diri sendiri
         if ($user->id === auth()->id()) {
             return redirect()->back()->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
         }
 
-        if ($user->role_id === $adminRoleId && $currentUser->role_id !== $adminRoleId) {
+        if ($user->hasRole('Admin') && !$currentUser->hasRole('Admin')) {
             return redirect()->back()->with('error', 'Akses ditolak: Staf tidak diizinkan menghapus akun Admin.');
         }
 
@@ -171,8 +231,8 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'Gagal: Personel masih memiliki laporan yang sedang berjalan (on going).');
         }
 
-        DB::transaction(function () use ($user, $currentUser, $adminRoleId) {
-            if ($currentUser->role_id === $adminRoleId) {
+        DB::transaction(function () use ($user, $currentUser) {
+            if ($currentUser->hasRole('Admin')) {
                 $userName = $user->nama_lengkap;
                 
                 UserMutation::create([
@@ -205,7 +265,7 @@ class UserController extends Controller
             }
         });
 
-        if ($currentUser->role_id === $adminRoleId) {
+        if ($currentUser->hasRole('Admin')) {
             return redirect()->back()->with('message', 'Personel berhasil dihapus.');
         }
         return redirect()->back()->with('message', 'Pengajuan hapus personel telah dikirim ke Admin untuk disetujui.');
@@ -214,7 +274,7 @@ class UserController extends Controller
     public function toggleStatus(string $id)
     {
         $user = User::findOrFail($id);
-        // Guard: Admin tidak bisa menonaktifkan dirinya sendiri
+        // Cegah admin nonaktifkan diri sendiri
         if ($user->id === auth()->id()) {
             return redirect()->back()->with('error', 'Anda tidak dapat mengubah status akun Anda sendiri.');
         }
@@ -251,6 +311,13 @@ class UserController extends Controller
                     'type' => 'approved_edit',
                 ]);
 
+                if (isset($mutation->roles)) {
+                    $user->syncRoles($mutation->roles);
+                }
+                if (isset($mutation->permissions)) {
+                    $user->syncPermissions($mutation->permissions);
+                }
+
                 SystemLog::log('SUCCESS', $admin->id, "Menyetujui perubahan data personel: {$user->nama_lengkap}");
                 $msg = 'Perubahan profil personel telah disetujui.';
             } elseif ($mutation->type === 'request_delete') {
@@ -270,8 +337,8 @@ class UserController extends Controller
                 $userData = $mutation->user_data ?? [];
                 $userData['is_approved'] = true;
 
-                // Pastikan tidak ada field password dari mutation lama (keamanan)
-                // Generate password sementara; user harus reset via forgot-password
+                // Hapus password lama untuk keamanan
+                // Buat password sementara, reset via forgot-password
                 if (!isset($userData['password'])) {
                     $userData['password'] = bcrypt(\Illuminate\Support\Str::random(16));
                 }
@@ -285,6 +352,13 @@ class UserController extends Controller
                     'type' => 'approved_add',
                 ]);
 
+                if (isset($mutation->roles)) {
+                    $user->syncRoles($mutation->roles);
+                }
+                if (isset($mutation->permissions)) {
+                    $user->syncPermissions($mutation->permissions);
+                }
+
                 SystemLog::log('SUCCESS', $admin->id, "Menyetujui pendaftaran personel baru: {$user->nama_lengkap}");
                 $msg = 'Personel telah disetujui dan sekarang dapat login.';
             }
@@ -292,8 +366,6 @@ class UserController extends Controller
 
         return redirect()->back()->with('message', $msg);
     }
-
-
 
     public function reject(Request $request, string $id)
     {

@@ -1,14 +1,14 @@
 # Project Tasks & Roadmap
 
 ## Soon
-- [ ] **Fitur Reset Password Manual oleh Admin**
+- [x] **Fitur Reset Password Manual oleh Admin**
     - **Deskripsi:** Memungkinkan admin untuk mereset password personel melalui Modal Edit.
     - **Langkah Kerja:**
         - Tambahkan kolom `password` (opsional) di `UserEditModal.tsx`.
         - Update logic `update` di `UserController.php` untuk memproses password baru jika diisi.
         - Catat aktivitas reset password di `SystemLog`.
 
-- [ ] **Fitur Bulk Import Data DART (Unit Inventaris)**
+- [x] **Fitur Bulk Import Data DART (Unit Inventaris)**
     - **Deskripsi:** Menambahkan kemampuan untuk mengunggah data unit secara massal menggunakan file Excel (.xlsx) atau CSV.
     - **Teknologi:** Laravel Excel (`maatwebsite/excel`).
     - **Langkah Kerja:**

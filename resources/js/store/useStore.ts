@@ -30,6 +30,8 @@ interface AppState {
   currentUser: User | null;
   theme: 'dark' | 'light';
   notifications: Notification[];
+  unreadCount: number;
+  globalSearch: string | null;
   
   // Actions
   login: (user: User) => void;
@@ -39,6 +41,9 @@ interface AppState {
   // Notification Actions
   addNotification: (message: string, type?: Notification['type']) => void;
   removeNotification: (id: string) => void;
+  setUnreadCount: (count: number) => void;
+  incrementUnreadCount: () => void;
+  setGlobalSearch: (query: string | null) => void;
 }
 
 export const useStore = create<AppState>()(
@@ -47,6 +52,8 @@ export const useStore = create<AppState>()(
       currentUser: null,
       theme: 'dark',
       notifications: [],
+      unreadCount: 0,
+      globalSearch: null,
 
       toggleTheme: () => set((state) => ({ theme: state.theme === 'dark' ? 'light' : 'dark' })),
 
@@ -82,6 +89,10 @@ export const useStore = create<AppState>()(
           notifications: state.notifications.filter((n) => n.id !== id),
         }));
       },
+      
+      setUnreadCount: (count) => set({ unreadCount: count }),
+      incrementUnreadCount: () => set((state) => ({ unreadCount: state.unreadCount + 1 })),
+      setGlobalSearch: (query) => set({ globalSearch: query }),
     }),
     {
       name: 'helpdesk-dart-storage-v3',

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Menu as MenuIcon, CircleUser, LogOut, Settings, KeyRound, AlertTriangle, Moon, Sun } from 'lucide-react';
+import { Menu as MenuIcon, CircleUser, LogOut, Settings, KeyRound, AlertTriangle, Moon, Sun, Search } from 'lucide-react';
 import { Menu, Transition } from '@headlessui/react';
 import { Link, router } from '@inertiajs/react';
 import ChangePasswordModal from './ChangePasswordModal';
 import { Modal } from '@/Components/ui/Modal';
 import { Button } from '@/Components/ui/Button';
-
+import CommandPalette from '@/Components/CommandPalette';
+import NotificationDropdown from '@/Components/NotificationDropdown';
+import { useStore } from '@/store/useStore';
 interface TopbarProps {
   setIsMobileMenuOpen: (open: boolean) => void;
   currentUser: any;
@@ -15,26 +17,11 @@ interface TopbarProps {
 const Topbar: React.FC<TopbarProps> = ({ setIsMobileMenuOpen, currentUser, isMobileMenuOpen = false }) => {
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return document.documentElement.classList.contains('dark') || localStorage.getItem('theme') === 'dark';
-    }
-    return false;
-  });
-
-  const toggleDarkMode = () => {
-    setIsDarkMode(prev => {
-      const next = !prev;
-      if (next) {
-        document.documentElement.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-        localStorage.setItem('theme', 'light');
-      }
-      return next;
-    });
-  };
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const theme = useStore((state) => state.theme);
+  const toggleTheme = useStore((state) => state.toggleTheme);
+  const isDarkMode = theme === 'dark';
+  const toggleDarkMode = toggleTheme;
 
   const handleLogout = () => {
     router.post('/logout');
@@ -43,8 +30,9 @@ const Topbar: React.FC<TopbarProps> = ({ setIsMobileMenuOpen, currentUser, isMob
   return (
     <>
     <header className="h-16 border-b border-slate-200 dark:border-slate-600 bg-cighra-primary dark:bg-cighra-darkcard/60 backdrop-blur-md flex items-center justify-between px-4 md:px-8 flex-shrink-0 z-50 relative">
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-3 mr-4">
+      {/* Left: Logo & Menu */}
+      <div className="flex items-center gap-4 lg:w-[280px]">
+        <div className="flex items-center gap-3">
           <img src="/logo.png" alt="DART Logo" className="w-8 h-10 object-contain drop-shadow-[0_0_8px_rgba(255,215,0,0.5)]" />
           <h1 className="font-stencil text-xl tracking-widest text-white hidden sm:block leading-none mt-1">SISFO DART</h1>
         </div>
@@ -58,7 +46,26 @@ const Topbar: React.FC<TopbarProps> = ({ setIsMobileMenuOpen, currentUser, isMob
         </button>
       </div>
 
-      <Menu as="div" className="relative ml-auto">
+      {/* Center: Search */}
+      <div className="hidden md:flex flex-1 justify-center px-6">
+        <div className="w-full max-w-xl">
+          <button
+            onClick={() => setIsSearchOpen(true)}
+            className="flex items-center w-full px-4 py-2 text-sm text-slate-300 dark:text-slate-400 bg-white/10 dark:bg-black/20 hover:bg-white/20 dark:hover:bg-black/40 border border-white/10 dark:border-white/5 rounded-md transition-colors text-left"
+          >
+            <Search className="w-4 h-4 mr-2" />
+            <span className="flex-1">Pencarian Global...</span>
+            <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-medium bg-black/30 dark:bg-black/50 text-slate-300 dark:text-slate-400 rounded-sm">
+              Ctrl K
+            </kbd>
+          </button>
+        </div>
+      </div>
+
+      {/* Right: Notifications & Profile */}
+      <div className="flex items-center justify-end gap-4 lg:w-[280px] ml-auto">
+        <NotificationDropdown />
+        <Menu as="div" className="relative">
         <Menu.Button 
           className="flex items-center gap-0 border border-slate-200/20 dark:border-slate-600 rounded shadow-sm bg-black/10 dark:bg-cighra-darkcard/80 overflow-hidden focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none hover:bg-black/20 dark:hover:bg-cighra-darkcard transition-all active:scale-95 duration-300 cursor-pointer text-left"
         >
@@ -152,6 +159,7 @@ const Topbar: React.FC<TopbarProps> = ({ setIsMobileMenuOpen, currentUser, isMob
           </Menu.Items>
         </Transition>
       </Menu>
+      </div>
     </header>
     
     <ChangePasswordModal 
@@ -197,6 +205,8 @@ const Topbar: React.FC<TopbarProps> = ({ setIsMobileMenuOpen, currentUser, isMob
         </div>
       </Modal>
     )}
+
+    <CommandPalette isOpen={isSearchOpen} setIsOpen={setIsSearchOpen} />
     </>
   );
 };

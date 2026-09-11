@@ -12,19 +12,15 @@ use App\Models\SystemLog;
 
 class ProfileController extends Controller
 {
-    /**
-     * Display the user's profile form.
-     */
+    // Tampilkan form profil
     public function edit(Request $request): Response
     {
         return Inertia::render('Helpdesk/Profile', [
-            'currentUser' => $request->user()->load('role', 'satuan'),
+            'currentUser' => $request->user()->load('roles', 'satuan'),
         ]);
     }
 
-    /**
-     * Update the user's password.
-     */
+    // Update password user
     public function updatePassword(Request $request): RedirectResponse
     {
         $validated = $request->validate([

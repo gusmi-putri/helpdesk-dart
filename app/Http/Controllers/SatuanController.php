@@ -6,8 +6,20 @@ use App\Models\Satuan;
 use App\Models\SystemLog;
 use Illuminate\Http\Request;
 
-class SatuanController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class SatuanController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:create-satuans', only: ['store']),
+            new Middleware('permission:update-satuans', only: ['update', 'approve', 'reject']),
+            new Middleware('permission:delete-satuans', only: ['destroy']),
+        ];
+    }
+
     public function index()
     {
         // Only return verified satuans for the dropdown list (API)
@@ -20,25 +32,18 @@ class SatuanController extends Controller
             'kode_satuan' => 'nullable|string|max:50',
             'nama_satuan' => 'required|string|max:100|unique:satuans,nama_satuan',
             'alamat' => 'nullable|string',
-            'latitude' => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
         ]);
 
         $user = auth()->user();
 
         if (!$user) {
-            $satuan = Satuan::create([
-                'nama_satuan' => strtoupper($request->nama_satuan),
-                'is_verified' => false,
-                'pending_action' => 'create',
-                'latitude' => null,
-                'longitude' => null,
-            ]);
-            return response()->json($satuan, 201);
+            abort(403, 'Akses ditolak: Anda harus login untuk menambah Satuan Kerja.');
         }
 
-        $isAdmin = $user->role?->nama_role === 'Admin';
-        $isStaf = $user->role?->nama_role === 'Staf';
+        $isAdmin = $user->hasRole('Admin');
+        $isStaf = $user->hasRole('Staf');
 
         if (!$isAdmin && !$isStaf) {
             abort(403, 'Akses ditolak: Hanya Admin atau Staf yang dapat mengajukan Satuan Kerja baru.');
@@ -83,12 +88,12 @@ class SatuanController extends Controller
             'kode_satuan' => 'nullable|string|max:50',
             'nama_satuan' => 'sometimes|string|max:100|unique:satuans,nama_satuan,' . $satuan->id,
             'alamat' => 'nullable|string',
-            'latitude' => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
         ]);
 
         $user = auth()->user();
-        $isAdmin = $user->role?->nama_role === 'Admin';
+        $isAdmin = $user->hasRole('Admin');
 
         $updateData = [
             'kode_satuan' => $request->input('kode_satuan'),
@@ -118,7 +123,7 @@ class SatuanController extends Controller
     public function destroy(Satuan $satuan)
     {
         $user = auth()->user();
-        $isAdmin = $user->role?->nama_role === 'Admin';
+        $isAdmin = $user->hasRole('Admin');
 
         if ($isAdmin) {
             $info = $satuan->nama_satuan;

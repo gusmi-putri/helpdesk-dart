@@ -7,6 +7,9 @@
         <meta name="description" content="SISFO DART COMMAND CENTER - Sistem Manajemen Pelaporan dan Perbaikan Kerusakan Terpadu.">
         <title inertia>SISFO DART | COMMAND CENTER</title>
 
+        <!-- Favicon -->
+        <link rel="icon" type="image/png" href="/logo.png">
+
         <!-- Preload Critical Assets for LCP -->
         <link rel="preload" as="image" href="/logo.png">
 

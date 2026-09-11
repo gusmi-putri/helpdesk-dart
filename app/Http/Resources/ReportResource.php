@@ -35,6 +35,8 @@ class ReportResource extends JsonResource
             'db_id' => $this->id,
             'unit_id' => $this->unit_id,
             'status' => strtoupper($this->status_laporan),
+            'created_at' => $this->created_at ? $this->created_at->toIso8601String() : null,
+            'tanggal_selesai_perbaikan' => $this->tgl_selesai ? $this->tgl_selesai->toIso8601String() : null,
             'kerusakan' => [
                 'tanggal' => $this->tanggal_lapor ? $this->tanggal_lapor->format('d F Y, H:i') : '-',
                 'pelapor_id' => $this->user_id,

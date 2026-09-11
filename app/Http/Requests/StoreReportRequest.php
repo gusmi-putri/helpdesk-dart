@@ -34,7 +34,7 @@ class StoreReportRequest extends FormRequest
             ],
             'auto_assign' => 'nullable|boolean',
             'deskripsi' => 'required|string',
-            'tingkat_kerusakan' => 'required|in:Ringan,Sedang,Parah',
+            'tingkat_kerusakan' => 'nullable|in:Ringan,Sedang,Parah',
             'urgensi' => 'required|in:Sangat Mendesak,Bisa Menunggu,Pemeliharaan Rutin',
             'jenis_perbaikan' => 'required|in:Swadaya,Non-Swadaya',
             'keterangan_anggaran' => 'required_if:jenis_perbaikan,Non-Swadaya|nullable|string|max:2000',

@@ -1,58 +1,129 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="public/icons.svg" width="100" alt="SISFO DART Logo" style="filter: drop-shadow(0 0 10px rgba(170,59,255,0.5));">
 </p>
 
-## About Laravel
+# SISFO DART Command Center
+> **Dynamic Autonomous Retaliatory Target (DART) - BENGPUS PUSKOMLEKAD**
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+SISFO DART (Sistem Informasi DART) adalah aplikasi Helpdesk Terpadu dan Command Center yang dirancang khusus untuk mengelola, melacak, dan merespons laporan kerusakan unit serta dukungan perbaikan. Dibangun dengan fokus pada kecepatan respons, transparansi alur kerja, dan keamanan data tingkat tinggi.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🌟 Fitur Utama
 
-## Learning Laravel
+- **Role-Based Access Control (RBAC):** Sistem otorisasi ketat dengan 4 tingkat pengguna (Admin, Staf, Teknisi, Pelapor).
+- **Manajemen Tiket Responsif:** Pelaporan kendala terstruktur dengan opsi dukungan perbaikan (Swadaya & Non-Swadaya).
+- **Delegasi Tugas (Tasking):** Staf/Admin dapat menugaskan tiket laporan langsung ke Teknisi yang kompeten.
+- **Real-Time Updates:** Dukungan WebSocket (Laravel Reverb) untuk pembaruan status laporan secara instan.
+- **Laporan & Rekapitulasi Otomatis:** Pembuatan dokumen (PDF) untuk serah terima perbaikan dan rekap bulanan operasional.
+- **Log Keamanan (Audit Trail):** Pencatatan setiap aktivitas user ke dalam riwayat sistem untuk keamanan operasional (Operational Security).
+- **Desain Modern & Gelap (Dark Mode):** Antarmuka pengguna (UI) yang garang dan futuristik, dioptimalkan untuk lingkungan *Command Center*.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🛠️ Teknologi & Stack
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+Aplikasi ini menggunakan stack modern yang menjamin performa tinggi:
 
-## Agentic Development
+- **Backend:** [Laravel 11](https://laravel.com/) (PHP)
+- **Frontend:** [React](https://reactjs.org/) dengan [TypeScript](https://www.typescriptlang.org/)
+- **Routing & State:** [Inertia.js](https://inertiajs.com/)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **Database:** MySQL / MariaDB
+- **WebSockets:** Laravel Reverb (untuk fitur Real-time)
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+---
 
-```bash
-composer require laravel/boost --dev
+## ⚙️ Panduan Instalasi (Development)
 
-php artisan boost:install
-```
+Ikuti langkah-langkah berikut untuk menjalankan SISFO DART di lingkungan lokal Anda.
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### Prasyarat
+- PHP >= 8.2
+- Composer
+- Node.js & npm
+- MySQL / MariaDB
 
-## Contributing
+### Langkah Instalasi
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+1. **Clone Repository (Jika belum)**
+   ```bash
+   git clone <url-repo-anda> helpdesk-dart
+   cd helpdesk-dart
+   ```
 
-## Code of Conduct
+2. **Install Dependensi Backend (PHP)**
+   ```bash
+   composer install
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+3. **Install Dependensi Frontend (Node)**
+   ```bash
+   npm install
+   ```
 
-## Security Vulnerabilities
+4. **Konfigurasi Environment**
+   Salin file konfigurasi bawaan dan sesuaikan nilainya.
+   ```bash
+   cp .env.example .env
+   ```
+   **Penting!** Sesuaikan kredensial Database Anda di `.env`:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=helpdesk_dart
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+5. **Generate Application Key**
+   ```bash
+   php artisan key:generate
+   ```
 
-## License
+6. **Migrasi Database & Seeder**
+   Jalankan migrasi untuk membangun struktur tabel beserta data bawaan (seperti akun default).
+   ```bash
+   php artisan migrate:fresh --seed
+   ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+7. **Jalankan Aplikasi**
+   Anda membutuhkan dua terminal yang berjalan bersamaan:
+   
+   *Terminal 1 (Backend - Laravel):*
+   ```bash
+   php artisan serve
+   ```
+   
+   *Terminal 2 (Frontend - Vite):*
+   ```bash
+   npm run dev
+   ```
+
+   *Terminal 3 (Opsional - WebSockets Reverb):*
+   ```bash
+   php artisan reverb:start
+   ```
+
+8. **Akses Aplikasi**
+   Buka browser Anda dan kunjungi: `http://localhost:8000`
+
+---
+
+## 🛡️ Hak Akses & Peran (Role)
+
+Aplikasi ini menggunakan middleware khusus untuk memisahkan wewenang:
+- **Admin:** Akses penuh ke seluruh sistem (mengelola *Users*, Unit, dan semua laporan).
+- **Staf:** Membantu Admin dalam mendelegasikan tugas ke Teknisi dan mencetak rekap laporan.
+- **Teknisi:** Menerima tugas (*assigned tasks*), memperbarui progres perbaikan (Persentase), dan menyelesaikan perbaikan.
+- **Pelapor:** Mengajukan tiket kendala/kerusakan baru dan memantau status laporannya.
+
+*(Silakan baca dokumen `ROLE_ACCESSIBILITY.md` untuk informasi routing dan middleware yang lebih detail)*.
+
+---
+
+## 🤝 Lisensi & Hak Cipta
+
+&copy; SISFO DART (Dynamic Autonomous Retaliatory Target) COMMAND CENTER.
+Sistem ini dirancang secara eksklusif. Distribusi kode sumber ke publik tanpa izin dilarang.

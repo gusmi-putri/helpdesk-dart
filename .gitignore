@@ -38,3 +38,6 @@ dist-ssr
 *.sln
 *.sw?
 *.zip
+cloudflared.exe
+query
+test.php

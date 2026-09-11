@@ -24,18 +24,19 @@ const PostReportWizard: React.FC<PostReportWizardProps> = ({ reportData, onClose
       try {
         const res = await axios.post('/api/diagnose', {
           deskripsi: reportData.deskripsi,
-          tingkat_kerusakan: reportData.tingkat_kerusakan,
           unit_id: reportData.unit_id
         });
 
         if (res.data.success) {
-          setAiResponse(res.data.diagnosis);
+          // If predicted_level exists, prepend it to diagnosis
+          const levelInfo = res.data.predicted_level ? `**PREDIKSI TINGKAT KERUSAKAN AI:** ${res.data.predicted_level}\n\n` : '';
+          setAiResponse(levelInfo + res.data.diagnosis);
         } else {
           setErrorAi("Gagal mendapatkan respons AI.");
         }
       } catch (err) {
         console.error(err);
-        setErrorAi("Terjadi kesalahan jaringan atau API Key belum diatur.");
+        setErrorAi("Terjadi kesalahan saat menghubungi sistem diagnosis.");
       } finally {
         setIsLoadingAi(false);
       }
@@ -54,7 +55,7 @@ const PostReportWizard: React.FC<PostReportWizardProps> = ({ reportData, onClose
   };
 
   const formatInlineText = (text: string, key: number) => {
-    const parts = text.split(/(\*\*.*?\*\*|\*.*?\*)/g).filter(Boolean);
+    const parts = text.split(/(\*\*.*?\*\*|\*.*?\*|`.*?`)/g).filter(Boolean);
 
     return (
       <span key={key}>
@@ -72,6 +73,14 @@ const PostReportWizard: React.FC<PostReportWizardProps> = ({ reportData, onClose
               <em key={index} className="not-italic text-slate-900 dark:text-white">
                 {part.slice(1, -1)}
               </em>
+            );
+          }
+          
+          if (part.startsWith('`') && part.endsWith('`')) {
+            return (
+              <code key={index} className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 text-cighra-gold rounded-sm font-mono text-sm">
+                {part.slice(1, -1)}
+              </code>
             );
           }
 
@@ -124,6 +133,17 @@ const PostReportWizard: React.FC<PostReportWizardProps> = ({ reportData, onClose
       if (line === '---') {
         flushList(lineIndex);
         elements.push(<hr key={`hr-${lineIndex}`} className="my-5 border-slate-200 dark:border-slate-700" />);
+        return;
+      }
+
+      // Handle blockquotes (which got escaped to &gt; by escapeHtml)
+      if (line.startsWith('&gt; ')) {
+        flushList(lineIndex);
+        elements.push(
+          <blockquote key={`quote-${lineIndex}`} className="p-4 my-4 bg-amber-50 dark:bg-amber-500/10 border-l-4 border-amber-500 text-amber-800 dark:text-amber-200 rounded-r-sm">
+            {formatInlineText(line.slice(5), lineIndex)}
+          </blockquote>
+        );
         return;
       }
 

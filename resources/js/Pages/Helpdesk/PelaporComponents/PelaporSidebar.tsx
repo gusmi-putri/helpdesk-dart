@@ -16,7 +16,6 @@ const PelaporSidebar: React.FC<PelaporSidebarProps> = ({
 }) => {
   return (
     <aside className={`fixed inset-y-0 left-0 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 w-72 bg-white dark:bg-cighra-dark border-r border-slate-200 dark:border-slate-600 z-50 flex-shrink-0 flex flex-col shadow-2xl`}>
-      
 
       <nav className="flex-1 overflow-y-auto custom-scrollbar py-6">
         <button

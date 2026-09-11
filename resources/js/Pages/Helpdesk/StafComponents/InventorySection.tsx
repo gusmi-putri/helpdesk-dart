@@ -107,8 +107,6 @@ const InventorySection: React.FC<InventorySectionProps> = ({
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500 pb-12">
-      
-
 
       {/* 2. KPI SUMMARY CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

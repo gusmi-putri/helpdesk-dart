@@ -55,8 +55,6 @@ export const SATUAN_COORDINATES: Record<string, [number, number]> = {
     'KODAM IX/UDAYANA': [-8.670, 115.212], // Denpasar
     'KODAM IX': [-8.670, 115.212], 
 
-
-
     // DUMMY DATA FROM SEEDER
     'AKMIL': [-7.4789, 110.2170], // Magelang
     'AKADEMI MILITER': [-7.4789, 110.2170],

@@ -9,10 +9,12 @@ use App\Models\Unit;
 class AiDiagnosticController extends Controller
 {
     protected LocalDiagnosticService $diagnosticService;
+    protected \App\Services\NaiveBayesService $aiService;
 
-    public function __construct(LocalDiagnosticService $diagnosticService)
+    public function __construct(LocalDiagnosticService $diagnosticService, \App\Services\NaiveBayesService $aiService)
     {
         $this->diagnosticService = $diagnosticService;
+        $this->aiService = $aiService;
     }
 
     /**
@@ -24,7 +26,7 @@ class AiDiagnosticController extends Controller
         // Validate incoming data
         $validated = $request->validate([
             'deskripsi'         => 'required|string|max:1000',
-            'tingkat_kerusakan' => 'required|in:Ringan,Sedang,Parah',
+            // 'tingkat_kerusakan' is no longer required, AI will predict it
             'unit_id'           => 'required|exists:units,id',
         ]);
 
@@ -38,15 +40,19 @@ class AiDiagnosticController extends Controller
             $unitName = $unit->nomor_seri;
         }
 
+        // PREDICT TINGKAT KERUSAKAN MENGGUNAKAN SELF-LEARNING AI
+        $predictedLevel = $this->aiService->predict($deskripsi);
+
         // Jalankan analisis lokal
         $diagnosis = $this->diagnosticService->getDiagnosticAdvice(
             $deskripsi,
-            $validated['tingkat_kerusakan'],
+            $predictedLevel,
             $unitName
         );
 
         return response()->json([
             'success'   => true,
+            'predicted_level' => $predictedLevel,
             'diagnosis' => $diagnosis
         ]);
     }

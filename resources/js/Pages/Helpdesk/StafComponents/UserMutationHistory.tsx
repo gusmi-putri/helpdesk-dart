@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Plus, Trash2, Edit2 } from 'lucide-react';
 import { useTableSort } from '@/hooks/useTableSort';
 import SortableHeader from '@/Components/Table/SortableHeader';
+import { Badge } from '@/Components/ui/Badge';
 
 interface UserMutationHistoryProps {
   dbMutations: any[];
@@ -35,11 +36,11 @@ const UserMutationHistory: React.FC<UserMutationHistoryProps> = ({ dbMutations }
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'pending':
-        return <span className="bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800/40 px-2 py-0.5 text-[11px] font-mono font-bold animate-pulse">MENUNGGU VERIFIKASI</span>;
+        return <Badge variant="warning">MENUNGGU VERIFIKASI</Badge>;
       case 'approved':
-        return <span className="bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800/40 px-2 py-0.5 text-[11px] font-mono font-bold">DISETUJUI</span>;
+        return <Badge variant="success">DISETUJUI</Badge>;
       case 'rejected':
-        return <span className="bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800/40 px-2 py-0.5 text-[11px] font-mono font-bold">DITOLAK</span>;
+        return <Badge variant="danger">DITOLAK</Badge>;
       default:
         return null;
     }
@@ -121,7 +122,7 @@ const UserMutationHistory: React.FC<UserMutationHistoryProps> = ({ dbMutations }
                         ) : (
                           <div className="grid grid-cols-1 gap-1.5 text-xs font-mono text-slate-800 dark:text-white">
                             {Object.entries(m.user_data || {})
-                              .filter(([key]) => !['password', 'role_id', 'satuan_id', 'is_approved'].includes(key.toLowerCase()))
+                              .filter(([key]) => !['password', 'role_id', 'roles', 'permissions', 'satuan_id', 'is_approved'].includes(key.toLowerCase()))
                               .map(([key, val]) => (
                               <div key={key} className="flex">
                                 <span className="text-blue-600 dark:text-blue-400 uppercase w-24 whitespace-nowrap overflow-hidden text-ellipsis">

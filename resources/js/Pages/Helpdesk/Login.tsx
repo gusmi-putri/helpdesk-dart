@@ -255,7 +255,6 @@ const Login: React.FC<LoginProps> = ({ initialSisaDetik = 0 }) => {
             </p>
           </div>
 
-
         </form>
 
         <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-600 text-center">

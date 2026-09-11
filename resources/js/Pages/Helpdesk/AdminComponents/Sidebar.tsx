@@ -2,17 +2,19 @@ import React, { useState } from 'react';
 import {
   Radar, Users, Package, MapPin, CheckSquare,
   ChevronDown, ChevronRight, Database,
-  Activity, Map as MapIcon, Layers
+  Activity, Map as MapIcon, Layers, Shield
 } from 'lucide-react';
 
 interface SidebarProps {
   isMobileMenuOpen: boolean;
   setIsMobileMenuOpen: (open: boolean) => void;
-  activeMenu: 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER';
-  handleMenuClick: (menu: 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER') => void;
+  activeMenu: 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER' | 'ROLES';
+  handleMenuClick: (menu: 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER' | 'ROLES') => void;
   dbUsers: any[];
   dbMutations?: any[];
   dbSatuans?: any[];
+  userPermissions?: string[];
+  isAdmin?: boolean;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -23,6 +25,8 @@ const Sidebar: React.FC<SidebarProps> = ({
   dbUsers,
   dbMutations = [],
   dbSatuans = [],
+  userPermissions = [],
+  isAdmin = false,
 }) => {
   // Collapsible menu states
   const [isDataMasterExpanded, setIsDataMasterExpanded] = useState<boolean>(true);
@@ -32,7 +36,15 @@ const Sidebar: React.FC<SidebarProps> = ({
   const pendingSatuansCount = dbSatuans.filter((s: any) => s.pending_action !== null).length;
   const totalPending = pendingPersonelCount + pendingMutationsCount + pendingSatuansCount;
 
-  const isMasterDataActive = activeMenu === 'USERS' || activeMenu === 'UNITS' || activeMenu === 'SATUANS';
+  const isMasterDataActive = activeMenu === 'USERS' || activeMenu === 'UNITS' || activeMenu === 'SATUANS' || activeMenu === 'ROLES';
+
+  const canApprove = userPermissions.includes('update-users') || userPermissions.includes('create-satuans') || isAdmin;
+  
+  const showUsersMenu = userPermissions.includes('read-users') || isAdmin;
+  const showUnitsMenu = userPermissions.includes('read-units') || isAdmin;
+  const showSatuansMenu = userPermissions.includes('read-satuans') || isAdmin;
+  const showRolesMenu = isAdmin;
+  const hasAnyDataMasterAccess = showUsersMenu || showUnitsMenu || showSatuansMenu || showRolesMenu;
 
   const baseButtonClass = "w-full flex items-center justify-between px-6 py-4 font-tactical text-sm tracking-wider transition-all duration-300 border-l-4 group focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none";
 
@@ -79,77 +91,96 @@ const Sidebar: React.FC<SidebarProps> = ({
           </button>
 
           {/* 3. DATA MASTER (Collapsible) */}
-          <div>
+          {hasAnyDataMasterAccess && (
+            <div>
+              <button
+                id="tour-data-master-admin"
+                onClick={() => setIsDataMasterExpanded(!isDataMasterExpanded)}
+                aria-expanded={isDataMasterExpanded}
+                aria-controls="data-master-submenu"
+                className={`w-full flex items-center justify-between px-6 py-4 font-tactical text-sm tracking-wider transition-all duration-300 border-l-4 group focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none
+                  ${isMasterDataActive ? 'bg-cighra-gold/5 text-cighra-gold border-cighra-gold/40' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}
+                `}
+              >
+                <div className="flex items-center gap-3">
+                  <Layers size={18} className="transition-transform duration-300 group-hover:scale-110 group-active:scale-95" /> DATA MASTER
+                </div>
+                <div className="flex items-center gap-2">
+                  {isDataMasterExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                </div>
+              </button>
+
+              {isDataMasterExpanded && (
+                <div 
+                  id="data-master-submenu" 
+                  role="region" 
+                  aria-label="Submenu Data Master"
+                  className="bg-slate-50 dark:bg-cighra-darkcard/20 py-1 border-l-4 border-cighra-primary dark:border-cighra-gold/20"
+                >
+                  {showUsersMenu && (
+                    <button
+                      onClick={() => handleMenuClick('USERS')}
+                      aria-current={activeMenu === 'USERS' ? 'page' : undefined}
+                      className={`w-full text-left pl-[54px] py-2.5 flex items-center gap-2 text-xs font-tactical tracking-widest transition-all duration-300 focus-visible:ring group focus-visible:ring-cighra-gold focus-visible:outline-none ${activeMenu === 'USERS' ? 'text-cighra-primary dark:text-cighra-gold font-bold' : 'text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
+                    >
+                      <Users size={14} className="transition-transform duration-300 group-hover:scale-110 group-active:scale-95" /> » PERSONEL
+                    </button>
+                  )}
+                  {showUnitsMenu && (
+                    <button
+                      onClick={() => handleMenuClick('UNITS')}
+                      aria-current={activeMenu === 'UNITS' ? 'page' : undefined}
+                      className={`w-full text-left pl-[54px] py-2.5 flex items-center gap-2 text-xs font-tactical tracking-widest transition-all duration-300 focus-visible:ring group focus-visible:ring-cighra-gold focus-visible:outline-none ${activeMenu === 'UNITS' ? 'text-cighra-primary dark:text-cighra-gold font-bold' : 'text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
+                    >
+                      <Package size={14} className="transition-transform duration-300 group-hover:scale-110 group-active:scale-95" /> » INVENTARIS
+                    </button>
+                  )}
+                  {showSatuansMenu && (
+                    <button
+                      onClick={() => handleMenuClick('SATUANS')}
+                      aria-current={activeMenu === 'SATUANS' ? 'page' : undefined}
+                      className={`w-full text-left pl-[54px] py-2.5 flex items-center gap-2 text-xs font-tactical tracking-widest transition-all duration-300 focus-visible:ring group focus-visible:ring-cighra-gold focus-visible:outline-none ${activeMenu === 'SATUANS' ? 'text-cighra-primary dark:text-cighra-gold font-bold' : 'text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
+                    >
+                      <MapPin size={14} className="transition-transform duration-300 group-hover:scale-110 group-active:scale-95" /> » SATUAN
+                    </button>
+                  )}
+                  {showRolesMenu && (
+                    <button
+                      onClick={() => handleMenuClick('ROLES')}
+                      aria-current={activeMenu === 'ROLES' ? 'page' : undefined}
+                      className={`w-full text-left pl-[54px] py-2.5 flex items-center gap-2 text-xs font-tactical tracking-widest transition-all duration-300 focus-visible:ring group focus-visible:ring-cighra-gold focus-visible:outline-none ${activeMenu === 'ROLES' ? 'text-cighra-primary dark:text-cighra-gold font-bold' : 'text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
+                    >
+                      <Shield size={14} className="transition-transform duration-300 group-hover:scale-110 group-active:scale-95" /> » ROLES & AKSES
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* 4. PUSAT PERSETUJUAN */}
+          {canApprove && (
             <button
-              id="tour-data-master-admin"
-              onClick={() => setIsDataMasterExpanded(!isDataMasterExpanded)}
-              aria-expanded={isDataMasterExpanded}
-              aria-controls="data-master-submenu"
+              id="tour-persetujuan"
+              onClick={() => handleMenuClick('APPROVAL_CENTER')}
+              aria-current={activeMenu === 'APPROVAL_CENTER' ? 'page' : undefined}
               className={`w-full flex items-center justify-between px-6 py-4 font-tactical text-sm tracking-wider transition-all duration-300 border-l-4 group focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none
-                ${isMasterDataActive ? 'bg-cighra-gold/5 text-cighra-gold border-cighra-gold/40' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}
+                ${activeMenu === 'APPROVAL_CENTER' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}
               `}
             >
               <div className="flex items-center gap-3">
-                <Layers size={18} className="transition-transform duration-300 group-hover:scale-110 group-active:scale-95" /> DATA MASTER
+                <CheckSquare size={18} className="transition-transform duration-300 group-hover:scale-110 group-active:scale-95" /> PUSAT PERSETUJUAN
               </div>
-              <div className="flex items-center gap-2">
-                {isDataMasterExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-              </div>
+              {totalPending > 0 && (
+                <span 
+                  className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full animate-pulse shadow-md"
+                  aria-label={`${totalPending} pengajuan tertunda`}
+                >
+                  {totalPending}
+                </span>
+              )}
             </button>
-
-            {isDataMasterExpanded && (
-              <div 
-                id="data-master-submenu" 
-                role="region" 
-                aria-label="Submenu Data Master"
-                className="bg-slate-50 dark:bg-cighra-darkcard/20 py-1 border-l-4 border-cighra-primary dark:border-cighra-gold/20"
-              >
-                <button
-                  onClick={() => handleMenuClick('USERS')}
-                  aria-current={activeMenu === 'USERS' ? 'page' : undefined}
-                  className={`w-full text-left pl-[54px] py-2.5 flex items-center gap-2 text-xs font-tactical tracking-widest transition-all duration-300 focus-visible:ring group focus-visible:ring-cighra-gold focus-visible:outline-none ${activeMenu === 'USERS' ? 'text-cighra-primary dark:text-cighra-gold font-bold' : 'text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
-                >
-                  <Users size={14} className="transition-transform duration-300 group-hover:scale-110 group-active:scale-95" /> » PERSONEL
-                </button>
-                <button
-                  onClick={() => handleMenuClick('UNITS')}
-                  aria-current={activeMenu === 'UNITS' ? 'page' : undefined}
-                  className={`w-full text-left pl-[54px] py-2.5 flex items-center gap-2 text-xs font-tactical tracking-widest transition-all duration-300 focus-visible:ring group focus-visible:ring-cighra-gold focus-visible:outline-none ${activeMenu === 'UNITS' ? 'text-cighra-primary dark:text-cighra-gold font-bold' : 'text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
-                >
-                  <Package size={14} className="transition-transform duration-300 group-hover:scale-110 group-active:scale-95" /> » INVENTARIS
-                </button>
-                <button
-                  onClick={() => handleMenuClick('SATUANS')}
-                  aria-current={activeMenu === 'SATUANS' ? 'page' : undefined}
-                  className={`w-full text-left pl-[54px] py-2.5 flex items-center gap-2 text-xs font-tactical tracking-widest transition-all duration-300 focus-visible:ring group focus-visible:ring-cighra-gold focus-visible:outline-none ${activeMenu === 'SATUANS' ? 'text-cighra-primary dark:text-cighra-gold font-bold' : 'text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
-                >
-                  <MapPin size={14} className="transition-transform duration-300 group-hover:scale-110 group-active:scale-95" /> » SATUAN
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* 4. PUSAT PERSETUJUAN */}
-          <button
-            id="tour-persetujuan"
-            onClick={() => handleMenuClick('APPROVAL_CENTER')}
-            aria-current={activeMenu === 'APPROVAL_CENTER' ? 'page' : undefined}
-            className={`w-full flex items-center justify-between px-6 py-4 font-tactical text-sm tracking-wider transition-all duration-300 border-l-4 group focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none
-              ${activeMenu === 'APPROVAL_CENTER' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}
-            `}
-          >
-            <div className="flex items-center gap-3">
-              <CheckSquare size={18} className="transition-transform duration-300 group-hover:scale-110 group-active:scale-95" /> PUSAT PERSETUJUAN
-            </div>
-            {totalPending > 0 && (
-              <span 
-                className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full animate-pulse shadow-md"
-                aria-label={`${totalPending} pengajuan tertunda`}
-              >
-                {totalPending}
-              </span>
-            )}
-          </button>
+          )}
 
           {/* 5. DATA LAPORAN */}
           <button
@@ -164,15 +195,17 @@ const Sidebar: React.FC<SidebarProps> = ({
           </button>
 
           {/* 6. LOG AKTIVITAS */}
-          <button
-            onClick={() => handleMenuClick('LOGS')}
-            aria-current={activeMenu === 'LOGS' ? 'page' : undefined}
-            className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all duration-300 border-l-4 group focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none
-              ${activeMenu === 'LOGS' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}
-            `}
-          >
-            <Database size={18} className="transition-transform duration-300 group-hover:scale-110 group-active:scale-95" /> LOG AKTIVITAS
-          </button>
+          {(isAdmin || userPermissions.includes('read-logs')) && (
+            <button
+              onClick={() => handleMenuClick('LOGS')}
+              aria-current={activeMenu === 'LOGS' ? 'page' : undefined}
+              className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all duration-300 border-l-4 group focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none
+                ${activeMenu === 'LOGS' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}
+              `}
+            >
+              <Database size={18} className="transition-transform duration-300 group-hover:scale-110 group-active:scale-95" /> LOG AKTIVITAS
+            </button>
+          )}
         </nav>
       </aside>
     </>

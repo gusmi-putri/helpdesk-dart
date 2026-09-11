@@ -7,7 +7,7 @@ import RecapModal from './AdminComponents/RecapModal';
 import RejectConfirmModal from './AdminComponents/RejectConfirmModal';
 
 import { useStore } from '@/store/useStore';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 
 // Lazy loaded components for better performance
 const AnalyticsSection = lazy(() => import('./AdminComponents/AnalyticsSection'));
@@ -18,18 +18,33 @@ const ReportsSection = lazy(() => import('./AdminComponents/ReportsSection'));
 const ApprovalCenter = lazy(() => import('./AdminComponents/ApprovalCenter'));
 const MonitoringMap = lazy(() => import('./AdminComponents/MonitoringMap'));
 const SatuansTable = lazy(() => import('./AdminComponents/SatuansTable'));
+const RolesTable = lazy(() => import('./AdminComponents/RolesTable'));
 
 type SubMenuReport = 'KERUSAKAN' | 'PERBAIKAN';
-type MenuTab = 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER';
+type MenuTab = 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER' | 'ROLES';
 
 const DashboardAdmin = (props: any) => {
-  const { dbCases = [], dbUsers = [], dbLogs = [], dbRoles = [], dbUnits = [], dbSatuans = [], dbMutations = [], dbUserMutations = [], dbArchivedUnits = [] } = props;
+  const { dbCases = [], dbUsers = [], dbLogs = [], dbRoles = [], dbPermissions = [], dbUnits = [], dbSatuans = [], dbMutations = [], dbUserMutations = [], dbArchivedUnits = [] } = props;
+  const userPermissions = (usePage().props as any).auth?.user?.permissions || [];
+  const userRoles = (usePage().props as any).auth?.user?.roles || [];
+  const isAdmin = userRoles.includes('Admin');
+
   const [activeMenu, setActiveMenu] = useState<MenuTab>('ANALYTICS');
   const [activeSubReport, setActiveSubReport] = useState<SubMenuReport>('KERUSAKAN');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [reportStatusFilter, setReportStatusFilter] = useState<'ALL' | 'PENDING' | 'DIVERIFIKASI' | 'DITERIMA TEKNISI' | 'DIPROSES' | 'SELESAI' | 'DITOLAK'>('ALL');
   const [mapFocusSatuan, setMapFocusSatuan] = useState<string | null>(null);
   const [isPolling, setIsPolling] = useState(false);
+
+  const renderUnauthorized = (menuName: string) => (
+    <div className="flex flex-col items-center justify-center h-64 w-full bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800/50 rounded-sm">
+      <div className="text-red-500 mb-2">
+        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+      </div>
+      <h3 className="text-lg font-tactical font-bold text-red-700 dark:text-red-400 uppercase tracking-widest">AKSES DITOLAK</h3>
+      <p className="text-sm font-mono text-red-600 dark:text-red-300">Anda tidak memiliki izin untuk mengakses {menuName}.</p>
+    </div>
+  );
 
   // Auto-polling dengan deteksi keaktifan halaman (visibility)
   useEffect(() => {
@@ -53,12 +68,20 @@ const DashboardAdmin = (props: any) => {
       }
     };
 
+    const handleGlobalSearch = (e: any) => {
+      if (e.detail && e.detail.type) {
+        setActiveMenu(e.detail.type as MenuTab);
+      }
+    };
+
     startPolling();
     document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('global-search', handleGlobalSearch);
 
     return () => {
       clearInterval(intervalId);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('global-search', handleGlobalSearch);
     };
   }, []);
 
@@ -155,7 +178,6 @@ const DashboardAdmin = (props: any) => {
   const [logFilter, setLogFilter] = useState<string>('ALL');
   const [selectedLogPayload, setSelectedLogPayload] = useState<string | null>(null);
 
-
   const [isRecapModalOpen, setIsRecapModalOpen] = useState(false);
   const [recapPeriod, setRecapPeriod] = useState<'weekly' | 'monthly' | 'yearly' | 'custom' | 'year_specific'>('monthly');
   const [recapStartDate, setRecapStartDate] = useState<string>('');
@@ -193,7 +215,6 @@ const DashboardAdmin = (props: any) => {
       });
     }
   };
-
 
   const handleExportRecap = () => {
     if (recapPeriod === 'custom' && (!recapStartDate || !recapEndDate)) {
@@ -239,17 +260,22 @@ const DashboardAdmin = (props: any) => {
         isMobileMenuOpen={isMobileMenuOpen}
         setIsMobileMenuOpen={setIsMobileMenuOpen}
         activeMenu={activeMenu}
-        handleMenuClick={setActiveMenu}
+        handleMenuClick={(menu) => {
+          setActiveMenu(menu);
+          import('@/store/useStore').then(({ useStore }) => {
+            useStore.getState().setGlobalSearch(null);
+          });
+        }}
         dbUsers={dbUsers}
         dbMutations={dbMutations}
         dbSatuans={dbSatuans}
+        userPermissions={userPermissions}
+        isAdmin={isAdmin}
       />
 
       {/* MAIN CONTENT AREA */}
       <main className="flex-1 flex flex-col relative overflow-hidden h-full">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-paper.png')] opacity-[0.05] pointer-events-none"></div>
-
-        
 
         {/* Scrollable Content Container */}
         <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar z-10">
@@ -266,6 +292,7 @@ const DashboardAdmin = (props: any) => {
                       activeMenu === 'LOGS' ? 'LOG AKTIVITAS SISTEM' :
                       activeMenu === 'UNITS' ? 'DATABASE INVENTARIS' :
                       activeMenu === 'SATUANS' ? 'DATA SATUAN' :
+                      activeMenu === 'ROLES' ? 'PENGATURAN ROLES & AKSES' :
                       activeMenu === 'APPROVAL_CENTER' ? 'PUSAT PERSETUJUAN' :
                       'DASHBOARD ADMIN'}
                     {isPolling && (
@@ -282,6 +309,7 @@ const DashboardAdmin = (props: any) => {
                     activeMenu === 'LOGS' ? 'Rekaman seluruh aktivitas dan perubahan data sistem.' :
                     activeMenu === 'UNITS' ? 'Status kesiapan unit DART.' :
                     activeMenu === 'SATUANS' ? 'Kelola data satuan dan unit yang terdaftar.' :
+                    activeMenu === 'ROLES' ? 'Manajemen peran pengguna beserta hak aksesnya.' :
                     activeMenu === 'APPROVAL_CENTER' ? 'Tinjau dan setujui pengajuan mutasi serta registrasi.' :
                     'Sistem Manajemen Pelaporan Kerusakan Dart.'}
                 </p>
@@ -318,49 +346,75 @@ const DashboardAdmin = (props: any) => {
                 />
               )}
               {activeMenu === 'USERS' && (
-                <UsersTable
-                  dbUsers={dbUsers}
-                  dbRoles={dbRoles}
-                  dbSatuans={dbSatuans}
-                />
+                userPermissions.includes('read-users') || isAdmin ? (
+                  <UsersTable
+                    dbUsers={dbUsers}
+                    dbRoles={dbRoles}
+                    dbPermissions={dbPermissions}
+                    dbSatuans={dbSatuans}
+                    userPermissions={userPermissions}
+                    isAdmin={isAdmin}
+                  />
+                ) : renderUnauthorized('Manajemen Personel')
               )}
               {activeMenu === 'LOGS' && (
-                <LogsTable
-                  dbLogs={dbLogs}
-                  logFilter={logFilter}
-                  setLogFilter={setLogFilter}
-                  setSelectedLogPayload={setSelectedLogPayload}
-                />
+                isAdmin || userPermissions.includes('read-logs') ? (
+                  <LogsTable
+                    dbLogs={dbLogs}
+                    logFilter={logFilter}
+                    setLogFilter={setLogFilter}
+                    setSelectedLogPayload={setSelectedLogPayload}
+                  />
+                ) : renderUnauthorized('Log Aktivitas')
               )}
               {activeMenu === 'UNITS' && (
-                <UnitsTable
-                  dbUnits={dbUnits}
-                  dbSatuans={dbSatuans}
-                  dbCases={dbCases}
-                />
+                userPermissions.includes('read-units') || isAdmin ? (
+                  <UnitsTable
+                    dbUnits={dbUnits}
+                    dbSatuans={dbSatuans}
+                    dbCases={dbCases}
+                    userPermissions={userPermissions}
+                    isAdmin={isAdmin}
+                  />
+                ) : renderUnauthorized('Manajemen Inventaris')
               )}
               {activeMenu === 'SATUANS' && (
-                <SatuansTable
-                  dbSatuans={dbSatuans}
-                  dbUnits={dbUnits}
-                  dbCases={dbCases}
-                  dbUsers={dbUsers}
-                  handleViewOnMap={(satuan: any) => {
-                    setMapFocusSatuan(satuan.nama_satuan);
-                    setActiveMenu('MAP');
-                  }}
-                />
+                userPermissions.includes('read-satuans') || isAdmin ? (
+                  <SatuansTable
+                    dbSatuans={dbSatuans}
+                    dbUnits={dbUnits}
+                    dbCases={dbCases}
+                    dbUsers={dbUsers}
+                    handleViewOnMap={(satuan: any) => {
+                      setMapFocusSatuan(satuan.nama_satuan);
+                      setActiveMenu('MAP');
+                    }}
+                    userPermissions={userPermissions}
+                    isAdmin={isAdmin}
+                  />
+                ) : renderUnauthorized('Data Satuan')
+              )}
+              {activeMenu === 'ROLES' && (
+                isAdmin ? (
+                  <RolesTable
+                    dbRoles={dbRoles}
+                    dbPermissions={dbPermissions}
+                    userPermissions={userPermissions}
+                  />
+                ) : renderUnauthorized('Roles & Akses')
               )}
               {activeMenu === 'APPROVAL_CENTER' && (
-                <ApprovalCenter
-                  dbUsers={dbUsers}
-                  dbMutations={dbMutations}
-                  dbUserMutations={dbUserMutations}
-                  dbSatuans={dbSatuans}
-                  dbArchivedUnits={dbArchivedUnits}
-                  handleApproveUser={handleApproveUser}
-                  handleRejectUser={handleRejectUser}
-                />
+                userPermissions.includes('update-users') || userPermissions.includes('create-satuans') || isAdmin ? (
+                  <ApprovalCenter
+                    dbUsers={dbUsers}
+                    dbMutations={dbMutations}
+                    dbUserMutations={dbUserMutations}
+                    dbSatuans={dbSatuans}
+                    dbArchivedUnits={dbArchivedUnits}
+                    handleApproveUser={handleApproveUser}
+                    handleRejectUser={handleRejectUser}
+                  />
+                ) : renderUnauthorized('Pusat Persetujuan')
               )}
             </Suspense>
           </div>

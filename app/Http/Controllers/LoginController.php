@@ -68,15 +68,23 @@ class LoginController extends Controller
                 ]);
             }
 
-            if (!$user->role) {
+            if ($user->roles->isEmpty()) {
                 Auth::logout();
                 return back()->withErrors([
                     'auth' => 'Akun Anda tidak memiliki peran (role) yang valid. Hubungi Admin.',
                 ]);
             }
 
-            $role = $user->role->nama_role;
-            $redirectPath = '/' . strtolower($role);
+            $redirectPath = '/';
+            if ($user->can('view-dashboard-admin')) {
+                $redirectPath = '/admin';
+            } elseif ($user->can('view-dashboard-staf')) {
+                $redirectPath = '/staf';
+            } elseif ($user->can('view-dashboard-teknisi')) {
+                $redirectPath = '/teknisi';
+            } elseif ($user->can('view-dashboard-pelapor')) {
+                $redirectPath = '/pelapor';
+            }
 
             return redirect()->intended($redirectPath);
         }

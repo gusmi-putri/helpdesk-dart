@@ -2,6 +2,7 @@ import React from 'react';
 import { AlertTriangle, Clock, Activity, ShieldAlert, Eye, XCircle, CheckCircle, Wallet, Inbox, User } from 'lucide-react';
 import { EmptyState } from '@/Components/ui/EmptyState';
 import { useTableSort } from '@/hooks/useTableSort';
+import { ReportStatusBadge } from '@/Components/ui/ReportStatusBadge';
 import SortableHeader from '@/Components/Table/SortableHeader';
 
 interface IncomingReportsTableProps {
@@ -116,27 +117,8 @@ const IncomingReportsTable: React.FC<IncomingReportsTableProps> = ({
                         </span>
                       </div>
                     </td>
-                    <td className="p-4 text-center">
-                      {report.status === 'PENDING' && (
-                        <span className="bg-red-50 dark:bg-red-900/10 text-red-600 dark:text-red-500 border border-red-200 dark:border-red-800/30 text-xs font-bold px-2 py-1 font-mono tracking-widest w-fit flex items-center gap-1 shadow-sm">
-                          <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse block"></span> PENDING (VERIFIKASI)
-                        </span>
-                      )}
-                      {report.status === 'DIVERIFIKASI' && (
-                        <span className="bg-yellow-50 dark:bg-yellow-900/10 text-yellow-600 dark:text-yellow-500 border border-yellow-200 dark:border-yellow-800/30 text-xs font-bold px-2 py-1 font-mono tracking-widest w-fit flex items-center gap-1 shadow-sm">
-                          <Clock className="w-3 h-3 text-yellow-500" /> {report.perbaikan.teknisi ? 'MENUNGGU TEKNISI' : 'DIVERIFIKASI'}
-                        </span>
-                      )}
-                      {report.status === 'DITERIMA TEKNISI' && (
-                        <span className="bg-purple-50 dark:bg-purple-900/10 text-purple-600 dark:text-purple-500 border border-purple-200 dark:border-purple-800/30 text-xs font-bold px-2 py-1 font-mono tracking-widest w-fit flex items-center gap-1 shadow-sm">
-                          <Activity className="w-3 h-3 text-purple-500" /> TUGAS DITERIMA
-                        </span>
-                      )}
-                      {report.status === 'DIPROSES' && (
-                        <span className="bg-blue-50 dark:bg-blue-900/10 text-blue-600 dark:text-blue-500 border border-blue-200 dark:border-blue-800/30 text-xs font-bold px-2 py-1 font-mono tracking-widest w-fit flex items-center gap-1 shadow-sm">
-                          <Activity className="w-3 h-3" /> SEDANG DIPROSES
-                        </span>
-                      )}
+                    <td className="p-4 text-center flex justify-center">
+                      <ReportStatusBadge status={report.status} />
                     </td>
                     <td className="p-4 text-center">
                       <div className="font-bold mb-1 text-slate-800 dark:text-white flex items-center justify-center gap-2">

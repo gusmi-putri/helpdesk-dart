@@ -5,6 +5,7 @@ import { CheckCircle, AlertCircle, Info, X } from 'lucide-react';
 const GlobalNotification = () => {
   const notifications = useStore((state) => state.notifications);
   const removeNotification = useStore((state) => state.removeNotification);
+  const authUser = useStore((state) => state.currentUser);
 
   // Auto-dismiss notification after 5 seconds
   useEffect(() => {
@@ -16,6 +17,23 @@ const GlobalNotification = () => {
       return () => clearTimeout(timer);
     }
   }, [notifications, removeNotification]);
+
+  // Listen to Reverb Broadcast for Real-time Notifications
+  useEffect(() => {
+    if (authUser && (window as any).Echo) {
+      const channel = (window as any).Echo.private(`App.Models.User.${authUser.id}`);
+      
+      channel.notification((notification: any) => {
+        useStore.getState().addNotification(notification.message, notification.type || 'info');
+        useStore.getState().incrementUnreadCount();
+      });
+
+      return () => {
+        channel.stopListening('.Illuminate\\\\Notifications\\\\Events\\\\BroadcastNotificationCreated');
+        (window as any).Echo.leave(`App.Models.User.${authUser.id}`);
+      };
+    }
+  }, [authUser]);
 
   return (
     <div 

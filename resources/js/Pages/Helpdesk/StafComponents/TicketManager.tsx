@@ -7,6 +7,7 @@ import {
   AlertTriangle, Link as LinkIcon, RotateCcw, Printer
 } from 'lucide-react';
 import { BaseModal } from '@/Components/ui/BaseModal';
+import { ReportStatusBadge } from '@/Components/ui/ReportStatusBadge';
 import { Button } from '@/Components/ui/Button';
 import { EmptyState } from '@/Components/ui/EmptyState';
 
@@ -57,22 +58,7 @@ const TicketManager: React.FC<TicketManagerProps> = ({
   };
 
   const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'PENDING':
-        return <span className="bg-transparent text-red-500 border border-red-500/30 text-xs font-bold px-2 py-1  font-mono flex items-center gap-1 w-fit shadow-sm"><span className="w-1.5 h-1.5  bg-red-500 animate-pulse block"></span> PENDING VERIFIKASI</span>;
-      case 'DIVERIFIKASI':
-        return <span className="bg-transparent text-yellow-500 border border-yellow-500/30 text-xs font-bold px-2 py-1  font-mono flex items-center gap-1 w-fit shadow-sm"><Clock className="w-3 h-3 text-yellow-500" /> DIVERIFIKASI</span>;
-      case 'DITERIMA TEKNISI':
-        return <span className="bg-transparent text-purple-500 border border-purple-500/30 text-xs font-bold px-2 py-1  font-mono flex items-center gap-1 w-fit shadow-sm"><Activity className="w-3 h-3 text-purple-500" /> TUGAS DITERIMA</span>;
-      case 'DIPROSES':
-        return <span className="bg-transparent text-blue-500 border border-blue-500/30 text-xs font-bold px-2 py-1  font-mono flex items-center gap-1 w-fit shadow-sm"><Activity className="w-3 h-3" /> SEDANG DIPROSES</span>;
-      case 'SELESAI':
-        return <span className="bg-transparent text-green-500 border border-green-500/30 text-xs font-bold px-2 py-1  font-mono flex items-center gap-1 w-fit shadow-sm"><CheckCircle className="w-3 h-3" /> SELESAI</span>;
-      case 'DITOLAK':
-        return <span className="bg-transparent text-red-500 border border-red-500/30 text-xs font-bold px-2 py-1  font-mono flex items-center gap-1 w-fit shadow-sm"><XCircle className="w-3 h-3" /> DITOLAK</span>;
-      default:
-        return <span className="bg-transparent text-slate-400 border border-slate-700 text-xs font-bold px-2 py-1  font-mono w-fit">{status}</span>;
-    }
+    return <ReportStatusBadge status={status} />;
   };
 
   // Filter and Sort

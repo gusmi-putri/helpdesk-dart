@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, ZoomControl, useMap, Circle } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, ZoomControl, useMap, Circle, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Shield, AlertTriangle, Search, Target, Map as MapIcon, ArrowLeft } from 'lucide-react';
+import { Badge } from '@/Components/ui/Badge';
+import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
+import 'leaflet-geosearch/dist/geosearch.css';
 
 // Fix for default marker icons in Leaflet with Vite
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
@@ -44,21 +47,61 @@ const MapController = ({
     return null;
 };
 
+const MapSearchControl = ({ onLocationSelected }: { onLocationSelected?: (lat: number, lng: number, label?: string) => void }) => {
+    const map = useMap();
+    useEffect(() => {
+        const provider = new OpenStreetMapProvider({
+            params: {
+                countrycodes: 'id', // Restrict search to Indonesia
+                addressdetails: 1,
+                limit: 5
+            }
+        });
+        const searchControl = new (GeoSearchControl as any)({
+            provider: provider,
+            style: 'bar',
+            showMarker: true,
+            showPopup: false,
+            autoClose: true,
+            retainZoomLevel: false,
+            animateZoom: true,
+            keepResult: true,
+            searchLabel: 'Cari alamat atau kota...',
+        });
+        map.addControl(searchControl);
+
+        const handleLocationFound = (result: any) => {
+            if (onLocationSelected && result && result.location) {
+                // GeoSearch result location contains x (longitude) and y (latitude)
+                onLocationSelected(result.location.y, result.location.x, result.location.label);
+            }
+        };
+        map.on('geosearch/showlocation', handleLocationFound);
+
+        return () => {
+            map.removeControl(searchControl);
+            map.off('geosearch/showlocation', handleLocationFound);
+        };
+    }, [map, onLocationSelected]);
+    return null;
+};
+
+const MapClickHandler = ({ onLocationSelected }: { onLocationSelected: (lat: number, lng: number) => void }) => {
+    useMapEvents({
+        click(e) {
+            onLocationSelected(e.latlng.lat, e.latlng.lng);
+        },
+    });
+    return null;
+};
+
 import { INDONESIA_BOUNDS } from './MapCoordinates';
-import { router } from '@inertiajs/react';
 
 const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatuans = [], initialFocusSatuan = null }) => {
     const [mapCenter] = useState<[number, number]>([-2.5489, 118.0149]); // Center of Indonesia
     const [zoom] = useState(5);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedGroup, setSelectedGroup] = useState<any>(null);
-
-    // Filter pending satuans (Belum diverifikasi ATAU belum ada koordinat)
-    const pendingSatuans = dbSatuans.filter(s => !s.is_verified || s.latitude === null || s.longitude === null);
-    const [showPendingModal, setShowPendingModal] = useState(false);
-    const [pendingSatuanEdit, setPendingSatuanEdit] = useState<any>(null);
-    const [latInput, setLatInput] = useState('');
-    const [lngInput, setLngInput] = useState('');
 
     // Group units by Satuan to show on map
     const satuanGroups = React.useMemo(() => {
@@ -121,35 +164,6 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
             }
         }
     }, [searchQuery, satuanGroups]);
-
-    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-
-    const handleSaveCoordinate = () => {
-        if (!pendingSatuanEdit) return;
-        router.put(`/satuans/${pendingSatuanEdit.id}`, {
-            nama_satuan: pendingSatuanEdit.nama_satuan,
-            latitude: latInput,
-            longitude: lngInput
-        }, {
-            onSuccess: () => {
-                setPendingSatuanEdit(null);
-                setLatInput('');
-                setLngInput('');
-                if (pendingSatuans.length <= 1) setShowPendingModal(false);
-            }
-        });
-    };
-
-    const handleDeleteSatuan = () => {
-        if (!pendingSatuanEdit) return;
-        router.delete(`/satuans/${pendingSatuanEdit.id}`, {
-            onSuccess: () => {
-                setShowDeleteConfirm(false);
-                setPendingSatuanEdit(null);
-                if (pendingSatuans.length <= 1) setShowPendingModal(false);
-            }
-        });
-    };
 
     const createCustomIcon = (hasDamage: boolean) => {
         return L.divIcon({
@@ -221,25 +235,6 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
                 </div>
             </div>
 
-            {/* Pending Satuans Alert */}
-            {pendingSatuans.length > 0 && (
-                <div className="bg-orange-500/10 border border-orange-500/50 p-4 rounded-sm flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <AlertTriangle className="text-orange-500" />
-                        <div>
-                            <h3 className="text-sm font-bold font-tactical tracking-widest text-orange-600 dark:text-orange-400">PERHATIAN: ADA {pendingSatuans.length} SATUAN BARU TANPA KOORDINAT</h3>
-                            <p className="text-xs text-slate-600 dark:text-slate-400">Satuan dan unitnya tidak akan muncul di Peta Monitor sebelum koordinat ditambahkan.</p>
-                        </div>
-                    </div>
-                    <button 
-                        onClick={() => setShowPendingModal(true)}
-                        className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 text-xs font-bold font-tactical tracking-widest rounded-sm transition-colors"
-                    >
-                        TETAPKAN KOORDINAT
-                    </button>
-                </div>
-            )}
-
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                 {/* Legenda & Status List */}
                 <div className="lg:col-span-1 space-y-4 h-[600px] flex flex-col">
@@ -284,9 +279,9 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
                                                         </span>
                                                     </div>
                                                     {hasCase ? (
-                                                        <span className="bg-orange-500/20 text-orange-600 dark:text-orange-500 px-1.5 py-0.5 rounded text-[11px] font-bold border border-orange-500/30">RUSAK</span>
+                                                        <Badge variant="warning">RUSAK</Badge>
                                                     ) : (
-                                                        <span className="bg-green-500/20 text-green-600 dark:text-green-500 px-1.5 py-0.5 rounded text-[11px] font-bold border border-green-500/30">BEROPERASI</span>
+                                                        <Badge variant="success">BEROPERASI</Badge>
                                                     )}
                                                 </div>
                                             </div>
@@ -353,6 +348,9 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
                         
                         <ZoomControl position="bottomright" />
                         
+                        {/* Interactive Geosearch */}
+                        <MapSearchControl />
+
                         <MapController selectedCoords={selectedGroup?.coords || null} />
 
                         {Object.values(satuanGroups).map((group: any) => (
@@ -394,109 +392,6 @@ const MonitoringMap: React.FC<MonitoringMapProps> = ({ dbUnits, dbCases, dbSatua
                 </div>
             </div>
 
-            {/* Pending Satuans Modal */}
-            {showPendingModal && (
-                <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 px-6 overflow-y-auto">
-                    <div className="bg-white dark:bg-cighra-dark border-2 border-cighra-primary dark:border-cighra-gold w-full max-w-2xl shadow-[0_0_100px_rgba(0,0,0,0.6)] animate-in zoom-in-95 duration-300 rounded-sm overflow-hidden shadow-2xl">
-                        <div className="p-5 border-b border-cighra-primary dark:border-cighra-gold bg-cighra-primary/10 dark:bg-cighra-gold/5 flex justify-between items-center px-8">
-                            <h3 className="font-tactical font-bold text-cighra-primary dark:text-cighra-gold tracking-widest uppercase text-lg">PENGATURAN KOORDINAT SATUAN BARU</h3>
-                            <button onClick={() => { setShowPendingModal(false); setPendingSatuanEdit(null); }} className="text-slate-400 hover:text-red-500 transition-colors text-xl">✕</button>
-                        </div>
-                        <div className="p-8 flex flex-col md:flex-row gap-8">
-                            <div className="flex-1 border-r border-slate-200 dark:border-slate-800 pr-8">
-                                <h4 className="text-xs font-mono font-bold text-slate-500 uppercase tracking-widest mb-4">DAFTAR SATUAN (PENDING GEO):</h4>
-                                <div className="space-y-3 max-h-[400px] overflow-y-auto custom-scrollbar pr-2">
-                                    {pendingSatuans.map(s => (
-                                        <div 
-                                            key={s.id} 
-                                            onClick={() => { setPendingSatuanEdit(s); setLatInput(''); setLngInput(''); }}
-                                            className={`p-4 border transition-all cursor-pointer rounded-sm ${pendingSatuanEdit?.id === s.id ? 'bg-cighra-primary/10 border-cighra-primary dark:border-cighra-gold text-cighra-primary dark:text-cighra-gold shadow-md' : 'bg-slate-50 dark:bg-cighra-darkcard/50 border-slate-200 dark:border-slate-800 hover:border-cighra-gold/50 text-slate-600 dark:text-slate-400'}`}
-                                        >
-                                            <div className="font-tactical font-bold text-xs tracking-[0.15em] uppercase">{s.nama_satuan}</div>
-                                        </div>
-                                    ))}
-                                    {pendingSatuans.length === 0 && <p className="text-sm italic opacity-50">Semua satuan sudah memiliki koordinat.</p>}
-                                </div>
-                            </div>
-                            <div className="flex-1">
-                                {pendingSatuanEdit ? (
-                                    <div className="space-y-4">
-                                        <div className="flex justify-between items-center border-b border-cighra-primary/30 pb-2 mb-2">
-                                            <h4 className="text-sm font-bold text-cighra-primary dark:text-cighra-gold truncate uppercase">Edit Data Satuan</h4>
-                                            <button 
-                                                onClick={() => setShowDeleteConfirm(true)}
-                                                className="text-xs text-red-500 hover:underline font-mono"
-                                            >
-                                                HAPUS SATUAN
-                                            </button>
-                                        </div>
-
-                                        {showDeleteConfirm ? (
-                                            <div className="bg-red-500/10 border border-red-500/50 p-4 rounded-sm animate-in zoom-in-95 duration-200">
-                                                <p className="text-xs text-red-600 dark:text-red-400 font-bold mb-3 uppercase tracking-tighter">
-                                                    ANDA YAKIN INGIN MENGHAPUS SATUAN "{pendingSatuanEdit.nama_satuan}"? 
-                                                    <span className="block font-normal mt-1 opacity-70 italic text-xs">Tindakan ini tidak dapat dibatalkan.</span>
-                                                </p>
-                                                <div className="flex gap-2">
-                                                    <button 
-                                                        onClick={handleDeleteSatuan}
-                                                        className="flex-1 bg-red-600 text-white py-2 text-xs font-bold font-tactical tracking-widest uppercase hover:bg-red-700"
-                                                    >
-                                                        IYA, HAPUS SEKARANG
-                                                    </button>
-                                                    <button 
-                                                        onClick={() => setShowDeleteConfirm(false)}
-                                                        className="px-4 py-2 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold"
-                                                    >
-                                                        BATAL
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <>
-                                                <div>
-                                                    <label className="block text-xs font-mono font-bold mb-1">NAMA SATUAN (Huruf Kapital)</label>
-                                                    <input 
-                                                        type="text" 
-                                                        value={pendingSatuanEdit.nama_satuan} 
-                                                        onChange={e => setPendingSatuanEdit({...pendingSatuanEdit, nama_satuan: e.target.value.toUpperCase()})} 
-                                                        className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm font-mono focus:border-cighra-primary uppercase" 
-                                                    />
-                                                </div>
-
-                                                <div className="grid grid-cols-2 gap-4">
-                                                    <div>
-                                                        <label className="block text-xs font-mono font-bold mb-1">LATITUDE</label>
-                                                        <input type="number" step="0.000001" value={latInput} onChange={e => setLatInput(e.target.value)} placeholder="-6.2..." className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm font-mono" />
-                                                    </div>
-                                                    <div>
-                                                        <label className="block text-xs font-mono font-bold mb-1">LONGITUDE</label>
-                                                        <input type="number" step="0.000001" value={lngInput} onChange={e => setLngInput(e.target.value)} placeholder="106.8..." className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm font-mono" />
-                                                    </div>
-                                                </div>
-
-                                                <div className="pt-4 flex flex-col gap-2">
-                                                    <button 
-                                                        onClick={handleSaveCoordinate}
-                                                        className="w-full py-3 bg-cighra-primary dark:bg-cighra-gold text-white dark:text-slate-900 font-tactical tracking-widest text-xs shadow-lg hover:brightness-110 active:scale-[0.98] transition-all"
-                                                    >
-                                                        SIMPAN & VERIFIKASI SEKARANG
-                                                    </button>
-                                                    <p className="text-[11px] text-center opacity-50 font-mono">Menyimpan akan membuat satuan ini muncul di pilihan pendaftaran.</p>
-                                                </div>
-                                            </>
-                                        )}
-                                    </div>
-                                ) : (
-                                    <div className="flex items-center justify-center h-full text-sm font-mono opacity-50 italic text-center p-4">
-                                        Pilih satuan di samping untuk mulai mengatur koordinat.
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };

@@ -10,16 +10,17 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Permission\Traits\HasRoles;
 
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, SoftDeletes;
+    use HasFactory, Notifiable, SoftDeletes, HasRoles;
 
     protected $fillable = [
         'username', 'email', 'password', 'nama_lengkap', 'nrp_nip', 
-        'asal_satuan', 'satuan_id', 'no_wa', 'spesialisasi', 'role_id', 'is_active', 'is_approved'
+        'asal_satuan', 'satuan_id', 'no_wa', 'spesialisasi', 'is_active', 'is_approved'
     ];/**
      * Get the attributes that should be cast.
      *
@@ -34,11 +35,6 @@ class User extends Authenticatable
              'pending_changes' => 'array',
              'locked_until' => 'datetime',
          ];
-     }
-
-     public function role()
-     {
-         return $this->belongsTo(Role::class);
      }
 
      public function reportsDilaporkan()

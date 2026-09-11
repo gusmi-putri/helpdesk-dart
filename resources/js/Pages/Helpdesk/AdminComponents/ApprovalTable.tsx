@@ -68,9 +68,9 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
                   </td>
                   <td className="p-4 text-center">
                     <div className="font-mono text-slate-800 dark:text-white font-bold">{targetUsername}</div>
-                    {m.type === 'request_edit' && m.user_data?.role_id && (
+                    {m.type === 'request_edit' && (m.user_data?.roles || m.roles) && (
                       <div className="text-xs font-mono uppercase text-slate-500 dark:text-slate-400 mt-1 bg-slate-100 dark:bg-slate-800 inline-block px-1 rounded-sm border border-slate-200 dark:border-slate-600">
-                        Ubah Role ke: {m.user_data.role_id}
+                        Ubah Role ke: {JSON.stringify(m.user_data?.roles || m.roles)}
                       </div>
                     )}
                   </td>
@@ -89,6 +89,12 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
                         {Object.entries(m.user_data || {}).map(([key, val]) => (
                           <div key={key}><span className="text-blue-500 dark:text-blue-400 font-bold uppercase">{key}:</span> {typeof val === 'object' && val !== null ? JSON.stringify(val) : String(val)}</div>
                         ))}
+                        {m.roles && m.roles.length > 0 && (
+                          <div><span className="text-blue-500 dark:text-blue-400 font-bold uppercase">roles:</span> {JSON.stringify(m.roles)}</div>
+                        )}
+                        {m.permissions && m.permissions.length > 0 && (
+                          <div><span className="text-blue-500 dark:text-blue-400 font-bold uppercase">permissions:</span> {JSON.stringify(m.permissions)}</div>
+                        )}
                       </div>
                     )}
                   </td>

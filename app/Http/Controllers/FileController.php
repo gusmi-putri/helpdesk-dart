@@ -19,11 +19,11 @@ class FileController extends Controller
     {
         $user = $request->user();
 
-        if (!$user || !$user->role) {
+        if (!$user || $user->roles->isEmpty()) {
             abort(403, 'Akses ditolak.');
         }
 
-        $userRole = strtolower($user->role->nama_role);
+        $userRole = strtolower($user->roles->first()->name);
 
         // Admin dan Staf boleh download semua file
         if (in_array($userRole, ['admin', 'staf'])) {
@@ -41,6 +41,21 @@ class FileController extends Controller
                 ->exists();
 
             if ($isOwner) {
+                return $this->streamFile($path);
+            }
+        }
+
+        // Teknisi hanya boleh download file dari laporan yang ditugaskan kepadanya
+        if ($userRole === 'teknisi') {
+            $isAssigned = Report::where('teknisi_id', $user->id)
+                ->where(function ($query) use ($path) {
+                    $query->where('file_bukti', 'LIKE', '%' . $path . '%')
+                          ->orWhere('dokumen_anggaran', 'LIKE', '%' . $path . '%')
+                          ->orWhere('file_bukti_selesai', 'LIKE', '%' . $path . '%');
+                })
+                ->exists();
+
+            if ($isAssigned) {
                 return $this->streamFile($path);
             }
         }

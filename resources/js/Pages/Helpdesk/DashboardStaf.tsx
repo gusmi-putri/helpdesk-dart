@@ -34,11 +34,12 @@ interface DashboardStafProps {
   dbUserMutations?: Mutation[];
   dbAllUsers?: User[];
   dbRoles?: Role[];
+  dbPermissions?: any[];
   dbSatuans?: Satuan[];
 }
 
 const DashboardStaf = (props: DashboardStafProps) => {
-  const { dbCases = [], dbUsers = [], dbUnits = [], dbMutations = [], dbUserMutations = [], dbAllUsers = [], dbRoles = [], dbSatuans = [] } = props;
+  const { dbCases = [], dbUsers = [], dbUnits = [], dbMutations = [], dbUserMutations = [], dbAllUsers = [], dbRoles = [], dbPermissions = [], dbSatuans = [] } = props;
   const [activeMenu, setActiveMenu] = useState<MenuTab>('MASUK');
   const [assigningReportId, setAssigningReportId] = useState<number | null>(null);
   const [rejectingReportId, setRejectingReportId] = useState<number | null>(null);
@@ -380,7 +381,6 @@ const DashboardStaf = (props: DashboardStafProps) => {
                   </p>
                 </div>
 
-
               </div>
 
               <Suspense fallback={
@@ -445,8 +445,10 @@ const DashboardStaf = (props: DashboardStafProps) => {
                   <UsersTable
                     dbUsers={dbAllUsers}
                     dbRoles={dbRoles}
+                    dbPermissions={dbPermissions}
                     dbSatuans={dbSatuans}
                     isPengajuan={true}
+                    userPermissions={currentUser?.permissions || []}
                   />
                 )}
 
@@ -457,6 +459,7 @@ const DashboardStaf = (props: DashboardStafProps) => {
                     dbCases={dbCases}
                     dbUsers={dbAllUsers}
                     isPengajuan={true}
+                    userPermissions={currentUser?.permissions || []}
                   />
                 )}
               </Suspense>

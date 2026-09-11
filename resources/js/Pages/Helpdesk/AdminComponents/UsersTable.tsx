@@ -19,15 +19,21 @@ import { StatusBadge } from '@/Components/ui/StatusBadge';
 interface UsersTableProps {
   dbUsers: any[];
   dbRoles?: any[];
+  dbPermissions?: any[];
   dbSatuans?: any[];
   isPengajuan?: boolean;
+  userPermissions?: string[];
+  isAdmin?: boolean;
 }
 
 const UsersTable: React.FC<UsersTableProps> = ({
   dbUsers,
   dbRoles,
+  dbPermissions,
   dbSatuans,
-  isPengajuan
+  isPengajuan,
+  userPermissions = [],
+  isAdmin = false
 }) => {
   const [userSearch, setUserSearch] = useState('');
   const [warningUser, setWarningUser] = useState<any>(null);
@@ -50,17 +56,31 @@ const UsersTable: React.FC<UsersTableProps> = ({
   const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
     username: '',
     password: '',
+    password_confirmation: '',
     email: '',
     nama_lengkap: '',
     nrp_nip: '',
-    role_id: '',
+    roles: [] as string[],
+    permissions: [] as string[],
     satuan_id: '',
     asal_satuan: '',
     no_wa: '',
     spesialisasi: ''
   });
 
+  const globalSearch = useStore((state) => state.globalSearch);
+
   const filtered = dbUsers.filter((u: any) => u.is_approved !== false).filter((u: any) => {
+    if (globalSearch) {
+      const qG = globalSearch.toLowerCase();
+      const searchMatch = (u.name || u.nama_lengkap || '').toLowerCase().includes(qG) ||
+        (u.nrp_nip || '').toLowerCase().includes(qG) ||
+        (u.username || '').toLowerCase().includes(qG) ||
+        (u.role?.nama_role || u.role || '').toLowerCase().includes(qG);
+      
+      if (!searchMatch) return false;
+    }
+
     if (!userSearch) return true;
     const q = userSearch.toLowerCase();
     return (
@@ -83,10 +103,12 @@ const UsersTable: React.FC<UsersTableProps> = ({
     setData({
       username: '',
       password: '',
+      password_confirmation: '',
       email: '',
       nama_lengkap: '',
       nrp_nip: '',
-      role_id: '',
+      roles: [],
+      permissions: [],
       satuan_id: '',
       asal_satuan: '',
       no_wa: '',
@@ -107,10 +129,12 @@ const UsersTable: React.FC<UsersTableProps> = ({
     setData({
       username: user.username || '',
       password: '',
+      password_confirmation: '',
       email: user.email || '',
       nama_lengkap: user.name,
       nrp_nip: user.nrp_nip || '',
-      role_id: user.role_id || '',
+      roles: user.roles ? user.roles.map((r: any) => r.name || r) : (user.role ? [user.role] : []),
+      permissions: user.permissions ? user.permissions.map((p: any) => p.name || p) : [],
       satuan_id: user.satuan_id || '',
       asal_satuan: user.asal_satuan || '',
       no_wa: user.no_wa || '',
@@ -133,11 +157,13 @@ const UsersTable: React.FC<UsersTableProps> = ({
       const hasChanged = data.nama_lengkap !== editingUser.name ||
         data.email !== editingUser.email ||
         data.nrp_nip !== (editingUser.nrp_nip || '') ||
-        data.role_id !== (editingUser.role_id || '') ||
+        JSON.stringify(data.roles) !== JSON.stringify(editingUser.roles ? editingUser.roles.map((r:any) => r.name || r) : (editingUser.role ? [editingUser.role] : [])) ||
+        JSON.stringify(data.permissions) !== JSON.stringify(editingUser.permissions ? editingUser.permissions.map((p:any) => p.name || p) : []) ||
         data.satuan_id !== (editingUser.satuan_id || '') ||
         data.asal_satuan !== (editingUser.asal_satuan || '') ||
         data.no_wa !== (editingUser.no_wa || '') ||
-        data.spesialisasi !== (editingUser.spesialisasi || '');
+        data.spesialisasi !== (editingUser.spesialisasi || '') ||
+        data.password !== '';
         
       if (!hasChanged) {
         setIsEditModalOpen(false);
@@ -187,15 +213,25 @@ const UsersTable: React.FC<UsersTableProps> = ({
     <div className="flex flex-col md:flex-row flex-wrap gap-4 items-end mb-4 animate-in fade-in">
       <div className="w-full md:flex-1">
         <label className="block text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Cari Personel</label>
-        <div className="relative">
-          <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400 dark:text-slate-500" />
-          <input
-            type="text"
-            placeholder="CARI NAMA / NRP / HAK AKSES..."
-            value={userSearch}
-            onChange={(e) => setUserSearch(e.target.value)}
-            className="w-full bg-white dark:bg-cighra-darkcard border border-slate-300 dark:border-slate-600 pl-10 pr-4 py-2.5 text-xs font-mono font-medium text-slate-800 dark:text-white focus:outline-none focus:border-cighra-primary dark:focus:border-cighra-gold focus:ring-1 focus:ring-cighra-primary/30 transition-all uppercase rounded-none"
-          />
+        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Cari user..."
+              value={userSearch}
+              onChange={(e) => setUserSearch(e.target.value)}
+              className="pl-9 pr-4 py-2 border border-slate-300 dark:border-slate-600 rounded-sm text-sm focus:outline-none focus:border-cighra-primary bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 w-full sm:w-64"
+            />
+            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          </div>
+          {(isAdmin || userPermissions.includes('create-users')) && (
+            <button 
+              onClick={() => handleAddUser()}
+              className="bg-white dark:bg-cighra-gold hover:bg-slate-100 dark:hover:bg-cighra-gold/90 text-cighra-primary dark:text-slate-900 px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-white dark:border-cighra-gold shadow-lg uppercase cursor-pointer h-[38px]"
+            >
+              <Plus size={16} /> TAMBAH PERSONEL
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -206,18 +242,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
         <h3 className="text-white font-tactical font-bold text-lg tracking-widest flex items-center gap-3 uppercase">
           <Users className="text-cighra-gold w-6 h-6" /> MANAJEMEN PERSONEL
         </h3>
-        <div className="flex items-center gap-4">
-          {!isPengajuan && (
-            <button
-              onClick={handleAddUser}
-              className="bg-white dark:bg-cighra-gold hover:bg-slate-100 dark:hover:bg-cighra-gold/90 text-cighra-primary dark:text-slate-900 px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-white dark:border-cighra-gold shadow-lg uppercase cursor-pointer"
-            >
-              <Plus className="w-4 h-4" /> TAMBAH USER
-            </button>
-          )}
-        </div>
       </div>
-
 
       <div className="overflow-x-auto custom-scrollbar pb-2">
         <table className="w-full text-left font-sans text-sm">
@@ -247,7 +272,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
               <tr key={u.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
                 <td className="p-4 font-mono text-slate-800 dark:text-white text-center">{u.id}</td>
                 <td className="p-4 font-mono text-xs text-slate-800 dark:text-white text-center">{u.nrp_nip || '-'}</td>
-                <td className="p-4 text-slate-800 dark:text-white font-bold text-center">{u.name}</td>
+                <td className="p-4 text-slate-800 dark:text-white font-bold text-center uppercase tracking-wider">{u.name}</td>
                 <td className="p-4 font-mono text-xs text-slate-800 dark:text-white lowercase text-center">{u.email}</td>
                 <td className="p-4 text-center">
                   <RoleBadge role={u.role} />
@@ -256,24 +281,19 @@ const UsersTable: React.FC<UsersTableProps> = ({
                   <StatusBadge status={u.status} />
                 </td>
                 <td className="p-4 text-center whitespace-nowrap">
-                  <div className="flex items-center justify-center gap-1.5">
-                    <button onClick={() => handleShowDetail(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Detail">
-                      <Eye className="w-4 h-4" />
+                  <div className="flex items-center justify-center gap-2 opacity-100 transition-opacity">
+                    <button onClick={() => handleShowDetail(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm shadow-sm" title="Detail">
+                      <Eye size={16} />
                     </button>
-                    {/* Staf hanya bisa melihat akun Admin, tidak bisa edit/hapus */}
-                    {!(isPengajuan && u.role === 'Admin') && (
-                      <button onClick={() => handleEditUser(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Edit">
-                        <Edit className="w-4 h-4" />
+                    {(isAdmin || userPermissions.includes('update-users')) && !(isPengajuan && u.role === 'Admin') && (
+                      <button onClick={() => handleEditUser(u)} className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-sm shadow-sm" title="Edit">
+                        <Edit size={16} />
                       </button>
                     )}
-                    {!(isPengajuan && u.role === 'Admin') && (
+                    {(isAdmin || userPermissions.includes('delete-users')) && !(isPengajuan && u.role === 'Admin') && (
                       u.db_id === currentUser?.id || u.username === currentUser?.username ? (
-                        <button 
-                          disabled
-                          className="p-2 bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700 cursor-not-allowed opacity-50 rounded-sm" 
-                          title="Anda tidak dapat menghapus akun Anda sendiri"
-                        >
-                          <Trash2 className="w-4 h-4" />
+                        <button disabled className="p-2 bg-slate-50 dark:bg-slate-700/50 text-slate-300 dark:text-slate-600 border border-slate-200 dark:border-slate-700 rounded-sm cursor-not-allowed shadow-sm" title="Anda tidak dapat menghapus akun Anda sendiri">
+                          <Trash2 size={16} />
                         </button>
                       ) : (
                         <button 
@@ -284,9 +304,9 @@ const UsersTable: React.FC<UsersTableProps> = ({
                               handleDeleteUser(u);
                             }
                           }} 
-                          className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-600 dark:text-white hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm" title="Hapus"
+                          className="p-2 bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-600 dark:text-white hover:text-red-600 dark:hover:text-red-400 transition-colors border border-slate-200 dark:border-slate-600 rounded-sm shadow-sm" title="Hapus"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 size={16} />
                         </button>
                       )
                     )}
@@ -294,16 +314,14 @@ const UsersTable: React.FC<UsersTableProps> = ({
                       <button 
                         onClick={() => handleToggleUserStatus(u)} 
                         disabled={u.role === 'Admin'}
-                        className={`p-2 transition-all border rounded-sm ${
+                        className={`p-2 transition-colors border rounded-sm shadow-sm ${
                           u.role === 'Admin' 
-                            ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 border-slate-200 dark:border-slate-700 cursor-not-allowed opacity-50' 
-                            : u.status === 'Aktif'
-                              ? 'bg-slate-50 dark:bg-slate-700 text-green-600 dark:text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 border-slate-200 dark:border-slate-600'
-                              : 'bg-slate-50 dark:bg-slate-700 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-600 border-slate-200 dark:border-slate-600'
+                            ? 'bg-slate-50 dark:bg-slate-700/50 text-slate-300 dark:text-slate-600 border-slate-200 dark:border-slate-700 cursor-not-allowed'
+                            : 'bg-slate-50 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white border-slate-200 dark:border-slate-600'
                         }`}
-                        title={u.role === 'Admin' ? 'Status Admin tidak dapat diubah' : (u.status === 'Aktif' ? 'Nonaktifkan User' : 'Aktifkan User')}
+                        title={u.status === 'Aktif' ? 'Nonaktifkan Akun' : 'Aktifkan Akun'}
                       >
-                        <Power className="w-4 h-4" />
+                        <Power size={16} className={u.role === 'Admin' ? '' : u.status === 'Aktif' ? 'text-green-600 dark:text-green-400' : 'text-slate-400 dark:text-slate-500'} />
                       </button>
                     )}
                   </div>
@@ -373,13 +391,15 @@ const UsersTable: React.FC<UsersTableProps> = ({
         processing={processing}
         isAddMode={isAddMode}
         dbRoles={dbRoles || []}
+        dbPermissions={dbPermissions || []}
         dbSatuans={dbSatuans || []}
         isPengajuan={isPengajuan}
         submitDisabled={!isAddMode && editingUser && !(
           data.nama_lengkap !== editingUser.name ||
           data.email !== editingUser.email ||
           data.nrp_nip !== (editingUser.nrp_nip || '') ||
-          data.role_id !== (editingUser.role_id || '') ||
+          JSON.stringify(data.roles) !== JSON.stringify(editingUser.roles ? editingUser.roles.map((r:any) => r.name || r) : (editingUser.role ? [editingUser.role] : [])) ||
+          JSON.stringify(data.permissions) !== JSON.stringify(editingUser.permissions ? editingUser.permissions.map((p:any) => p.name || p) : []) ||
           data.satuan_id !== (editingUser.satuan_id || '') ||
           data.asal_satuan !== (editingUser.asal_satuan || '') ||
           data.no_wa !== (editingUser.no_wa || '') ||

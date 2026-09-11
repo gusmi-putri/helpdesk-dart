@@ -8,6 +8,7 @@ import { useStore } from '@/store/useStore';
 import SatuanModal from './SatuanModal';
 import SatuanDetailModal from './SatuanDetailModal';
 import SatuanDeleteModal from './SatuanDeleteModal';
+import { Badge } from '@/Components/ui/Badge';
 
 interface SatuansTableProps {
   dbSatuans: any[];
@@ -16,6 +17,8 @@ interface SatuansTableProps {
   dbUsers?: any[];
   isPengajuan?: boolean;
   handleViewOnMap?: (satuan: any) => void;
+  userPermissions?: string[];
+  isAdmin?: boolean;
 }
 
 const SatuansTable: React.FC<SatuansTableProps> = ({
@@ -24,7 +27,9 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
   dbCases,
   dbUsers,
   isPengajuan,
-  handleViewOnMap
+  handleViewOnMap,
+  userPermissions = [],
+  isAdmin = false
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   
@@ -42,7 +47,7 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
   const addNotification = useStore(state => state.addNotification);
 
   // Form state
-  const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
+  const { data, setData, post, put, processing, errors, clearErrors } = useForm({
     kode_satuan: '',
     nama_satuan: '',
     alamat: '',
@@ -69,7 +74,13 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
     setIsSatuanAddMode(true);
     setEditingSatuan(null);
     clearErrors();
-    reset();
+    setData({
+      kode_satuan: '',
+      nama_satuan: '',
+      alamat: '',
+      latitude: '',
+      longitude: ''
+    });
     setIsSatuanModalOpen(true);
   };
 
@@ -98,7 +109,13 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
       post('/satuans', {
         onSuccess: () => {
           setIsSatuanModalOpen(false);
-          reset();
+          setData({
+            kode_satuan: '',
+            nama_satuan: '',
+            alamat: '',
+            latitude: '',
+            longitude: ''
+          });
         }
       });
     } else {
@@ -153,19 +170,19 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
         </h3>
 
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-          <span className="bg-slate-700 text-slate-300 text-[10px] font-mono px-2.5 py-1.5 rounded-sm uppercase font-bold tracking-widest shadow-inner">
+          <Badge variant="default">
             {filteredSatuans.length} DATA
-          </span>
-          <button
-            onClick={handleAddSatuan}
-            className="bg-white dark:bg-cighra-gold hover:bg-slate-100 dark:hover:bg-cighra-gold/90 text-cighra-primary dark:text-slate-900 px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-white dark:border-cighra-gold shadow-lg uppercase cursor-pointer"
-          >
-            <Plus className="w-4 h-4" /> TAMBAH SATUAN
-          </button>
+          </Badge>
+          {(isAdmin || userPermissions.includes('create-satuans')) && !isPengajuan && (
+            <button
+              onClick={handleAddSatuan}
+              className="bg-white dark:bg-cighra-gold hover:bg-slate-100 dark:hover:bg-cighra-gold/90 text-cighra-primary dark:text-slate-900 px-4 py-2 text-xs font-tactical font-bold tracking-widest flex items-center gap-2 transition-colors border border-white dark:border-cighra-gold shadow-lg uppercase cursor-pointer"
+            >
+              <Plus className="w-4 h-4" /> TAMBAH SATUAN
+            </button>
+          )}
         </div>
       </div>
-
-
 
       {/* Table */}
       <div className="overflow-x-auto custom-scrollbar">
@@ -209,9 +226,7 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
                   </td>
                   <td className="p-4 md:p-3 md:px-5 text-[11px] font-mono text-slate-500 dark:text-slate-400 md:text-left block md:table-cell relative">
                     <span className="md:hidden text-[10px] font-bold text-slate-400 uppercase block mb-1">KOORDINAT</span>
-                    {satuan.latitude && satuan.longitude
-                      ? <span className="block truncate">{satuan.latitude}, {satuan.longitude}</span>
-                      : <span className="text-slate-400 italic">Belum diset</span>}
+                    <span className="block truncate">{satuan.latitude}, {satuan.longitude}</span>
                   </td>
                   <td className="p-4 md:p-3 md:px-5 font-tactical text-sm md:text-[11px] text-slate-800 dark:text-white md:text-center block md:table-cell relative">
                     <span className="md:hidden text-[10px] font-bold text-slate-400 uppercase block mb-1">JUMLAH</span>
@@ -219,15 +234,9 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
                   </td>
                   <td className="p-4 md:p-3 md:px-5 md:text-center block md:table-cell relative">
                     <span className="md:hidden text-[10px] font-bold text-slate-400 uppercase block mb-1">STATUS</span>
-                    {satuan.latitude && satuan.longitude ? (
-                      <span className="inline-block px-2 py-1 border text-[9px] font-bold tracking-widest uppercase bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40 rounded-none shadow-sm">
-                        Siap
-                      </span>
-                    ) : (
-                      <span className="inline-block px-2 py-1 border text-[9px] font-bold tracking-widest uppercase bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800/40 rounded-none shadow-sm">
-                        Belum
-                      </span>
-                    )}
+                    <Badge variant="success">
+                      AKTIF
+                    </Badge>
                   </td>
                   <td className="p-4 md:p-3 md:px-5 md:text-center block md:table-cell relative bg-slate-50 md:bg-transparent dark:bg-slate-800/20">
                     <span className="md:hidden text-[10px] font-bold text-slate-400 uppercase block mb-2">AKSI</span>
@@ -239,20 +248,24 @@ const SatuansTable: React.FC<SatuansTableProps> = ({
                       >
                         <Eye className="w-4 h-4" />
                       </button>
-                      <button
-                        onClick={() => handleEditSatuan(satuan)}
-                        className="inline-flex items-center justify-center w-8 h-8 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-none shadow-sm"
-                        title="Edit Satuan"
-                      >
-                        <Edit className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDeleteSatuan(satuan)}
-                        className="inline-flex items-center justify-center w-8 h-8 bg-white dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-600 dark:text-white hover:text-red-600 dark:hover:text-red-400 hover:border-red-200 dark:hover:border-red-800/50 transition-colors border border-slate-200 dark:border-slate-600 rounded-none shadow-sm"
-                        title="Hapus Satuan"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      {(isAdmin || userPermissions.includes('update-satuans')) && !isPengajuan && (
+                        <button
+                          onClick={() => handleEditSatuan(satuan)}
+                          className="inline-flex items-center justify-center w-8 h-8 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-white transition-colors border border-slate-200 dark:border-slate-600 rounded-none shadow-sm"
+                          title="Edit Satuan"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                      )}
+                      {(isAdmin || userPermissions.includes('delete-satuans')) && !isPengajuan && (
+                        <button
+                          onClick={() => handleDeleteSatuan(satuan)}
+                          className="inline-flex items-center justify-center w-8 h-8 bg-white dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-600 dark:text-white hover:text-red-600 dark:hover:text-red-400 hover:border-red-200 dark:hover:border-red-800/50 transition-colors border border-slate-200 dark:border-slate-600 rounded-none shadow-sm"
+                          title="Hapus Satuan"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

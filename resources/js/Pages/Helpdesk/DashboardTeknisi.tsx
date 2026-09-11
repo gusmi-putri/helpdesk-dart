@@ -3,7 +3,6 @@ import { useStore } from '@/store/useStore';
 import { Activity } from 'lucide-react';
 import { router, useForm, Head } from '@inertiajs/react';
 
-
 // Sub-components
 import TeknisiSidebar from './TeknisiComponents/TeknisiSidebar';
 import TeknisiTopbar from './TeknisiComponents/TeknisiTopbar';
@@ -25,7 +24,6 @@ const DashboardTeknisi = ({ dbCases = [] }: any) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [isMobileListOpen, setIsMobileListOpen] = useState<boolean>(false);
   const [isPolling, setIsPolling] = useState(false);
-
 
   // Filter tasks
   const activeTasks = dbCases.filter((r: any) => r.status === 'DIVERIFIKASI' || r.status === 'DITERIMA TEKNISI' || r.status === 'DIPROSES');

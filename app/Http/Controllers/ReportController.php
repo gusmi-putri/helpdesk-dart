@@ -10,14 +10,16 @@ use App\Models\SystemLog;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreReportRequest;
 use App\Services\FileUploadService;
-
+use App\Notifications\SystemNotification;
 class ReportController extends Controller
 {
     protected FileUploadService $fileService;
+    protected \App\Services\NaiveBayesService $aiService;
 
-    public function __construct(FileUploadService $fileService)
+    public function __construct(FileUploadService $fileService, \App\Services\NaiveBayesService $aiService)
     {
         $this->fileService = $fileService;
+        $this->aiService = $aiService;
     }
 
     public function store(StoreReportRequest $request)
@@ -27,11 +29,18 @@ class ReportController extends Controller
         $dokumenAnggaranPaths = $this->fileService->uploadMultipleFiles($request->file('dokumen_anggaran'), 'dokumen-anggaran', 10);
 
         DB::transaction(function () use ($request, $fotoPath, $filePaths, $dokumenAnggaranPaths) {
+            
+            // AI PREDICTION: Jika tingkat_kerusakan tidak dikirim dari form, prediksi otomatis.
+            $tingkatKerusakan = $request->tingkat_kerusakan;
+            if (empty($tingkatKerusakan)) {
+                $tingkatKerusakan = $this->aiService->predict($request->deskripsi);
+            }
+
             Report::create([
                 'unit_id' => $request->unit_id,
                 'user_id' => $request->user()->id,
                 'lokasi_laporan' => $request->user()->asal_satuan,
-                'klasifikasi' => $request->klasifikasi ?? strtoupper($request->tingkat_kerusakan),
+                'klasifikasi' => $request->klasifikasi ?? strtoupper($tingkatKerusakan),
                 'file_bukti' => !empty($filePaths) ? json_encode($filePaths) : $fotoPath,
                 'tautan_video' => $request->tautan_video,
                 'jenis_perbaikan' => $request->jenis_perbaikan,
@@ -39,7 +48,7 @@ class ReportController extends Controller
                 'keterangan_anggaran' => $request->keterangan_anggaran,
                 'tanggal_lapor' => now(),
                 'deskripsi_kerusakan' => $request->deskripsi,
-                'tingkat_kerusakan' => $request->tingkat_kerusakan,
+                'tingkat_kerusakan' => $tingkatKerusakan,
                 'urgensi' => $request->urgensi,
                 'status_laporan' => 'Pending'
             ]);
@@ -56,6 +65,11 @@ class ReportController extends Controller
 
             SystemLog::log('WARN', $request->user()->id, "Mengirimkan laporan kerusakan baru di lokasi: {$request->user()->asal_satuan}");
         });
+
+        $adminsAndStafs = User::role(['Admin', 'Staf'])->get();
+        foreach ($adminsAndStafs as $user) {
+            $user->notify(new SystemNotification("Laporan baru diterima dari {$request->user()->nama_lengkap}", 'info'));
+        }
 
         return redirect()->back()->with('message', 'Laporan anda telah berhasil terkirim');
     }
@@ -81,15 +95,13 @@ class ReportController extends Controller
         }
 
         if ($candidate) {
-            if (!$candidate->role || $candidate->role->nama_role !== 'Teknisi') {
+            if (!$candidate->hasRole('Teknisi')) {
                 return redirect()->back()->with('error', 'Personel yang dipilih bukan seorang Teknisi.');
             }
             $teknisi = $candidate;
         } else {
             // Fallback jika tidak ditemukan
-            $teknisi = User::whereHas('role', function ($q) {
-                $q->where('nama_role', 'Teknisi');
-            })->first();
+            $teknisi = User::role('Teknisi')->first();
         }
 
         if (!$teknisi) {
@@ -106,6 +118,9 @@ class ReportController extends Controller
         $report->unit->syncStatus();
 
         SystemLog::log('INFO', $request->user()->id, "Menugaskan teknisi {$teknisi->nama_lengkap} untuk menangani kasus: LPR-" . str_pad($report->id, 5, '0', STR_PAD_LEFT));
+
+        $teknisi->notify(new SystemNotification("Anda ditugaskan menangani laporan LPR-{$report->id}", 'warning'));
+        User::find($report->user_id)?->notify(new SystemNotification("Laporan anda sedang ditugaskan kepada Teknisi", 'info'));
 
         return redirect()->back()->with('message', 'Teknisi berhasil ditugaskan!');
     }
@@ -150,8 +165,20 @@ class ReportController extends Controller
         $report->status_laporan = 'Selesai'; // transitions immediately to Selesai!
 
         if ($report->save()) {
+            // AUTO-TRAIN AI: Learn from this completed report
+            if (!empty($report->deskripsi_kerusakan) && !empty($report->tingkat_kerusakan)) {
+                $this->aiService->train($report->deskripsi_kerusakan, $report->tingkat_kerusakan);
+            }
+
             SystemLog::log('SUCCESS', $request->user()->id, "Menyelesaikan penanganan laporan LPR-" . str_pad($report->id, 5, '0', STR_PAD_LEFT));
             $report->unit->syncStatus();
+
+            User::find($report->user_id)?->notify(new SystemNotification("Laporan anda telah selesai ditangani", 'success'));
+            $adminsAndStafs = User::role(['Admin', 'Staf'])->get();
+            foreach ($adminsAndStafs as $user) {
+                $user->notify(new SystemNotification("Laporan LPR-{$report->id} telah diselesaikan oleh Teknisi", 'success'));
+            }
+
             return redirect()->back()->with('message', 'Laporan perbaikan telah diselesaikan!');
         }
 
@@ -169,6 +196,8 @@ class ReportController extends Controller
         $report->unit->syncStatus();
 
         SystemLog::log('INFO', auth()->id(), "Memverifikasi laporan kerusakan: LPR-" . str_pad($report->id, 5, '0', STR_PAD_LEFT));
+
+        User::find($report->user_id)?->notify(new SystemNotification("Laporan anda telah diverifikasi", 'success'));
 
         return redirect()->back()->with('message', 'Laporan berhasil diverifikasi!');
     }
@@ -191,6 +220,8 @@ class ReportController extends Controller
 
         SystemLog::log('WARN', auth()->id(), "Menolak laporan kerusakan: LPR-" . str_pad($report->id, 5, '0', STR_PAD_LEFT) . " dengan alasan: {$request->alasan}");
 
+        User::find($report->user_id)?->notify(new SystemNotification("Laporan anda ditolak: {$request->alasan}", 'error'));
+
         return redirect()->back()->with('message', 'Laporan telah ditolak!');
     }
 
@@ -211,6 +242,12 @@ class ReportController extends Controller
 
         SystemLog::log('INFO', auth()->id(), "Teknisi menerima tugas penanganan: LPR-" . str_pad($report->id, 5, '0', STR_PAD_LEFT));
 
+        User::find($report->user_id)?->notify(new SystemNotification("Teknisi telah menerima laporan anda dan akan segera diproses", 'info'));
+        $adminsAndStafs = User::role(['Admin', 'Staf'])->get();
+        foreach ($adminsAndStafs as $user) {
+            $user->notify(new SystemNotification("Teknisi telah menerima tugas penanganan LPR-{$report->id}", 'info'));
+        }
+
         return redirect()->back()->with('message', 'Tugas berhasil diterima!');
     }
 
@@ -230,6 +267,8 @@ class ReportController extends Controller
         $report->unit->syncStatus();
 
         SystemLog::log('INFO', auth()->id(), "Mulai melakukan tindakan perbaikan kasus: LPR-" . str_pad($report->id, 5, '0', STR_PAD_LEFT));
+
+        User::find($report->user_id)?->notify(new SystemNotification("Perbaikan laporan anda mulai diproses", 'info'));
 
         return redirect()->back()->with('message', 'Perbaikan mulai diproses!');
     }

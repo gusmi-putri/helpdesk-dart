@@ -5,7 +5,8 @@ import { Link, router } from '@inertiajs/react';
 import ChangePasswordModal from '../AdminComponents/ChangePasswordModal';
 import { Modal } from '@/Components/ui/Modal';
 import { Button } from '@/Components/ui/Button';
-
+import NotificationDropdown from '@/Components/NotificationDropdown';
+import { useStore } from '@/store/useStore';
 interface TeknisiTopbarProps {
   setIsMobileMenuOpen: (open: boolean) => void;
   currentUser: any;
@@ -15,26 +16,10 @@ interface TeknisiTopbarProps {
 const TeknisiTopbar: React.FC<TeknisiTopbarProps> = ({ setIsMobileMenuOpen, currentUser, isMobileMenuOpen = false }) => {
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return document.documentElement.classList.contains('dark') || localStorage.getItem('theme') === 'dark';
-    }
-    return false;
-  });
-
-  const toggleDarkMode = () => {
-    setIsDarkMode(prev => {
-      const next = !prev;
-      if (next) {
-        document.documentElement.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-        localStorage.setItem('theme', 'light');
-      }
-      return next;
-    });
-  };
+  const theme = useStore((state) => state.theme);
+  const toggleTheme = useStore((state) => state.toggleTheme);
+  const isDarkMode = theme === 'dark';
+  const toggleDarkMode = toggleTheme;
 
   const handleLogout = () => {
     router.post('/logout');
@@ -58,7 +43,9 @@ const TeknisiTopbar: React.FC<TeknisiTopbarProps> = ({ setIsMobileMenuOpen, curr
           </button>
         </div>
 
-        <Menu as="div" className="relative ml-auto">
+        <div className="flex items-center gap-4 ml-auto">
+        <NotificationDropdown />
+        <Menu as="div" className="relative">
           <Menu.Button
             className="flex items-center gap-0 border border-slate-200/20 dark:border-slate-600 rounded shadow-sm bg-black/10 dark:bg-cighra-darkcard/80 overflow-hidden focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none hover:bg-black/20 dark:hover:bg-cighra-darkcard transition-all active:scale-95 duration-300 cursor-pointer text-left"
           >
@@ -148,7 +135,8 @@ const TeknisiTopbar: React.FC<TeknisiTopbarProps> = ({ setIsMobileMenuOpen, curr
             </Menu.Items>
           </Transition>
         </Menu>
-      </header>
+      </div>
+    </header>
 
       <ChangePasswordModal
         isOpen={isPasswordModalOpen}

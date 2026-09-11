@@ -15,12 +15,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(SatuanSeeder::class);
-
-        // 1. Seed Roles
-        $adminRole = \App\Models\Role::firstOrCreate(['nama_role' => 'Admin']);
-        $stafRole = \App\Models\Role::create(['nama_role' => 'Staf']);
-        $teknisiRole = \App\Models\Role::create(['nama_role' => 'Teknisi']);
-        $pelaporRole = \App\Models\Role::create(['nama_role' => 'Pelapor']);
+        $this->call(RoleAndPermissionSeeder::class);
 
         // 2. Seed Users
         $admin = \App\Models\User::create([
@@ -30,9 +25,9 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@pusat.mil.id',
             'nrp_nip' => '1100223344',
             'no_wa' => '081234567890',
-            'role_id' => $adminRole->id,
             'is_approved' => true,
         ]);
+        $admin->assignRole('Admin');
 
         $staf = \App\Models\User::create([
             'username' => 'staf1',
@@ -41,9 +36,9 @@ class DatabaseSeeder extends Seeder
             'email' => 'staf1@komando.mil.id',
             'nrp_nip' => '2200334455',
             'no_wa' => '082345678901',
-            'role_id' => $stafRole->id,
             'is_approved' => true,
         ]);
+        $staf->assignRole('Staf');
 
         $teknisi = \App\Models\User::create([
             'username' => 'teknisi1',
@@ -52,10 +47,10 @@ class DatabaseSeeder extends Seeder
             'email' => 'teknisi1@bengpus.mil.id',
             'nrp_nip' => '3300445566',
             'no_wa' => '083456789012',
-            'role_id' => $teknisiRole->id,
             'spesialisasi' => 'Mekanik, Elektronik & Jaringan Komunikasi',
             'is_approved' => true,
         ]);
+        $teknisi->assignRole('Teknisi');
 
         $satuanAkmil = \App\Models\Satuan::where('nama_satuan', 'AKMIL')->first();
         $pelapor = \App\Models\User::create([
@@ -65,11 +60,11 @@ class DatabaseSeeder extends Seeder
             'email' => 'operator@akmil.ac.id',
             'nrp_nip' => '4400556677',
             'no_wa' => '084567890123',
-            'role_id' => $pelaporRole->id,
             'asal_satuan' => 'AKMIL',
             'satuan_id' => $satuanAkmil ? $satuanAkmil->id : null,
             'is_approved' => true,
         ]);
+        $pelapor->assignRole('Pelapor');
 
         // 3. Seed Data Master
         $this->call(UnitSeeder::class);

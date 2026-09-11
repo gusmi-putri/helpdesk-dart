@@ -64,10 +64,11 @@ const Profile = ({ currentUser }: any) => {
   };
 
   // Determine Dashboard Link based on Role
-  const dashboardLink = currentUser?.role?.nama_role === 'Admin' ? '/admin' : 
-                        currentUser?.role?.nama_role === 'Staf' ? '/staf' : 
-                        currentUser?.role?.nama_role === 'Pelapor' ? '/pelapor' : 
-                        currentUser?.role?.nama_role === 'Teknisi' ? '/teknisi' : '/';
+  const roleName = currentUser?.roles?.[0]?.name;
+  const dashboardLink = roleName === 'Admin' ? '/admin' : 
+                        roleName === 'Staf' ? '/staf' : 
+                        roleName === 'Pelapor' ? '/pelapor' : 
+                        roleName === 'Teknisi' ? '/teknisi' : '/';
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-cighra-dark font-sans text-slate-800 dark:text-slate-200">
@@ -89,7 +90,7 @@ const Profile = ({ currentUser }: any) => {
         <div className="flex items-center gap-0 border border-white/10 dark:border-slate-700 rounded shadow-sm bg-black/10 dark:bg-slate-900/50 overflow-hidden">
           <div className="px-4 py-1.5 text-right flex flex-col justify-center border-r border-white/10 dark:border-slate-700">
             <span className="block text-xs font-bold text-white dark:text-white uppercase font-sans tracking-wider">{currentUser?.name || currentUser?.nama_lengkap}</span>
-            <span className="block text-[11px] font-mono tracking-widest text-cighra-gold uppercase">{currentUser?.role?.nama_role || 'Pengguna'}</span>
+            <span className="block text-[11px] font-mono tracking-widest text-cighra-gold uppercase">{currentUser?.roles?.[0]?.name || 'Pengguna'}</span>
           </div>
           <div className="w-10 h-full bg-white/5 dark:bg-slate-800 flex items-center justify-center p-2">
             <UserCog className="w-6 h-6 text-white/70 dark:text-slate-400" />
@@ -152,7 +153,7 @@ const Profile = ({ currentUser }: any) => {
                   <span className="text-slate-400 dark:text-slate-500 italic">(Terkunci)</span>
                 </label>
                 <div className="bg-slate-50 dark:bg-slate-900/40 p-3 border border-slate-200 dark:border-slate-700 text-sm font-mono font-bold text-slate-400 dark:text-slate-500 italic flex items-center gap-2 rounded-sm uppercase text-cighra-primary dark:text-cighra-gold">
-                  {currentUser?.role?.nama_role || currentUser?.role || '-'}
+                  {currentUser?.roles?.[0]?.name || '-'}
                 </div>
               </div>
 

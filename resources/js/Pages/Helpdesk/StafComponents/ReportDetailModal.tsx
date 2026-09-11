@@ -2,6 +2,7 @@ import React from 'react';
 import { Activity, Wrench, Wallet, FileText } from 'lucide-react';
 import { BaseModal } from '@/Components/ui/BaseModal';
 import { Button } from '@/Components/ui/Button';
+import { ReportStatusBadge } from '@/Components/ui/ReportStatusBadge';
 
 interface ReportDetailModalProps {
   isOpen: boolean;
@@ -97,14 +98,9 @@ const ReportDetailModal: React.FC<ReportDetailModalProps> = ({ isOpen, onClose, 
               <div className="space-y-3">
                 <div className="p-4 bg-slate-50 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 space-y-1 rounded-sm">
                   <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest">Status Perbaikan</p>
-                  <span className={`inline-block px-3 py-1 text-xs font-tactical font-bold tracking-widest border mt-1
-                    ${report.status === 'SELESAI' ? 'bg-camogreen/10 text-camogreen border-camogreen/30' :
-                      report.status === 'DITOLAK' ? 'bg-red-600/10 text-red-500 border-red-600/30' :
-                      report.status === 'PENDING' ? 'bg-cighra-primary/10 dark:bg-cighra-gold/10 text-cighra-primary dark:text-cighra-gold border-cighra-primary dark:border-cighra-gold/30' :
-                        'bg-blue-900/10 text-blue-500 border-blue-800/30'}
-                  `}>
-                    {report.perbaikan.statusPerbaikan || report.status}
-                  </span>
+                  <div className="mt-2">
+                    <ReportStatusBadge status={report.perbaikan.statusPerbaikan || report.status} />
+                  </div>
                 </div>
                 <div className="p-4 bg-slate-50 dark:bg-cighra-darkcard border border-slate-200 dark:border-slate-800 space-y-1 rounded-sm">
                   <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest">Teknisi Penanggung Jawab</p>
@@ -187,7 +183,6 @@ const ReportDetailModal: React.FC<ReportDetailModalProps> = ({ isOpen, onClose, 
                 </div>
               </div>
             )}
-
 
             {report.status === 'DITOLAK' && (
               <div className="bg-red-500/10 p-4 border border-red-500/30 text-slate-800 dark:text-slate-200 animate-in fade-in">

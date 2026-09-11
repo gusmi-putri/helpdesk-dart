@@ -48,7 +48,6 @@ const VideoBank: React.FC = () => {
           </div>
         </motion.a>
 
-
       </div>
     </div>
   );
