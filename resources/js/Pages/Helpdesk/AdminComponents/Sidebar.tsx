@@ -2,14 +2,15 @@ import React, { useState } from 'react';
 import {
   Radar, Users, Package, MapPin, CheckSquare,
   ChevronDown, ChevronRight, Database,
-  Activity, Map as MapIcon, Layers, Shield
+  Activity, Map as MapIcon, Layers, Shield,
+  AlertTriangle, Wrench
 } from 'lucide-react';
 
 interface SidebarProps {
   isMobileMenuOpen: boolean;
   setIsMobileMenuOpen: (open: boolean) => void;
-  activeMenu: 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER' | 'ROLES';
-  handleMenuClick: (menu: 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER' | 'ROLES') => void;
+  activeMenu: 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'MAINTENANCE_REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER' | 'ROLES';
+  handleMenuClick: (menu: 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'MAINTENANCE_REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER' | 'ROLES') => void;
   dbUsers: any[];
   dbMutations?: any[];
   dbSatuans?: any[];
@@ -30,6 +31,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   // Collapsible menu states
   const [isDataMasterExpanded, setIsDataMasterExpanded] = useState<boolean>(true);
+  const [isLaporanExpanded, setIsLaporanExpanded] = useState<boolean>(true);
 
   const pendingPersonelCount = dbUsers.filter((u: any) => !u.is_approved).length; // Keep this, but we need to pass dbUserMutations or just use dbUsers.
   const pendingMutationsCount = dbMutations.filter((m: any) => m.status === 'pending').length;
@@ -37,6 +39,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   const totalPending = pendingPersonelCount + pendingMutationsCount + pendingSatuansCount;
 
   const isMasterDataActive = activeMenu === 'USERS' || activeMenu === 'UNITS' || activeMenu === 'SATUANS' || activeMenu === 'ROLES';
+  const isLaporanActive = activeMenu === 'REPORTS' || activeMenu === 'MAINTENANCE_REPORTS';
 
   const canApprove = userPermissions.includes('update-users') || userPermissions.includes('create-satuans') || isAdmin;
   
@@ -182,17 +185,45 @@ const Sidebar: React.FC<SidebarProps> = ({
             </button>
           )}
 
-          {/* 5. DATA LAPORAN */}
-          <button
-            id="tour-laporan"
-            onClick={() => handleMenuClick('REPORTS')}
-            aria-current={activeMenu === 'REPORTS' ? 'page' : undefined}
-            className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all duration-300 border-l-4 group focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none
-              ${activeMenu === 'REPORTS' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}
-            `}
-          >
-            <Radar size={18} /> DATA LAPORAN
-          </button>
+          {/* 5. DATA LAPORAN (Collapsible) */}
+          <div>
+            <button
+              id="tour-laporan"
+              onClick={() => setIsLaporanExpanded(!isLaporanExpanded)}
+              aria-expanded={isLaporanExpanded}
+              className={`w-full flex items-center justify-between px-6 py-4 font-tactical text-sm tracking-wider transition-all duration-300 border-l-4 group focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none
+                ${isLaporanActive ? 'bg-cighra-gold/5 text-cighra-gold border-cighra-gold/40' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}
+              `}
+            >
+              <div className="flex items-center gap-3">
+                <Radar size={18} className="transition-transform duration-300 group-hover:scale-110 group-active:scale-95" /> DATA LAPORAN
+              </div>
+              <div className="flex items-center gap-2">
+                {isLaporanExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+              </div>
+            </button>
+
+            {isLaporanExpanded && (
+              <div 
+                className="bg-slate-50 dark:bg-cighra-darkcard/20 py-1 border-l-4 border-cighra-primary dark:border-cighra-gold/20"
+              >
+                <button
+                  onClick={() => handleMenuClick('REPORTS')}
+                  aria-current={activeMenu === 'REPORTS' ? 'page' : undefined}
+                  className={`w-full text-left pl-[54px] py-2.5 flex items-center gap-2 text-xs font-tactical tracking-widest transition-all duration-300 focus-visible:ring group focus-visible:ring-cighra-gold focus-visible:outline-none ${activeMenu === 'REPORTS' ? 'text-cighra-primary dark:text-cighra-gold font-bold' : 'text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
+                >
+                  <AlertTriangle size={14} className="transition-transform duration-300 group-hover:scale-110 group-active:scale-95" /> » KERUSAKAN DAN PERBAIKAN
+                </button>
+                <button
+                  onClick={() => handleMenuClick('MAINTENANCE_REPORTS')}
+                  aria-current={activeMenu === 'MAINTENANCE_REPORTS' ? 'page' : undefined}
+                  className={`w-full text-left pl-[54px] py-2.5 flex items-center gap-2 text-xs font-tactical tracking-widest transition-all duration-300 focus-visible:ring group focus-visible:ring-cighra-gold focus-visible:outline-none ${activeMenu === 'MAINTENANCE_REPORTS' ? 'text-cighra-primary dark:text-cighra-gold font-bold' : 'text-slate-500 dark:text-slate-300 hover:text-cighra-primary dark:hover:text-cighra-gold'}`}
+                >
+                  <Wrench size={14} className="transition-transform duration-300 group-hover:scale-110 group-active:scale-95" /> » PEMELIHARAAN RUTIN
+                </button>
+              </div>
+            )}
+          </div>
 
           {/* 6. LOG AKTIVITAS */}
           {(isAdmin || userPermissions.includes('read-logs')) && (

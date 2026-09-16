@@ -136,6 +136,7 @@ class DashboardController extends Controller
                     ->get()
             )),
             'dbArchivedUnits' => Inertia::defer(fn () => UnitResource::collection(Unit::with('satuan')->onlyTrashed()->orderBy('deleted_at', 'desc')->take(1000)->get())),
+            'dbMaintenanceReports' => Inertia::defer(fn () => \App\Models\MaintenanceReport::with(['satuan', 'pelapor'])->orderBy('created_at', 'desc')->take(1000)->get()),
         ]);
     }
 
@@ -171,6 +172,12 @@ class DashboardController extends Controller
                     }
                 })->take(1000)->get())),
             'authUser' => $authUser,
+            'dbMaintenanceReports' => Inertia::defer(fn () => \App\Models\MaintenanceReport::with(['satuan', 'pelapor'])
+                ->where(function($q) use ($auth) {
+                    if ($auth->satuan_id) {
+                        $q->where('satuan_id', $auth->satuan_id);
+                    }
+                })->orderBy('created_at', 'desc')->take(1000)->get()),
         ]);
     }
 
@@ -215,6 +222,7 @@ class DashboardController extends Controller
                     ->take(500)
                     ->get()
             )),
+            'dbMaintenanceReports' => Inertia::defer(fn () => \App\Models\MaintenanceReport::with(['satuan', 'pelapor'])->orderBy('created_at', 'desc')->take(1000)->get()),
         ]);
     }
 }

@@ -16,55 +16,69 @@ class RecapController extends Controller
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
             'year' => 'nullable|integer|min:2000|max:2100',
+            'type' => 'nullable|in:maintenance',
         ]);
 
         $period = $request->query('period', 'monthly');
         $startDate = $request->query('start_date');
         $endDate = $request->query('end_date');
         $year = $request->query('year');
+        $type = $request->query('type');
 
-        $query = Report::with(['unit', 'pelapor', 'teknisi']);
+        if ($type === 'maintenance') {
+            $query = \App\Models\MaintenanceReport::with(['satuan', 'pelapor']);
+            $dateField = 'created_at';
+        } else {
+            $query = Report::with(['unit', 'pelapor', 'teknisi']);
+            $dateField = 'tanggal_lapor';
+        }
 
         if ($startDate && $endDate) {
-            $query->whereBetween('tanggal_lapor', [
+            $query->whereBetween($dateField, [
                 Carbon::parse($startDate)->startOfDay(),
                 Carbon::parse($endDate)->endOfDay()
             ]);
             $title = "REKAPITULASI PERIODE (" . Carbon::parse($startDate)->format('d/m/Y') . " - " . Carbon::parse($endDate)->format('d/m/Y') . ")";
         } elseif ($year) {
-            $query->whereYear('tanggal_lapor', $year);
+            $query->whereYear($dateField, $year);
             $title = "REKAPITULASI TAHUNAN (" . $year . ")";
         } elseif ($period === 'weekly') {
-            $query->where('tanggal_lapor', '>=', now()->subDays(7));
+            $query->where($dateField, '>=', now()->subDays(7));
             $title = "REKAPITULASI MINGGUAN (" . now()->subDays(7)->format('d/m/Y') . " - " . now()->format('d/m/Y') . ")";
         } elseif ($period === 'yearly') {
-            $query->whereYear('tanggal_lapor', now()->year);
+            $query->whereYear($dateField, now()->year);
             $title = "REKAPITULASI TAHUNAN (" . now()->year . ")";
         } else {
             // Default Monthly
-            $query->whereMonth('tanggal_lapor', now()->month)
-                  ->whereYear('tanggal_lapor', now()->year);
+            $query->whereMonth($dateField, now()->month)
+                  ->whereYear($dateField, now()->year);
             $title = "REKAPITULASI BULANAN (" . now()->format('F Y') . ")";
         }
 
-        $reports = $query->orderBy('tanggal_lapor', 'desc')->get()->map(function($report) {
-            // Apply refined EYD formatting (lowercase first to handle full caps, then ucfirst)
-            $report->deskripsi_kerusakan = ucfirst(mb_strtolower(trim($report->deskripsi_kerusakan)));
-            $report->catatan_teknisi = $report->catatan_teknisi ? ucfirst(mb_strtolower(trim($report->catatan_teknisi))) : null;
-            return $report;
-        });
-        
-        $stats = [
-            'total' => $reports->count(),
-            'selesai' => $reports->where('status_laporan', 'Selesai')->count(),
-            'proses' => $reports->whereIn('status_laporan', ['Diverifikasi', 'Diterima Teknisi', 'Diproses'])->count(),
-            'pending' => $reports->where('status_laporan', 'Pending')->count(),
-        ];
+        if ($type === 'maintenance') {
+            $reports = $query->orderBy($dateField, 'desc')->get();
+            $stats = ['total' => $reports->count()];
+            $pdf = Pdf::loadView('pdf.recap_maintenance', compact('reports', 'title', 'stats', 'period'));
+            $filename = "REKAP_PEMELIHARAAN_" . strtoupper($period) . "_" . now()->format('Ymd_His') . ".pdf";
+        } else {
+            $reports = $query->orderBy($dateField, 'desc')->get()->map(function($report) {
+                // Apply refined EYD formatting (lowercase first to handle full caps, then ucfirst)
+                $report->deskripsi_kerusakan = ucfirst(mb_strtolower(trim($report->deskripsi_kerusakan)));
+                $report->catatan_teknisi = $report->catatan_teknisi ? ucfirst(mb_strtolower(trim($report->catatan_teknisi))) : null;
+                return $report;
+            });
+            
+            $stats = [
+                'total' => $reports->count(),
+                'selesai' => $reports->where('status_laporan', 'Selesai')->count(),
+                'proses' => $reports->whereIn('status_laporan', ['Diverifikasi', 'Diterima Teknisi', 'Diproses'])->count(),
+                'pending' => $reports->where('status_laporan', 'Pending')->count(),
+            ];
+            $pdf = Pdf::loadView('pdf.recap', compact('reports', 'title', 'stats', 'period'));
+            $filename = "REKAP_" . strtoupper($period) . "_" . now()->format('Ymd_His') . ".pdf";
+        }
 
-        $pdf = Pdf::loadView('pdf.recap', compact('reports', 'title', 'stats', 'period'));
         $pdf->setPaper('a4', 'landscape');
-
-        $filename = "REKAP_" . strtoupper($period) . "_" . now()->format('Ymd_His') . ".pdf";
         return $pdf->download($filename);
     }
 }

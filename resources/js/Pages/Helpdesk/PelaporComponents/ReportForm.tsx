@@ -100,7 +100,10 @@ const ReportForm: React.FC<ReportFormProps> = ({
 
   const confirmSubmit = () => {
     setIsConfirmOpen(false);
-    post('/reports', {
+
+    const endpoint = data.report_type === 'Pemeliharaan' ? '/maintenance-reports' : '/reports';
+
+    post(endpoint, {
       onSuccess: () => {
         onSuccess({
           unit_id: data.unit_id,

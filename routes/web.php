@@ -62,8 +62,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/staf', [DashboardController::class, 'staf'])->middleware('permission:view-dashboard-staf');
     Route::get('/teknisi', [DashboardController::class, 'teknisi'])->middleware('permission:view-dashboard-teknisi');
 
-    // --- Satuans ---
-    Route::post('/satuans', [SatuanController::class, 'store'])->middleware('permission:create-satuans');
+    Route::post('/maintenance-reports', [App\Http\Controllers\MaintenanceReportController::class, 'store'])->name('maintenance.store');
+
+    // Satuan management (Admin & Staf Komando)
+    Route::post('/satuans', [SatuanController::class, 'store'])->middleware('permission:create-satuans')->name('satuans.store');
     Route::put('/satuans/{satuan}', [SatuanController::class, 'update'])->middleware('permission:update-satuans');
     Route::delete('/satuans/{satuan}', [SatuanController::class, 'destroy'])->middleware('permission:delete-satuans');
     Route::post('/satuans/{satuan}/approve', [SatuanController::class, 'approve'])->middleware('permission:create-satuans')->name('satuans.approve');

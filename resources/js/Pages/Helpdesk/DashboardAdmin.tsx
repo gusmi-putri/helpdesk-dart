@@ -15,16 +15,17 @@ const UsersTable = lazy(() => import('./AdminComponents/UsersTable'));
 const UnitsTable = lazy(() => import('./AdminComponents/UnitsTable'));
 const LogsTable = lazy(() => import('./AdminComponents/LogsTable'));
 const ReportsSection = lazy(() => import('./AdminComponents/ReportsSection'));
+const MaintenanceReportsSection = lazy(() => import('./AdminComponents/MaintenanceReportsSection'));
 const ApprovalCenter = lazy(() => import('./AdminComponents/ApprovalCenter'));
 const MonitoringMap = lazy(() => import('./AdminComponents/MonitoringMap'));
 const SatuansTable = lazy(() => import('./AdminComponents/SatuansTable'));
 const RolesTable = lazy(() => import('./AdminComponents/RolesTable'));
 
 type SubMenuReport = 'KERUSAKAN' | 'PERBAIKAN';
-type MenuTab = 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER' | 'ROLES';
+type MenuTab = 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'MAINTENANCE_REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER' | 'ROLES';
 
 const DashboardAdmin = (props: any) => {
-  const { dbCases = [], dbUsers = [], dbLogs = [], dbRoles = [], dbPermissions = [], dbUnits = [], dbSatuans = [], dbMutations = [], dbUserMutations = [], dbArchivedUnits = [] } = props;
+  const { dbCases = [], dbUsers = [], dbLogs = [], dbRoles = [], dbPermissions = [], dbUnits = [], dbSatuans = [], dbMutations = [], dbUserMutations = [], dbArchivedUnits = [], dbMaintenanceReports = [] } = props;
   const userPermissions = (usePage().props as any).auth?.user?.permissions || [];
   const userRoles = (usePage().props as any).auth?.user?.roles || [];
   const isAdmin = userRoles.includes('Admin');
@@ -232,6 +233,11 @@ const DashboardAdmin = (props: any) => {
     } else if (recapPeriod === 'year_specific') {
       url += `&year=${recapYear}`;
     }
+
+    if (activeMenu === 'MAINTENANCE_REPORTS') {
+      url += '&type=maintenance';
+    }
+
     window.open(url, '_blank');
     setIsRecapModalOpen(false);
   };
@@ -287,7 +293,8 @@ const DashboardAdmin = (props: any) => {
                   <h2 className="text-2xl font-tactical font-bold text-slate-800 dark:text-white tracking-widest uppercase flex items-center gap-3">
                     {activeMenu === 'ANALYTICS' ? 'ANALISIS DATA' :
                       activeMenu === 'MAP' ? 'PETA MONITORING' :
-                      activeMenu === 'REPORTS' ? 'DATA LAPORAN' :
+                      activeMenu === 'REPORTS' ? 'DATA LAPORAN KERUSAKAN' :
+                      activeMenu === 'MAINTENANCE_REPORTS' ? 'DATA LAPORAN PEMELIHARAAN' :
                       activeMenu === 'USERS' ? 'DATABASE PERSONEL' :
                       activeMenu === 'LOGS' ? 'LOG AKTIVITAS SISTEM' :
                       activeMenu === 'UNITS' ? 'DATABASE INVENTARIS' :
@@ -305,6 +312,7 @@ const DashboardAdmin = (props: any) => {
                   {activeMenu === 'ANALYTICS' ? 'Ringkasan statistik dan grafik data laporan sistem.' :
                     activeMenu === 'MAP' ? 'Visualisasi sebaran dan status unit DART secara geografis.' :
                     activeMenu === 'REPORTS' ? 'Kelola seluruh data laporan kerusakan dan perbaikan.' :
+                    activeMenu === 'MAINTENANCE_REPORTS' ? 'Daftar rekapitulasi laporan pemeliharaan rutin dari satuan.' :
                     activeMenu === 'USERS' ? 'Kelola data pengguna dan akun personel sistem.' :
                     activeMenu === 'LOGS' ? 'Rekaman seluruh aktivitas dan perubahan data sistem.' :
                     activeMenu === 'UNITS' ? 'Status kesiapan unit DART.' :
@@ -343,6 +351,12 @@ const DashboardAdmin = (props: any) => {
                   setActiveSubReport={setActiveSubReport}
                   setIsRecapModalOpen={setIsRecapModalOpen}
                   handlePrintCasePDF={handlePrintCasePDF}
+                />
+              )}
+              {activeMenu === 'MAINTENANCE_REPORTS' && (
+                <MaintenanceReportsSection 
+                  dbMaintenanceReports={dbMaintenanceReports} 
+                  setIsRecapModalOpen={setIsRecapModalOpen}
                 />
               )}
               {activeMenu === 'USERS' && (

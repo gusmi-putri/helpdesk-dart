@@ -12,6 +12,7 @@ import AssignTechnicianModal from './StafComponents/AssignTechnicianModal';
 import StafRecapModal from './StafComponents/StafRecapModal';
 import ReportRejectModal from './StafComponents/ReportRejectModal';
 import StafUnitModal from './StafComponents/StafUnitModal';
+import MaintenanceReportModal from './StafComponents/MaintenanceReportModal';
 import RequestDeleteModal from './StafComponents/RequestDeleteModal';
 import StafUnitBatchModal from './StafComponents/StafUnitBatchModal';
 import RequestDeleteBatchModal from './StafComponents/RequestDeleteBatchModal';
@@ -47,6 +48,7 @@ const DashboardStaf = (props: DashboardStafProps) => {
   const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [isRecapModalOpen, setIsRecapModalOpen] = useState(false);
+  const [isMaintenanceFormOpen, setIsMaintenanceFormOpen] = useState(false);
 
   // Recap States
   const [recapPeriod, setRecapPeriod] = useState<'weekly' | 'monthly' | 'yearly' | 'custom' | 'year_specific'>('monthly');
@@ -348,6 +350,7 @@ const DashboardStaf = (props: DashboardStafProps) => {
           setActiveMenu={setActiveMenu}
           pendingCount={incomingReports.filter((r: Report) => r.status === 'PENDING').length}
           mutationPendingCount={pendingMutations.length}
+          onOpenMaintenanceForm={() => setIsMaintenanceFormOpen(true)}
         />
 
         {/* MAIN CONTENT AREA */}
@@ -551,6 +554,12 @@ const DashboardStaf = (props: DashboardStafProps) => {
         onSubmit={handleSubmitDeleteBatch}
         selectedUnits={selectedUnitsForDelete}
         processing={mutationProcessing}
+      />
+
+      <MaintenanceReportModal
+        isOpen={isMaintenanceFormOpen}
+        onClose={() => setIsMaintenanceFormOpen(false)}
+        currentUser={currentUser}
       />
     </div>
   );
