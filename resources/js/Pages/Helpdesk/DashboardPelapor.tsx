@@ -10,14 +10,16 @@ import ReportHistory from './PelaporComponents/ReportHistory';
 import PelaporReportDetailModal from './PelaporComponents/PelaporReportDetailModal';
 import PostReportWizard from './PelaporComponents/PostReportWizard';
 import VideoBank from './PelaporComponents/VideoBank';
+import MaintenanceReportModal from './StafComponents/MaintenanceReportModal';
 
 type MenuTab = 'FORM' | 'HISTORY' | 'WIZARD' | 'VIDEO';
 
-const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser = null }: any) => {
+const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser = null, dbMaintenanceReports = [] }: any) => {
   const [activeMenu, setActiveMenu] = useState<MenuTab>('FORM');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [selectedItemId, setSelectedItemId] = useState<number | string | null>(null);
   const [filterTime, setFilterTime] = useState<'ALL' | 'TODAY' | 'WEEK'>('ALL');
+  const [isMaintenanceFormOpen, setIsMaintenanceFormOpen] = useState(false);
 
   const [lastReportedData, setLastReportedData] = useState<any>(null);
 
@@ -26,10 +28,41 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
   // Find current user's DB ID
   const dbUser = dbUsers.find((u: any) => u.username === currentUser?.username);
 
-  // Filter & Sort History
-  const history = dbCases
-    .filter((r: any) => r.kerusakan.pelapor_id === dbUser?.db_id)
-    .sort((a: any, b: any) => b.db_id - a.db_id);
+  // Map and Filter Normal History
+  const normalHistory = dbCases
+    .filter((r: any) => r.kerusakan.pelapor_id === dbUser?.db_id);
+
+  // Map and Filter Maintenance History
+  const maintenanceHistory = dbMaintenanceReports
+    .filter((r: any) => r.user_id === dbUser?.db_id)
+    .map((r: any) => {
+      const dateObj = new Date(r.created_at);
+      const dateStr = dateObj.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }).replace('.', ':');
+      return {
+        db_id: `maint_${r.id}`,
+        is_maintenance: true,
+        caseId: `PMH-${String(r.id).padStart(5, '0')}`,
+        status: 'SELESAI',
+        created_at: r.created_at,
+        kerusakan: {
+          tanggal: dateStr,
+          barangRusak: r.nama_giat,
+          deskripsi: `Laporan Pemeliharaan - Periode: ${r.periode} ${r.tahun} | Anggaran: Rp ${r.jumlah_anggaran}`,
+          lokasi: r.satuan?.nama_satuan || '-',
+        },
+        perbaikan: {
+          tanggalSelesai: dateStr,
+          teknisi: null
+        }
+      };
+    });
+
+  // Combine and Sort History
+  const history = [...normalHistory, ...maintenanceHistory].sort((a: any, b: any) => {
+    const dateA = new Date(a.created_at || 0).getTime();
+    const dateB = new Date(b.created_at || 0).getTime();
+    return dateB - dateA;
+  });
 
   const filteredHistory = history.filter((item: any) => {
     if (filterTime === 'ALL') return true;
@@ -136,6 +169,7 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
           setIsMobileMenuOpen={setIsMobileMenuOpen}
           activeMenu={activeMenu}
           setActiveMenu={setActiveMenu}
+          onOpenMaintenanceForm={() => setIsMaintenanceFormOpen(true)}
         />
 
         {/* MAIN CONTENT AREA */}
@@ -167,7 +201,10 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
                 history={filteredHistory}
                 filterTime={filterTime}
                 setFilterTime={setFilterTime}
-                onSelectItem={setSelectedItemId}
+                onSelectItem={(id) => {
+                  if (typeof id === 'string' && id.startsWith('maint_')) return;
+                  setSelectedItemId(id);
+                }}
               />
             )}
 
@@ -182,6 +219,12 @@ const DashboardPelapor = ({ dbCases = [], dbUnits = [], dbUsers = [], authUser =
         isOpen={!!selectedItemId}
         onClose={() => setSelectedItemId(null)}
         report={selectedItem}
+      />
+
+      <MaintenanceReportModal
+        isOpen={isMaintenanceFormOpen}
+        onClose={() => setIsMaintenanceFormOpen(false)}
+        currentUser={currentUser}
       />
 
     </div>

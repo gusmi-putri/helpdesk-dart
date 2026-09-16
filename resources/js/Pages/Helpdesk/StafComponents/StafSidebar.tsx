@@ -14,7 +14,6 @@ const StafSidebar: React.FC<StafSidebarProps> = ({
   isMobileMenuOpen,
   setIsMobileMenuOpen,
   activeMenu,
-  setActiveMenu,
   pendingCount = 0,
   mutationPendingCount = 0
 }) => {
