@@ -763,7 +763,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
                 <>
                   <p className="text-slate-500 dark:text-slate-300">GIAT: <span className="text-cighra-primary dark:text-cighra-gold font-bold uppercase">{data.nama_giat || '-'}</span></p>
                   <p className="text-slate-500 dark:text-slate-300">WAKTU: <span className="text-cighra-primary dark:text-cighra-gold font-bold uppercase">{data.waktu_pemeliharaan || '-'}</span></p>
-                  <p className="text-slate-500 dark:text-slate-300">DOKUMEN: <span className="text-cighra-primary dark:text-cighra-gold font-bold">{data.dokumen_pemeliharaan?.length || 0} file</span></p>
+                  <p className="text-slate-500 dark:text-slate-300">DOKUMEN: <span className="text-cighra-primary dark:text-cighra-gold font-bold">{data.dokumen_laporan_pemeliharaan?.length || 0} file</span></p>
                 </>
               )}
             </div>

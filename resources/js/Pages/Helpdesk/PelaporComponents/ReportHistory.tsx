@@ -5,7 +5,7 @@ interface ReportHistoryProps {
   history: any[];
   filterTime: 'ALL' | 'TODAY' | 'WEEK';
   setFilterTime: (t: 'ALL' | 'TODAY' | 'WEEK') => void;
-  onSelectItem: (id: number) => void;
+  onSelectItem: (id: number | string) => void;
 }
 
 const ReportHistory: React.FC<ReportHistoryProps> = ({

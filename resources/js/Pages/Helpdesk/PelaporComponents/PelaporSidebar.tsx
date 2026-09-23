@@ -6,13 +6,15 @@ interface PelaporSidebarProps {
   setIsMobileMenuOpen: (open: boolean) => void;
   activeMenu: 'FORM' | 'HISTORY' | 'WIZARD' | 'VIDEO';
   setActiveMenu: (menu: 'FORM' | 'HISTORY' | 'WIZARD' | 'VIDEO') => void;
+  onOpenMaintenanceForm?: () => void;
 }
 
 const PelaporSidebar: React.FC<PelaporSidebarProps> = ({
   isMobileMenuOpen,
   setIsMobileMenuOpen,
   activeMenu,
-  setActiveMenu
+  setActiveMenu,
+  onOpenMaintenanceForm
 }) => {
   return (
     <aside className={`fixed inset-y-0 left-0 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 w-72 bg-white dark:bg-cighra-dark border-r border-slate-200 dark:border-slate-600 z-50 flex-shrink-0 flex flex-col shadow-2xl`}>
