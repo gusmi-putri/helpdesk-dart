@@ -56,8 +56,8 @@ const InventorySection: React.FC<InventorySectionProps> = ({
     'DART Marathon Target',
     'Moving Target'
   ];
-  const jenisOptions = ['ALL', ...new Set([...baseJenisOptions, ...dbUnits.map((u: any) => u.jenis)])];
-  const satuanOptions = ['ALL', ...new Set(dbUnits.map((u: any) => u.asal_satuan))];
+  const jenisOptions = ['ALL', ...new Set([...baseJenisOptions, ...dbUnits.map((u: any) => u.jenis).filter(Boolean)])];
+  const satuanOptions = ['ALL', ...new Set(dbUnits.map((u: any) => u.asal_satuan).filter(Boolean))];
 
   const handleSort = (key: string) => {
     let direction: 'asc' | 'desc' = 'asc';
@@ -85,8 +85,8 @@ const InventorySection: React.FC<InventorySectionProps> = ({
   const filteredUnits = useMemo(() => {
     return dbUnits.filter((u: any) => {
       const matchesSearch =
-        u.nomor_seri.toLowerCase().includes(unitSearch.toLowerCase()) ||
-        u.asal_satuan.toLowerCase().includes(unitSearch.toLowerCase());
+        (u.nomor_seri || '').toLowerCase().includes(unitSearch.toLowerCase()) ||
+        (u.asal_satuan || '').toLowerCase().includes(unitSearch.toLowerCase());
       const matchesJenis = filterJenis === 'ALL' || u.jenis === filterJenis;
       const matchesSatuan = filterSatuan === 'ALL' || u.asal_satuan === filterSatuan;
       return matchesSearch && matchesJenis && matchesSatuan;
