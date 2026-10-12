@@ -10,75 +10,93 @@ class LocalDiagnosticService
      */
     protected array $rules = [
         [
-            'keywords' => ['layar', 'display', 'screen', 'monitor', 'gambar', 'tampilan', 'blank', 'gelap', 'hitam', 'tidak muncul', 'putih', 'bergaris', 'baret', 'berbayang', 'buram', 'flicker', 'kedap-kedip', 'mati sebagian', 'lcd'],
-            'topic'    => 'Masalah Layar / Display',
+            'keywords' => ['charger', 'casan', 'cas', 'accu', 'aki', 'pengisian', 'tidak mengisi', 'tidak ngecas', 'indikator tidak menyala', 'kabel power', 'steker', 'fuse ac', 'saklar dc', 'konektor aki', 'berkarat', 'karat', 'drop', 'terputus-putus'],
+            'topic'    => 'Masalah Charger / Pengisian Accu',
             'causes'   => [
-                'Kabel data penghubung modul display longgar atau putus.',
-                'Driver display/firmware pada unit DART mengalami kerusakan.',
-                'Backlight layar terbakar akibat tegangan tidak stabil.',
-                'Modul layar mengalami kerusakan fisik akibat benturan.',
+                'Kabel power AC putus, steker longgar, atau isolasi kabel terkelupas.',
+                'Fuse AC 2 ampere putus akibat arus lebih (overcurrent) atau hubungan singkat pada sisi primer.',
+                'Konektor atau kabel menuju aki longgar atau berkarat, menyebabkan pengisian terputus-putus dan tegangan turun.',
+                'Saklar DC rusak atau kontaknya memiliki resistansi tinggi, sehingga charger terlihat normal namun aki tidak terisi.',
             ],
             'steps' => [
-                'Pastikan unit dalam kondisi **mati total** sebelum melakukan pemeriksaan.',
-                'Periksa secara visual apakah ada **retakan atau kerusakan fisik** pada permukaan layar.',
-                'Coba **restart/reboot ulang** unit DART menggunakan tombol power utama.',
-                'Periksa apakah sumber daya (baterai/adaptor) berfungsi normal — indikator daya harus menyala.',
+                '**Periksa kabel power AC** dari ujung ke ujung — ukur kontinuitas kabel dan tegangan AC pada ujung kabel.',
+                '**Periksa fuse AC 2A** secara fisik dan ukur kontinuitasnya; ganti sesuai rating yang ditentukan dan **jangan melakukan bypass fuse**.',
+                '**Periksa konektor dan kabel menuju aki** dengan uji beban sambil mengukur tegangan; bersihkan konektor yang berkarat atau ganti kabel yang rusak.',
+                '**Ukur penurunan tegangan pada saklar DC** — jika terdapat kerusakan atau resistansi tinggi, saklar DC perlu diganti.',
             ],
         ],
         [
-            'keywords' => ['sensor', 'deteksi', 'tidak terdeteksi', 'laser', 'hit', 'tembakan', 'tidak merespons', 'tidak bereaksi', 'meleset', 'akurasi', 'ngaco', 'tidak kena', 'tidak peka', 'kalibrasi', 'macet', 'bidikan', 'delay', 'telat'],
-            'topic'    => 'Masalah Sensor / Deteksi',
+            'keywords' => ['limit switch', 'lesan', 'naik turun', 'timbul tenggelam', 'bergerak ke kanan', 'bergerak ke kiri', 'autoplay', 'skip', 'posisi lengan', 'kanopi', 'cam', 'pandangan petembak', 'bergerak sendiri', 'tidak berhenti', 'bergerak otomatis'],
+            'topic'    => 'Masalah Limit Switch / Mekanisme Gerak Sasaran',
             'causes'   => [
-                'Lensa sensor kotor terhalang debu, kotoran, atau kondensasi.',
-                'Kalibrasi sensor sudah lama tidak dilakukan atau posisi offset.',
-                'Komponen sensor terbakar akibat tegangan berlebih.',
-                'Interferensi cahaya lingkungan yang terlalu terang (cahaya matahari langsung).',
+                'Posisi lengan limit switch tidak sesuai dengan pandangan petembak.',
+                'Lesan tembak bergerak otomatis padahal mode autoplay tidak aktif — indikasi ada tombol remote control yang menyala atau tertekan.',
+                'Mekanisme skip tidak bergerak saat autoplay diaktifkan karena kabel limit terlepas.',
+                'Limit switch macet atau tidak berfungsi dengan baik.',
             ],
             'steps' => [
-                'Bersihkan lensa sensor menggunakan **kain microfiber kering** — jangan menggunakan cairan.',
-                'Pastikan area sekitar target **tidak terkena cahaya matahari langsung** saat pengujian.',
-                'Lakukan **reset kalibrasi** menggunakan prosedur di halaman 32 buku panduan DART.',
-                'Uji sensor dengan **jarak minimum (3 meter)** untuk memverifikasi respons dasar.',
+                '**Setel ulang posisi lengan limit switch** melalui cam limit switch — buka kanopi dan penutup DART, lalu longgarkan/kencangkan pengikat menggunakan kunci limit sesuai kebutuhan.',
+                '**Periksa remote control** dan pastikan tidak ada tombol dalam kondisi menyala atau tertekan saat autoplay tidak aktif.',
+                '**Periksa kabel limit** pada mekanisme skip — pasang kembali apabila terlepas hingga terhubung dengan baik.',
+                '**Ganti limit switch** apabila ditemukan dalam kondisi macet atau tidak berfungsi dengan baik.',
             ],
         ],
         [
-            'keywords' => ['daya', 'power', 'mati', 'tidak nyala', 'mati total', 'baterai', 'batre', 'charger', 'casan', 'adaptor', 'listrik', 'tegangan', 'drop', 'bocor', 'kembung', 'panas', 'overheat', 'konslet', 'kabel putus', 'restart terus', 'mati sendiri'],
-            'topic'    => 'Masalah Catu Daya / Power',
+            'keywords' => ['fuse', 'sekring', 'tidak menyala', 'dart tidak hidup', 'putus', 'tidak hidup sama sekali'],
+            'topic'    => 'Masalah Fuse / Sekring Utama Unit',
             'causes'   => [
-                'Baterai habis atau mengalami kerusakan sel (kembung/bocor).',
-                'Konektor adaptor DC longgar atau korosi.',
-                'Fuse/sekring internal putus akibat lonjakan tegangan.',
-                'Modul regulator tegangan internal mengalami kerusakan.',
+                'Fuse utama unit putus akibat arus lebih atau hubungan singkat pada sistem kelistrikan unit.',
             ],
             'steps' => [
-                '**Periksa kabel adaptor** dari ujung ke ujung — pastikan tidak ada keretakan atau sobekan.',
-                'Coba gunakan **adaptor/sumber daya cadangan** yang terverifikasi.',
-                '**Jangan membuka** casing unit — pemeriksaan internal harus oleh Teknisi bersertifikat.',
-                'Catat **kode tegangan** pada label unit dan bandingkan dengan output adaptor yang digunakan.',
+                '**Periksa fuse utama** pada unit — jika dalam kondisi putus, lakukan penggantian dengan fuse baru sesuai spesifikasi unit.',
+                '**Jangan melakukan bypass fuse** dengan kawat atau bahan lain dalam kondisi apa pun — risiko korsleting/kebakaran.',
+                'Jika fuse baru kembali putus setelah dipasang, **hentikan pengoperasian** dan laporkan sebagai indikasi korsleting pada sistem internal.',
             ],
         ],
         [
-            'keywords' => ['koneksi', 'jaringan', 'wifi', 'bluetooth', 'komunikasi', 'sinkronisasi', 'sync', 'link', 'putus', 'disconnect', 'sinyal', 'lemah', 'lemot', 'pairing', 'tidak konek', 'hilang sinyal', 'offline', 'delay ping', 'lag'],
-            'topic'    => 'Masalah Koneksi / Komunikasi',
+            'keywords' => ['motor', 'motor dc', 'konektor motor', 'korosi', 'rantai', 'sprocket', 'kendur', 'kencang', 'bunyi kasar', 'tersendat', 'roda', 'ban', 'selip', 'aus', 'licin'],
+            'topic'    => 'Masalah Motor Penggerak, Rantai & Roda',
             'causes'   => [
-                'Modul WiFi/Bluetooth mengalami gangguan firmware.',
-                'Interferensi frekuensi radio di area latihan.',
-                'Antena internal longgar atau terputus akibat getaran.',
-                'Pengaturan jaringan pada unit tidak sesuai dengan konfigurasi server.',
+                'Konektor motor terlepas atau mengalami korosi.',
+                'Tegangan rantai terlalu kencang atau terlalu kendur, atau rantai tidak sejajar dengan sprocket.',
+                'Ban/roda aus atau licin sehingga motor tetap berputar namun terjadi selip.',
             ],
             'steps' => [
-                'Lakukan **restart unit** dan coba sambungkan kembali ke jaringan.',
-                'Pastikan **jarak unit ke access point** tidak melebihi 30 meter.',
-                'Periksa apakah unit lain di lokasi yang sama **mengalami masalah serupa** — jika ya, masalah ada di jaringan.',
-                'Catat **SSID dan channel WiFi** yang digunakan untuk dilaporkan ke Teknisi.',
+                '**Periksa konektor motor** — jika ditemukan kotoran atau korosi, bersihkan menggunakan contact cleaner hingga koneksi kembali normal.',
+                '**Periksa ketegangan rantai** dan kesejajarannya dengan sprocket; setel ulang ketegangan rantai dan beri pelumasan agar sistem penggerak bekerja optimal.',
+                '**Periksa kondisi ban/roda** — bersihkan atau ganti ban yang sudah aus, serta sesuaikan tekanan/grip agar pergerakan alat kembali normal.',
             ],
         ],
         [
-            'keywords' => ['fisik', 'rusak', 'retak', 'pecah', 'patah', 'bengkok', 'penyok', 'jatuh', 'tertimpa', 'bentur', 'hancur', 'lepas', 'kendur', 'koclak', 'casing', 'bodi', 'body', 'bolong', 'sobek', 'terbakar', 'kabel luar', 'tergores'],
+            'keywords' => ['tidak ada reaksi', 'tidak merespons sama sekali', 'tegangan rendah', 'di bawah 10 volt', 'lemah total', 'tidak bereaksi'],
+            'topic'    => 'Masalah Tegangan Aki Rendah',
+            'causes'   => [
+                'Tegangan aki berada di bawah 10 volt sehingga perangkat tidak menunjukkan reaksi sama sekali.',
+            ],
+            'steps' => [
+                '**Ukur tegangan aki** menggunakan multimeter.',
+                'Apabila tegangan berada **di bawah 10 volt**, lakukan pengisian daya aki terlebih dahulu sebelum perangkat dioperasikan kembali.',
+            ],
+        ],
+        [
+            'keywords' => ['remote', 'remote control', 'alkap bergerak sendiri', 'sistem kendali', 'tidak merespon remote', 'kendali jarak jauh'],
+            'topic'    => 'Masalah Remote Control / Sistem Kendali',
+            'causes'   => [
+                'Mode autoplay belum dimatikan secara manual, sehingga alat bergerak sendiri meski tombol remote belum ditekan.',
+                'Gangguan pada sistem kendali internal Remote Control — seluruh sistem ini terintegrasi dan bersifat vital.',
+            ],
+            'steps' => [
+                '**Pastikan autoplay dimatikan secara manual**, lalu tekan tombol pada remote control untuk mengendalikan alat sesuai kebutuhan.',
+                'Jika gangguan tetap terjadi, **jangan membongkar unit Remote Control** — tidak ada komponen di dalamnya yang dapat diperbaiki secara mandiri oleh pengguna.',
+                '**Serahkan penanganan kepada Teknisi** atau bawa unit kembali ke Bengpuskomlek untuk pemeriksaan lebih lanjut.',
+            ],
+        ],
+        [
+            'keywords' => ['fisik', 'rusak', 'retak', 'pecah', 'patah', 'bengkok', 'penyok', 'jatuh', 'tertimpa', 'bentur', 'hancur', 'lepas', 'koclak', 'casing', 'bodi', 'body', 'bolong', 'sobek', 'terbakar', 'kabel luar', 'tergores'],
             'topic'    => 'Kerusakan Fisik / Mekanikal',
             'causes'   => [
                 'Benturan keras saat transportasi atau saat penggunaan di lapangan.',
-                'Penyimpanan tidak sesuai standar (ditumpuk, tertekan).',
+                'Penyimpanan tidak sesuai standar (ditumpuk, tertekan, atau dibiarkan di area terbuka).',
                 'Material casing mengalami kelelahan (fatigue) akibat penggunaan intensif.',
             ],
             'steps' => [
@@ -88,34 +106,36 @@ class LocalDiagnosticService
                 '**Jangan mencoba memperbaiki sendiri** — kerusakan fisik memerlukan penggantian suku cadang resmi.',
             ],
         ],
-        [
-            'keywords' => ['software', 'error', 'sistem', 'aplikasi', 'program', 'update', 'hang', 'freeze', 'macet', 'crash', 'bug', 'glitch', 'force close', 'keluar sendiri', 'stuck', 'loading', 'booting', 'bootloop', 'firmware', 'os', 'reset'],
-            'topic'    => 'Masalah Perangkat Lunak / Firmware',
-            'causes'   => [
-                'Firmware unit mengalami korupsi atau gagal update.',
-                'Memori internal penuh atau mengalami bad sector.',
-                'Konflik antara versi software kontroller dengan firmware unit.',
-            ],
-            'steps' => [
-                'Coba lakukan **factory reset** menggunakan tombol reset di bagian belakang unit (hold 10 detik).',
-                'Catat **versi firmware** unit (tersedia di menu Settings > About).',
-                'Pastikan **koneksi stabil ke server** sebelum mencoba proses update ulang.',
-                '**Jangan matikan unit** di tengah proses update — ini dapat memperparah kerusakan firmware.',
-            ],
+    ];
+
+    /**
+     * Spesifikasi fuse utama per jenis unit, sesuai buku manual tiap DART.
+     */
+    protected array $fuseSpec = [
+        'DART Flip'    => '20 ampere',
+        'DART Pop Up'  => '20 ampere',
+        'DART Swing'   => '30 ampere',
+    ];
+
+    /**
+     * Hal-hal yang perlu diperhatikan per jenis unit, sesuai buku manual.
+     */
+    protected array $precautionsByJenis = [
+        'DART Flip' => [
+            'DART diberikan tanggul pelindung di bagian depan berupa penghalang atau karung pasir, sehingga unit terlindungi dari tembakan langsung selama latihan maupun pengujian.',
+            'Jika tidak digunakan, jangan dibiarkan di area terbuka — simpan pada area tertutup dengan suhu ruang agar tidak terjadi kerusakan pada komponen.',
         ],
-        [
-            'keywords' => ['suara', 'bunyi', 'speaker', 'alarm', 'audio', 'beep', 'bising', 'nyaring', 'pelan', 'pecah', 'kresek', 'kemeresek', 'bisu', 'mute', 'sirine', 'mendengung'],
-            'topic'    => 'Masalah Audio / Indikator Suara',
-            'causes'   => [
-                'Speaker internal mengalami kerusakan akibat kelembaban atau benturan.',
-                'Pengaturan volume atau mode diam aktif secara tidak sengaja.',
-                'Kabel speaker internal longgar dari board utama.',
-            ],
-            'steps' => [
-                'Periksa **pengaturan volume** di menu unit — pastikan tidak dalam mode silent.',
-                'Coba **restart unit** untuk mereset konfigurasi audio.',
-                'Uji apakah alarm visual (LED indikator) masih berfungsi normal.',
-            ],
+        'DART Pop Up' => [
+            'DART diberikan tanggul pelindung di bagian depan berupa penghalang atau karung pasir, sehingga unit terlindungi dari tembakan langsung selama latihan maupun pengujian.',
+            'Jika tidak digunakan, jangan dibiarkan di area terbuka — simpan pada area tertutup dengan suhu ruang agar tidak terjadi kerusakan pada komponen.',
+        ],
+        'DART Swing' => [
+            'DART diberikan tanggul pelindung di bagian depan berupa penghalang atau karung pasir, sehingga unit terlindungi dari tembakan langsung selama latihan maupun pengujian.',
+            'Jika tidak digunakan, jangan dibiarkan di area terbuka — simpan pada area tertutup dengan suhu ruang agar tidak terjadi kerusakan pada komponen.',
+        ],
+        'Moving Target' => [
+            'Jangan menggunakan Moving Target lebih dari 10 menit tanpa jeda agar performa pergerakan tidak menurun dan komponen tidak cepat rusak — beri jeda beberapa menit sebelum dioperasikan kembali.',
+            'Moving Target diberikan tanggul pelindung di bagian depan berupa penghalang atau karung pasir, sehingga unit terlindungi dari tembakan langsung selama latihan maupun pengujian.',
         ],
     ];
 
@@ -146,8 +166,14 @@ class LocalDiagnosticService
     /**
      * Analisis lokal berdasarkan deskripsi dan tingkat kerusakan.
      */
-    public function getDiagnosticAdvice(string $description, string $level, string $unitName): string
-    {
+    public function getDiagnosticAdvice(
+        string $description,
+        string $level,
+        string $unitName,
+        ?float $confidence = null,
+        bool $overridden = false,
+        ?string $unitJenis = null
+    ): string {
         $descLower = mb_strtolower($description);
 
         // Cari aturan yang cocok berdasarkan kata kunci
@@ -173,7 +199,7 @@ class LocalDiagnosticService
         // Header
         $output = "{$levelInfo['label']}\n\n";
         $output .= "**Unit:** `{$unitName}` | **Tingkat Diagnosis:** {$level}\n";
-        $output .= "**Eselon Pemeliharaan:** `{$levelInfo['maintenance_level']}`\n\n";
+        $output .= "**Tingkat Penanganan:** `{$levelInfo['maintenance_level']}`\n\n";
         $output .= "{$levelInfo['summary']}\n\n";
 
         if (!empty($levelInfo['alert'])) {
@@ -181,6 +207,8 @@ class LocalDiagnosticService
         }
 
         $output .= "---\n\n";
+
+        $fuseRating = $this->fuseSpec[$unitJenis] ?? 'sesuai spesifikasi unit';
 
         if ($matchedRule && $highestScore > 0) {
             // Ada kata kunci yang cocok
@@ -191,6 +219,7 @@ class LocalDiagnosticService
             }
             $output .= "\n**Langkah Pemeriksaan Awal (oleh Pelapor tingkat Satuan):**\n";
             foreach ($matchedRule['steps'] as $i => $step) {
+                $step = str_replace('fuse baru sesuai spesifikasi unit', "fuse baru sesuai spesifikasi unit ({$fuseRating})", $step);
                 $output .= ($i + 1) . ". {$step}\n";
             }
         } else {
@@ -200,12 +229,19 @@ class LocalDiagnosticService
             $output .= "Teknisi akan melakukan pemeriksaan manual secara langsung.\n\n";
             $output .= "**Langkah Umum yang Dapat Dilakukan:**\n";
             $output .= "1. **Dokumentasikan kondisi unit** dengan foto/video sebelum dipindahkan.\n";
-            $output .= "2. **Hentikan penggunaan** unit yang bermasalah sampai Teknisi dari eselon terkait tiba.\n";
+            $output .= "2. **Hentikan penggunaan** unit yang bermasalah sampai Teknisi terkait tiba.\n";
             $output .= "3. **Catat waktu dan kondisi** saat masalah pertama kali muncul.\n";
             $output .= "4. **Jangan mencoba memperbaiki sendiri di luar kewenangan** — serahkan kepada unit perbaikan terkait.\n";
         }
 
-    ;
+        $precautions = $this->precautionsByJenis[$unitJenis] ?? null;
+        if ($precautions) {
+            $output .= "\n---\n\n";
+            $output .= "**Hal yang Perlu Diperhatikan untuk {$unitJenis}:**\n";
+            foreach ($precautions as $point) {
+                $output .= "- {$point}\n";
+            }
+        }
 
         return $output;
     }

@@ -33,26 +33,33 @@ class AiDiagnosticController extends Controller
         // Sanitasi input untuk mencegah injeksi
         $deskripsi = strip_tags($validated['deskripsi']);
 
-        // Find the unit name
+        // Find the unit name & jenis
         $unitName = "Unit DART ID: " . $validated['unit_id'];
+        $unitJenis = null;
         $unit = Unit::find($validated['unit_id']);
         if ($unit) {
             $unitName = $unit->nomor_seri;
+            $unitJenis = $unit->jenis;
         }
 
         // PREDICT TINGKAT KERUSAKAN MENGGUNAKAN SELF-LEARNING AI
-        $predictedLevel = $this->aiService->predict($deskripsi);
+        $prediction = $this->aiService->predict($deskripsi);
 
         // Jalankan analisis lokal
         $diagnosis = $this->diagnosticService->getDiagnosticAdvice(
             $deskripsi,
-            $predictedLevel,
-            $unitName
+            $prediction['level'],
+            $unitName,
+            $prediction['confidence'],
+            $prediction['overridden'],
+            $unitJenis
         );
 
         return response()->json([
             'success'   => true,
-            'predicted_level' => $predictedLevel,
+            'predicted_level' => $prediction['level'],
+            'predicted_confidence' => $prediction['confidence'],
+            'predicted_overridden' => $prediction['overridden'],
             'diagnosis' => $diagnosis
         ]);
     }

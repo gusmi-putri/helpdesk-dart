@@ -33,7 +33,7 @@ class ReportController extends Controller
             // AI PREDICTION: Jika tingkat_kerusakan tidak dikirim dari form, prediksi otomatis.
             $tingkatKerusakan = $request->tingkat_kerusakan;
             if (empty($tingkatKerusakan)) {
-                $tingkatKerusakan = $this->aiService->predict($request->deskripsi);
+                $tingkatKerusakan = $this->aiService->predict($request->deskripsi)['level'];
             }
 
             Report::create([

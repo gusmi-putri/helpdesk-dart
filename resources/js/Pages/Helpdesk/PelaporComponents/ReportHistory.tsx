@@ -26,7 +26,7 @@ const ReportHistory: React.FC<ReportHistoryProps> = ({
       {/* Stats Summary Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         {[
-          { label: 'TOTAL LAPORAN', value: stats.total, color: 'border-cighra-primary dark:border-cighra-gold', text: 'text-cighra-primary dark:text-cighra-gold' },
+          { label: 'TOTAL LAPORAN', value: stats.total, color: 'border-cighra-primary dark:border-cighra-gold', text: 'text-white dark:text-cighra-gold' },
           { label: 'MENUNGGU', value: stats.pending, color: 'border-yellow-500', text: 'text-yellow-500' },
           { label: 'DALAM PROSES', value: stats.proses, color: 'border-blue-500', text: 'text-blue-500' },
           { label: 'SELESAI', value: stats.selesai, color: 'border-camogreen', text: 'text-camogreen' },
