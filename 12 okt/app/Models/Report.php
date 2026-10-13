@@ -1,0 +1,32 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class Report extends Model
+{
+    use SoftDeletes;
+    protected $fillable = [
+        'unit_id', 'user_id', 'staff_id', 'teknisi_id', 'tanggal_lapor',
+        'lokasi_laporan', 'klasifikasi', 'tingkat_kerusakan', 'urgensi', 'jenis_perbaikan',
+        'deskripsi_kerusakan', 'file_bukti', 'tautan_video', 'dokumen_anggaran', 'keterangan_anggaran',
+        'file_bukti_selesai', 'tautan_video_selesai', 'alasan_penolakan',
+        'status_laporan', 'metode_perbaikan', 'tgl_ditunjuk', 'tgl_selesai', 'catatan_teknisi'
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'tanggal_lapor' => 'datetime',
+            'tgl_ditunjuk' => 'datetime',
+            'tgl_selesai' => 'datetime',
+        ];
+    }
+
+    public function unit() { return $this->belongsTo(Unit::class)->withTrashed(); }
+    public function pelapor() { return $this->belongsTo(User::class, 'user_id'); }
+    public function staf() { return $this->belongsTo(User::class, 'staff_id'); }
+    public function teknisi() { return $this->belongsTo(User::class, 'teknisi_id'); }
+}

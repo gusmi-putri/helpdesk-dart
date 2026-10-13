@@ -105,11 +105,13 @@ const ReportForm: React.FC<ReportFormProps> = ({
 
     post(endpoint, {
       onSuccess: () => {
-        onSuccess({
-          unit_id: data.unit_id,
-          deskripsi: data.deskripsi,
-          tingkat_kerusakan: data.tingkat_kerusakan
-        });
+        if (data.report_type === 'Kerusakan') {
+          onSuccess({
+            unit_id: data.unit_id,
+            deskripsi: data.deskripsi,
+            tingkat_kerusakan: data.tingkat_kerusakan
+          });
+        }
         reset();
       },
       onError: () => {

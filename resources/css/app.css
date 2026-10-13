@@ -166,3 +166,46 @@
 .leaflet-popup-tip {
   background: #1D2D50 !important;
 }
+
+/* Leaflet GeoSearch override for readability */
+.leaflet-control-geosearch form {
+  background: #ffffff !important;
+  border-radius: 4px !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+}
+
+.leaflet-control-geosearch form input.glass {
+  color: #0f172a !important;
+  font-family: inherit !important;
+  font-size: 13px !important;
+  background-color: #ffffff !important;
+  padding: 6px 10px !important;
+}
+
+.leaflet-control-geosearch form input.glass::placeholder {
+  color: #64748b !important;
+}
+
+.leaflet-control-geosearch .results {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-radius: 4px !important;
+  margin-top: 4px !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15) !important;
+}
+
+.leaflet-control-geosearch .results > * {
+  color: #0f172a !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  padding: 8px 12px !important;
+  font-size: 12px !important;
+  cursor: pointer !important;
+}
+
+.leaflet-control-geosearch .results > *:hover,
+.leaflet-control-geosearch .results > .active {
+  background-color: #f1f5f9 !important;
+  color: #1e293b !important;
+}

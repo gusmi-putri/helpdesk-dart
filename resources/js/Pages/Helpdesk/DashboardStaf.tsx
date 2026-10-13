@@ -84,6 +84,17 @@ const DashboardStaf = (props: DashboardStafProps) => {
 
   const selectedReport = dbCases.find((c: Report) => c.db_id === selectedReportId);
 
+  // Prefetch semua chunk tab lazy-loaded begitu dashboard siap, supaya perpindahan
+  // submenu tidak pernah menampilkan fallback/blank space saat chunk belum terunduh.
+  useEffect(() => {
+    import('./StafComponents/TicketManager');
+    import('./StafComponents/CompletedReportsTable');
+    import('./StafComponents/InventorySection');
+    import('./StafComponents/StafMutationCenter');
+    import('./AdminComponents/UsersTable');
+    import('./AdminComponents/SatuansTable');
+  }, []);
+
   // Auto-polling with visibility detection
   useEffect(() => {
     let intervalId: any;
@@ -446,7 +457,7 @@ const DashboardStaf = (props: DashboardStafProps) => {
 
                 {activeMenu === 'PERSONEL' && (
                   <UsersTable
-                    dbUsers={dbAllUsers}
+                    dbUsers={dbAllUsers && dbAllUsers.length > 0 ? dbAllUsers : dbUsers}
                     dbRoles={dbRoles}
                     dbPermissions={dbPermissions}
                     dbSatuans={dbSatuans}
@@ -460,7 +471,7 @@ const DashboardStaf = (props: DashboardStafProps) => {
                     dbSatuans={dbSatuans}
                     dbUnits={dbUnits}
                     dbCases={dbCases}
-                    dbUsers={dbAllUsers}
+                    dbUsers={dbAllUsers && dbAllUsers.length > 0 ? dbAllUsers : dbUsers}
                     isPengajuan={true}
                     userPermissions={currentUser?.permissions || []}
                   />

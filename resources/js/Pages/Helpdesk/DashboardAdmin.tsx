@@ -47,6 +47,21 @@ const DashboardAdmin = (props: any) => {
     </div>
   );
 
+  // Prefetch semua chunk tab lazy-loaded begitu dashboard siap, supaya perpindahan
+  // submenu tidak pernah menampilkan fallback/blank space saat chunk belum terunduh.
+  useEffect(() => {
+    import('./AdminComponents/AnalyticsSection');
+    import('./AdminComponents/UsersTable');
+    import('./AdminComponents/UnitsTable');
+    import('./AdminComponents/LogsTable');
+    import('./AdminComponents/ReportsSection');
+    import('./AdminComponents/MaintenanceReportsSection');
+    import('./AdminComponents/ApprovalCenter');
+    import('./AdminComponents/MonitoringMap');
+    import('./AdminComponents/SatuansTable');
+    import('./AdminComponents/RolesTable');
+  }, []);
+
   // Auto-polling dengan deteksi keaktifan halaman (visibility)
   useEffect(() => {
     let intervalId: any;
