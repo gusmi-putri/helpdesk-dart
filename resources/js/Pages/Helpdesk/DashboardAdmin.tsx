@@ -20,15 +20,19 @@ const ApprovalCenter = lazy(() => import('./AdminComponents/ApprovalCenter'));
 const MonitoringMap = lazy(() => import('./AdminComponents/MonitoringMap'));
 const SatuansTable = lazy(() => import('./AdminComponents/SatuansTable'));
 const RolesTable = lazy(() => import('./AdminComponents/RolesTable'));
+const ReportForm = lazy(() => import('./PelaporComponents/ReportForm'));
+const PostReportWizard = lazy(() => import('./PelaporComponents/PostReportWizard'));
 
 type SubMenuReport = 'KERUSAKAN' | 'PERBAIKAN';
-type MenuTab = 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'MAINTENANCE_REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER' | 'ROLES';
+type MenuTab = 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'MAINTENANCE_REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER' | 'ROLES' | 'BUAT_LAPORAN';
 
 const DashboardAdmin = (props: any) => {
-  const { dbCases = [], dbUsers = [], dbLogs = [], dbRoles = [], dbPermissions = [], dbUnits = [], dbSatuans = [], dbMutations = [], dbUserMutations = [], dbArchivedUnits = [], dbMaintenanceReports = [] } = props;
+  const { dbCases = [], dbUsers = [], dbLogs = [], dbRoles = [], dbPermissions = [], dbUnits = [], dbSatuans = [], dbMutations = [], dbUserMutations = [], dbArchivedUnits = [], dbMaintenanceReports = [], authUser = null } = props;
   const userPermissions = (usePage().props as any).auth?.user?.permissions || [];
   const userRoles = (usePage().props as any).auth?.user?.roles || [];
   const isAdmin = userRoles.includes('Admin');
+  const canReport = userPermissions.includes('view-dashboard-pelapor');
+  const [lastReportedData, setLastReportedData] = useState<any>(null);
 
   const [activeMenu, setActiveMenu] = useState<MenuTab>('ANALYTICS');
   const [activeSubReport, setActiveSubReport] = useState<SubMenuReport>('KERUSAKAN');
@@ -316,6 +320,7 @@ const DashboardAdmin = (props: any) => {
                       activeMenu === 'SATUANS' ? 'DATA SATUAN' :
                       activeMenu === 'ROLES' ? 'PENGATURAN ROLES & AKSES' :
                       activeMenu === 'APPROVAL_CENTER' ? 'PUSAT PERSETUJUAN' :
+                      activeMenu === 'BUAT_LAPORAN' ? 'BUAT LAPORAN' :
                       'DASHBOARD ADMIN'}
                     {isPolling && (
                       <span className="flex items-center gap-1.5 text-[10px] font-mono text-cighra-primary dark:text-cighra-gold tracking-widest animate-pulse border border-cighra-primary/30 dark:border-cighra-gold/30 px-2 py-0.5 bg-cighra-primary/5 dark:bg-cighra-gold/10 rounded-sm">
@@ -334,6 +339,7 @@ const DashboardAdmin = (props: any) => {
                     activeMenu === 'SATUANS' ? 'Kelola data satuan dan unit yang terdaftar.' :
                     activeMenu === 'ROLES' ? 'Manajemen peran pengguna beserta hak aksesnya.' :
                     activeMenu === 'APPROVAL_CENTER' ? 'Tinjau dan setujui pengajuan mutasi serta registrasi.' :
+                    activeMenu === 'BUAT_LAPORAN' ? 'Buat laporan kerusakan untuk aset inventaris markas Anda.' :
                     'Sistem Manajemen Pelaporan Kerusakan Dart.'}
                 </p>
               </div>
@@ -444,6 +450,23 @@ const DashboardAdmin = (props: any) => {
                     handleRejectUser={handleRejectUser}
                   />
                 ) : renderUnauthorized('Pusat Persetujuan')
+              )}
+              {activeMenu === 'BUAT_LAPORAN' && (
+                canReport ? (
+                  lastReportedData ? (
+                    <PostReportWizard
+                      reportData={lastReportedData}
+                      onClose={() => setLastReportedData(null)}
+                    />
+                  ) : (
+                    <ReportForm
+                      dbUnits={dbUnits}
+                      authUser={authUser}
+                      currentUser={currentUser}
+                      onSuccess={(reportedData: any) => setLastReportedData(reportedData)}
+                    />
+                  )
+                ) : renderUnauthorized('Buat Laporan')
               )}
             </Suspense>
           </div>

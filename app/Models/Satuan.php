@@ -19,6 +19,7 @@ class Satuan extends Model
         'longitude',
         'pending_action',
         'pending_changes',
+        'parent_id',
     ];
 
     protected $casts = [
@@ -33,5 +34,15 @@ class Satuan extends Model
     public function units()
     {
         return $this->hasMany(Unit::class);
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Satuan::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Satuan::class, 'parent_id');
     }
 }

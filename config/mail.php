@@ -47,6 +47,12 @@ return [
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
+            // Sebagian hosting shared (mis. cPanel) punya CA bundle PHP yang usang
+            // sehingga verifikasi sertifikat SMTP selalu gagal walau konfigurasi
+            // host/port/encryption sudah benar. Idealnya minta hosting memperbarui
+            // CA bundle PHP; set MAIL_VERIFY_PEER=false di .env hanya sebagai
+            // jalan pintas sementara jika itu tidak memungkinkan.
+            'verify_peer' => env('MAIL_VERIFY_PEER', true),
         ],
 
         'ses' => [

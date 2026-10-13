@@ -3,14 +3,14 @@ import {
   Radar, Users, Package, MapPin, CheckSquare,
   ChevronDown, ChevronRight, Database,
   Activity, Map as MapIcon, Layers, Shield,
-  AlertTriangle, Wrench
+  AlertTriangle, Wrench, FilePlus
 } from 'lucide-react';
 
 interface SidebarProps {
   isMobileMenuOpen: boolean;
   setIsMobileMenuOpen: (open: boolean) => void;
-  activeMenu: 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'MAINTENANCE_REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER' | 'ROLES';
-  handleMenuClick: (menu: 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'MAINTENANCE_REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER' | 'ROLES') => void;
+  activeMenu: 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'MAINTENANCE_REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER' | 'ROLES' | 'BUAT_LAPORAN';
+  handleMenuClick: (menu: 'ANALYTICS' | 'MAP' | 'USERS' | 'LOGS' | 'REPORTS' | 'MAINTENANCE_REPORTS' | 'UNITS' | 'SATUANS' | 'APPROVAL_CENTER' | 'ROLES' | 'BUAT_LAPORAN') => void;
   dbUsers: any[];
   dbMutations?: any[];
   dbSatuans?: any[];
@@ -48,6 +48,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   const showSatuansMenu = userPermissions.includes('read-satuans') || isAdmin;
   const showRolesMenu = isAdmin;
   const hasAnyDataMasterAccess = showUsersMenu || showUnitsMenu || showSatuansMenu || showRolesMenu;
+  const showBuatLaporanMenu = userPermissions.includes('view-dashboard-pelapor');
 
   const baseButtonClass = "w-full flex items-center justify-between px-6 py-4 font-tactical text-sm tracking-wider transition-all duration-300 border-l-4 group focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none";
 
@@ -80,6 +81,20 @@ const Sidebar: React.FC<SidebarProps> = ({
           >
             <MapIcon size={18} className="transition-transform duration-300 group-hover:scale-110 group-active:scale-95" /> PETA MONITORING
           </button>
+
+          {/* 1b. BUAT LAPORAN (Hanya untuk role dengan akses Pelapor) */}
+          {showBuatLaporanMenu && (
+            <button
+              id="tour-buat-laporan-admin"
+              onClick={() => handleMenuClick('BUAT_LAPORAN')}
+              aria-current={activeMenu === 'BUAT_LAPORAN' ? 'page' : undefined}
+              className={`w-full flex items-center gap-3 px-6 py-4 font-tactical text-sm tracking-wider transition-all duration-300 border-l-4 group focus-visible:ring focus-visible:ring-cighra-gold focus-visible:outline-none
+                ${activeMenu === 'BUAT_LAPORAN' ? 'bg-cighra-gold/10 text-cighra-gold border-cighra-gold shadow-inner' : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-cighra-darkcard/50 hover:text-cighra-gold dark:hover:text-cighra-gold'}
+              `}
+            >
+              <FilePlus size={18} className="transition-transform duration-300 group-hover:scale-110 group-active:scale-95" /> BUAT LAPORAN
+            </button>
+          )}
 
           {/* 2. ANALISIS DATA */}
           <button

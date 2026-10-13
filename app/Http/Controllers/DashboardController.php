@@ -95,9 +95,30 @@ class DashboardController extends Controller
 
     public function admin()
     {
+        $auth = auth()->user();
+        $isFullAdmin = $auth->roles->contains('name', 'Admin');
+
+        // Komlekdam (atau role non-Admin lain dengan akses dashboard admin) hanya melihat
+        // wilayahnya sendiri: satuannya + satuan jajaran langsung di bawahnya (parent_id).
+        $scopedSatuanIds = null;
+        if (!$isFullAdmin && $auth->satuan_id) {
+            $scopedSatuanIds = Satuan::where('id', $auth->satuan_id)
+                ->orWhere('parent_id', $auth->satuan_id)
+                ->pluck('id')
+                ->toArray();
+        }
+
         return Inertia::render('Helpdesk/DashboardAdmin', [
-            'dbCases' => Inertia::defer(fn () => ReportResource::collection(Report::with(['unit.satuan', 'pelapor.satuan', 'teknisi'])->orderBy('created_at', 'desc')->take(2000)->get())),
-            'dbUsers' => Inertia::defer(fn () => UserResource::collection(User::with(['roles', 'permissions', 'satuan'])->take(2000)->get())),
+            'dbCases' => Inertia::defer(fn () => ReportResource::collection(
+                Report::with(['unit.satuan', 'pelapor.satuan', 'teknisi'])
+                    ->when($scopedSatuanIds, fn ($q) => $q->whereHas('unit', fn ($u) => $u->whereIn('satuan_id', $scopedSatuanIds)))
+                    ->orderBy('created_at', 'desc')->take(2000)->get()
+            )),
+            'dbUsers' => Inertia::defer(fn () => UserResource::collection(
+                User::with(['roles', 'permissions', 'satuan'])
+                    ->when($scopedSatuanIds, fn ($q) => $q->whereIn('satuan_id', $scopedSatuanIds))
+                    ->take(2000)->get()
+            )),
             'dbLogs' => Inertia::defer(fn () => SystemLog::with('user')->orderBy('created_at', 'desc')->take(1000)->get()->map(function($l) {
                 return [
                     'id' => $l->id,
@@ -121,22 +142,46 @@ class DashboardController extends Controller
                     'name' => $p->name
                 ];
             })),
-            'dbUnits' => Inertia::defer(fn () => UnitResource::collection(Unit::with('satuan')->orderBy('created_at', 'desc')->take(3000)->get())),
-            'dbSatuans' => Inertia::defer(fn () => Satuan::all()),
+            'dbUnits' => Inertia::defer(fn () => UnitResource::collection(
+                Unit::with('satuan')
+                    ->when($scopedSatuanIds, fn ($q) => $q->whereIn('satuan_id', $scopedSatuanIds))
+                    ->orderBy('created_at', 'desc')->take(3000)->get()
+            )),
+            'dbSatuans' => Inertia::defer(fn () =>
+                $scopedSatuanIds ? Satuan::whereIn('id', $scopedSatuanIds)->get() : Satuan::all()
+            ),
             'dbMutations' => Inertia::defer(fn () => UnitMutationResource::collection(
                 UnitMutation::with(['unit', 'requester', 'approver'])
+                    ->when($scopedSatuanIds, fn ($q) => $q->whereHas('unit', fn ($u) => $u->whereIn('satuan_id', $scopedSatuanIds)))
                     ->orderBy('created_at', 'desc')
                     ->take(500)
                     ->get()
             )),
             'dbUserMutations' => Inertia::defer(fn () => UserMutationResource::collection(
                 UserMutation::with(['targetUser', 'requester', 'approver'])
+                    ->when($scopedSatuanIds, fn ($q) => $q->whereHas('targetUser', fn ($u) => $u->whereIn('satuan_id', $scopedSatuanIds)))
                     ->orderBy('created_at', 'desc')
                     ->take(500)
                     ->get()
             )),
-            'dbArchivedUnits' => Inertia::defer(fn () => UnitResource::collection(Unit::with('satuan')->onlyTrashed()->orderBy('deleted_at', 'desc')->take(1000)->get())),
-            'dbMaintenanceReports' => Inertia::defer(fn () => \App\Models\MaintenanceReport::with(['satuan', 'pelapor'])->orderBy('created_at', 'desc')->take(1000)->get()),
+            'dbArchivedUnits' => Inertia::defer(fn () => UnitResource::collection(
+                Unit::with('satuan')->onlyTrashed()
+                    ->when($scopedSatuanIds, fn ($q) => $q->whereIn('satuan_id', $scopedSatuanIds))
+                    ->orderBy('deleted_at', 'desc')->take(1000)->get()
+            )),
+            'dbMaintenanceReports' => Inertia::defer(fn () => \App\Models\MaintenanceReport::with(['satuan', 'pelapor'])
+                ->when($scopedSatuanIds, fn ($q) => $q->whereIn('satuan_id', $scopedSatuanIds))
+                ->orderBy('created_at', 'desc')->take(1000)->get()),
+            'authUser' => [
+                'id' => $auth->id,
+                'username' => $auth->username,
+                'nama_lengkap' => $auth->nama_lengkap,
+                'nrp_nip' => $auth->nrp_nip ?? '',
+                'asal_satuan' => $auth->asal_satuan ?? '',
+                'satuan_id' => $auth->satuan_id,
+                'satuan' => $auth->satuan,
+                'no_wa' => $auth->no_wa ?? '',
+            ],
         ]);
     }
 
